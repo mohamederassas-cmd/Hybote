@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Brand/design source files (nicht für Web benötigt)
+*.pages
+*.pdf
+
+# Node
+node_modules/
