@@ -9,3 +9,19 @@
 
 # Node
 node_modules/
+
+# N8N Workflows (nicht Teil der Website)
+N8N Workflow Newsletter/
+N8N Workflow Test/
+
+# Branding-Arbeitsmappe
+HYBOTE Webseite/
+
+# Große Bilddatei (nicht direkt von der Website referenziert)
+8bcb9809.jpg
+
+# Dev-Server-Skript
+serve.mjs
+
+# Claude-spezifisch
+.claude/

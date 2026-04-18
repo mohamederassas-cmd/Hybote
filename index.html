@@ -273,13 +273,60 @@
     /* ── Reveal ──────────────────────────────────────────────────── */
     .reveal {
       opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.4,0,0.2,1);
+      transform: translateY(28px);
+      transition: opacity 800ms cubic-bezier(0.16,1,0.3,1), transform 800ms cubic-bezier(0.16,1,0.3,1);
     }
     .reveal.in {
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* ── Word split (hero) ───────────────────────────────────────── */
+    .word-split {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 600ms cubic-bezier(0.16,1,0.3,1), transform 600ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .word-split.in { opacity: 1; transform: translateY(0); }
+
+    /* ── ROI Slider ──────────────────────────────────────────────── */
+    .roi-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 1px;
+      background: var(--a5);
+      outline: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      background-image: linear-gradient(var(--fg), var(--fg));
+      background-repeat: no-repeat;
+    }
+    .roi-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--fg);
+      cursor: pointer;
+      transition: transform 150ms ease;
+    }
+    .roi-slider::-webkit-slider-thumb:hover { transform: scale(1.3); }
+    .roi-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--fg);
+      border: none;
+      cursor: pointer;
+    }
+    .roi-slider::-webkit-slider-runnable-track { height: 1px; }
+    .roi-slider::-moz-range-track { height: 1px; background: var(--a5); }
+
+    /* ── Counter ─────────────────────────────────────────────────── */
+    .kpi-counter { display: inline; }
 
     /* ── Ticker ──────────────────────────────────────────────────── */
     @keyframes tick {
@@ -421,7 +468,6 @@
       <a href="#problem" class="nav-link" data-i18n="nav.problem">Problem</a>
       <a href="#loesung" class="nav-link" data-i18n="nav.solution">Lösung</a>
       <a href="#kanaele" class="nav-link" data-i18n="nav.channels">Kanäle</a>
-      <a href="#ergebnisse" class="nav-link" data-i18n="nav.results">Ergebnisse</a>
     </nav>
 
     <!-- CTA + Language switcher -->
@@ -499,25 +545,6 @@
     <a href="#loesung" class="btn-outline" data-i18n="hero.cta2">So funktioniert es</a>
   </div>
 
-  <!-- Trust row -->
-  <div style="display:flex;flex-wrap:wrap;gap:28px;align-items:center;">
-    <span class="t-small" style="display:flex;align-items:center;gap:7px;">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-      <span data-i18n="hero.trust1">DSGVO-konform</span>
-    </span>
-    <span class="t-small" style="display:flex;align-items:center;gap:7px;">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-      <span data-i18n="hero.trust2">Server in Deutschland</span>
-    </span>
-    <span class="t-small" style="display:flex;align-items:center;gap:7px;">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-      <span data-i18n="hero.trust3">Keine Mindestlaufzeit</span>
-    </span>
-    <span class="t-small" style="display:flex;align-items:center;gap:7px;">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-      <span data-i18n="hero.trust4">24 / 7 aktiv</span>
-    </span>
-  </div>
 </section>
 
 
@@ -551,6 +578,11 @@
     <div class="reveal" style="text-align:center;transition-delay:240ms;">
       <div class="stat-num">0<span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-left:4px;">€</span></div>
       <div class="t-label" style="margin-top:10px;" data-i18n="stat.5">Verpasste Chancen</div>
+    </div>
+
+    <div class="reveal" style="text-align:center;transition-delay:300ms;">
+      <div class="stat-num">50<span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-left:4px;">+</span></div>
+      <div class="t-label" style="margin-top:10px;" data-i18n="stat.6">Sprachen</div>
     </div>
 
   </div>
@@ -860,8 +892,8 @@
       <div class="reveal" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:36px 0;transition-delay:180ms;">
         <div class="step-num" style="border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.3);">04</div>
         <div style="padding-top:10px;">
-          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:rgba(255,255,255,0.9);margin-bottom:10px;" data-i18n="how.s4.title">Übergabe &amp; Terminplanung</h3>
-          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:rgba(255,255,255,0.45);line-height:1.8;" data-i18n="how.s4.body">Hot-Leads werden sofort eskaliert, Termine vorgeschlagen, alle Daten ins CRM übertragen. Sie gehen ins Gespräch – vollständig vorbereitet.</p>
+          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:rgba(255,255,255,0.9);margin-bottom:10px;" data-i18n="how.s4.title">Automatische Terminbuchung &amp; Push-Benachrichtigung</h3>
+          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:rgba(255,255,255,0.45);line-height:1.8;" data-i18n="how.s4.body">Der KI-Agent setzt den Termin selbstständig – ohne Ihr Zutun. Sobald ein Termin vereinbart ist, erhalten Sie sofort eine Push-Nachricht auf Ihr Handy. Sie gehen ins Gespräch – vollständig vorbereitet.</p>
         </div>
       </div>
 
@@ -871,58 +903,34 @@
 
 
 <!-- ══════════════════════════════════════════════════════════
-     FOUNDER / ABOUT
+     MISSION & VISION
 ══════════════════════════════════════════════════════════ -->
-<section id="gruender" style="padding:100px 32px;background:var(--a6);">
+<section id="mission" style="padding:100px 32px;background:var(--fg);">
   <div style="max-width:1100px;margin:0 auto;">
 
-    <div class="sec-label reveal" data-i18n="founder.label" style="margin-bottom:64px;">The Founder</div>
+    <div style="display:grid;gap:1px;background:rgba(255,255,255,0.06);" id="mv-grid">
 
-    <div style="display:grid;gap:64px;align-items:center;" id="founder-grid">
-
-      <!-- Left: Photo -->
-      <div class="reveal" style="transition-delay:0ms;">
-        <div style="position:relative;max-width:400px;">
-          <div style="position:relative;overflow:hidden;aspect-ratio:4/5;">
-            <img src="8bcb9809.jpg" alt="Mohamed Erassas – Founder HYBOTE" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;filter:grayscale(15%);" />
-            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(22,22,22,0.55) 0%,transparent 50%);"></div>
-          </div>
-          <div style="position:absolute;bottom:0;left:0;right:0;padding:28px 28px 24px;">
-            <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:1rem;color:#fff;letter-spacing:-0.01em;margin-bottom:4px;">Mohamed Erassas</div>
-            <div style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);">Founder &amp; CEO, HYBOTE</div>
-          </div>
+      <!-- Mission -->
+      <div class="reveal" style="padding:64px;background:var(--fg);">
+        <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;">
+          <span style="display:block;width:24px;height:1px;background:rgba(255,255,255,0.2);"></span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3);" data-i18n="mission.label">Our Mission</span>
         </div>
+        <h2 style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.1;letter-spacing:-0.025em;color:rgba(255,255,255,0.9);margin-bottom:28px;" data-i18n="mission.h2">No lead<br/>left behind.</h2>
+        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.9rem;line-height:1.8;color:rgba(255,255,255,0.45);max-width:440px;" data-i18n="mission.body">We exist to eliminate the gap between a lead arriving and a conversation starting. Every second of silence is a missed opportunity. HYBOTE closes that gap permanently — with AI that communicates at the speed of expectation.</p>
       </div>
 
-      <!-- Right: Bio -->
-      <div>
-        <h2 class="t-h2 reveal" style="margin-bottom:32px;" data-i18n="founder.h2">Where Hospitality<br/>Meets Artificial Intelligence.</h2>
-
-        <div style="display:flex;flex-direction:column;gap:24px;border-top:1px solid var(--line);padding-top:32px;">
-          <p class="t-body reveal" style="transition-delay:60ms;" data-i18n="founder.p1">
-            Mohamed Erassas, founder of HYBOTE, is an AI enthusiast who spent years in luxury hospitality — an industry where flawless, instant, and deeply personal communication is not optional, it is expected.
-          </p>
-          <p class="t-body reveal" style="transition-delay:120ms;" data-i18n="founder.p2">
-            That experience taught him one thing above all else: high-end clients do not forgive silence. A missed lead, a delayed reply, a generic response — these are not inconveniences. They are broken trust.
-          </p>
-          <p class="t-body reveal" style="transition-delay:180ms;" data-i18n="founder.p3">
-            HYBOTE was built from this exact insight: combining the precision of artificial intelligence with the standards of five-star hospitality. Every lead deserves the response it would get from your best agent — in under 3 seconds, 24/7, without exception.
-          </p>
+      <!-- Vision -->
+      <div class="reveal" style="padding:64px;background:rgba(255,255,255,0.03);transition-delay:80ms;">
+        <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;">
+          <span style="display:block;width:24px;height:1px;background:rgba(255,255,255,0.2);"></span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3);" data-i18n="vision.label">Our Vision</span>
         </div>
-
-        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:36px;">
-          <div class="reveal" style="display:flex;align-items:center;gap:10px;padding:12px 18px;border:1px solid var(--line);background:var(--bg);transition-delay:220ms;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.72rem;letter-spacing:0.10em;text-transform:uppercase;color:var(--a2);">Luxury Hospitality</span>
-          </div>
-          <div class="reveal" style="display:flex;align-items:center;gap:10px;padding:12px 18px;border:1px solid var(--line);background:var(--bg);transition-delay:260ms;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-            <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.72rem;letter-spacing:0.10em;text-transform:uppercase;color:var(--a2);">AI &amp; Automation</span>
-          </div>
-          <div class="reveal" style="display:flex;align-items:center;gap:10px;padding:12px 18px;border:1px solid var(--line);background:var(--bg);transition-delay:300ms;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.72rem;letter-spacing:0.10em;text-transform:uppercase;color:var(--a2);">Premium Real Estate</span>
-          </div>
+        <h2 style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.1;letter-spacing:-0.025em;color:rgba(255,255,255,0.9);margin-bottom:28px;" data-i18n="vision.h2">The AI standard for<br/>luxury real estate.</h2>
+        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.9rem;line-height:1.8;color:rgba(255,255,255,0.45);max-width:440px;" data-i18n="vision.body">To become the defining AI infrastructure for premium real estate agencies across DACH and MENA — where every lead receives a response worthy of the property it represents.</p>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:32px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.06);">
+          <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2rem;letter-spacing:-0.04em;color:rgba(255,255,255,0.9);">50+</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.35);line-height:1.5;" data-i18n="vision.lang50">Sprachen — HYBOTE kommuniziert in über 50 Sprachen, vollautomatisch und ohne Konfigurationsaufwand.</div>
         </div>
       </div>
 
@@ -931,89 +939,103 @@
 </section>
 
 <script>
-  const fg = document.getElementById('founder-grid');
-  function setFounderGrid() {
-    fg.style.gridTemplateColumns = window.innerWidth >= 900 ? '1fr 1.4fr' : '1fr';
+  const mvg = document.getElementById('mv-grid');
+  function setMvGrid() {
+    mvg.style.gridTemplateColumns = window.innerWidth >= 768 ? '1fr 1fr' : '1fr';
   }
-  setFounderGrid(); window.addEventListener('resize', setFounderGrid);
+  setMvGrid(); window.addEventListener('resize', setMvGrid);
 </script>
 
 <hr class="rule" />
 
 
+<hr class="rule" />
+
+
 <!-- ══════════════════════════════════════════════════════════
-     RESULTS
+     ROI CALCULATOR
 ══════════════════════════════════════════════════════════ -->
-<section id="ergebnisse" style="padding:100px 32px;">
+<section id="roi" style="padding:100px 32px;background:var(--a6);">
   <div style="max-width:1100px;margin:0 auto;">
 
     <div style="margin-bottom:64px;">
-      <div class="sec-label reveal" data-i18n="res.label">Ergebnisse</div>
-      <h2 class="t-h2 reveal" style="max-width:520px;" data-i18n="res.h2">
-        Was Premium-Makler<br/>
-        mit HYBOTE <em>erreichen.</em>
-      </h2>
+      <div class="sec-label reveal" data-i18n="roi.label">ROI-Rechner</div>
+      <h2 class="t-h2 reveal" style="max-width:620px;" data-i18n="roi.h2">Wie viel kostet Sie<br/><em>jeder verpasste Lead?</em></h2>
+      <p class="t-body reveal" style="max-width:520px;margin-top:20px;" data-i18n="roi.sub">Stellen Sie Ihre Werte ein – und sehen Sie, was Ihnen heute entgeht.</p>
     </div>
 
-    <!-- Testimonials -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line);margin-bottom:1px;">
+    <!-- Sliders -->
+    <div style="display:grid;gap:48px;margin-bottom:56px;" id="roi-sliders">
 
-      <div class="reveal" style="background:var(--bg);padding:40px;transition-delay:0ms;">
-        <div class="big-quote" style="margin-bottom:8px;">"</div>
-        <p class="t-body" style="font-size:0.88rem;margin-bottom:28px;color:var(--a1);">"Seit wir HYBOTE nutzen, haben wir keinen einzigen Lead mehr verloren. Die KI antwortet schneller als jeder meiner Mitarbeiter – und klingt genauso professionell."</p>
-        <div style="display:flex;align-items:center;gap:12px;padding-top:20px;border-top:1px solid var(--line);">
-          <div style="width:36px;height:36px;background:var(--a5);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.7rem;color:var(--a2);flex-shrink:0;">SW</div>
-          <div>
-            <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.82rem;color:var(--fg);">Sophia Wagner</div>
-            <div class="t-small">Inhaberin, Wagner Immobilien München</div>
+      <div class="reveal">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;">
+          <label style="margin:0;" data-i18n="roi.s1.label">Monatliche Leads</label>
+          <div style="display:flex;align-items:baseline;gap:4px;">
+            <span class="stat-num" style="font-size:clamp(1.6rem,3vw,2.4rem);" id="roi-val-leads">80</span>
+            <span class="t-label" style="color:var(--a3);" data-i18n="roi.s1.unit">Leads / Monat</span>
           </div>
+        </div>
+        <input type="range" class="roi-slider" id="roi-leads" min="10" max="500" value="80" step="5" oninput="roiUpdate()" />
+        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+          <span class="t-label" style="color:var(--a4);">10</span>
+          <span class="t-label" style="color:var(--a4);">500</span>
         </div>
       </div>
 
-      <div class="reveal" style="background:var(--a6);padding:40px;transition-delay:80ms;">
-        <div class="big-quote" style="margin-bottom:8px;">"</div>
-        <p class="t-body" style="font-size:0.88rem;margin-bottom:28px;color:var(--a1);">"Die Conversion unserer Leads hat sich verdreifacht. Unser Team fokussiert sich jetzt nur noch auf echte Kaufinteressenten – HYBOTE erledigt den Rest."</p>
-        <div style="display:flex;align-items:center;gap:12px;padding-top:20px;border-top:1px solid var(--line);">
-          <div style="width:36px;height:36px;background:var(--a5);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.7rem;color:var(--a2);flex-shrink:0;">TB</div>
-          <div>
-            <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.82rem;color:var(--fg);">Thomas Berger</div>
-            <div class="t-small">GF, Berger Luxury Real Estate</div>
+      <div class="reveal" style="transition-delay:60ms;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;">
+          <label style="margin:0;" data-i18n="roi.s2.label">Aktuelle Rücklaufquote</label>
+          <div style="display:flex;align-items:baseline;gap:4px;">
+            <span class="stat-num" style="font-size:clamp(1.6rem,3vw,2.4rem);" id="roi-val-rate">40</span>
+            <span class="t-label" style="color:var(--a3);">%</span>
           </div>
+        </div>
+        <input type="range" class="roi-slider" id="roi-rate" min="10" max="80" value="40" step="5" oninput="roiUpdate()" />
+        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+          <span class="t-label" style="color:var(--a4);">10%</span>
+          <span class="t-label" style="color:var(--a4);">80%</span>
         </div>
       </div>
 
-      <div class="reveal" style="background:var(--bg);padding:40px;transition-delay:160ms;">
-        <div class="big-quote" style="margin-bottom:8px;">"</div>
-        <p class="t-body" style="font-size:0.88rem;margin-bottom:28px;color:var(--a1);">"Früher haben wir am Wochenende viele Anfragen verpasst. Jetzt antwortet HYBOTE auch Sonntagsnacht – mit einer Antwort, die ich selbst nicht besser hätte formulieren können."</p>
-        <div style="display:flex;align-items:center;gap:12px;padding-top:20px;border-top:1px solid var(--line);">
-          <div style="width:36px;height:36px;background:var(--a5);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.7rem;color:var(--a2);flex-shrink:0;">KM</div>
-          <div>
-            <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.82rem;color:var(--fg);">Klaus Müller</div>
-            <div class="t-small">Partner, Müller & Partner Immobilien</div>
+      <div class="reveal" style="transition-delay:120ms;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;">
+          <label style="margin:0;" data-i18n="roi.s3.label">Ø Provision pro Abschluss</label>
+          <div style="display:flex;align-items:baseline;gap:4px;">
+            <span class="t-label" style="color:var(--a3);">€</span>
+            <span class="stat-num" style="font-size:clamp(1.6rem,3vw,2.4rem);" id="roi-val-comm">8.000</span>
           </div>
+        </div>
+        <input type="range" class="roi-slider" id="roi-comm" min="2000" max="50000" value="8000" step="500" oninput="roiUpdate()" />
+        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+          <span class="t-label" style="color:var(--a4);">€2.000</span>
+          <span class="t-label" style="color:var(--a4);">€50.000</span>
         </div>
       </div>
 
     </div>
 
-    <!-- Key numbers row -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;background:var(--line);" id="kpi-grid">
-      <div class="reveal" style="background:var(--fg);padding:40px;text-align:center;transition-delay:0ms;">
-        <div class="stat-num" style="color:var(--bg);">+280%</div>
-        <div class="t-label" style="margin-top:10px;color:rgba(255,255,255,0.35);" data-i18n="res.kpi1">Qualifizierte Leads</div>
+    <!-- Result cards -->
+    <div style="display:grid;gap:1px;background:var(--line);" id="roi-result-grid">
+
+      <div style="background:var(--bg);padding:40px 48px;" id="roi-card-without">
+        <div class="t-label" style="margin-bottom:16px;" data-i18n="roi.without.label">Ohne HYBOTE — Jährlicher Umsatzverlust</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px;">
+          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--a3);">−</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--fg);" id="roi-loss">460.800 €</span>
+        </div>
+        <p class="t-body" style="font-size:0.82rem;" id="roi-loss-sub" data-i18n="roi.without.sub">48 Leads gehen monatlich verloren. Das ist Ihr entgangener Jahresumsatz.</p>
       </div>
-      <div class="reveal" style="background:var(--fg);padding:40px;text-align:center;transition-delay:60ms;">
-        <div class="stat-num" style="color:var(--bg);">−92%</div>
-        <div class="t-label" style="margin-top:10px;color:rgba(255,255,255,0.35);" data-i18n="res.kpi2">Reaktionszeit</div>
+
+      <div style="background:var(--fg);padding:40px 48px;" id="roi-card-with">
+        <div class="t-label" style="margin-bottom:16px;color:rgba(255,255,255,0.35);" data-i18n="roi.with.label">Mit HYBOTE — Jährlicher Mehrwert</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px;">
+          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:rgba(255,255,255,0.4);">+</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--bg);" id="roi-gain">421.200 €</span>
+        </div>
+        <p class="t-body" style="font-size:0.82rem;color:rgba(255,255,255,0.5);" id="roi-gain-sub" data-i18n="roi.with.sub">44 zusätzliche qualifizierte Abschlüsse pro Jahr durch 95% Lead-Erfassung.</p>
+        <a href="#kontakt" class="btn-dark" style="background:var(--bg);color:var(--fg);margin-top:28px;display:inline-flex;" data-i18n="roi.cta">Demo anfragen →</a>
       </div>
-      <div class="reveal" style="background:var(--fg);padding:40px;text-align:center;transition-delay:120ms;">
-        <div class="stat-num" style="color:var(--bg);">4,9</div>
-        <div class="t-label" style="margin-top:10px;color:rgba(255,255,255,0.35);" data-i18n="res.kpi3">Kundenbewertung</div>
-      </div>
-      <div class="reveal" style="background:var(--fg);padding:40px;text-align:center;transition-delay:180ms;">
-        <div class="stat-num" style="color:var(--bg);">100%</div>
-        <div class="t-label" style="margin-top:10px;color:rgba(255,255,255,0.35);" data-i18n="res.kpi4">Lead-Erfassung</div>
-      </div>
+
     </div>
 
   </div>
@@ -1150,8 +1172,7 @@
 ══════════════════════════════════════════════════════════ -->
 <section style="padding:80px 32px;background:var(--a6);">
   <div style="max-width:800px;margin:0 auto;text-align:center;">
-    <h2 class="t-h2 reveal" style="margin-bottom:16px;" data-i18n="cta.h2">Bereit, keinen Lead mehr zu verpassen?</h2>
-    <p class="t-body reveal" style="max-width:440px;margin:0 auto 36px;transition-delay:60ms;" data-i18n="cta.sub">Start in unter 24 Stunden. Keine Einrichtungsgebühr, keine Bindung.</p>
+    <h2 class="t-h2 reveal" style="margin-bottom:36px;" data-i18n="cta.h2">Bereit, keinen Lead mehr zu verpassen?</h2>
     <div class="reveal" style="transition-delay:120ms;">
       <a href="#kontakt" class="btn-dark" style="padding:16px 36px;">
         <span data-i18n="cta.btn">Jetzt starten</span>
@@ -1162,49 +1183,6 @@
 </section>
 
 <hr class="rule" />
-
-
-<!-- ══════════════════════════════════════════════════════════
-     MISSION & VISION
-══════════════════════════════════════════════════════════ -->
-<section id="mission" style="padding:100px 32px;background:var(--fg);">
-  <div style="max-width:1100px;margin:0 auto;">
-
-    <div style="display:grid;gap:1px;background:rgba(255,255,255,0.06);" id="mv-grid">
-
-      <!-- Mission -->
-      <div class="reveal" style="padding:64px;background:var(--fg);">
-        <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;">
-          <span style="display:block;width:24px;height:1px;background:rgba(255,255,255,0.2);"></span>
-          <span style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3);" data-i18n="mission.label">Our Mission</span>
-        </div>
-        <h2 style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.1;letter-spacing:-0.025em;color:rgba(255,255,255,0.9);margin-bottom:28px;" data-i18n="mission.h2">No lead<br/>left behind.</h2>
-        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.9rem;line-height:1.8;color:rgba(255,255,255,0.45);max-width:440px;" data-i18n="mission.body">We exist to eliminate the gap between a lead arriving and a conversation starting. Every second of silence is a missed opportunity. HYBOTE closes that gap permanently — with AI that communicates at the speed of expectation.</p>
-      </div>
-
-      <!-- Vision -->
-      <div class="reveal" style="padding:64px;background:rgba(255,255,255,0.03);transition-delay:80ms;">
-        <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;">
-          <span style="display:block;width:24px;height:1px;background:rgba(255,255,255,0.2);"></span>
-          <span style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3);" data-i18n="vision.label">Our Vision</span>
-        </div>
-        <h2 style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.1;letter-spacing:-0.025em;color:rgba(255,255,255,0.9);margin-bottom:28px;" data-i18n="vision.h2">The AI standard for<br/>luxury real estate.</h2>
-        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.9rem;line-height:1.8;color:rgba(255,255,255,0.45);max-width:440px;" data-i18n="vision.body">To become the defining AI infrastructure for premium real estate agencies across DACH and MENA — where every lead receives a response worthy of the property it represents.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<script>
-  const mvg = document.getElementById('mv-grid');
-  function setMvGrid() {
-    mvg.style.gridTemplateColumns = window.innerWidth >= 768 ? '1fr 1fr' : '1fr';
-  }
-  setMvGrid(); window.addEventListener('resize', setMvGrid);
-</script>
-
-<hr class="rule" style="border-color:transparent;" />
 
 
 <!-- ══════════════════════════════════════════════════════════
@@ -1399,17 +1377,15 @@
         <div>
           <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:16px;" data-i18n="footer.col2">Company</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="#gruender" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.about">About</a>
+            <a href="#mission" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.about">About</a>
             <a href="#kontakt" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.contact">Contact</a>
-            <a href="#" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.career">Careers</a>
           </div>
         </div>
         <div>
           <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:16px;" data-i18n="footer.col3">Legal</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="#" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.privacy" href="datenschutz.html">Privacy Policy</a>
-            <a href="#" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.imprint">Imprint</a>
-            <a href="#" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.terms">Terms</a>
+            <a href="datenschutz.html" target="_blank" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.privacy">Privacy Policy</a>
+            <a href="agb.html" target="_blank" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.terms">Terms</a>
           </div>
         </div>
       </div>
@@ -1419,7 +1395,6 @@
 
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
       <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:rgba(255,255,255,0.2);" data-i18n="footer.copy">© 2025 HYBOTE. All rights reserved.</span>
-      <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:rgba(255,255,255,0.2);" data-i18n="footer.trust">Made in Germany · GDPR-compliant · Servers in DE</span>
     </div>
   </div>
 </footer>
@@ -1452,6 +1427,151 @@
 
 
 <!-- ══════════════════════════════════════════════════════════
+     HERO ENTRANCE ANIMATION
+══════════════════════════════════════════════════════════ -->
+<script>
+  (function() {
+    const heroSection = document.querySelector('section');
+    const heroChildren = heroSection ? heroSection.children : [];
+    Array.from(heroChildren).forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 700ms cubic-bezier(0.16,1,0.3,1), transform 700ms cubic-bezier(0.16,1,0.3,1)';
+      el.style.transitionDelay = (80 + i * 100) + 'ms';
+    });
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        Array.from(heroChildren).forEach(el => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        });
+      });
+    });
+  })();
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     KPI COUNTER ANIMATION
+══════════════════════════════════════════════════════════ -->
+<script>
+  function animateCounter(el, from, to, duration, prefix, suffix) {
+    const start = performance.now();
+    function step(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - p, 4);
+      const val = Math.round(from + (to - from) * ease);
+      el.textContent = prefix + val.toLocaleString('de-DE') + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  const kpiData = [
+    { prefix: '+', value: 280, suffix: '%' },
+    { prefix: '−', value: 92, suffix: '%' },
+    { prefix: '', value: 4.9, suffix: '', decimals: 1 },
+    { prefix: '', value: 100, suffix: '%' },
+  ];
+
+  const kpiGrid = document.getElementById('kpi-grid');
+  if (kpiGrid) {
+    const statNums = kpiGrid.querySelectorAll('.stat-num');
+    const kpiObs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        statNums.forEach((el, i) => {
+          const d = kpiData[i];
+          if (!d) return;
+          if (d.decimals) {
+            const start2 = performance.now();
+            const dur = 1400;
+            function stepDec(now) {
+              const p = Math.min((now - start2) / dur, 1);
+              const ease = 1 - Math.pow(1 - p, 4);
+              const val = (d.value * ease).toFixed(1);
+              el.textContent = d.prefix + val.replace('.', ',') + d.suffix;
+              if (p < 1) requestAnimationFrame(stepDec);
+            }
+            requestAnimationFrame(stepDec);
+          } else {
+            animateCounter(el, 0, d.value, 1400, d.prefix, d.suffix);
+          }
+        });
+        kpiObs.disconnect();
+      }
+    }, { threshold: 0.3 });
+    kpiObs.observe(kpiGrid);
+  }
+</script>
+
+
+
+
+<!-- ══════════════════════════════════════════════════════════
+     ROI CALCULATOR
+══════════════════════════════════════════════════════════ -->
+<script>
+  function fmtEur(n) {
+    return n.toLocaleString('de-DE') + '\u00a0\u20ac';
+  }
+
+  function updateSliderFill(slider) {
+    const min = +slider.min, max = +slider.max, val = +slider.value;
+    const pct = ((val - min) / (max - min)) * 100;
+    slider.style.backgroundSize = pct + '% 100%';
+  }
+
+  function roiUpdate() {
+    const leads = +document.getElementById('roi-leads').value;
+    const rate  = +document.getElementById('roi-rate').value / 100;
+    const comm  = +document.getElementById('roi-comm').value;
+
+    document.getElementById('roi-val-leads').textContent = leads;
+    document.getElementById('roi-val-rate').textContent  = +document.getElementById('roi-rate').value;
+    document.getElementById('roi-val-comm').textContent  = comm.toLocaleString('de-DE');
+
+    const lostPerMonth   = Math.round(leads * (1 - rate));
+    const gainedPerMonth = Math.round(leads * (0.95 - rate));
+    const annualLoss     = lostPerMonth * comm * 12;
+    const annualGain     = Math.max(0, gainedPerMonth) * comm * 12;
+
+    document.getElementById('roi-loss').textContent = fmtEur(annualLoss);
+    document.getElementById('roi-gain').textContent = fmtEur(annualGain);
+
+    ['roi-leads', 'roi-rate', 'roi-comm'].forEach(id => {
+      updateSliderFill(document.getElementById(id));
+    });
+
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
+    const lSub = document.getElementById('roi-loss-sub');
+    const gSub = document.getElementById('roi-gain-sub');
+    if (typeof T !== 'undefined' && T[lang]) {
+      if (lSub) lSub.textContent = (T[lang]['roi.without.sub'] || '').replace('{lost}', lostPerMonth);
+      if (gSub) gSub.textContent = (T[lang]['roi.with.sub'] || '').replace('{gained}', Math.max(0, gainedPerMonth));
+    }
+  }
+
+  ['roi-leads', 'roi-rate', 'roi-comm'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) updateSliderFill(el);
+  });
+  roiUpdate();
+
+  document.getElementById('roi-result-grid') && (function() {
+    const rg = document.getElementById('roi-result-grid');
+    if (window.innerWidth >= 640) {
+      rg.style.gridTemplateColumns = '1fr 1fr';
+    }
+    function setRoiGrid() {
+      rg.style.gridTemplateColumns = window.innerWidth >= 640 ? '1fr 1fr' : '1fr';
+    }
+    setRoiGrid();
+    window.addEventListener('resize', setRoiGrid);
+  })();
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
      TRANSLATIONS / i18n
 ══════════════════════════════════════════════════════════ -->
 <script>
@@ -1479,6 +1599,7 @@ const T = {
     'stat.3': 'Mehr Conversions',
     'stat.4': 'Automatisch aktiv',
     'stat.5': 'Verpasste Chancen',
+    'stat.6': 'Sprachen',
 
     'prob.label':    'Das Problem',
     'prob.h2':       'Jede Stunde Verzögerung<br/>kostet einen Käufer.',
@@ -1523,8 +1644,8 @@ const T = {
     'how.s2.body':  'Intent, Kaufbereitschaft, Preissegment und Zeitrahmen werden in unter einer Sekunde analysiert. Ein Lead-Score wird berechnet, eine Antwortstrategie entwickelt.',
     'how.s3.title': 'Personalisierte Sofort-Antwort',
     'how.s3.body':  'HYBOTE sendet eine individuelle Antwort im Namen Ihres Büros – auf dem Kanal, auf dem der Interessent geschrieben hat. Innerhalb von 3 Sekunden.',
-    'how.s4.title': 'Übergabe &amp; Terminplanung',
-    'how.s4.body':  'Hot-Leads werden sofort eskaliert, Termine vorgeschlagen, alle Daten ins CRM übertragen. Sie gehen ins Gespräch – vollständig vorbereitet.',
+    'how.s4.title': 'Automatische Terminbuchung &amp; Push-Benachrichtigung',
+    'how.s4.body':  'Der KI-Agent setzt den Termin selbstständig – ohne Ihr Zutun. Sobald ein Termin vereinbart ist, erhalten Sie sofort eine Push-Nachricht auf Ihr Handy. Sie gehen ins Gespräch – vollständig vorbereitet.',
 
     'res.label': 'Ergebnisse',
     'res.h2':    'Was Premium-Makler<br/>mit HYBOTE <em>erreichen.</em>',
@@ -1532,6 +1653,19 @@ const T = {
     'res.kpi2':  'Reaktionszeit',
     'res.kpi3':  'Kundenbewertung',
     'res.kpi4':  'Lead-Erfassung',
+
+    'roi.label':         'ROI-Rechner',
+    'roi.h2':            'Wie viel kostet Sie<br/><em>jeder verpasste Lead?</em>',
+    'roi.sub':           'Stellen Sie Ihre Werte ein – und sehen Sie, was Ihnen heute entgeht.',
+    'roi.s1.label':      'Monatliche Leads',
+    'roi.s1.unit':       'Leads / Monat',
+    'roi.s2.label':      'Aktuelle Rücklaufquote',
+    'roi.s3.label':      'Ø Provision pro Abschluss',
+    'roi.without.label': 'Ohne HYBOTE — Jährlicher Umsatzverlust',
+    'roi.without.sub':   '{lost} Leads gehen monatlich verloren. Das ist Ihr entgangener Jahresumsatz.',
+    'roi.with.label':    'Mit HYBOTE — Jährlicher Mehrwert',
+    'roi.with.sub':      '{gained} zusätzliche qualifizierte Abschlüsse pro Jahr durch 95% Lead-Erfassung.',
+    'roi.cta':           'Demo anfragen →',
 
     'cta.h2':  'Bereit, keinen Lead mehr zu verpassen?',
     'cta.sub': 'Start in unter 24 Stunden. Keine Einrichtungsgebühr, keine Bindung.',
@@ -1578,7 +1712,6 @@ const T = {
     'footer.career':  'Karriere',
     'footer.col3':    'Rechtliches',
     'footer.privacy': 'Datenschutz',
-    'footer.imprint': 'Impressum',
     'footer.terms':   'AGB',
     'footer.copy':    '© 2025 HYBOTE. Alle Rechte vorbehalten.',
     'footer.trust':   'Made in Germany · DSGVO-konform · Server in DE',
@@ -1612,6 +1745,7 @@ const T = {
     'vision.label':  'Unsere Vision',
     'vision.h2':     'Der KI-Standard für<br/>Luxusimmobilien.',
     'vision.body':   'Der definierende KI-Standard für Premium-Immobilienbüros in DACH und MENA zu werden — wo jeder Lead eine Antwort erhält, die der Immobilie gerecht wird, die er repräsentiert.',
+    'vision.lang50': 'Sprachen — HYBOTE kommuniziert in über 50 Sprachen, vollautomatisch und ohne Konfigurationsaufwand.',
   },
 
   en: {
@@ -1637,6 +1771,7 @@ const T = {
     'stat.3': 'More conversions',
     'stat.4': 'Always active',
     'stat.5': 'Missed opportunities',
+    'stat.6': 'Languages',
 
     'prob.label':    'The Problem',
     'prob.h2':       'Every hour of delay<br/>costs a buyer.',
@@ -1681,8 +1816,8 @@ const T = {
     'how.s2.body':  'Intent, buying readiness, price segment, and timeline are analyzed in under one second. A lead score is calculated and a response strategy developed.',
     'how.s3.title': 'Personalized instant reply',
     'how.s3.body':  'HYBOTE sends an individual response on behalf of your office – on the same channel the prospect used. Within 3 seconds.',
-    'how.s4.title': 'Handover & scheduling',
-    'how.s4.body':  'Hot leads are escalated immediately, appointments suggested, all data transferred to CRM. You enter the conversation – fully prepared.',
+    'how.s4.title': 'Automatic appointment booking & push notification',
+    'how.s4.body':  'The AI agent schedules the appointment autonomously — no action required from you. As soon as an appointment is confirmed, you receive an instant push notification on your phone. You enter the conversation – fully prepared.',
 
     'res.label': 'Results',
     'res.h2':    'What premium agents<br/>achieve with HYBOTE.',
@@ -1690,6 +1825,19 @@ const T = {
     'res.kpi2':  'Response time',
     'res.kpi3':  'Customer rating',
     'res.kpi4':  'Lead capture',
+
+    'roi.label':         'ROI Calculator',
+    'roi.h2':            'How much does every<br/><em>missed lead cost you?</em>',
+    'roi.sub':           'Adjust your numbers — and see exactly what you are losing today.',
+    'roi.s1.label':      'Monthly leads',
+    'roi.s1.unit':       'leads / month',
+    'roi.s2.label':      'Current response rate',
+    'roi.s3.label':      'Avg. commission per deal',
+    'roi.without.label': 'Without HYBOTE — Annual revenue loss',
+    'roi.without.sub':   '{lost} leads lost every month. That is your annual missed revenue.',
+    'roi.with.label':    'With HYBOTE — Annual added value',
+    'roi.with.sub':      '{gained} additional qualified deals per year through 95% lead capture.',
+    'roi.cta':           'Request a demo →',
 
     'cta.h2':  'Ready to never miss a lead again?',
     'cta.sub': 'Up and running in under 24 hours. No setup fee, no commitment.',
@@ -1736,7 +1884,6 @@ const T = {
     'footer.career':  'Careers',
     'footer.col3':    'Legal',
     'footer.privacy': 'Privacy Policy',
-    'footer.imprint': 'Imprint',
     'footer.terms':   'Terms',
     'footer.copy':    '© 2025 HYBOTE. All rights reserved.',
     'footer.trust':   'Made in Germany · GDPR-compliant · Servers in DE',
@@ -1770,6 +1917,7 @@ const T = {
     'vision.label':  'Our Vision',
     'vision.h2':     'The AI standard for<br/>luxury real estate.',
     'vision.body':   'To become the defining AI infrastructure for premium real estate agencies across DACH and MENA — where every lead receives a response worthy of the property it represents.',
+    'vision.lang50': 'Languages — HYBOTE communicates in over 50 languages, fully automated and with zero configuration.',
   },
 
   ar: {
@@ -1795,6 +1943,7 @@ const T = {
     'stat.3': 'مزيد من التحويلات',
     'stat.4': 'نشط تلقائياً',
     'stat.5': 'الفرص الفائتة',
+    'stat.6': 'لغة',
 
     'prob.label':    'المشكلة',
     'prob.h2':       'كل ساعة تأخير<br/>تكلّفك عميلاً.',
@@ -1839,8 +1988,8 @@ const T = {
     'how.s2.body':  'يتم تحليل النية والاستعداد للشراء وشريحة السعر والجدول الزمني في أقل من ثانية. يتم احتساب نقاط العميل وتطوير استراتيجية الرد.',
     'how.s3.title': 'رد فوري مخصص',
     'how.s3.body':  'ترسل HYBOTE رداً فردياً باسم مكتبك – عبر نفس القناة التي كتب منها العميل. في غضون 3 ثوانٍ.',
-    'how.s4.title': 'التسليم وجدولة المواعيد',
-    'how.s4.body':  'يتم تصعيد العملاء الساخنين فوراً واقتراح مواعيد ونقل جميع البيانات إلى CRM. تدخل المحادثة – مستعداً تماماً.',
+    'how.s4.title': 'حجز المواعيد التلقائي وإشعار فوري',
+    'how.s4.body':  'يقوم وكيل الذكاء الاصطناعي بتحديد الموعد تلقائياً دون أي تدخل منك. وبمجرد تأكيد الموعد، تصلك إشعار فوري على هاتفك. تدخل المحادثة – مستعداً تماماً.',
 
     'res.label': 'النتائج',
     'res.h2':    'ما يحققه الوكلاء المميزون<br/>مع HYBOTE.',
@@ -1848,6 +1997,19 @@ const T = {
     'res.kpi2':  'وقت الاستجابة',
     'res.kpi3':  'تقييم العملاء',
     'res.kpi4':  'التقاط العملاء',
+
+    'roi.label':         'حاسبة العائد على الاستثمار',
+    'roi.h2':            'كم يكلفك<br/><em>كل عميل محتمل ضائع؟</em>',
+    'roi.sub':           'اضبط أرقامك — وشاهد ما تخسره اليوم بالضبط.',
+    'roi.s1.label':      'العملاء المحتملون شهرياً',
+    'roi.s1.unit':       'عميل / شهر',
+    'roi.s2.label':      'معدل الاستجابة الحالي',
+    'roi.s3.label':      'متوسط العمولة لكل صفقة',
+    'roi.without.label': 'بدون HYBOTE — خسارة الإيرادات السنوية',
+    'roi.without.sub':   '{lost} عميل محتمل يضيع شهرياً. هذا هو إيرادك السنوي الفائت.',
+    'roi.with.label':    'مع HYBOTE — القيمة المضافة السنوية',
+    'roi.with.sub':      '{gained} صفقة مؤهلة إضافية سنوياً من خلال التقاط 95% من العملاء.',
+    'roi.cta':           'طلب عرض توضيحي →',
 
     'cta.h2':  'هل أنت مستعد لعدم تفويت أي عميل محتمل؟',
     'cta.sub': 'جاهز للعمل في أقل من 24 ساعة. بدون رسوم إعداد أو التزام.',
@@ -1894,7 +2056,6 @@ const T = {
     'footer.career':  'وظائف',
     'footer.col3':    'قانوني',
     'footer.privacy': 'سياسة الخصوصية',
-    'footer.imprint': 'بيانات الشركة',
     'footer.terms':   'الشروط والأحكام',
     'footer.copy':    '© 2025 HYBOTE. جميع الحقوق محفوظة.',
     'footer.trust':   'صُنع في ألمانيا · متوافق مع GDPR · خوادم في ألمانيا',
@@ -1928,6 +2089,7 @@ const T = {
     'vision.label':  'رؤيتنا',
     'vision.h2':     'المعيار الذكي<br/>للعقارات الفاخرة.',
     'vision.body':   'أن نصبح البنية التحتية للذكاء الاصطناعي المرجعية لوكالات العقارات المميزة في منطقة DACH و MENA — حيث يتلقى كل عميل محتمل رداً يليق بالعقار الذي يمثله.',
+    'vision.lang50': 'لغة — يتواصل HYBOTE بأكثر من 50 لغة، بشكل تلقائي كامل ودون أي إعداد.',
   }
 };
 
@@ -1976,6 +2138,9 @@ function setLang(lang) {
   } else {
     document.querySelectorAll('.hero-line').forEach(el => el.style.transformOrigin = 'left');
   }
+
+  // Re-run ROI calculator to apply translated dynamic subtitles
+  if (typeof roiUpdate === 'function') roiUpdate();
 }
 
 // Initialize English as default on load
