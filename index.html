@@ -391,6 +391,22 @@
       box-shadow: 0 0 0 3px rgba(22,22,22,0.06);
     }
     input::placeholder, textarea::placeholder { color: var(--a4); }
+    input[type="checkbox"], input[type="radio"] {
+      -webkit-appearance: checkbox;
+      appearance: checkbox;
+      width: 16px;
+      height: 16px;
+      background: transparent;
+      border: 1px solid var(--a4);
+      padding: 0;
+      box-shadow: none;
+      cursor: pointer;
+      accent-color: var(--fg);
+    }
+    input[type="checkbox"]:focus, input[type="radio"]:focus {
+      border-color: var(--fg);
+      box-shadow: none;
+    }
     select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b8b8b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; cursor: pointer; }
     label {
       display: block;
@@ -576,7 +592,7 @@
     </div>
 
     <div class="reveal" style="text-align:center;transition-delay:240ms;">
-      <div class="stat-num">0<span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-left:4px;">€</span></div>
+      <div class="stat-num"><span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-right:2px;">$</span>0</div>
       <div class="t-label" style="margin-top:10px;" data-i18n="stat.5">Verpasste Chancen</div>
     </div>
 
@@ -594,7 +610,7 @@
      TICKER
 ══════════════════════════════════════════════════════════ -->
 <div class="tick-wrap" style="padding:14px 0;border-bottom:1px solid var(--line);">
-  <div class="tick-inner">
+  <div class="tick-inner" id="ticker-inner">
     <span class="t-label" style="padding:0 48px;color:var(--a4);">Neue Anfrage eingegangen &ensp;·&ensp; Qualifiziert &ensp;·&ensp; Sofortantwort gesendet</span>
     <span class="t-label" style="padding:0 48px;color:var(--a4);">E-Mail von Interessent &ensp;·&ensp; Lead-Score berechnet &ensp;·&ensp; Terminvorschlag in 2,4&thinsp;s</span>
     <span class="t-label" style="padding:0 48px;color:var(--a4);">Kontaktformular eingegangen &ensp;·&ensp; CRM aktualisiert &ensp;·&ensp; Sofortantwort in 2,1&thinsp;s</span>
@@ -713,7 +729,7 @@
         <div class="card" style="padding:28px;background:var(--bg);">
 
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--line);">
-            <span class="t-label">Eingehender Lead</span>
+            <span class="t-label" data-i18n="demo.header">Eingehender Lead</span>
             <div style="display:flex;align-items:center;gap:7px;">
               <span class="dot-live"></span>
               <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:var(--a3);">Live</span>
@@ -726,10 +742,10 @@
               <div style="width:36px;height:36px;background:var(--a5);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.75rem;color:var(--a2);flex-shrink:0;">MH</div>
               <div>
                 <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.82rem;color:var(--fg);">Michael Hoffmann</div>
-                <div class="t-small">via E-Mail · gerade eben</div>
+                <div class="t-small" data-i18n="demo.via">via E-Mail · gerade eben</div>
               </div>
             </div>
-            <p class="t-body" style="font-size:0.82rem;font-style:italic;color:var(--a1);">"Guten Tag, ich interessiere mich für die Villa in Grünwald. Wäre diese Woche ein Termin möglich?"</p>
+            <p class="t-body" style="font-size:0.82rem;font-style:italic;color:var(--a1);" data-i18n="demo.msg">"Guten Tag, ich interessiere mich für die Villa in Grünwald. Wäre diese Woche ein Termin möglich?"</p>
           </div>
 
           <!-- Progress bar -->
@@ -742,8 +758,8 @@
 
           <!-- Reply -->
           <div style="border:1px solid var(--line-med);padding:18px;">
-            <div class="t-label" style="margin-bottom:10px;color:var(--a3);">HYBOTE Antwort</div>
-            <p class="t-body" style="font-size:0.82rem;color:var(--a1);">Guten Tag Herr Hoffmann, vielen Dank für Ihr Interesse an der Villa in Grünwald. Wäre Dienstag um 14&thinsp;Uhr oder Donnerstag um 11&thinsp;Uhr für eine Besichtigung möglich?</p>
+            <div class="t-label" style="margin-bottom:10px;color:var(--a3);" data-i18n="demo.reply.label">HYBOTE Antwort</div>
+            <p class="t-body" style="font-size:0.82rem;color:var(--a1);" data-i18n="demo.reply.body">Guten Tag Herr Hoffmann, vielen Dank für Ihr Interesse an der Villa in Grünwald. Wäre Dienstag um 14&thinsp;Uhr oder Donnerstag um 11&thinsp;Uhr für eine Besichtigung möglich?</p>
           </div>
 
           <!-- Meta -->
@@ -751,11 +767,11 @@
             <div style="display:flex;gap:16px;">
               <span class="t-small" style="display:flex;align-items:center;gap:6px;">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Qualifiziert
+                <span data-i18n="demo.tag1">Qualifiziert</span>
               </span>
               <span class="t-small" style="display:flex;align-items:center;gap:6px;">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                CRM aktualisiert
+                <span data-i18n="demo.tag2">CRM aktualisiert</span>
               </span>
             </div>
             <span class="t-label">Score 94 / 100</span>
@@ -814,7 +830,7 @@
       <!-- WhatsApp -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:120ms;">
         <div style="width:48px;height:48px;background:var(--bg);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line);">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--fg)"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;">WhatsApp</h3>
         <p class="t-body" style="font-size:0.83rem;margin-bottom:24px;" data-i18n="ch.wa.body">Jede Nachricht wird in Echtzeit verarbeitet. Die KI antwortet persönlich, qualifiziert den Interessenten und leitet Hot-Leads direkt an Sie weiter.</p>
@@ -1001,14 +1017,14 @@
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;">
           <label style="margin:0;" data-i18n="roi.s3.label">Ø Provision pro Abschluss</label>
           <div style="display:flex;align-items:baseline;gap:4px;">
-            <span class="t-label" style="color:var(--a3);">€</span>
+            <span class="t-label" style="color:var(--a3);">$</span>
             <span class="stat-num" style="font-size:clamp(1.6rem,3vw,2.4rem);" id="roi-val-comm">8.000</span>
           </div>
         </div>
         <input type="range" class="roi-slider" id="roi-comm" min="2000" max="50000" value="8000" step="500" oninput="roiUpdate()" />
         <div style="display:flex;justify-content:space-between;margin-top:8px;">
-          <span class="t-label" style="color:var(--a4);">€2.000</span>
-          <span class="t-label" style="color:var(--a4);">€50.000</span>
+          <span class="t-label" style="color:var(--a4);">$2.000</span>
+          <span class="t-label" style="color:var(--a4);">$50.000</span>
         </div>
       </div>
 
@@ -1021,7 +1037,7 @@
         <div class="t-label" style="margin-bottom:16px;" data-i18n="roi.without.label">Ohne HYBOTE — Jährlicher Umsatzverlust</div>
         <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px;">
           <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--a3);">−</span>
-          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--fg);" id="roi-loss">460.800 €</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--fg);" id="roi-loss">$ 460.800</span>
         </div>
         <p class="t-body" style="font-size:0.82rem;" id="roi-loss-sub" data-i18n="roi.without.sub">48 Leads gehen monatlich verloren. Das ist Ihr entgangener Jahresumsatz.</p>
       </div>
@@ -1030,7 +1046,7 @@
         <div class="t-label" style="margin-bottom:16px;color:rgba(255,255,255,0.35);" data-i18n="roi.with.label">Mit HYBOTE — Jährlicher Mehrwert</div>
         <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px;">
           <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:rgba(255,255,255,0.4);">+</span>
-          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--bg);" id="roi-gain">421.200 €</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--bg);" id="roi-gain">$ 421.200</span>
         </div>
         <p class="t-body" style="font-size:0.82rem;color:rgba(255,255,255,0.5);" id="roi-gain-sub" data-i18n="roi.with.sub">44 zusätzliche qualifizierte Abschlüsse pro Jahr durch 95% Lead-Erfassung.</p>
         <a href="#kontakt" class="btn-dark" style="background:var(--bg);color:var(--fg);margin-top:28px;display:inline-flex;" data-i18n="roi.cta">Demo anfragen →</a>
@@ -1510,7 +1526,7 @@
 ══════════════════════════════════════════════════════════ -->
 <script>
   function fmtEur(n) {
-    return n.toLocaleString('de-DE') + '\u00a0\u20ac';
+    return '$\u00a0' + n.toLocaleString('de-DE');
   }
 
   function updateSliderFill(slider) {
@@ -1714,6 +1730,18 @@ const T = {
     'footer.copy':    '© 2025 HYBOTE. Alle Rechte vorbehalten.',
     'footer.trust':   'International Standards · Datenschutz gesichert',
 
+    'demo.header':      'Eingehender Lead',
+    'demo.via':         'via E-Mail · gerade eben',
+    'demo.msg':         '"Guten Tag, ich interessiere mich für die Villa in Grünwald. Wäre diese Woche ein Termin möglich?"',
+    'demo.reply.label': 'HYBOTE Antwort',
+    'demo.reply.body':  'Guten Tag Herr Hoffmann, vielen Dank für Ihr Interesse an der Villa in Grünwald. Wäre Dienstag um 14&thinsp;Uhr oder Donnerstag um 11&thinsp;Uhr für eine Besichtigung möglich?',
+    'demo.tag1':        'Qualifiziert',
+    'demo.tag2':        'CRM aktualisiert',
+
+    'ticker.1': 'Neue Anfrage eingegangen &ensp;·&ensp; Qualifiziert &ensp;·&ensp; Sofortantwort gesendet',
+    'ticker.2': 'E-Mail von Interessent &ensp;·&ensp; Lead-Score berechnet &ensp;·&ensp; Terminvorschlag in 2,4&thinsp;s',
+    'ticker.3': 'Kontaktformular eingegangen &ensp;·&ensp; CRM aktualisiert &ensp;·&ensp; Sofortantwort in 2,1&thinsp;s',
+
     'founder.label': 'Der Gründer',
     'founder.h2':    'Wo Hospitality auf<br/>Künstliche Intelligenz trifft.',
     'founder.p1':    'Mohamed Erassas, Gründer von HYBOTE, ist KI-Enthusiast und langjähriger Experte im Luxury Hospitality — einer Branche, in der makellose, sofortige und zutiefst persönliche Kommunikation keine Option ist, sondern eine Erwartung.',
@@ -1885,6 +1913,18 @@ const T = {
     'footer.terms':   'Terms',
     'footer.copy':    '© 2025 HYBOTE. All rights reserved.',
     'footer.trust':   'International Standards · Data Protected',
+
+    'demo.header':      'Incoming Lead',
+    'demo.via':         'via Email · just now',
+    'demo.msg':         '"Good day, I am interested in the Villa in Grünwald. Would it be possible to arrange a viewing this week?"',
+    'demo.reply.label': 'HYBOTE Response',
+    'demo.reply.body':  'Good afternoon Mr. Hoffmann, thank you for your interest in the Villa in Grünwald. Would Tuesday at 2&thinsp;PM or Thursday at 11&thinsp;AM work for a viewing?',
+    'demo.tag1':        'Qualified',
+    'demo.tag2':        'CRM updated',
+
+    'ticker.1': 'New inquiry received &ensp;·&ensp; Qualified &ensp;·&ensp; Instant reply sent',
+    'ticker.2': 'Email from prospect &ensp;·&ensp; Lead score calculated &ensp;·&ensp; Appointment suggested in 2.4&thinsp;s',
+    'ticker.3': 'Contact form submitted &ensp;·&ensp; CRM updated &ensp;·&ensp; Instant reply in 2.1&thinsp;s',
 
     'founder.label': 'The Founder',
     'founder.h2':    'Where Hospitality<br/>Meets Artificial Intelligence.',
@@ -2058,6 +2098,18 @@ const T = {
     'footer.copy':    '© 2025 HYBOTE. جميع الحقوق محفوظة.',
     'footer.trust':   'معايير دولية · حماية البيانات',
 
+    'demo.header':      'عميل محتمل وارد',
+    'demo.via':         'عبر البريد الإلكتروني · الآن',
+    'demo.msg':         '"مرحباً، أنا مهتم بالفيلا في غرونوالد. هل يمكن ترتيب موعد للمعاينة هذا الأسبوع؟"',
+    'demo.reply.label': 'رد HYBOTE',
+    'demo.reply.body':  'مرحباً السيد هوفمان، شكراً على اهتمامك بالفيلا في غرونوالد. هل يناسبك الثلاثاء الساعة 2 ظهراً أو الخميس الساعة 11 صباحاً لمعاينة العقار؟',
+    'demo.tag1':        'مؤهل',
+    'demo.tag2':        'تم تحديث CRM',
+
+    'ticker.1': 'استفسار جديد وارد &ensp;·&ensp; مؤهل &ensp;·&ensp; تم إرسال رد فوري',
+    'ticker.2': 'بريد إلكتروني من عميل محتمل &ensp;·&ensp; تم احتساب نقاط العميل &ensp;·&ensp; اقتراح موعد في 2.4&thinsp;ث',
+    'ticker.3': 'نموذج تواصل وارد &ensp;·&ensp; تم تحديث CRM &ensp;·&ensp; رد فوري في 2.1&thinsp;ث',
+
     'founder.label': 'المؤسس',
     'founder.h2':    'حيث تلتقي الضيافة<br/>بالذكاء الاصطناعي.',
     'founder.p1':    'محمد الراساس، مؤسس HYBOTE، متحمس للذكاء الاصطناعي وخبير في مجال الضيافة الفاخرة — صناعة تُعدّ فيها التواصل الفوري والشخصي والمتقن أمراً لا غنى عنه، لا مجرد خيار.',
@@ -2139,6 +2191,17 @@ function setLang(lang) {
 
   // Re-run ROI calculator to apply translated dynamic subtitles
   if (typeof roiUpdate === 'function') roiUpdate();
+
+  // Update ticker
+  const ti = document.getElementById('ticker-inner');
+  if (ti && T[lang]) {
+    const style = 'padding:0 48px;color:var(--a4);';
+    const lines = [T[lang]['ticker.1'], T[lang]['ticker.2'], T[lang]['ticker.3']].filter(Boolean);
+    if (lines.length === 3) {
+      ti.innerHTML = lines.map(l => `<span class="t-label" style="${style}">${l}</span>`).join('') +
+                     lines.map(l => `<span class="t-label" style="${style}">${l}</span>`).join('');
+    }
+  }
 }
 
 // Initialize English as default on load
