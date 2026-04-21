@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HYBOTE – Thank you</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=Cairo:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fafaf8;
+      --fg: #0a0a08;
+      --a1: #1a1a16;
+      --a2: #2e2e28;
+      --a3: #555548;
+      --a4: #888878;
+      --line: rgba(0,0,0,0.09);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); color: var(--fg); }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      background: var(--bg);
+    }
+    body[dir="rtl"] { font-family: 'Cairo', sans-serif; }
+    .wrap {
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+    }
+    .logo {
+      display: inline-block;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 1.1rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fg);
+      text-decoration: none;
+      margin-bottom: 64px;
+    }
+    .check-circle {
+      width: 64px;
+      height: 64px;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 32px;
+    }
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+      margin-bottom: 20px;
+    }
+    p {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--a3);
+      margin-bottom: 40px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: var(--fg);
+      color: var(--bg);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: opacity 180ms ease;
+    }
+    .btn:hover { opacity: 0.8; }
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--line);
+      margin: 48px auto;
+    }
+    .footer-note {
+      font-size: 0.72rem;
+      color: var(--a4);
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a href="index.html" class="logo">HYBOTE</a>
+
+    <div class="check-circle">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+
+    <h1 id="title">Thank you for your registration!</h1>
+    <p id="subtitle">We'll be in touch promptly and look forward to showing you HYBOTE.</p>
+
+    <a href="index.html" class="btn" id="back-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <span id="back-label">Back to homepage</span>
+    </a>
+
+    <div class="divider"></div>
+    <p class="footer-note" id="footer-note">© 2025 HYBOTE · <a href="mailto:Contact@hybote.ai" style="color:inherit;">Contact@hybote.ai</a></p>
+  </div>
+
+  <script>
+    const content = {
+      de: {
+        title: 'Vielen Dank für deine Anmeldung!',
+        subtitle: 'Wir melden uns umgehend bei dir und freuen uns, dir HYBOTE vorzustellen.',
+        back: 'Zurück zur Startseite',
+        docTitle: 'HYBOTE – Vielen Dank'
+      },
+      en: {
+        title: 'Thank you for your registration!',
+        subtitle: "We'll be in touch promptly and look forward to showing you HYBOTE.",
+        back: 'Back to homepage',
+        docTitle: 'HYBOTE – Thank you'
+      },
+      ar: {
+        title: 'شكراً لتسجيلك!',
+        subtitle: 'سنتواصل معك فوراً ونتطلع لتقديم HYBOTE لك.',
+        back: 'العودة إلى الصفحة الرئيسية',
+        docTitle: 'HYBOTE – شكراً'
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const lang = content[params.get('lang')] ? params.get('lang') : 'en';
+    const t = content[lang];
+
+    document.getElementById('title').textContent = t.title;
+    document.getElementById('subtitle').textContent = t.subtitle;
+    document.getElementById('back-label').textContent = t.back;
+    document.getElementById('footer-note').innerHTML = '© 2025 HYBOTE · <a href="mailto:Contact@hybote.ai" style="color:inherit;">Contact@hybote.ai</a>';
+    document.title = t.docTitle;
+    document.documentElement.setAttribute('lang', lang);
+    document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    if (lang === 'ar') document.body.setAttribute('dir', 'rtl');
+  </script>
+</body>
+</html>
