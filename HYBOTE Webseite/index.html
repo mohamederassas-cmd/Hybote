@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HYBOTE – KI-Lead-Management für Premium-Makler</title>
+  <meta name="description" content="HYBOTE processes every real estate lead immediately – via email or contact form. The AI platform for high-end agencies." />
+  <!-- SEO -->
+  <meta name="robots" content="index, follow" />
+  <meta name="keywords" content="AI lead management, real estate AI, Immobilien KI, Lead-Management, premium broker software, luxury real estate AI, إدارة العملاء المحتملين" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://hybote.ai/" />
+  <meta property="og:title" content="HYBOTE – AI Lead Management for Premium Agents" />
+  <meta property="og:description" content="HYBOTE responds to every lead immediately via email or contact form. The AI platform for high-end real estate agencies." />
+  <meta property="og:image" content="https://hybote.ai/logo.png" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HYBOTE – AI Lead Management" />
+  <meta name="twitter:description" content="Every lead answered immediately. AI built for luxury real estate." />
+  <meta name="twitter:image" content="https://hybote.ai/logo.png" />
+  <!-- Hreflang -->
+  <link rel="alternate" hreflang="en" href="https://hybote.ai/" />
+  <link rel="alternate" hreflang="de" href="https://hybote.ai/?lang=de" />
+  <link rel="alternate" hreflang="ar" href="https://hybote.ai/?lang=ar" />
+  <link rel="canonical" href="https://hybote.ai/" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=Cairo:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Arabic font override */
+    html[lang="ar"] body,
+    html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3,
+    html[lang="ar"] input, html[lang="ar"] textarea, html[lang="ar"] select,
+    html[lang="ar"] button, html[lang="ar"] a, html[lang="ar"] span,
+    html[lang="ar"] p, html[lang="ar"] div, html[lang="ar"] label {
+      font-family: 'Cairo', sans-serif !important;
+    }
+    html[lang="ar"] .t-label,
+    html[lang="ar"] .sec-label,
+    html[lang="ar"] .btn-dark,
+    html[lang="ar"] .btn-outline {
+      letter-spacing: 0 !important;
+    }
+    /* Language switcher button */
+    .lang-btn {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 0.68rem;
+      letter-spacing: 0.10em;
+      color: var(--a3);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 4px 2px;
+      transition: color 180ms ease;
+      text-transform: uppercase;
+    }
+    .lang-btn:hover { color: var(--fg); }
+    .lang-btn.active { color: var(--fg); border-bottom: 1px solid var(--fg); }
+    .lang-sep { color: var(--a5); font-size: 0.6rem; }
+  </style>
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #ffffff;
+      --fg:       #161616;
+      --a1:       #3d3d3d;
+      --a2:       #646464;
+      --a3:       #8b8b8b;
+      --a4:       #b8b8b8;
+      --a5:       #e0e0e0;
+      --a6:       #f4f4f4;
+      --line:     rgba(22,22,22,0.10);
+      --line-med: rgba(22,22,22,0.16);
+    }
+
+    html { background: var(--bg); }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* ── Scrollbar ───────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--a6); }
+    ::-webkit-scrollbar-thumb { background: var(--a4); }
+
+    /* ── Typography scale ────────────────────────────────────────── */
+    .t-display {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 200;
+      font-size: clamp(3rem, 7.5vw, 7rem);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+    }
+    .t-h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 200;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      color: var(--fg);
+    }
+    .t-h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: clamp(1rem, 1.8vw, 1.25rem);
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+    }
+    .t-body {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--a2);
+    }
+    .t-small {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      color: var(--a3);
+    }
+    .t-label {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 0.65rem;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--a3);
+    }
+
+    /* ── Buttons ─────────────────────────────────────────────────── */
+    .btn-dark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 28px;
+      background: var(--fg);
+      color: var(--bg);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 200ms ease, transform 200ms cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-dark:hover  { opacity: 0.80; transform: translateY(-1px); }
+    .btn-dark:active { opacity: 0.90; transform: translateY(0); }
+    .btn-dark:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 28px;
+      background: transparent;
+      color: var(--fg);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--line-med);
+      cursor: pointer;
+      transition: border-color 200ms ease, background 200ms ease, transform 200ms cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-outline:hover  { border-color: var(--fg); background: var(--a6); transform: translateY(-1px); }
+    .btn-outline:active { transform: translateY(0); }
+    .btn-outline:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+
+    /* ── Nav link ────────────────────────────────────────────────── */
+    .nav-link {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      color: var(--a2);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 2px;
+      transition: color 180ms ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--fg);
+      transition: width 220ms ease;
+    }
+    .nav-link:hover { color: var(--fg); }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:focus-visible { outline: 1px solid var(--fg); outline-offset: 4px; }
+
+    /* ── Divider ─────────────────────────────────────────────────── */
+    hr.rule {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 0;
+    }
+
+    /* ── Section label ───────────────────────────────────────────── */
+    .sec-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--a3);
+      margin-bottom: 24px;
+    }
+    .sec-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--a4);
+    }
+
+    /* ── Cards ───────────────────────────────────────────────────── */
+    .card {
+      border: 1px solid var(--line);
+      background: var(--bg);
+      transition: border-color 250ms ease, box-shadow 250ms ease;
+    }
+    .card:hover {
+      border-color: var(--a4);
+      box-shadow: 0 4px 32px rgba(22,22,22,0.06);
+    }
+
+    .card-filled {
+      background: var(--a6);
+      border: 1px solid transparent;
+      transition: background 250ms ease;
+    }
+    .card-filled:hover {
+      background: #eeeeee;
+    }
+
+    /* ── Stat number ─────────────────────────────────────────────── */
+    .stat-num {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 200;
+      font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--fg);
+    }
+
+    /* ── Reveal ──────────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 800ms cubic-bezier(0.16,1,0.3,1), transform 800ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Word split (hero) ───────────────────────────────────────── */
+    .word-split {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 600ms cubic-bezier(0.16,1,0.3,1), transform 600ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .word-split.in { opacity: 1; transform: translateY(0); }
+
+    /* ── ROI Slider ──────────────────────────────────────────────── */
+    .roi-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 1px;
+      background: var(--a5);
+      outline: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      background-image: linear-gradient(var(--fg), var(--fg));
+      background-repeat: no-repeat;
+    }
+    .roi-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--fg);
+      cursor: pointer;
+      transition: transform 150ms ease;
+    }
+    .roi-slider::-webkit-slider-thumb:hover { transform: scale(1.3); }
+    .roi-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--fg);
+      border: none;
+      cursor: pointer;
+    }
+    .roi-slider::-webkit-slider-runnable-track { height: 1px; }
+    .roi-slider::-moz-range-track { height: 1px; background: var(--a5); }
+
+    /* ── Counter ─────────────────────────────────────────────────── */
+    .kpi-counter { display: inline; }
+
+    /* ── Ticker ──────────────────────────────────────────────────── */
+    @keyframes tick {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .tick-inner {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: tick 36s linear infinite;
+    }
+    .tick-wrap {
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    }
+
+    /* ── Pulse dot ───────────────────────────────────────────────── */
+    @keyframes pulse-out {
+      0%   { transform: scale(1); opacity: 0.6; }
+      70%  { transform: scale(1.8); opacity: 0; }
+      100% { opacity: 0; }
+    }
+    .dot-live {
+      position: relative;
+      display: inline-block;
+      width: 8px; height: 8px;
+      flex-shrink: 0;
+    }
+    .dot-live::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse-out 2.2s ease-out infinite;
+    }
+    .dot-live::after {
+      content: '';
+      position: absolute;
+      inset: 1.5px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    /* ── Input ───────────────────────────────────────────────────── */
+    input, textarea, select {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: var(--fg);
+      background: var(--bg);
+      border: 1px solid var(--line-med);
+      padding: 13px 16px;
+      width: 100%;
+      outline: none;
+      transition: border-color 180ms ease, box-shadow 180ms ease;
+      -webkit-appearance: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--fg);
+      box-shadow: 0 0 0 3px rgba(22,22,22,0.06);
+    }
+    input::placeholder, textarea::placeholder { color: var(--a4); }
+    input[type="checkbox"], input[type="radio"] {
+      -webkit-appearance: checkbox;
+      appearance: checkbox;
+      width: 16px;
+      height: 16px;
+      background: transparent;
+      border: 1px solid var(--a4);
+      padding: 0;
+      box-shadow: none;
+      cursor: pointer;
+      accent-color: var(--fg);
+    }
+    input[type="checkbox"]:focus, input[type="radio"]:focus {
+      border-color: var(--fg);
+      box-shadow: none;
+    }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b8b8b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; cursor: pointer; }
+    label {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--a2);
+      margin-bottom: 8px;
+    }
+
+    /* ── Timeline ────────────────────────────────────────────────── */
+    .step-num {
+      width: 44px; height: 44px;
+      border: 1px solid var(--line-med);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 200;
+      font-size: 0.9rem;
+      color: var(--a2);
+      flex-shrink: 0;
+    }
+
+    /* ── Quote ───────────────────────────────────────────────────── */
+    .big-quote {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 200;
+      font-size: 5rem;
+      line-height: 0.5;
+      color: var(--a5);
+      user-select: none;
+    }
+
+    /* ── Scroll-linked hero line ─────────────────────────────────── */
+    @keyframes draw-line {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+    .hero-line {
+      transform-origin: left;
+      animation: draw-line 1.2s cubic-bezier(0.4,0,0.2,1) 0.4s both;
+    }
+
+    /* ── Float subtle ────────────────────────────────────────────── */
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+    .float { animation: float 5s ease-in-out infinite; }
+
+    /* ── Demo card animate ───────────────────────────────────────── */
+    @keyframes bar-fill {
+      from { width: 0; }
+      to   { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════════════════════════ -->
+<header id="nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line);transition:box-shadow 300ms ease;">
+  <div style="max-width:1200px;margin:0 auto;padding:0 32px;height:120px;display:flex;align-items:center;justify-content:space-between;">
+
+    <!-- Logo -->
+    <a href="#" style="display:flex;align-items:center;text-decoration:none;flex-shrink:0;">
+      <img src="logo.png" alt="HYBOTE" style="height:130px;width:auto;display:block;" id="nav-logo" />
+    </a>
+
+    <!-- Desktop nav -->
+    <nav id="d-nav" style="display:none;align-items:center;gap:36px;">
+      <a href="#problem" class="nav-link" data-i18n="nav.problem">Problem</a>
+      <a href="#loesung" class="nav-link" data-i18n="nav.solution">Lösung</a>
+      <a href="#kanaele" class="nav-link" data-i18n="nav.channels">Kanäle</a>
+    </nav>
+
+    <!-- CTA + Language switcher -->
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div style="display:none;align-items:center;gap:8px;" id="nav-live">
+        <span class="dot-live"></span>
+        <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.72rem;color:var(--a3);letter-spacing:0.04em;" data-i18n="nav.status">System aktiv</span>
+      </div>
+
+      <!-- Language switcher -->
+      <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--line);padding:4px 10px;" id="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('en')" id="btn-en">EN</button>
+        <span class="lang-sep">·</span>
+        <button class="lang-btn" onclick="setLang('ar')" id="btn-ar">AR</button>
+        <span class="lang-sep">·</span>
+        <button class="lang-btn" onclick="setLang('de')" id="btn-de">DE</button>
+      </div>
+
+      <a href="#kontakt" class="btn-dark" style="padding:11px 22px;font-size:0.68rem;" data-i18n="nav.cta">Demo anfragen</a>
+    </div>
+
+  </div>
+</header>
+
+<script>
+  const dn = document.getElementById('d-nav');
+  const nl = document.getElementById('nav-live');
+  function setNav() {
+    const wide = window.innerWidth >= 768;
+    dn.style.display = wide ? 'flex' : 'none';
+    nl.style.display = wide ? 'flex' : 'none';
+  }
+  setNav(); window.addEventListener('resize', setNav);
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').style.boxShadow =
+      window.scrollY > 20 ? '0 1px 0 var(--line)' : 'none';
+  });
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════════ -->
+<section style="padding:200px 32px 100px;max-width:1200px;margin:0 auto;position:relative;">
+
+  <!-- Label -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:40px;">
+    <span class="dot-live"></span>
+    <span class="t-label" data-i18n="hero.badge">KI-Lead-Management für Premium-Makler</span>
+  </div>
+
+  <!-- Headline -->
+  <div style="max-width:900px;margin-bottom:40px;">
+    <h1 class="t-display" style="margin-bottom:12px;" data-i18n="hero.h1">
+      Kein Lead geht<br/>
+      verloren.<br/>
+      <span style="font-style:italic;color:var(--a2);">Nie wieder.</span>
+    </h1>
+  </div>
+
+  <!-- Underline -->
+  <div style="height:1px;background:var(--fg);width:120px;margin-bottom:40px;" class="hero-line"></div>
+
+  <!-- Sub -->
+  <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:clamp(0.95rem,2vw,1.1rem);color:var(--a1);line-height:1.8;max-width:560px;margin-bottom:52px;" data-i18n="hero.sub">
+    HYBOTE verarbeitet jeden eingehenden Makler-Lead <strong style="font-weight:400;color:var(--fg);">umgehend</strong>&nbsp;– automatisch, professionell, rund um die Uhr. Per E-Mail oder Kontaktformular.
+  </p>
+
+  <!-- CTAs -->
+  <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:80px;">
+    <a href="#kontakt" class="btn-dark">
+      <span data-i18n="hero.cta1">Kostenlose Demo</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#loesung" class="btn-outline" data-i18n="hero.cta2">So funktioniert es</a>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     STATS BAR
+══════════════════════════════════════════════════════════ -->
+<hr class="rule" />
+<section style="padding:64px 32px;">
+  <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:48px;" id="stats-grid">
+
+    <div class="reveal" style="text-align:center;">
+      <div class="stat-num">&lt; 1<span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-left:4px;">s</span></div>
+      <div class="t-label" style="margin-top:10px;" data-i18n="stat.1">Reaktionszeit</div>
+    </div>
+
+    <div class="reveal" style="text-align:center;transition-delay:60ms;">
+      <div class="stat-num">98<span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-left:2px;">%</span></div>
+      <div class="t-label" style="margin-top:10px;" data-i18n="stat.2">Erreichbarkeit</div>
+    </div>
+
+    <div class="reveal" style="text-align:center;transition-delay:120ms;">
+      <div class="stat-num">3<span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-left:4px;">×</span></div>
+      <div class="t-label" style="margin-top:10px;" data-i18n="stat.3">Mehr Conversions</div>
+    </div>
+
+    <div class="reveal" style="text-align:center;transition-delay:180ms;">
+      <div class="stat-num">24<span style="font-size:0.35em;letter-spacing:0;font-weight:300;color:var(--a2);margin-left:2px;">/7</span></div>
+      <div class="t-label" style="margin-top:10px;" data-i18n="stat.4">Automatisch aktiv</div>
+    </div>
+
+    <div class="reveal" style="text-align:center;transition-delay:240ms;">
+      <div class="stat-num"><span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-right:2px;">$</span>0</div>
+      <div class="t-label" style="margin-top:10px;" data-i18n="stat.5">Verpasste Chancen</div>
+    </div>
+
+    <div class="reveal" style="text-align:center;transition-delay:300ms;">
+      <div class="stat-num">50<span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-left:4px;">+</span></div>
+      <div class="t-label" style="margin-top:10px;" data-i18n="stat.6">Sprachen</div>
+    </div>
+
+  </div>
+</section>
+<hr class="rule" />
+
+
+<!-- ══════════════════════════════════════════════════════════
+     TICKER
+══════════════════════════════════════════════════════════ -->
+<div class="tick-wrap" style="padding:14px 0;border-bottom:1px solid var(--line);">
+  <div class="tick-inner" id="ticker-inner">
+    <span class="t-label" style="padding:0 48px;color:var(--a4);">Neue Anfrage eingegangen &ensp;·&ensp; Qualifiziert &ensp;·&ensp; Sofortantwort gesendet</span>
+    <span class="t-label" style="padding:0 48px;color:var(--a4);">E-Mail von Interessent &ensp;·&ensp; Lead-Score berechnet &ensp;·&ensp; Terminvorschlag in 2,4&thinsp;s</span>
+    <span class="t-label" style="padding:0 48px;color:var(--a4);">Kontaktformular eingegangen &ensp;·&ensp; CRM aktualisiert &ensp;·&ensp; Sofortantwort in 2,1&thinsp;s</span>
+    <span class="t-label" style="padding:0 48px;color:var(--a4);">Neue Anfrage eingegangen &ensp;·&ensp; Qualifiziert &ensp;·&ensp; Sofortantwort gesendet</span>
+    <span class="t-label" style="padding:0 48px;color:var(--a4);">E-Mail von Interessent &ensp;·&ensp; Lead-Score berechnet &ensp;·&ensp; Terminvorschlag in 2,4&thinsp;s</span>
+    <span class="t-label" style="padding:0 48px;color:var(--a4);">Kontaktformular eingegangen &ensp;·&ensp; CRM aktualisiert &ensp;·&ensp; Sofortantwort in 2,1&thinsp;s</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PROBLEM
+══════════════════════════════════════════════════════════ -->
+<section id="problem" style="padding:100px 32px;">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div style="max-width:640px;margin-bottom:64px;">
+      <div class="sec-label reveal" data-i18n="prob.label">Das Problem</div>
+      <h2 class="t-h2 reveal" style="margin-bottom:20px;" data-i18n="prob.h2">
+        Jede Stunde Verzögerung<br/>kostet einen Käufer.
+      </h2>
+      <p class="t-body reveal" style="transition-delay:60ms;" data-i18n="prob.sub">
+        Premium-Käufer erwarten sofortige Reaktion. Wer zuerst antwortet, gewinnt den Lead – nicht wer die beste Immobilie hat.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--line);">
+
+      <div class="reveal" style="background:var(--bg);padding:40px;transition-delay:0ms;">
+        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:var(--a5);margin-bottom:20px;line-height:1;">01</div>
+        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="prob.c1.title">Zu langsame Erstantwort</h3>
+        <p class="t-body" style="font-size:0.83rem;" data-i18n="prob.c1.body">Wird ein Lead nicht innerhalb von 5 Minuten kontaktiert, sinkt die Erfolgschance um über 80 %. Die meisten Maklerbüros reagieren in Stunden – oder gar nicht.</p>
+      </div>
+
+      <div class="reveal" style="background:var(--bg);padding:40px;transition-delay:80ms;">
+        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:var(--a5);margin-bottom:20px;line-height:1;">02</div>
+        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="prob.c2.title">Personal als Flaschenhals</h3>
+        <p class="t-body" style="font-size:0.83rem;" data-i18n="prob.c2.body">Mitarbeiter sind im Gespräch, nach Feierabend oder im Urlaub. E-Mail und Formulare stapeln sich – und Interessenten wechseln zum Mitbewerber.</p>
+      </div>
+
+      <div class="reveal" style="background:var(--bg);padding:40px;transition-delay:160ms;">
+        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:var(--a5);margin-bottom:20px;line-height:1;">03</div>
+        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="prob.c3.title">Inkonsistente Qualität</h3>
+        <p class="t-body" style="font-size:0.83rem;" data-i18n="prob.c3.body">High-End-Käufer erwarten Premium-Kommunikation bei jedem Kontakt. Eine schwache Erstantwort zerstört den ersten Eindruck – unwiederbringlich.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+
+<!-- ══════════════════════════════════════════════════════════
+     SOLUTION
+══════════════════════════════════════════════════════════ -->
+<section id="loesung" style="padding:100px 32px;background:var(--a6);">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div style="display:grid;gap:72px;align-items:start;" id="sol-grid">
+
+      <!-- Left -->
+      <div>
+        <div class="sec-label reveal" data-i18n="sol.label">Die Lösung</div>
+        <h2 class="t-h2 reveal" style="margin-bottom:24px;" data-i18n="sol.h2">
+          HYBOTE – Ihr KI-Agent,<br/>
+          der <em>niemals</em> schläft.
+        </h2>
+        <p class="t-body reveal" style="max-width:520px;margin-bottom:36px;transition-delay:60ms;" data-i18n="sol.sub">
+          HYBOTE empfängt, qualifiziert und beantwortet jeden Lead vollautomatisch – umgehend. So professionell wie Ihr bestes Teammitglied. Nur schneller.
+        </p>
+
+        <div style="display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);">
+
+          <div class="reveal" style="display:flex;align-items:flex-start;gap:20px;padding:20px 0;border-bottom:1px solid var(--line);transition-delay:80ms;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="1.5" style="margin-top:3px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>
+            <div>
+              <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.83rem;margin-bottom:5px;color:var(--fg);" data-i18n="sol.f1.title">Sofort-Qualifizierung</div>
+              <p class="t-body" style="font-size:0.8rem;" data-i18n="sol.f1.body">Kaufbereitschaft, Finanzierung und Zeitrahmen werden in Sekunden analysiert.</p>
+            </div>
+          </div>
+
+          <div class="reveal" style="display:flex;align-items:flex-start;gap:20px;padding:20px 0;border-bottom:1px solid var(--line);transition-delay:140ms;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="1.5" style="margin-top:3px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>
+            <div>
+              <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.83rem;margin-bottom:5px;color:var(--fg);" data-i18n="sol.f2.title">Personalisierte Erstantwort</div>
+              <p class="t-body" style="font-size:0.8rem;" data-i18n="sol.f2.body">Jede Antwort klingt persönlich und auf den Interessenten zugeschnitten – kein Copy-Paste.</p>
+            </div>
+          </div>
+
+          <div class="reveal" style="display:flex;align-items:flex-start;gap:20px;padding:20px 0;border-bottom:1px solid var(--line);transition-delay:200ms;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="1.5" style="margin-top:3px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>
+            <div>
+              <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.83rem;margin-bottom:5px;color:var(--fg);" data-i18n="sol.f3.title">Nahtlose CRM-Integration</div>
+              <p class="t-body" style="font-size:0.8rem;" data-i18n="sol.f3.body">Automatische Synchronisierung in Ihr bestehendes System – Ihr Team findet jeden Lead bereits vorqualifiziert.</p>
+            </div>
+          </div>
+
+          <div class="reveal" style="display:flex;align-items:flex-start;gap:20px;padding:20px 0;transition-delay:260ms;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="1.5" style="margin-top:3px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>
+            <div>
+              <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.83rem;margin-bottom:5px;color:var(--fg);" data-i18n="sol.f4.title">Hot-Lead Eskalation</div>
+              <p class="t-body" style="font-size:0.8rem;" data-i18n="sol.f4.body">Hochwertige Interessenten werden sofort an Sie weitergeleitet – Sie gehen vorbereitet ins Gespräch.</p>
+            </div>
+          </div>
+        </div>
+
+        <a href="#kontakt" class="btn-dark reveal" style="margin-top:36px;transition-delay:300ms;">
+          <span data-i18n="sol.cta">Jetzt testen</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Right: Demo card -->
+      <div class="reveal float" style="transition-delay:200ms;">
+        <div class="card" style="padding:28px;background:var(--bg);">
+
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--line);">
+            <span class="t-label" data-i18n="demo.header">Eingehender Lead</span>
+            <div style="display:flex;align-items:center;gap:7px;">
+              <span class="dot-live"></span>
+              <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:var(--a3);">Live</span>
+            </div>
+          </div>
+
+          <!-- Incoming message -->
+          <div style="background:var(--a6);padding:18px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+              <div style="width:36px;height:36px;background:var(--a5);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.75rem;color:var(--a2);flex-shrink:0;">AR</div>
+              <div>
+                <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.82rem;color:var(--fg);">Mr. Al-Rashidi</div>
+                <div class="t-small" data-i18n="demo.via">via WhatsApp · just now</div>
+              </div>
+            </div>
+            <p class="t-body" style="font-size:0.82rem;font-style:italic;color:var(--a1);" data-i18n="demo.msg">"Good morning, I'm looking for a penthouse in Dubai Marina or Palm Jumeirah — north-facing, above the 40th floor. Budget $8–12M. Can we arrange a discreet viewing this week?"</p>
+          </div>
+
+          <!-- Progress bar -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <div style="flex:1;height:1px;background:var(--a5);position:relative;overflow:hidden;">
+              <div style="position:absolute;inset:0;background:var(--fg);transform-origin:left;animation:bar-fill 2.5s ease-out forwards;"></div>
+            </div>
+            <span class="t-small">1,9 s</span>
+          </div>
+
+          <!-- Reply -->
+          <div style="border:1px solid var(--line-med);padding:18px;">
+            <div class="t-label" style="margin-bottom:10px;color:var(--a3);" data-i18n="demo.reply.label">HYBOTE Antwort</div>
+            <p class="t-body" style="font-size:0.82rem;color:var(--a1);" data-i18n="demo.reply.body">Good morning Mr. Al-Rashidi, we have three exceptional off-market penthouses matching your criteria — including two on Palm Jumeirah with unobstructed sea views. I've attached an exclusive dossier for your review. Would Thursday at 11&thinsp;AM or Saturday at 3&thinsp;PM suit a private walkthrough?</p>
+          </div>
+
+          <!-- Meta -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
+            <div style="display:flex;gap:16px;">
+              <span class="t-small" style="display:flex;align-items:center;gap:6px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span data-i18n="demo.tag1">Qualifiziert</span>
+              </span>
+              <span class="t-small" style="display:flex;align-items:center;gap:6px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span data-i18n="demo.tag2">CRM aktualisiert</span>
+              </span>
+            </div>
+            <span class="t-label">Score 94 / 100</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  const sg = document.getElementById('sol-grid');
+  function setSolGrid() {
+    sg.style.gridTemplateColumns = window.innerWidth >= 900 ? '1fr 1fr' : '1fr';
+  }
+  setSolGrid(); window.addEventListener('resize', setSolGrid);
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     CHANNELS
+══════════════════════════════════════════════════════════ -->
+<section id="kanaele" style="padding:100px 32px;">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:64px;">
+      <div>
+        <div class="sec-label reveal" data-i18n="ch.label">Alle Kanäle. Ein System.</div>
+        <h2 class="t-h2 reveal" style="max-width:480px;" data-i18n="ch.h2">
+          Egal wie Ihr Lead<br/>Sie <em>erreicht.</em>
+        </h2>
+      </div>
+      <p class="t-body reveal" style="max-width:360px;transition-delay:80ms;" data-i18n="ch.sub">
+        HYBOTE überwacht alle eingehenden Kanäle gleichzeitig und reagiert auf jedem umgehend – ohne Ausnahme.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line);">
+
+      <!-- E-Mail -->
+      <div class="card-filled reveal" style="padding:40px;transition-delay:80ms;">
+        <div style="width:48px;height:48px;background:var(--bg);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="1"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </div>
+        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.em.title">E-Mail</h3>
+        <p class="t-body" style="font-size:0.83rem;margin-bottom:24px;" data-i18n="ch.em.body">Eingehende E-Mails werden sofort analysiert, priorisiert und beantwortet. Hochwertige Leads erhalten eine maßgeschneiderte Antwort in Ihrem Ton und Stil.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.08em;padding:4px 12px;border:1px solid var(--a4);color:var(--a2);" data-i18n="ch.em.tag1">Priorisierung</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.08em;padding:4px 12px;border:1px solid var(--a4);color:var(--a2);" data-i18n="ch.em.tag2">Signatur-Match</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.08em;padding:4px 12px;border:1px solid var(--a4);color:var(--a2);" data-i18n="ch.em.tag3">Follow-up</span>
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="card-filled reveal" style="padding:40px;transition-delay:120ms;">
+        <div style="width:48px;height:48px;background:var(--bg);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--fg)"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        </div>
+        <h3 class="t-h3" style="margin-bottom:12px;">WhatsApp</h3>
+        <p class="t-body" style="font-size:0.83rem;margin-bottom:24px;" data-i18n="ch.wa.body">Jede Nachricht wird in Echtzeit verarbeitet. Die KI antwortet persönlich, qualifiziert den Interessenten und leitet Hot-Leads direkt an Sie weiter.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.08em;padding:4px 12px;border:1px solid var(--a4);color:var(--a2);" data-i18n="ch.wa.tag1">Echtzeit</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.08em;padding:4px 12px;border:1px solid var(--a4);color:var(--a2);" data-i18n="ch.wa.tag2">Personalisiert</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.08em;padding:4px 12px;border:1px solid var(--a4);color:var(--a2);" data-i18n="ch.wa.tag3">Automatisch</span>
+        </div>
+      </div>
+
+      <!-- Kontaktformular -->
+      <div class="card-filled reveal" style="padding:40px;transition-delay:160ms;">
+        <div style="width:48px;height:48px;background:var(--bg);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.cf.title">Kontaktformular</h3>
+        <p class="t-body" style="font-size:0.83rem;margin-bottom:24px;" data-i18n="ch.cf.body">Jede Formularanfrage auf Ihrer Website wird instantan verarbeitet. HYBOTE antwortet per E-Mail – professionell, personalisiert, umgehend.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.08em;padding:4px 12px;border:1px solid var(--a4);color:var(--a2);" data-i18n="ch.cf.tag1">Mehrkanalig</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.08em;padding:4px 12px;border:1px solid var(--a4);color:var(--a2);" data-i18n="ch.cf.tag2">Instant-Antwort</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.68rem;letter-spacing:0.08em;padding:4px 12px;border:1px solid var(--a4);color:var(--a2);" data-i18n="ch.cf.tag3">Smart Routing</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+
+<!-- ══════════════════════════════════════════════════════════
+     HOW IT WORKS
+══════════════════════════════════════════════════════════ -->
+<section style="padding:100px 32px;background:var(--fg);">
+  <div style="max-width:900px;margin:0 auto;">
+
+    <div style="margin-bottom:64px;">
+      <div class="sec-label reveal" style="color:var(--a3);">
+        <style>.sec-label.light::before { background: var(--a2); }</style>
+        <span style="display:inline-flex;align-items:center;gap:10px;"><span style="display:block;width:24px;height:1px;background:var(--a2);"></span><span data-i18n="how.label">Ablauf</span></span>
+      </div>
+      <h2 class="t-h2 reveal" style="color:var(--bg);max-width:540px;" data-i18n="how.h2">
+        Von Lead zu Termin<br/>
+        <em>umgehend.</em>
+      </h2>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(255,255,255,0.08);">
+
+      <div class="reveal" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:36px 0;border-bottom:1px solid rgba(255,255,255,0.08);">
+        <div class="step-num" style="border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.3);">01</div>
+        <div style="padding-top:10px;">
+          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:rgba(255,255,255,0.9);margin-bottom:10px;" data-i18n="how.s1.title">Lead trifft ein</h3>
+          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:rgba(255,255,255,0.45);line-height:1.8;" data-i18n="how.s1.body">Ein Interessent sendet eine E-Mail oder füllt das Kontaktformular aus. HYBOTE empfängt die Anfrage in Echtzeit – auf allen Kanälen gleichzeitig.</p>
+        </div>
+      </div>
+
+      <div class="reveal" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:36px 0;border-bottom:1px solid rgba(255,255,255,0.08);transition-delay:60ms;">
+        <div class="step-num" style="border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.3);">02</div>
+        <div style="padding-top:10px;">
+          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:rgba(255,255,255,0.9);margin-bottom:10px;" data-i18n="how.s2.title">KI-Analyse &amp; Qualifizierung</h3>
+          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:rgba(255,255,255,0.45);line-height:1.8;" data-i18n="how.s2.body">Intent, Kaufbereitschaft, Preissegment und Zeitrahmen werden in unter einer Sekunde analysiert. Ein Lead-Score wird berechnet, eine Antwortstrategie entwickelt.</p>
+        </div>
+      </div>
+
+      <div class="reveal" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:36px 0;border-bottom:1px solid rgba(255,255,255,0.08);transition-delay:120ms;">
+        <div class="step-num" style="border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.3);">03</div>
+        <div style="padding-top:10px;">
+          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:rgba(255,255,255,0.9);margin-bottom:10px;" data-i18n="how.s3.title">Personalisierte Sofort-Antwort</h3>
+          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:rgba(255,255,255,0.45);line-height:1.8;" data-i18n="how.s3.body">HYBOTE sendet eine individuelle Antwort im Namen Ihres Büros – auf dem Kanal, auf dem der Interessent geschrieben hat. Umgehend.</p>
+        </div>
+      </div>
+
+      <div class="reveal" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:36px 0;transition-delay:180ms;">
+        <div class="step-num" style="border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.3);">04</div>
+        <div style="padding-top:10px;">
+          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:rgba(255,255,255,0.9);margin-bottom:10px;" data-i18n="how.s4.title">Automatische Terminbuchung &amp; Push-Benachrichtigung</h3>
+          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:rgba(255,255,255,0.45);line-height:1.8;" data-i18n="how.s4.body">Der KI-Agent setzt den Termin selbstständig – ohne Ihr Zutun. Sobald ein Termin vereinbart ist, erhalten Sie sofort eine Push-Nachricht auf Ihr Handy. Sie gehen ins Gespräch – vollständig vorbereitet.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     MISSION & VISION
+══════════════════════════════════════════════════════════ -->
+<section id="mission" style="padding:100px 32px;background:var(--fg);">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div style="display:grid;gap:1px;background:rgba(255,255,255,0.06);" id="mv-grid">
+
+      <!-- Mission -->
+      <div class="reveal" style="padding:64px;background:var(--fg);">
+        <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;">
+          <span style="display:block;width:24px;height:1px;background:rgba(255,255,255,0.2);"></span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3);" data-i18n="mission.label">Our Mission</span>
+        </div>
+        <h2 style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.1;letter-spacing:-0.025em;color:rgba(255,255,255,0.9);margin-bottom:28px;" data-i18n="mission.h2">No lead<br/>left behind.</h2>
+        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.9rem;line-height:1.8;color:rgba(255,255,255,0.45);max-width:440px;" data-i18n="mission.body">We exist to eliminate the gap between a lead arriving and a conversation starting. Every second of silence is a missed opportunity. HYBOTE closes that gap permanently — with AI that communicates at the speed of expectation.</p>
+      </div>
+
+      <!-- Vision -->
+      <div class="reveal" style="padding:64px;background:rgba(255,255,255,0.03);transition-delay:80ms;">
+        <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;">
+          <span style="display:block;width:24px;height:1px;background:rgba(255,255,255,0.2);"></span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3);" data-i18n="vision.label">Our Vision</span>
+        </div>
+        <h2 style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.1;letter-spacing:-0.025em;color:rgba(255,255,255,0.9);margin-bottom:28px;" data-i18n="vision.h2">The AI standard for<br/>luxury real estate.</h2>
+        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.9rem;line-height:1.8;color:rgba(255,255,255,0.45);max-width:440px;" data-i18n="vision.body">To become the defining AI infrastructure for premium real estate agencies across DACH and MENA — where every lead receives a response worthy of the property it represents.</p>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:32px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.06);">
+          <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2rem;letter-spacing:-0.04em;color:rgba(255,255,255,0.9);">50+</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.35);line-height:1.5;" data-i18n="vision.lang50">Sprachen — HYBOTE kommuniziert in über 50 Sprachen, vollautomatisch und ohne Konfigurationsaufwand.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  const mvg = document.getElementById('mv-grid');
+  function setMvGrid() {
+    mvg.style.gridTemplateColumns = window.innerWidth >= 768 ? '1fr 1fr' : '1fr';
+  }
+  setMvGrid(); window.addEventListener('resize', setMvGrid);
+</script>
+
+<hr class="rule" />
+
+
+<hr class="rule" />
+
+
+<!-- ══════════════════════════════════════════════════════════
+     ROI CALCULATOR
+══════════════════════════════════════════════════════════ -->
+<section id="roi" style="padding:100px 32px;background:var(--a6);">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div style="margin-bottom:64px;">
+      <div class="sec-label reveal" data-i18n="roi.label">ROI-Rechner</div>
+      <h2 class="t-h2 reveal" style="max-width:620px;" data-i18n="roi.h2">Wie viel kostet Sie<br/><em>jeder verpasste Lead?</em></h2>
+      <p class="t-body reveal" style="max-width:520px;margin-top:20px;" data-i18n="roi.sub">Stellen Sie Ihre Werte ein – und sehen Sie, was Ihnen heute entgeht.</p>
+    </div>
+
+    <!-- Sliders -->
+    <div style="display:grid;gap:48px;margin-bottom:56px;" id="roi-sliders">
+
+      <div class="reveal">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;">
+          <label style="margin:0;" data-i18n="roi.s1.label">Monatliche Leads</label>
+          <div style="display:flex;align-items:baseline;gap:4px;">
+            <span class="stat-num" style="font-size:clamp(1.6rem,3vw,2.4rem);" id="roi-val-leads">80</span>
+            <span class="t-label" style="color:var(--a3);" data-i18n="roi.s1.unit">Leads / Monat</span>
+          </div>
+        </div>
+        <input type="range" class="roi-slider" id="roi-leads" min="10" max="500" value="80" step="5" oninput="roiUpdate()" />
+        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+          <span class="t-label" style="color:var(--a4);">10</span>
+          <span class="t-label" style="color:var(--a4);">500</span>
+        </div>
+      </div>
+
+      <div class="reveal" style="transition-delay:60ms;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;">
+          <label style="margin:0;" data-i18n="roi.s2.label">Aktuelle Rücklaufquote</label>
+          <div style="display:flex;align-items:baseline;gap:4px;">
+            <span class="stat-num" style="font-size:clamp(1.6rem,3vw,2.4rem);" id="roi-val-rate">40</span>
+            <span class="t-label" style="color:var(--a3);">%</span>
+          </div>
+        </div>
+        <input type="range" class="roi-slider" id="roi-rate" min="10" max="80" value="40" step="5" oninput="roiUpdate()" />
+        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+          <span class="t-label" style="color:var(--a4);">10%</span>
+          <span class="t-label" style="color:var(--a4);">80%</span>
+        </div>
+      </div>
+
+      <div class="reveal" style="transition-delay:120ms;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;">
+          <label style="margin:0;" data-i18n="roi.s3.label">Ø Provision pro Abschluss</label>
+          <div style="display:flex;align-items:baseline;gap:4px;">
+            <span class="t-label" style="color:var(--a3);">$</span>
+            <span class="stat-num" style="font-size:clamp(1.6rem,3vw,2.4rem);" id="roi-val-comm">8.000</span>
+          </div>
+        </div>
+        <input type="range" class="roi-slider" id="roi-comm" min="2000" max="50000" value="8000" step="500" oninput="roiUpdate()" />
+        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+          <span class="t-label" style="color:var(--a4);">$2.000</span>
+          <span class="t-label" style="color:var(--a4);">$50.000</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Result cards -->
+    <div style="display:grid;gap:1px;background:var(--line);" id="roi-result-grid">
+
+      <div style="background:var(--bg);padding:40px 48px;" id="roi-card-without">
+        <div class="t-label" style="margin-bottom:16px;" data-i18n="roi.without.label">Ohne HYBOTE — Jährlicher Umsatzverlust</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px;">
+          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--a3);">−</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--fg);" id="roi-loss">$ 460.800</span>
+        </div>
+        <p class="t-body" style="font-size:0.82rem;" id="roi-loss-sub" data-i18n="roi.without.sub">48 Leads gehen monatlich verloren. Das ist Ihr entgangener Jahresumsatz.</p>
+      </div>
+
+      <div style="background:var(--fg);padding:40px 48px;" id="roi-card-with">
+        <div class="t-label" style="margin-bottom:16px;color:rgba(255,255,255,0.35);" data-i18n="roi.with.label">Mit HYBOTE — Jährlicher Mehrwert</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px;">
+          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:rgba(255,255,255,0.4);">+</span>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-0.04em;color:var(--bg);" id="roi-gain">$ 421.200</span>
+        </div>
+        <p class="t-body" style="font-size:0.82rem;color:rgba(255,255,255,0.5);" id="roi-gain-sub" data-i18n="roi.with.sub">44 zusätzliche qualifizierte Abschlüsse pro Jahr durch 95% Lead-Erfassung.</p>
+        <a href="#kontakt" class="btn-dark" style="background:var(--bg);color:var(--fg);margin-top:28px;display:inline-flex;" data-i18n="roi.cta">Demo anfragen →</a>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<hr class="rule" />
+
+
+<!-- ══════════════════════════════════════════════════════════
+     FAQ
+══════════════════════════════════════════════════════════ -->
+<section id="faq" style="padding:100px 32px;">
+  <div style="max-width:820px;margin:0 auto;">
+
+    <div style="margin-bottom:64px;">
+      <div class="sec-label reveal" data-i18n="faq.label">FAQ</div>
+      <h2 class="t-h2 reveal" style="max-width:500px;" data-i18n="faq.h2">Frequently asked<br/>questions.</h2>
+    </div>
+
+    <div id="faq-list" style="border-top:1px solid var(--line);">
+
+      <div class="faq-item reveal">
+        <button class="faq-q" onclick="toggleFaq(0)" aria-expanded="false">
+          <span data-i18n="faq.q1">What channels does HYBOTE support?</span>
+          <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-0"><div class="faq-a-inner t-body" data-i18n="faq.a1">HYBOTE supports email and web contact forms simultaneously — all managed by a single AI system that responds immediately on every channel, 24/7.</div></div>
+      </div>
+
+      <div class="faq-item reveal" style="transition-delay:40ms;">
+        <button class="faq-q" onclick="toggleFaq(1)" aria-expanded="false">
+          <span data-i18n="faq.q2">How fast does HYBOTE respond to leads?</span>
+          <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-1"><div class="faq-a-inner t-body" data-i18n="faq.a2">Every incoming lead receives a personalized response immediately — regardless of the time of day, channel, or volume of simultaneous inquiries.</div></div>
+      </div>
+
+      <div class="faq-item reveal" style="transition-delay:80ms;">
+        <button class="faq-q" onclick="toggleFaq(2)" aria-expanded="false">
+          <span data-i18n="faq.q3">Is HYBOTE data protection compliant?</span>
+          <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-2"><div class="faq-a-inner t-body" data-i18n="faq.a3">Yes. HYBOTE adheres to strict international data protection standards. We do not share data with third parties.</div></div>
+      </div>
+
+      <div class="faq-item reveal" style="transition-delay:120ms;">
+        <button class="faq-q" onclick="toggleFaq(3)" aria-expanded="false">
+          <span data-i18n="faq.q4">What does the setup process look like?</span>
+          <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-3"><div class="faq-a-inner t-body" data-i18n="faq.a4">Setup takes less than 24 hours. After a short onboarding call, we configure HYBOTE to your agency's tone, style, and workflows. No technical knowledge required on your end.</div></div>
+      </div>
+
+      <div class="faq-item reveal" style="transition-delay:160ms;">
+        <button class="faq-q" onclick="toggleFaq(4)" aria-expanded="false">
+          <span data-i18n="faq.q5">Can HYBOTE integrate with my existing CRM?</span>
+          <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-4"><div class="faq-a-inner t-body" data-i18n="faq.a5">Yes. HYBOTE integrates with the most common real estate CRM systems. Every qualified lead is automatically synced — your team finds each prospect fully pre-qualified and ready for follow-up.</div></div>
+      </div>
+
+      <div class="faq-item reveal" style="transition-delay:200ms;">
+        <button class="faq-q" onclick="toggleFaq(5)" aria-expanded="false">
+          <span data-i18n="faq.q6">What happens with leads outside business hours?</span>
+          <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-5"><div class="faq-a-inner t-body" data-i18n="faq.a6">HYBOTE operates 24/7 — evenings, weekends, and holidays included. Every lead that arrives outside your office hours receives an immediate, professional response, just as it would during business hours.</div></div>
+      </div>
+
+      <div class="faq-item reveal" style="transition-delay:240ms;">
+        <button class="faq-q" onclick="toggleFaq(6)" aria-expanded="false">
+          <span data-i18n="faq.q7">Who is HYBOTE designed for?</span>
+          <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-6"><div class="faq-a-inner t-body" data-i18n="faq.a7">HYBOTE is built specifically for premium and luxury real estate agencies that handle high-value clients and cannot afford to lose a single lead. Whether you receive 10 or 200 leads per month, HYBOTE scales with you.</div></div>
+      </div>
+
+      <div class="faq-item reveal" style="transition-delay:280ms;">
+        <button class="faq-q" onclick="toggleFaq(7)" aria-expanded="false">
+          <span data-i18n="faq.q8">Does HYBOTE use the official WhatsApp Business API?</span>
+          <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-7"><div class="faq-a-inner t-body" data-i18n="faq.a8">Yes — and it is proprietary. Unlike generic AI platforms that rely on third-party wrappers, HYBOTE has built its own stable WhatsApp Business API infrastructure. This means enterprise-grade reliability, no rate-limiting surprises, and native integration with Property Finder, Bayut, and Salesforce.</div></div>
+      </div>
+
+      <div class="faq-item reveal" style="transition-delay:320ms;">
+        <button class="faq-q" onclick="toggleFaq(8)" aria-expanded="false">
+          <span data-i18n="faq.q9">How does HYBOTE protect the privacy of high-net-worth clients?</span>
+          <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-8"><div class="faq-a-inner t-body" data-i18n="faq.a9">Discretion is non-negotiable. HYBOTE operates under strict data isolation per agency — no cross-client data sharing, end-to-end encryption on all WhatsApp communications, and zero third-party data brokering. VIP client identities and transaction details remain exclusively within your system.</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 24px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+    color: var(--fg);
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+    min-height: 48px;
+    transition: color 180ms ease;
+  }
+  .faq-q:hover { color: var(--a1); }
+  .faq-q:focus-visible { outline: 1px solid var(--fg); outline-offset: 4px; }
+  .faq-arrow { flex-shrink: 0; color: var(--a3); transition: transform 300ms cubic-bezier(0.34,1.56,0.64,1); }
+  .faq-q[aria-expanded="true"] .faq-arrow { transform: rotate(180deg); }
+  .faq-a { overflow: hidden; max-height: 0; transition: max-height 350ms cubic-bezier(0.4,0,0.2,1); }
+  .faq-a-inner { padding-bottom: 24px; }
+</style>
+
+<script>
+  function toggleFaq(i) {
+    const btn = document.querySelectorAll('.faq-q')[i];
+    const panel = document.getElementById('faq-a-' + i);
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    // close all
+    document.querySelectorAll('.faq-q').forEach((b,j) => {
+      b.setAttribute('aria-expanded','false');
+      document.getElementById('faq-a-'+j).style.maxHeight = '0';
+    });
+    if (!open) {
+      btn.setAttribute('aria-expanded','true');
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+    }
+  }
+</script>
+
+<hr class="rule" />
+
+
+<!-- ══════════════════════════════════════════════════════════
+     CTA BAND
+══════════════════════════════════════════════════════════ -->
+<section style="padding:80px 32px;background:var(--a6);">
+  <div style="max-width:800px;margin:0 auto;text-align:center;">
+    <h2 class="t-h2 reveal" style="margin-bottom:36px;" data-i18n="cta.h2">Bereit, keinen Lead mehr zu verpassen?</h2>
+    <div class="reveal" style="transition-delay:120ms;">
+      <a href="#kontakt" class="btn-dark" style="padding:16px 36px;">
+        <span data-i18n="cta.btn">Jetzt starten</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+
+<!-- ══════════════════════════════════════════════════════════
+     CONTACT
+══════════════════════════════════════════════════════════ -->
+<section id="kontakt" style="padding:100px 32px;">
+  <div style="max-width:1100px;margin:0 auto;display:grid;gap:72px;align-items:start;" id="contact-grid">
+
+    <!-- Left -->
+    <div>
+      <div class="sec-label reveal" data-i18n="contact.label">Kontakt</div>
+      <h2 class="t-h2 reveal" style="margin-bottom:20px;" data-i18n="contact.h2">Demo anfragen.</h2>
+      <p class="t-body reveal" style="max-width:380px;margin-bottom:40px;transition-delay:60ms;" data-i18n="contact.sub">
+        Wir zeigen Ihnen in einem 20-minütigen Gespräch, wie HYBOTE für Ihr Büro funktioniert – unverbindlich und kostenlos.
+      </p>
+
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:80ms;">
+          <div style="width:36px;height:36px;background:var(--a6);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--a2)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div>
+            <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.78rem;color:var(--fg);margin-bottom:2px;" data-i18n="contact.i1.title">Persönliches Gespräch</div>
+            <div class="t-small" data-i18n="contact.i1.sub">20 Minuten, per Videokonferenz</div>
+          </div>
+        </div>
+        <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:120ms;">
+          <div style="width:36px;height:36px;background:var(--a6);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--a2)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.78rem;color:var(--fg);margin-bottom:2px;" data-i18n="contact.i2.title">Antwort innerhalb von 24h</div>
+            <div class="t-small" data-i18n="contact.i2.sub">Natürlich reagieren wir schneller.</div>
+          </div>
+        </div>
+        <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:160ms;">
+          <div style="width:36px;height:36px;background:var(--a6);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--a2)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.78rem;color:var(--fg);margin-bottom:2px;" data-i18n="contact.i3.title">Keine Verpflichtung</div>
+            <div class="t-small" data-i18n="contact.i3.sub">Unverbindlich, kostenlos, transparent.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="card reveal" style="padding:40px;transition-delay:100ms;">
+      <form id="cf" onsubmit="handleSub(event)" method="POST" action="https://api.web3forms.com/submit" style="display:flex;flex-direction:column;gap:20px;">
+        <input type="hidden" name="access_key" value="cc17bdb8-9a7c-4f7a-9871-9ae5e69cf667" />
+        <input type="hidden" name="to" value="Contact@hybote.ai" />
+        <input type="hidden" name="subject" value="New HYBOTE Demo Request" />
+        <input type="hidden" name="from_name" value="HYBOTE Website" />
+        <input type="hidden" name="redirect" value="false" />
+        <input type="checkbox" name="botcheck" style="display:none" />
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" id="name-row">
+          <div>
+            <label for="vn" data-i18n="form.first">Vorname</label>
+            <input type="text" id="vn" name="first_name" data-i18n-ph="form.ph.first" placeholder="Max" required />
+          </div>
+          <div>
+            <label for="nn" data-i18n="form.last">Nachname</label>
+            <input type="text" id="nn" name="last_name" data-i18n-ph="form.ph.last" placeholder="Mustermann" required />
+          </div>
+        </div>
+
+        <div>
+          <label for="co" data-i18n="form.company">Unternehmen / Maklerbüro</label>
+          <input type="text" id="co" name="company" data-i18n-ph="form.ph.company" placeholder="Mustermann Immobilien GmbH" />
+        </div>
+
+        <div>
+          <label for="em" data-i18n="form.email">E-Mail</label>
+          <input type="email" id="em" name="email" placeholder="max@mustermann-immobilien.de" required />
+        </div>
+
+        <div>
+          <label for="ph" data-i18n="form.phone">Telefon (optional)</label>
+          <input type="tel" id="ph" name="phone" placeholder="+49 89 123456" />
+        </div>
+
+        <div>
+          <label for="ld" data-i18n="form.leads">Monatliche Leads</label>
+          <select id="ld" name="monthly_leads">
+            <option value="" data-i18n="form.choose">Bitte wählen</option>
+            <option>1–20 Leads</option>
+            <option>21–50 Leads</option>
+            <option>51–100 Leads</option>
+            <option data-i18n="form.leadopt4">Mehr als 100 Leads</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="msg" data-i18n="form.msg">Nachricht (optional)</label>
+          <textarea id="msg" name="message" data-i18n-ph="form.ph.msg" rows="3" placeholder="Kurze Beschreibung oder spezifische Fragen..."></textarea>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <input type="checkbox" id="ds" name="consent" value="Agreed" required style="width:16px;height:16px;margin-top:2px;flex-shrink:0;cursor:pointer;accent-color:var(--fg);" />
+          <label for="ds" style="font-size:0.72rem;text-transform:none;letter-spacing:0;color:var(--a3);line-height:1.6;margin:0;cursor:pointer;" data-i18n="form.consent">Ich stimme der Verarbeitung meiner Daten gemäß <a href="datenschutz.html" style="color:var(--fg);text-decoration:underline;">Datenschutzerklärung</a> zu.</label>
+        </div>
+
+        <button type="submit" class="btn-dark" style="width:100%;justify-content:center;padding:15px;">
+          <span data-i18n="form.submit">Demo-Termin anfragen</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+
+      </form>
+
+      <div id="form-err" style="display:none;padding:12px 16px;border:1px solid rgba(220,50,50,0.2);background:rgba(220,50,50,0.04);margin-top:-8px;">
+        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.82rem;color:#c53030;" data-i18n="form.error">Something went wrong. Please try again or email us directly at <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a></p>
+      </div>
+      <div id="ok" style="display:none;text-align:center;padding:32px 0;">
+        <div style="width:48px;height:48px;border:1px solid var(--line-med);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3 class="t-h3" style="margin-bottom:8px;" data-i18n="form.thanks.title">Vielen Dank.</h3>
+        <p class="t-body" style="font-size:0.83rem;" data-i18n="form.thanks.sub">Wir melden uns innerhalb von 24 Stunden – natürlich schneller.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const cg = document.getElementById('contact-grid');
+  const nr = document.getElementById('name-row');
+  function setCGrid() {
+    cg.style.gridTemplateColumns = window.innerWidth >= 900 ? '1fr 1fr' : '1fr';
+    nr.style.gridTemplateColumns = window.innerWidth < 480 ? '1fr' : '1fr 1fr';
+  }
+  setCGrid(); window.addEventListener('resize', setCGrid);
+  async function handleSub(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('[type="submit"]');
+    btn.style.opacity = '0.5';
+    btn.style.pointerEvents = 'none';
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: new FormData(e.target)
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.location.href = 'danke.html?lang=' + currentLang;
+      } else {
+        throw new Error('submit failed');
+      }
+    } catch {
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = '';
+      document.getElementById('form-err').style.display = 'block';
+    }
+  }
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════ -->
+<footer style="background:var(--fg);padding:60px 32px 40px;">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div style="display:grid;gap:48px;margin-bottom:48px;" id="footer-top">
+
+      <div>
+        <!-- Logo white invert -->
+        <div style="margin-bottom:16px;filter:invert(1);">
+          <img src="logo.png" alt="HYBOTE" style="height:100px;width:auto;display:block;opacity:0.9;" />
+        </div>
+        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.35);line-height:1.7;max-width:260px;" data-i18n="footer.tagline">AI lead management for premium brokerages. No lead ever lost — ever again.</p>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:16px;">
+          <span class="dot-live" style=""></span>
+          <style>.dot-live.white::before,.dot-live.white::after{background:#fff;}</style>
+          <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:rgba(255,255,255,0.25);letter-spacing:0.04em;" data-i18n="footer.status">System active · 24 / 7</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;" id="footer-links">
+        <div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:16px;" data-i18n="footer.col1">Product</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="#loesung" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.sol">Solution</a>
+            <a href="#kanaele" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.ch">Channels</a>
+            <a href="#ergebnisse" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.res">Results</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:16px;" data-i18n="footer.col2">Company</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="#mission" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.about">About</a>
+            <a href="#kontakt" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.contact">Contact</a>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:16px;" data-i18n="footer.col3">Legal</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="datenschutz.html" target="_blank" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.privacy">Privacy Policy</a>
+            <a href="agb.html" target="_blank" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.terms">Terms</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:24px;"></div>
+
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
+      <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:rgba(255,255,255,0.2);" data-i18n="footer.copy">© 2025 HYBOTE. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const ft = document.getElementById('footer-top');
+  const fl = document.getElementById('footer-links');
+  function setFooter() {
+    if (window.innerWidth >= 768) {
+      ft.style.gridTemplateColumns = '1fr 2fr';
+    } else {
+      ft.style.gridTemplateColumns = '1fr';
+    }
+  }
+  setFooter(); window.addEventListener('resize', setFooter);
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     SCROLL REVEAL
+══════════════════════════════════════════════════════════ -->
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.10, rootMargin: '0px 0px -32px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     HERO ENTRANCE ANIMATION
+══════════════════════════════════════════════════════════ -->
+<script>
+  (function() {
+    const heroSection = document.querySelector('section');
+    const heroChildren = heroSection ? heroSection.children : [];
+    Array.from(heroChildren).forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 700ms cubic-bezier(0.16,1,0.3,1), transform 700ms cubic-bezier(0.16,1,0.3,1)';
+      el.style.transitionDelay = (80 + i * 100) + 'ms';
+    });
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        Array.from(heroChildren).forEach(el => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        });
+      });
+    });
+  })();
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     KPI COUNTER ANIMATION
+══════════════════════════════════════════════════════════ -->
+<script>
+  function animateCounter(el, from, to, duration, prefix, suffix) {
+    const start = performance.now();
+    function step(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - p, 4);
+      const val = Math.round(from + (to - from) * ease);
+      el.textContent = prefix + val.toLocaleString('de-DE') + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  const kpiData = [
+    { prefix: '+', value: 280, suffix: '%' },
+    { prefix: '−', value: 92, suffix: '%' },
+    { prefix: '', value: 4.9, suffix: '', decimals: 1 },
+    { prefix: '', value: 100, suffix: '%' },
+  ];
+
+  const kpiGrid = document.getElementById('kpi-grid');
+  if (kpiGrid) {
+    const statNums = kpiGrid.querySelectorAll('.stat-num');
+    const kpiObs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        statNums.forEach((el, i) => {
+          const d = kpiData[i];
+          if (!d) return;
+          if (d.decimals) {
+            const start2 = performance.now();
+            const dur = 1400;
+            function stepDec(now) {
+              const p = Math.min((now - start2) / dur, 1);
+              const ease = 1 - Math.pow(1 - p, 4);
+              const val = (d.value * ease).toFixed(1);
+              el.textContent = d.prefix + val.replace('.', ',') + d.suffix;
+              if (p < 1) requestAnimationFrame(stepDec);
+            }
+            requestAnimationFrame(stepDec);
+          } else {
+            animateCounter(el, 0, d.value, 1400, d.prefix, d.suffix);
+          }
+        });
+        kpiObs.disconnect();
+      }
+    }, { threshold: 0.3 });
+    kpiObs.observe(kpiGrid);
+  }
+</script>
+
+
+
+
+<!-- ══════════════════════════════════════════════════════════
+     ROI CALCULATOR
+══════════════════════════════════════════════════════════ -->
+<script>
+  function fmtEur(n) {
+    return '$\u00a0' + n.toLocaleString('de-DE');
+  }
+
+  function updateSliderFill(slider) {
+    const min = +slider.min, max = +slider.max, val = +slider.value;
+    const pct = ((val - min) / (max - min)) * 100;
+    slider.style.backgroundSize = pct + '% 100%';
+  }
+
+  function roiUpdate() {
+    const leads = +document.getElementById('roi-leads').value;
+    const rate  = +document.getElementById('roi-rate').value / 100;
+    const comm  = +document.getElementById('roi-comm').value;
+
+    document.getElementById('roi-val-leads').textContent = leads;
+    document.getElementById('roi-val-rate').textContent  = +document.getElementById('roi-rate').value;
+    document.getElementById('roi-val-comm').textContent  = comm.toLocaleString('de-DE');
+
+    const lostPerMonth   = Math.round(leads * (1 - rate));
+    const gainedPerMonth = Math.round(leads * (0.95 - rate));
+    const annualLoss     = lostPerMonth * comm * 12;
+    const annualGain     = Math.max(0, gainedPerMonth) * comm * 12;
+
+    document.getElementById('roi-loss').textContent = fmtEur(annualLoss);
+    document.getElementById('roi-gain').textContent = fmtEur(annualGain);
+
+    ['roi-leads', 'roi-rate', 'roi-comm'].forEach(id => {
+      updateSliderFill(document.getElementById(id));
+    });
+
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
+    const lSub = document.getElementById('roi-loss-sub');
+    const gSub = document.getElementById('roi-gain-sub');
+    if (typeof T !== 'undefined' && T[lang]) {
+      if (lSub) lSub.textContent = (T[lang]['roi.without.sub'] || '').replace('{lost}', lostPerMonth);
+      if (gSub) gSub.textContent = (T[lang]['roi.with.sub'] || '').replace('{gained}', Math.max(0, gainedPerMonth));
+    }
+  }
+
+  ['roi-leads', 'roi-rate', 'roi-comm'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) updateSliderFill(el);
+  });
+  roiUpdate();
+
+  document.getElementById('roi-result-grid') && (function() {
+    const rg = document.getElementById('roi-result-grid');
+    if (window.innerWidth >= 640) {
+      rg.style.gridTemplateColumns = '1fr 1fr';
+    }
+    function setRoiGrid() {
+      rg.style.gridTemplateColumns = window.innerWidth >= 640 ? '1fr 1fr' : '1fr';
+    }
+    setRoiGrid();
+    window.addEventListener('resize', setRoiGrid);
+  })();
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     TRANSLATIONS / i18n
+══════════════════════════════════════════════════════════ -->
+<script>
+const T = {
+  de: {
+    'nav.problem':  'Problem',
+    'nav.solution': 'Lösung',
+    'nav.channels': 'Kanäle',
+    'nav.results':  'Ergebnisse',
+    'nav.status':   'System aktiv',
+    'nav.cta':      'Demo anfragen',
+
+    'hero.badge':  'Digitale Concierge-Infrastruktur für Premium-Makler in der MENA-Region',
+    'hero.h1':     'Die Infrastruktur,<br/>auf die Elite-Agenturen<br/><span style="font-style:italic;color:var(--a2);">vertrauen.</span>',
+    'hero.sub':    'HYBOTE ist die unsichtbare Intelligenz hinter Ihrer Kundenkommunikation — qualifiziert HNWI-Interessenten mit chirurgischer Präzision, liefert maßgeschneiderte Antworten via WhatsApp und schützt diskret deren Privatsphäre. <strong style="font-weight:400;color:var(--fg);">Rund um die Uhr.</strong>',
+    'hero.cta1':   'Private Demo buchen',
+    'hero.cta2':   'So funktioniert es',
+    'hero.trust1': 'Eigene WhatsApp API',
+    'hero.trust2': 'VIP-Datenschutz',
+    'hero.trust3': 'Keine Bindung',
+    'hero.trust4': '24 / 7 Aktiv',
+
+    'stat.1': 'Reaktionszeit',
+    'stat.2': 'Erreichbarkeit',
+    'stat.3': 'Mehr Conversions',
+    'stat.4': 'Automatisch aktiv',
+    'stat.5': 'Verpasste Chancen',
+    'stat.6': 'Sprachen',
+
+    'prob.label':    'Das Problem',
+    'prob.h2':       'Jede Stunde Stille<br/>kostet einen HNWI-Kunden.',
+    'prob.sub':      'In den Luxusmärkten der MENA-Region agieren internationale Käufer schnell und erwarten Diskretion. Die Erstantwortzeit ist kein Höflichkeitsakt – sie ist Ihr Wettbewerbsvorteil.',
+    'prob.c1.title': 'Stille zerstört den Deal',
+    'prob.c1.body':  'In den Luxusmärkten der MENA-Region spricht ein HNWI-Interessent, der minutenlang keine Antwort erhält, bereits mit Ihrem Wettbewerber. Es gibt keinen zweiten Eindruck.',
+    'prob.c2.title': 'Personal kann die Nachfrage nicht skalieren',
+    'prob.c2.body':  'Internationale Käufer wenden sich über Zeitzonen und Kanäle hinweg an Sie. Manuelle Antworten können weder das Volumen noch die Geschwindigkeit abdecken, die der Luxusmarkt der MENA-Region verlangt.',
+    'prob.c3.title': 'Generische Antworten schädigen die Marke',
+    'prob.c3.body':  'Eine seriell produzierte Erstantwort signalisiert, dass der Interessent nicht wertgeschätzt wird. Für einen Käufer, der eine Villa auf dem Palm Jumeirah für 10 Mio. USD in Betracht zieht, ist dieses Signal unwiderruflich.',
+
+    'sol.label':   'Die Lösung',
+    'sol.h2':      'HYBOTE — Ihr digitaler Concierge,<br/>der <em>niemals</em> schläft.',
+    'sol.sub':     'Unsichtbar. Präzise. Diskret. HYBOTE qualifiziert jeden HNWI-Interessenten mit chirurgischer Genauigkeit, antwortet auf dem bevorzugten Kanal und schützt diskret dessen Privatsphäre – bevor Ihr erstes Gespräch beginnt.',
+    'sol.f1.title':'HNWI-Qualifizierung',
+    'sol.f1.body': 'Budgetrahmen, Kaufintention, Nationalität und Zeitplan werden in unter einer Sekunde bewertet – ohne generische Fragebögen, ohne Reibung.',
+    'sol.f2.title':'Maßgeschneiderte Erstantwort',
+    'sol.f2.body': 'Jede Antwort wird individuell verfasst – im Ton Ihrer Agentur, auf dem bevorzugten Kanal des Interessenten zugestellt.',
+    'sol.f3.title':'Rich-Media-Zustellung',
+    'sol.f3.body': 'Exklusive Exposés, Grundrisse und Links zu virtuellen Touren werden sofort direkt im Chat zugestellt – nicht als separate E-Mail.',
+    'sol.f4.title':'VIP-Datenschutz',
+    'sol.f4.body': 'Alle Interessentendaten werden mit höchster Diskretion behandelt. Null Weitergabe an Dritte – ausnahmslos.',
+    'sol.cta':     'Jetzt testen',
+
+    'ch.label':   'Alle Kanäle. Ein System.',
+    'ch.h2':      'Egal wie Ihr Lead<br/>Sie <em>erreicht.</em>',
+    'ch.sub':     'HYBOTE überwacht alle eingehenden Kanäle gleichzeitig und antwortet auf jedem mit Präzision – ohne Ausnahmen, ohne Verzögerungen.',
+    'ch.wa.body': 'Im Gegensatz zu generischen KI-Plattformen betreibt HYBOTE eine eigene WhatsApp Business API-Infrastruktur — speziell für den Luxusimmobilienmarkt entwickelt. Jede Anfrage wird in Echtzeit mit vollständiger Diskretion verarbeitet. Hochwertige Assets (Exposés, Grundrisse, virtuelle Touren) werden direkt im Chat übermittelt. Nahtlos integriert mit Property Finder, Bayut und Salesforce.',
+    'ch.wa.tag1': 'Eigene Architektur', 'ch.wa.tag2': 'Rich Media', 'ch.wa.tag3': 'CRM-Sync',
+    'ch.em.title':'E-Mail',
+    'ch.em.body': 'Eingehende E-Mails werden sofort analysiert, priorisiert und beantwortet. Hochwertige Leads erhalten eine maßgeschneiderte Antwort im Ton und Stil Ihrer Agentur.',
+    'ch.em.tag1': 'Priorisierung', 'ch.em.tag2': 'Signatur-Match', 'ch.em.tag3': 'Follow-up',
+    'ch.cf.title':'Kontaktformular',
+    'ch.cf.body': 'Jede Formularanfrage auf Ihrer Website wird sofort verarbeitet. HYBOTE antwortet auf dem bevorzugten Kanal des Interessenten – professionell, persönlich, umgehend.',
+    'ch.cf.tag1': 'Mehrkanalig', 'ch.cf.tag2': 'Instant-Antwort', 'ch.cf.tag3': 'Smart Routing',
+
+    'how.label':    'Ablauf',
+    'how.h2':       'Von der Anfrage zum Termin<br/><em>nahtlos.</em>',
+    'how.s1.title': 'Lead trifft ein',
+    'how.s1.body':  'Ein internationaler HNWI-Interessent meldet sich – via WhatsApp, E-Mail oder Kontaktformular. HYBOTE empfängt die Anfrage in Echtzeit, auf allen Kanälen gleichzeitig.',
+    'how.s2.title': 'KI-Analyse &amp; Qualifizierung',
+    'how.s2.body':  'Budgetrahmen, Kaufintention, Nationalität, Finanzierungsprofil und bevorzugter Immobilientyp werden in unter einer Sekunde bewertet. Ein Lead-Score wird vergeben und eine maßgeschneiderte Antwortstrategie entwickelt.',
+    'how.s3.title': 'Maßgeschneiderte Sofort-Antwort',
+    'how.s3.body':  'HYBOTE sendet eine individuelle, markenkonforme Antwort im Namen Ihrer Agentur – auf dem bevorzugten Kanal des Interessenten, inklusive relevanter Immobilien-Assets.',
+    'how.s4.title': 'Termin vereinbart · Sie sind informiert',
+    'how.s4.body':  'Der digitale Concierge schlägt eine Besichtigung vor und reserviert den Termin selbstständig – ohne Ihr Zutun. Sie erhalten sofort eine Briefing-Benachrichtigung: Kundenprofil, Budget und Immobilienvorlieben. Sie gehen vorbereitet ins Gespräch.',
+
+    'res.label': 'Ergebnisse',
+    'res.h2':    'Was Premium-Makler<br/>mit HYBOTE <em>erreichen.</em>',
+    'res.kpi1':  'Qualifizierte Leads',
+    'res.kpi2':  'Reaktionszeit',
+    'res.kpi3':  'Kundenbewertung',
+    'res.kpi4':  'Lead-Erfassung',
+
+    'roi.label':         'ROI-Rechner',
+    'roi.h2':            'Wie viel kostet Sie<br/><em>jeder verpasste Lead?</em>',
+    'roi.sub':           'Stellen Sie Ihre Werte ein – und sehen Sie, was Ihnen heute entgeht.',
+    'roi.s1.label':      'Monatliche Leads',
+    'roi.s1.unit':       'Leads / Monat',
+    'roi.s2.label':      'Aktuelle Rücklaufquote',
+    'roi.s3.label':      'Ø Provision pro Abschluss',
+    'roi.without.label': 'Ohne HYBOTE — Jährlicher Umsatzverlust',
+    'roi.without.sub':   '{lost} Leads gehen monatlich verloren. Das ist Ihr entgangener Jahresumsatz.',
+    'roi.with.label':    'Mit HYBOTE — Jährlicher Mehrwert',
+    'roi.with.sub':      '{gained} zusätzliche qualifizierte Abschlüsse pro Jahr durch 95% Lead-Erfassung.',
+    'roi.cta':           'Demo anfragen →',
+
+    'cta.h2':  'Bereit, keinen Lead mehr zu verpassen?',
+    'cta.sub': 'Start in unter 24 Stunden. Keine Einrichtungsgebühr, keine Bindung.',
+    'cta.btn': 'Jetzt starten',
+
+    'form.first':   'Vorname',
+    'form.last':    'Nachname',
+    'form.company': 'Unternehmen / Maklerbüro',
+    'form.email':   'E-Mail',
+    'form.phone':   'Telefon (optional)',
+    'form.leads':   'Monatliche Leads',
+    'form.choose':  'Bitte wählen',
+    'form.leadopt4':'Mehr als 100 Leads',
+    'form.msg':     'Nachricht (optional)',
+    'form.consent': 'Ich stimme der Verarbeitung meiner Daten gemäß <a href="datenschutz.html" style="color:var(--fg);text-decoration:underline;">Datenschutzerklärung</a> zu.',
+    'form.submit':  'Demo-Termin anfragen',
+    'form.thanks.title': 'Vielen Dank.',
+    'form.thanks.sub':   'Wir melden uns innerhalb von 24 Stunden – natürlich schneller.',
+    'form.ph.first':   'Max',
+    'form.ph.last':    'Mustermann',
+    'form.ph.company': 'Mustermann Immobilien GmbH',
+    'form.ph.msg':     'Kurze Beschreibung oder spezifische Fragen...',
+    'form.error':      'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt an <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a>',
+
+    'footer.tagline': 'Die KI-Concierge-Infrastruktur für den Luxusimmobilienmarkt der MENA-Region. Jeder HNWI-Klient wird sofort, diskret und präzise betreut.',
+    'footer.status':  'System aktiv · 24 / 7',
+    'footer.col1':    'Produkt',
+    'footer.sol':     'Lösung',
+    'footer.ch':      'Kanäle',
+    'footer.res':     'Ergebnisse',
+    'footer.col2':    'Unternehmen',
+    'footer.about':   'Über uns',
+    'footer.contact': 'Kontakt',
+    'footer.career':  'Karriere',
+    'footer.col3':    'Rechtliches',
+    'footer.privacy': 'Datenschutz',
+    'footer.terms':   'AGB',
+    'footer.copy':    '© 2025 HYBOTE. Alle Rechte vorbehalten.',
+    'footer.trust':   'Eigene WhatsApp API · VIP-Datenschutz',
+
+    'demo.header':      'Eingehende Anfrage',
+    'demo.via':         'via WhatsApp · gerade eben',
+    'demo.msg':         '„Guten Morgen, ich suche ein Penthouse in der Dubai Marina oder auf dem Palm Jumeirah – Nordausrichtung, ab dem 40. Stock. Budget 8–12 Mio. USD. Können wir diese Woche eine diskrete Besichtigung arrangieren?"',
+    'demo.reply.label': 'HYBOTE Antwort',
+    'demo.reply.body':  'Guten Morgen, Herr Al-Rashidi, wir haben drei außergewöhnliche Off-Market-Penthouses, die Ihren Kriterien entsprechen – darunter zwei auf dem Palm Jumeirah mit unverstelltem Meerblick. Ich habe ein exklusives Dossier für Ihre Einsicht beigefügt. Würde Donnerstag um 11&thinsp;Uhr oder Samstag um 15&thinsp;Uhr für eine private Besichtigung passen?',
+    'demo.tag1':        'HNWI qualifiziert',
+    'demo.tag2':        'CRM aktualisiert · Dossier gesendet',
+
+    'ticker.1': 'Anfrage eingegangen &ensp;·&ensp; Palm Jumeirah Villa &ensp;·&ensp; HNWI qualifiziert &ensp;·&ensp; Dossier in 1,8&thinsp;s gesendet',
+    'ticker.2': 'WhatsApp-Nachricht &ensp;·&ensp; Dubai Marina Penthouse &ensp;·&ensp; Lead-Score 94 &ensp;·&ensp; Besichtigung in 2,1&thinsp;s vorgeschlagen',
+    'ticker.3': 'Internationale Investor-Anfrage &ensp;·&ensp; CRM synchronisiert &ensp;·&ensp; Sofortantwort via WhatsApp &ensp;·&ensp; 2,3&thinsp;s',
+
+    'founder.label': 'Der Gründer',
+    'founder.h2':    'Wo Hospitality auf<br/>Künstliche Intelligenz trifft.',
+    'founder.p1':    'Mohamed Erassas, Gründer von HYBOTE, ist KI-Enthusiast und langjähriger Experte im Luxury Hospitality — einer Branche, in der makellose, sofortige und zutiefst persönliche Kommunikation keine Option ist, sondern eine Erwartung.',
+    'founder.p2':    'Diese Erfahrung hat ihn eines gelehrt: High-End-Kunden vergeben keine Stille. Ein verpasster Lead, eine verzögerte Antwort, eine generische Nachricht — das sind keine Unannehmlichkeiten. Das ist gebrochenes Vertrauen.',
+    'founder.p3':    'HYBOTE entstand aus genau dieser Erkenntnis: die Kombination eines erfahrenen Hospitality-Experten und eines KI-Enthusiasten — Präzisionstechnologie, vermittelt mit den Standards eines Fünf-Sterne-Erlebnisses. Jeder Lead verdient die Antwort, die er von Ihrem besten Makler bekäme — umgehend, 24/7, ausnahmslos.',
+
+    'faq.label': 'FAQ',
+    'faq.h2':    'Häufig gestellte<br/>Fragen.',
+    'faq.q1':    'Welche Kanäle unterstützt HYBOTE?',
+    'faq.a1':    'HYBOTE unterstützt WhatsApp Business, E-Mail und Web-Kontaktformulare gleichzeitig — alles verwaltet von einem KI-System, das auf jedem Kanal sofort antwortet, 24/7.',
+    'faq.q2':    'Wie schnell antwortet HYBOTE auf Leads?',
+    'faq.a2':    'Jeder eingehende Lead erhält eine personalisierte Antwort umgehend — unabhängig von der Tageszeit, dem Kanal oder der Anzahl gleichzeitiger Anfragen.',
+    'faq.q3':    'Ist HYBOTE datenschutzkonform?',
+    'faq.a3':    'Ja. HYBOTE hält strenge internationale Datenschutzstandards ein. Wir geben keine Daten an Dritte weiter.',
+    'faq.q4':    'Wie sieht die Einrichtung aus?',
+    'faq.a4':    'Die Einrichtung dauert weniger als 24 Stunden. Nach einem kurzen Onboarding-Gespräch konfigurieren wir HYBOTE auf den Ton, Stil und die Arbeitsabläufe Ihres Büros. Kein technisches Wissen erforderlich.',
+    'faq.q5':    'Kann HYBOTE in mein bestehendes CRM integriert werden?',
+    'faq.a5':    'Ja. HYBOTE lässt sich in die gängigsten Immobilien-CRM-Systeme integrieren. Jeder qualifizierte Lead wird automatisch synchronisiert — Ihr Team findet jeden Interessenten bereits vorqualifiziert und bereit zur Weiterverfolgung.',
+    'faq.q6':    'Was passiert mit Leads außerhalb der Geschäftszeiten?',
+    'faq.a6':    'HYBOTE ist 24/7 aktiv — auch abends, am Wochenende und an Feiertagen. Jeder Lead, der außerhalb Ihrer Bürozeiten eingeht, erhält sofort eine professionelle Antwort, genau wie während der Geschäftszeiten.',
+    'faq.q7':    'Für wen ist HYBOTE gedacht?',
+    'faq.a7':    'HYBOTE wurde speziell für Premium- und Luxusimmobilienbüros entwickelt, die hochwertige Kunden betreuen und es sich nicht leisten können, auch nur einen einzigen Lead zu verlieren. Ob 10 oder 200 Leads pro Monat — HYBOTE skaliert mit Ihnen.',
+    'faq.q8':    'Nutzt HYBOTE die offizielle WhatsApp Business API?',
+    'faq.a8':    'Ja – und sie ist proprietär. Im Gegensatz zu generischen KI-Plattformen, die auf Drittanbieter-Wrappers setzen, hat HYBOTE eine eigene, stabile WhatsApp Business API-Infrastruktur entwickelt. Das bedeutet Enterprise-Grade-Zuverlässigkeit, keine Rate-Limiting-Überraschungen und native Integration mit Property Finder, Bayut und Salesforce.',
+    'faq.q9':    'Wie schützt HYBOTE die Privatsphäre von vermögenden Klienten?',
+    'faq.a9':    'Diskretion ist nicht verhandelbar. HYBOTE arbeitet mit strikter Datenisolierung pro Agentur – keine kanalübergreifende Datenweitergabe, Ende-zu-Ende-Verschlüsselung aller WhatsApp-Kommunikation und null Weitergabe an Datenhändler. VIP-Klientenidentitäten und Transaktionsdetails verbleiben ausschließlich in Ihrem System.',
+
+    'mission.label': 'Unsere Mission',
+    'mission.h2':    'Kein HNWI-Klient<br/>ohne Antwort.',
+    'mission.body':  'Wir sind angetreten, um die Lücke zwischen dem Eintreffen einer hochwertigen Anfrage und dem Beginn eines Gesprächs zu schließen. Jede Sekunde der Stille signalisiert, dass der Klient keine Priorität ist. HYBOTE schließt diese Lücke dauerhaft – mit KI, die in der Geschwindigkeit der Erwartung operiert.',
+    'vision.label':  'Unsere Vision',
+    'vision.h2':     'Der KI-Concierge-Standard<br/>für Luxusimmobilien.',
+    'vision.body':   'Der definierende KI-Concierge-Standard für Premium-Immobilienagenturen in der MENA-Region und darüber hinaus zu werden — wo jeder HNWI-Klient eine Antwort erhält, die der Immobilie gerecht wird, die er in Betracht zieht, und der Agentur, der er sein Vertrauen schenkt.',
+    'vision.lang50': 'Sprachen — HYBOTE kommuniziert in über 50 Sprachen, vollautomatisch und ohne Konfigurationsaufwand.',
+
+    'contact.label':    'Kontakt',
+    'contact.h2':       'Private Demo buchen.',
+    'contact.sub':      'Wir zeigen Ihnen in einem 20-minütigen vertraulichen Gespräch, wie HYBOTE Ihre HNWI-Leads behandelt – unverbindlich, vollständig vertraulich.',
+    'contact.i1.title': 'Persönliches Gespräch',
+    'contact.i1.sub':   '20 Minuten, per Videokonferenz',
+    'contact.i2.title': 'Antwort innerhalb einer Stunde',
+    'contact.i2.sub':   'Wir melden uns innerhalb einer Stunde.',
+    'contact.i3.title': 'Keine Verpflichtung',
+    'contact.i3.sub':   'Unverbindlich, kostenlos, transparent.',
+  },
+
+  en: {
+    'nav.problem':  'Problem',
+    'nav.solution': 'Solution',
+    'nav.channels': 'Channels',
+    'nav.results':  'Results',
+    'nav.status':   'System active',
+    'nav.cta':      'Request demo',
+
+    'hero.badge':  'Digital Concierge Infrastructure for MENA\'s Luxury Agents',
+    'hero.h1':     'The infrastructure<br/>elite agencies<br/><span style="font-style:italic;color:var(--a2);">rely on.</span>',
+    'hero.sub':    'HYBOTE is the invisible intelligence behind your client communications — qualifying HNWI prospects with surgical precision, delivering bespoke responses via WhatsApp, and protecting their privacy. <strong style="font-weight:400;color:var(--fg);">Around the clock.</strong>',
+    'hero.cta1':   'Book a Private Demo',
+    'hero.cta2':   'See how it works',
+    'hero.trust1': 'Proprietary WhatsApp API',
+    'hero.trust2': 'VIP Data Privacy',
+    'hero.trust3': 'No Commitment',
+    'hero.trust4': '24 / 7 Active',
+
+    'stat.1': 'Response time',
+    'stat.2': 'Availability',
+    'stat.3': 'More conversions',
+    'stat.4': 'Always active',
+    'stat.5': 'Missed opportunities',
+    'stat.6': 'Languages',
+
+    'prob.label':    'The Problem',
+    'prob.h2':       'Every silent hour<br/>loses a HNWI client.',
+    'prob.sub':      'Across MENA\'s luxury markets, international buyers move fast and expect discretion. First response time is not a courtesy — it is your competitive edge.',
+    'prob.c1.title': 'Silence kills the deal',
+    'prob.c1.body':  'Across MENA\'s luxury markets, a HNWI prospect who receives no reply within minutes is already in conversation with your competitor. There is no second impression.',
+    'prob.c2.title': 'Staff cannot scale to demand',
+    'prob.c2.body':  'International buyers reach out across time zones and channels. Manual response cannot match the volume or the speed that MENA\'s luxury market demands.',
+    'prob.c3.title': 'Generic responses betray the brand',
+    'prob.c3.body':  'A mass-produced first reply signals the prospect is not valued. For a buyer considering a $10M Palm Jumeirah villa, that signal is irreversible.',
+
+    'sol.label':   'The Solution',
+    'sol.h2':      'HYBOTE — Your digital concierge<br/>that <em>never</em> sleeps.',
+    'sol.sub':     'Invisible. Precise. Discreet. HYBOTE qualifies every HNWI prospect with surgical precision, responds through their preferred channel, and protects their privacy — before your first conversation even begins.',
+    'sol.f1.title':'HNWI Qualification',
+    'sol.f1.body': 'Budget range, purchase intent, nationality, and timeline are assessed in under one second — no generic questionnaires, no friction.',
+    'sol.f2.title':'Bespoke First Response',
+    'sol.f2.body': 'Every response is crafted individually — tone-matched to your agency, delivered through the prospect\'s preferred channel.',
+    'sol.f3.title':'Rich Media Delivery',
+    'sol.f3.body': 'Exclusive brochures, floor plans, and virtual tour links delivered instantly inside the conversation — not as a separate email.',
+    'sol.f4.title':'VIP Privacy Shield',
+    'sol.f4.body': 'All prospect data is handled with maximum discretion. Zero third-party data sharing — ever.',
+    'sol.cta':     'Try now',
+
+    'ch.label':   'All channels. One system.',
+    'ch.h2':      'No matter how your lead<br/><em>reaches</em> you.',
+    'ch.sub':     'HYBOTE monitors every incoming channel simultaneously and responds on each with precision — no exceptions, no delays.',
+    'ch.wa.body': 'Unlike generic AI platforms, HYBOTE operates a proprietary WhatsApp Business API infrastructure — purpose-built for luxury real estate. Every enquiry is processed in real time with full discretion. Rich media assets (property brochures, floor plans, virtual tours) are delivered directly in the conversation. Seamlessly integrated with Property Finder, Bayut, and Salesforce.',
+    'ch.wa.tag1': 'Proprietary Architecture', 'ch.wa.tag2': 'Rich Media', 'ch.wa.tag3': 'CRM Sync',
+    'ch.em.title':'Email',
+    'ch.em.body': 'Incoming emails are instantly analysed, prioritised, and answered. High-value leads receive a tailored response matching your agency\'s voice and style.',
+    'ch.em.tag1': 'Prioritization', 'ch.em.tag2': 'Signature match', 'ch.em.tag3': 'Follow-up',
+    'ch.cf.title':'Contact Form',
+    'ch.cf.body': 'Every form request on your website is processed instantly. HYBOTE replies on the prospect\'s preferred channel — professionally, personally, immediately.',
+    'ch.cf.tag1': 'Multi-channel', 'ch.cf.tag2': 'Instant reply', 'ch.cf.tag3': 'Smart routing',
+
+    'how.label':    'Process',
+    'how.h2':       'From enquiry to appointment<br/><em>seamlessly.</em>',
+    'how.s1.title': 'Enquiry arrives',
+    'how.s1.body':  'An international HNWI prospect reaches out — via WhatsApp, email, or contact form. HYBOTE receives the enquiry in real time, across all channels simultaneously.',
+    'how.s2.title': 'AI analysis & qualification',
+    'how.s2.body':  'Budget range, purchase intent, nationality, financing profile, and preferred property type are assessed in under one second. A lead score is assigned and a bespoke response strategy formulated.',
+    'how.s3.title': 'Bespoke instant response',
+    'how.s3.body':  'HYBOTE sends a personalised, brand-matched response on behalf of your agency — via the prospect\'s preferred channel, with relevant property assets included.',
+    'how.s4.title': 'Appointment Booked · You\'re Briefed',
+    'how.s4.body':  'The digital concierge proposes a viewing and reserves the slot autonomously — no action required from you. You receive an instant briefing notification: client profile, budget, and property preferences. You walk in prepared.',
+
+    'res.label': 'Results',
+    'res.h2':    'What premium agents<br/>achieve with HYBOTE.',
+    'res.kpi1':  'Qualified leads',
+    'res.kpi2':  'Response time',
+    'res.kpi3':  'Customer rating',
+    'res.kpi4':  'Lead capture',
+
+    'roi.label':         'ROI Calculator',
+    'roi.h2':            'How much does every<br/><em>missed lead cost you?</em>',
+    'roi.sub':           'Adjust your numbers — and see exactly what you are losing today.',
+    'roi.s1.label':      'Monthly leads',
+    'roi.s1.unit':       'leads / month',
+    'roi.s2.label':      'Current response rate',
+    'roi.s3.label':      'Avg. commission per deal',
+    'roi.without.label': 'Without HYBOTE — Annual revenue loss',
+    'roi.without.sub':   '{lost} leads lost every month. That is your annual missed revenue.',
+    'roi.with.label':    'With HYBOTE — Annual added value',
+    'roi.with.sub':      '{gained} additional qualified deals per year through 95% lead capture.',
+    'roi.cta':           'Request a demo →',
+
+    'cta.h2':  'Ready to never miss a lead again?',
+    'cta.sub': 'Up and running in under 24 hours. No setup fee, no commitment.',
+    'cta.btn': 'Get started',
+
+    'form.first':   'First name',
+    'form.last':    'Last name',
+    'form.company': 'Company / Agency',
+    'form.email':   'Email',
+    'form.phone':   'Phone (optional)',
+    'form.leads':   'Monthly leads',
+    'form.choose':  'Please select',
+    'form.leadopt4':'More than 100 leads',
+    'form.msg':     'Message (optional)',
+    'form.consent': 'I agree to the processing of my data in accordance with the <a href="datenschutz.html" style="color:var(--fg);text-decoration:underline;">Privacy Policy</a>.',
+    'form.submit':  'Request demo appointment',
+    'form.thanks.title': 'Thank you.',
+    'form.thanks.sub':   'We\'ll be in touch within 24 hours – faster, of course.',
+    'form.ph.first':   'John',
+    'form.ph.last':    'Smith',
+    'form.ph.company': 'Smith Real Estate Ltd.',
+    'form.ph.msg':     'Brief description or specific questions...',
+    'form.error':      'Something went wrong. Please try again or email us directly at <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a>',
+
+    'footer.tagline': 'The AI concierge infrastructure for MENA\'s luxury real estate market. Every HNWI client attended to — immediately, discreetly, precisely.',
+    'footer.status':  'System active · 24 / 7',
+    'footer.col1':    'Product',
+    'footer.sol':     'Solution',
+    'footer.ch':      'Channels',
+    'footer.res':     'Results',
+    'footer.col2':    'Company',
+    'footer.about':   'About',
+    'footer.contact': 'Contact',
+    'footer.career':  'Careers',
+    'footer.col3':    'Legal',
+    'footer.privacy': 'Privacy Policy',
+    'footer.terms':   'Terms',
+    'footer.copy':    '© 2025 HYBOTE. All rights reserved.',
+    'footer.trust':   'Proprietary WhatsApp API · VIP Data Privacy',
+
+    'demo.header':      'Incoming Enquiry',
+    'demo.via':         'via WhatsApp · just now',
+    'demo.msg':         '"Good morning, I\'m looking for a penthouse in Dubai Marina or Palm Jumeirah — north-facing, above the 40th floor. Budget $8–12M. Can we arrange a discreet viewing this week?"',
+    'demo.reply.label': 'HYBOTE Response',
+    'demo.reply.body':  'Good morning Mr. Al-Rashidi, we have three exceptional off-market penthouses matching your criteria — including two on Palm Jumeirah with unobstructed sea views. I\'ve attached an exclusive dossier for your review. Would Thursday at 11&thinsp;AM or Saturday at 3&thinsp;PM suit a private walkthrough?',
+    'demo.tag1':        'HNWI Qualified',
+    'demo.tag2':        'CRM Updated · Dossier Sent',
+
+    'ticker.1': 'Enquiry received &ensp;·&ensp; Palm Jumeirah Villa &ensp;·&ensp; HNWI Qualified &ensp;·&ensp; Dossier sent in 1.8&thinsp;s',
+    'ticker.2': 'WhatsApp message &ensp;·&ensp; Dubai Marina Penthouse &ensp;·&ensp; Lead score 94 &ensp;·&ensp; Viewing proposed in 2.1&thinsp;s',
+    'ticker.3': 'International investor enquiry &ensp;·&ensp; CRM synced &ensp;·&ensp; Instant reply via WhatsApp &ensp;·&ensp; 2.3&thinsp;s',
+
+    'founder.label': 'The Founder',
+    'founder.h2':    'Where Hospitality<br/>Meets Artificial Intelligence.',
+    'founder.p1':    'Mohamed Erassas, founder of HYBOTE, is an AI enthusiast who spent years in luxury hospitality — an industry where flawless, instant, and deeply personal communication is not optional, it is expected.',
+    'founder.p2':    'That experience taught him one thing above all else: high-end clients do not forgive silence. A missed lead, a delayed reply, a generic response — these are not inconveniences. They are broken trust.',
+    'founder.p3':    'HYBOTE was built from this exact insight: the combination of a seasoned hospitality expert and an AI enthusiast — precision technology delivered with the standards of a five-star experience. Every lead deserves the response it would get from your best agent — immediately, 24/7, without exception.',
+
+    'faq.label': 'FAQ',
+    'faq.h2':    'Frequently asked<br/>questions.',
+    'faq.q1':    'What channels does HYBOTE support?',
+    'faq.a1':    'HYBOTE supports WhatsApp Business, email, and web contact forms simultaneously — all managed by a single AI system that responds on every channel immediately, 24/7.',
+    'faq.q2':    'How fast does HYBOTE respond to leads?',
+    'faq.a2':    'Every incoming lead receives a personalized response immediately — regardless of the time of day, channel, or volume of simultaneous inquiries.',
+    'faq.q3':    'Is HYBOTE data protection compliant?',
+    'faq.a3':    'Yes. HYBOTE adheres to strict international data protection standards. We do not share data with third parties.',
+    'faq.q4':    'What does the setup process look like?',
+    'faq.a4':    'Setup takes less than 24 hours. After a short onboarding call, we configure HYBOTE to your agency\'s tone, style, and workflows. No technical knowledge required on your end.',
+    'faq.q5':    'Can HYBOTE integrate with my existing CRM?',
+    'faq.a5':    'Yes. HYBOTE integrates with the most common real estate CRM systems. Every qualified lead is automatically synced — your team finds each prospect fully pre-qualified and ready for follow-up.',
+    'faq.q6':    'What happens with leads outside business hours?',
+    'faq.a6':    'HYBOTE operates 24/7 — evenings, weekends, and holidays included. Every lead that arrives outside your office hours receives an immediate, professional response, just as it would during business hours.',
+    'faq.q7':    'Who is HYBOTE designed for?',
+    'faq.a7':    'HYBOTE is built specifically for premium and luxury real estate agencies that handle high-value clients and cannot afford to lose a single lead. Whether you receive 10 or 200 leads per month, HYBOTE scales with you.',
+    'faq.q8':    'Does HYBOTE use the official WhatsApp Business API?',
+    'faq.a8':    'Yes — and it is proprietary. Unlike generic AI platforms that rely on third-party wrappers, HYBOTE has built its own stable WhatsApp Business API infrastructure. This means enterprise-grade reliability, no rate-limiting surprises, and native integration with Property Finder, Bayut, and Salesforce.',
+    'faq.q9':    'How does HYBOTE protect the privacy of high-net-worth clients?',
+    'faq.a9':    'Discretion is non-negotiable. HYBOTE operates under strict data isolation per agency — no cross-client data sharing, end-to-end encryption on all WhatsApp communications, and zero third-party data brokering. VIP client identities and transaction details remain exclusively within your system.',
+
+    'mission.label': 'Our Mission',
+    'mission.h2':    'No HNWI client<br/>left unattended.',
+    'mission.body':  'We exist to eliminate the gap between a high-value enquiry arriving and a conversation starting. Every second of silence signals that the client is not a priority. HYBOTE closes that gap permanently — with AI that operates at the speed of expectation.',
+    'vision.label':  'Our Vision',
+    'vision.h2':     'The AI concierge standard<br/>for luxury real estate.',
+    'vision.body':   'To become the defining AI concierge infrastructure for luxury real estate agencies across MENA and beyond — where every HNWI client receives a response worthy of the property they are considering, and the agency they chose to trust.',
+    'vision.lang50': 'Languages — HYBOTE communicates in over 50 languages, fully automated and with zero configuration.',
+
+    'contact.label':    'Contact',
+    'contact.h2':       'Book a private demo.',
+    'contact.sub':      'We\'ll show you in a 20-minute private call exactly how HYBOTE handles your HNWI leads — no obligation, completely confidential.',
+    'contact.i1.title': 'Personal call',
+    'contact.i1.sub':   '20 minutes, via video conference',
+    'contact.i2.title': 'Response within the hour',
+    'contact.i2.sub':   'We respond within the hour.',
+    'contact.i3.title': 'No obligation',
+    'contact.i3.sub':   'Non-binding, free, transparent.',
+  },
+
+  ar: {
+    'nav.problem':  'المشكلة',
+    'nav.solution': 'الحل',
+    'nav.channels': 'القنوات',
+    'nav.results':  'النتائج',
+    'nav.status':   'النظام نشط',
+    'nav.cta':      'طلب عرض توضيحي',
+
+    'hero.badge':  'بنية تحتية للكونسيرج الرقمي لوكلاء العقارات الفاخرة في منطقة الشرق الأوسط',
+    'hero.h1':     'البنية التحتية التي<br/>تعتمد عليها<br/><span style="font-style:italic;color:var(--a2);">الوكالات الرائدة.</span>',
+    'hero.sub':    'HYBOTE هو الذكاء غير المرئي خلف تواصلك مع العملاء — يؤهل عملاء HNWI بدقة جراحية، ويقدم ردوداً مخصصة عبر واتساب، ويحمي خصوصيتهم. <strong style="font-weight:400;color:var(--fg);">على مدار الساعة.</strong>',
+    'hero.cta1':   'احجز عرضاً خاصاً',
+    'hero.cta2':   'كيف يعمل',
+    'hero.trust1': 'واجهة WhatsApp خاصة',
+    'hero.trust2': 'خصوصية VIP',
+    'hero.trust3': 'بدون التزام',
+    'hero.trust4': 'نشط 24/7',
+
+    'stat.1': 'وقت الاستجابة',
+    'stat.2': 'معدل التوفر',
+    'stat.3': 'مزيد من التحويلات',
+    'stat.4': 'نشط تلقائياً',
+    'stat.5': 'الفرص الفائتة',
+    'stat.6': 'لغة',
+
+    'prob.label':    'المشكلة',
+    'prob.h2':       'كل ساعة صمت<br/>تكلّفك عميل HNWI.',
+    'prob.sub':      'في أسواق الفاخرة بمنطقة الشرق الأوسط، يتحرك المشترون الدوليون بسرعة ويتوقعون السرية. وقت الاستجابة الأولى ليس مجاملة — إنه ميزتك التنافسية.',
+    'prob.c1.title': 'الصمت يقتل الصفقة',
+    'prob.c1.body':  'في أسواق العقارات الفاخرة بمنطقة الشرق الأوسط، عميل HNWI الذي لا يتلقى رداً خلال دقائق يكون بالفعل في محادثة مع منافسك. لا توجد فرصة ثانية.',
+    'prob.c2.title': 'الموظفون لا يستطيعون مواكبة الطلب',
+    'prob.c2.body':  'يتواصل المشترون الدوليون عبر المناطق الزمنية والقنوات المختلفة. لا يمكن للردود اليدوية مواكبة الحجم أو السرعة التي يتطلبها سوق العقارات الفاخرة في منطقة الشرق الأوسط.',
+    'prob.c3.title': 'الردود العامة تخون العلامة التجارية',
+    'prob.c3.body':  'رد أول مُنتَج بشكل جماعي يُشير إلى عدم تقدير العميل. لمشترٍ يفكر في فيلا بـ 10 ملايين دولار في نخلة جميرا، هذه الإشارة لا رجعة فيها.',
+
+    'sol.label':   'الحل',
+    'sol.h2':      'HYBOTE — كونسيرجك الرقمي<br/>الذي لا <em>ينام</em> أبداً.',
+    'sol.sub':     'غير مرئي. دقيق. سري. تؤهل HYBOTE كل عميل HNWI بدقة جراحية، وترد عبر القناة المفضلة لديه، وتحمي خصوصيته — قبل أن تبدأ محادثتك الأولى.',
+    'sol.f1.title':'تأهيل HNWI',
+    'sol.f1.body': 'يُقيَّم نطاق الميزانية ونية الشراء والجنسية والجدول الزمني في أقل من ثانية — دون استبيانات عامة، دون عقبات.',
+    'sol.f2.title':'رد أول حصري',
+    'sol.f2.body': 'كل رد يُصاغ بشكل فردي — بأسلوب وكالتك، عبر القناة التي يختارها العميل.',
+    'sol.f3.title':'تسليم وسائط غنية',
+    'sol.f3.body': 'كتيبات حصرية ومخططات وروابط جولات افتراضية تُسلَّم فوراً داخل المحادثة — لا عبر بريد إلكتروني منفصل.',
+    'sol.f4.title':'درع خصوصية VIP',
+    'sol.f4.body': 'تُعالَج جميع بيانات العملاء بأقصى درجات السرية. لا مشاركة بيانات مع أطراف ثالثة — أبداً.',
+    'sol.cta':     'جرّب الآن',
+
+    'ch.label':   'كل القنوات. نظام واحد.',
+    'ch.h2':      'بغض النظر عن كيفية<br/><em>تواصل</em> عميلك معك.',
+    'ch.sub':     'تراقب HYBOTE كل القنوات الواردة في آنٍ واحد وترد على كل منها بدقة — دون استثناءات، دون تأخير.',
+    'ch.wa.body': 'على عكس منصات الذكاء الاصطناعي العامة، تشغّل HYBOTE بنية تحتية خاصة لـ WhatsApp Business API — مُصمَّمة خصيصاً لسوق العقارات الفاخرة. كل استفسار يُعالَج في الوقت الفعلي بسرية تامة. الأصول عالية الجودة (الكتيبات، المخططات، الجولات الافتراضية) تُسلَّم مباشرة في المحادثة. متكامل بسلاسة مع Property Finder وBayut وSalesforce.',
+    'ch.wa.tag1': 'بنية تحتية خاصة', 'ch.wa.tag2': 'وسائط غنية', 'ch.wa.tag3': 'مزامنة CRM',
+    'ch.em.title':'البريد الإلكتروني',
+    'ch.em.body': 'يتم تحليل رسائل البريد الإلكتروني الواردة وترتيب أولوياتها والرد عليها فوراً. يحصل العملاء المميزون على ردود مخصصة تتناسب مع صوت وكالتك وأسلوبها.',
+    'ch.em.tag1': 'ترتيب الأولويات', 'ch.em.tag2': 'مطابقة التوقيع', 'ch.em.tag3': 'متابعة',
+    'ch.cf.title':'نموذج التواصل',
+    'ch.cf.body': 'تتم معالجة كل طلب نموذج على موقعك فورياً. ترد HYBOTE عبر القناة المفضلة للعميل — باحترافية وتخصيص وبشكل فوري.',
+    'ch.cf.tag1': 'متعدد القنوات', 'ch.cf.tag2': 'رد فوري', 'ch.cf.tag3': 'توجيه ذكي',
+
+    'how.label':    'آلية العمل',
+    'how.h2':       'من الاستفسار إلى الموعد<br/><em>بسلاسة.</em>',
+    'how.s1.title': 'وصول الاستفسار',
+    'how.s1.body':  'يتواصل مستثمر HNWI دولي — عبر واتساب أو البريد الإلكتروني أو نموذج التواصل. تستقبل HYBOTE الاستفسار في الوقت الفعلي، عبر جميع القنوات في آنٍ واحد.',
+    'how.s2.title': 'تحليل الذكاء الاصطناعي والتأهيل',
+    'how.s2.body':  'يُقيَّم نطاق الميزانية ونية الشراء والجنسية وملف التمويل ونوع العقار المفضل في أقل من ثانية. تُحدَّد نقاط العميل وتُصاغ استراتيجية رد مخصصة.',
+    'how.s3.title': 'رد أول حصري',
+    'how.s3.body':  'ترسل HYBOTE رداً فردياً ومتوافقاً مع علامتك التجارية باسم وكالتك — عبر القناة المفضلة للعميل، مع إرفاق أصول العقار ذات الصلة.',
+    'how.s4.title': 'الموعد محجوز · أنت مُطلَع',
+    'how.s4.body':  'يقترح الكونسيرج الرقمي موعد معاينة ويحجز الوقت تلقائياً — دون أي تدخل منك. تتلقى إشعار إحاطة فورياً: ملف العميل والميزانية وتفضيلات العقار. تدخل الاجتماع وأنت مستعد تماماً.',
+
+    'res.label': 'النتائج',
+    'res.h2':    'ما يحققه الوكلاء المميزون<br/>مع HYBOTE.',
+    'res.kpi1':  'عملاء مؤهلون',
+    'res.kpi2':  'وقت الاستجابة',
+    'res.kpi3':  'تقييم العملاء',
+    'res.kpi4':  'التقاط العملاء',
+
+    'roi.label':         'حاسبة العائد على الاستثمار',
+    'roi.h2':            'كم يكلفك<br/><em>كل عميل محتمل ضائع؟</em>',
+    'roi.sub':           'اضبط أرقامك — وشاهد ما تخسره اليوم بالضبط.',
+    'roi.s1.label':      'العملاء المحتملون شهرياً',
+    'roi.s1.unit':       'عميل / شهر',
+    'roi.s2.label':      'معدل الاستجابة الحالي',
+    'roi.s3.label':      'متوسط العمولة لكل صفقة',
+    'roi.without.label': 'بدون HYBOTE — خسارة الإيرادات السنوية',
+    'roi.without.sub':   '{lost} عميل محتمل يضيع شهرياً. هذا هو إيرادك السنوي الفائت.',
+    'roi.with.label':    'مع HYBOTE — القيمة المضافة السنوية',
+    'roi.with.sub':      '{gained} صفقة مؤهلة إضافية سنوياً من خلال التقاط 95% من العملاء.',
+    'roi.cta':           'طلب عرض توضيحي →',
+
+    'cta.h2':  'هل أنت مستعد لعدم تفويت أي عميل محتمل؟',
+    'cta.sub': 'جاهز للعمل في أقل من 24 ساعة. بدون رسوم إعداد أو التزام.',
+    'cta.btn': 'ابدأ الآن',
+
+    'form.first':   'الاسم الأول',
+    'form.last':    'اسم العائلة',
+    'form.company': 'الشركة / مكتب العقارات',
+    'form.email':   'البريد الإلكتروني',
+    'form.phone':   'الهاتف (اختياري)',
+    'form.leads':   'العملاء المحتملون شهرياً',
+    'form.choose':  'الرجاء الاختيار',
+    'form.leadopt4':'أكثر من 100 عميل',
+    'form.msg':     'رسالة (اختيارية)',
+    'form.consent': 'أوافق على معالجة بياناتي وفقاً لـ<a href="datenschutz.html" style="color:var(--fg);text-decoration:underline;">سياسة الخصوصية</a>.',
+    'form.submit':  'طلب موعد العرض التوضيحي',
+    'form.thanks.title': 'شكراً جزيلاً.',
+    'form.thanks.sub':   'سنتواصل معك خلال 24 ساعة – بالطبع أسرع من ذلك.',
+    'form.ph.first':   'محمد',
+    'form.ph.last':    'الأحمد',
+    'form.ph.company': 'شركة الأحمد للعقارات',
+    'form.ph.msg':     'وصف مختصر أو أسئلة محددة...',
+    'form.error':      'حدث خطأ ما. يرجى المحاولة مرة أخرى أو مراسلتنا مباشرة على <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a>',
+
+    'footer.tagline': 'البنية التحتية للكونسيرج الذكي لسوق العقارات الفاخرة في منطقة الشرق الأوسط. كل عميل HNWI يُخدَم — فوراً، بسرية، وبدقة.',
+    'footer.status':  'النظام نشط · 24 / 7',
+    'footer.col1':    'المنتج',
+    'footer.sol':     'الحل',
+    'footer.ch':      'القنوات',
+    'footer.res':     'النتائج',
+    'footer.col2':    'الشركة',
+    'footer.about':   'من نحن',
+    'footer.contact': 'تواصل',
+    'footer.career':  'وظائف',
+    'footer.col3':    'قانوني',
+    'footer.privacy': 'سياسة الخصوصية',
+    'footer.terms':   'الشروط والأحكام',
+    'footer.copy':    '© 2025 HYBOTE. جميع الحقوق محفوظة.',
+    'footer.trust':   'واجهة WhatsApp خاصة · خصوصية VIP',
+
+    'demo.header':      'استفسار وارد',
+    'demo.via':         'عبر واتساب · الآن',
+    'demo.msg':         '"صباح الخير، أبحث عن بنتهاوس في مارينا دبي أو نخلة جميرا — اتجاه شمالي، فوق الطابق الأربعين. الميزانية 8–12 مليون دولار. هل يمكن ترتيب معاينة سرية هذا الأسبوع؟"',
+    'demo.reply.label': 'رد HYBOTE',
+    'demo.reply.body':  'صباح الخير السيد الرشيدي، لدينا ثلاثة بنتهاوسات استثنائية خارج السوق تتوافق مع معاييرك — من بينها اثنان في نخلة جميرا مع إطلالة بحرية بلا حواجز. لقد أرفقت ملفاً حصرياً لمراجعتك. هل يناسبك الخميس الساعة 11&thinsp;صباحاً أو السبت الساعة 3&thinsp;عصراً لجولة خاصة؟',
+    'demo.tag1':        'مؤهل HNWI',
+    'demo.tag2':        'تم تحديث CRM · أُرسل الملف',
+
+    'ticker.1': 'استفسار وارد &ensp;·&ensp; فيلا نخلة جميرا &ensp;·&ensp; مؤهل HNWI &ensp;·&ensp; أُرسل الملف في 1,8&thinsp;ث',
+    'ticker.2': 'رسالة واتساب &ensp;·&ensp; بنتهاوس مارينا دبي &ensp;·&ensp; نقاط العميل 94 &ensp;·&ensp; اقتُرحت معاينة في 2,1&thinsp;ث',
+    'ticker.3': 'استفسار مستثمر دولي &ensp;·&ensp; مُزامَن CRM &ensp;·&ensp; رد فوري عبر واتساب &ensp;·&ensp; 2,3&thinsp;ث',
+
+    'founder.label': 'المؤسس',
+    'founder.h2':    'حيث تلتقي الضيافة<br/>بالذكاء الاصطناعي.',
+    'founder.p1':    'محمد الراساس، مؤسس HYBOTE، متحمس للذكاء الاصطناعي وخبير في مجال الضيافة الفاخرة — صناعة تُعدّ فيها التواصل الفوري والشخصي والمتقن أمراً لا غنى عنه، لا مجرد خيار.',
+    'founder.p2':    'علّمته هذه التجربة شيئاً واحداً: العملاء الراقيون لا يغفرون الصمت. عميل محتمل ضائع، رد متأخر، رسالة عامة — هذه ليست إزعاجات. هذه ثقة مكسورة.',
+    'founder.p3':    'بُني HYBOTE من هذه الرؤية بالضبط: الجمع بين خبرة خبير الضيافة وحماس متخصص الذكاء الاصطناعي — تقنية دقيقة مُقدَّمة بمعايير تجربة الخمس نجوم. كل عميل يستحق الرد الذي سيحصل عليه من أفضل وكيل لديك — فوراً، على مدار الساعة، دون استثناء.',
+
+    'faq.label': 'الأسئلة الشائعة',
+    'faq.h2':    'الأسئلة<br/>المتكررة.',
+    'faq.q1':    'ما هي القنوات التي يدعمها HYBOTE؟',
+    'faq.a1':    'يدعم HYBOTE WhatsApp Business والبريد الإلكتروني ونماذج التواصل على الويب في آنٍ واحد — كلها يديرها نظام ذكاء اصطناعي واحد يرد فوراً على كل قناة، على مدار الساعة.',
+    'faq.q2':    'ما مدى سرعة استجابة HYBOTE للعملاء المحتملين؟',
+    'faq.a2':    'يتلقى كل عميل محتمل وارد رداً مخصصاً فوراً — بغض النظر عن وقت اليوم أو القناة أو حجم الاستفسارات المتزامنة.',
+    'faq.q3':    'هل HYBOTE متوافق مع معايير حماية البيانات؟',
+    'faq.a3':    'نعم. HYBOTE يلتزم بمعايير دولية صارمة لحماية البيانات. لا نشارك البيانات مع أطراف ثالثة.',
+    'faq.q4':    'كيف تبدو عملية الإعداد؟',
+    'faq.a4':    'يستغرق الإعداد أقل من 24 ساعة. بعد مكالمة تأهيل قصيرة، نهيئ HYBOTE ليناسب أسلوب وكالتك وسير عملها. لا تحتاج إلى أي خبرة تقنية.',
+    'faq.q5':    'هل يمكن دمج HYBOTE مع نظام CRM الخاص بي؟',
+    'faq.a5':    'نعم. يتكامل HYBOTE مع أنظمة CRM العقارية الأكثر شيوعاً. يتم مزامنة كل عميل مؤهل تلقائياً — يجد فريقك كل مهتم مؤهلاً مسبقاً وجاهزاً للمتابعة.',
+    'faq.q6':    'ماذا يحدث مع العملاء خارج ساعات العمل؟',
+    'faq.a6':    'يعمل HYBOTE على مدار الساعة — بما في ذلك المساء وعطلات نهاية الأسبوع والأعياد. كل عميل يصل خارج ساعات عملك يتلقى رداً فورياً واحترافياً، تماماً كما في أوقات العمل.',
+    'faq.q7':    'لمن صُمم HYBOTE؟',
+    'faq.a7':    'صُمم HYBOTE خصيصاً لوكالات العقارات الفاخرة والمميزة التي تتعامل مع عملاء رفيعي المستوى ولا تستطيع تحمّل خسارة أي عميل محتمل. سواء تلقيت 10 أو 200 عميل شهرياً، HYBOTE يتوسع معك.',
+    'faq.q8':    'هل تستخدم HYBOTE واجهة WhatsApp Business API الرسمية؟',
+    'faq.a8':    'نعم — وهي خاصة. على عكس منصات الذكاء الاصطناعي العامة التي تعتمد على أغلفة طرف ثالث، بنت HYBOTE بنيتها التحتية الخاصة والمستقرة لـ WhatsApp Business API. هذا يعني موثوقية على مستوى المؤسسات، دون مفاجآت في تحديد المعدل، وتكامل أصلي مع Property Finder وBayut وSalesforce.',
+    'faq.q9':    'كيف تحمي HYBOTE خصوصية العملاء الأثرياء؟',
+    'faq.a9':    'السرية غير قابلة للتفاوض. تعمل HYBOTE بعزل صارم للبيانات لكل وكالة — لا مشاركة بيانات بين العملاء، تشفير شامل لجميع اتصالات واتساب، وصفر مشاركة مع وسطاء البيانات. هويات العملاء VIP وتفاصيل المعاملات تبقى حصراً داخل نظامك.',
+
+    'mission.label': 'مهمتنا',
+    'mission.h2':    'لا عميل HNWI<br/>دون اهتمام.',
+    'mission.body':  'وُجدنا لسد الفجوة بين وصول استفسار عالي القيمة وبدء المحادثة. كل ثانية من الصمت تُشير إلى أن العميل ليس أولوية. HYBOTE يسد هذه الفجوة بشكل دائم — بذكاء اصطناعي يعمل بسرعة التوقعات.',
+    'vision.label':  'رؤيتنا',
+    'vision.h2':     'المعيار الذكي للكونسيرج<br/>في العقارات الفاخرة.',
+    'vision.body':   'أن نصبح البنية التحتية المرجعية للكونسيرج الذكي لوكالات العقارات الفاخرة في منطقة MENA وما وراءها — حيث يتلقى كل عميل HNWI رداً يليق بالعقار الذي يفكر فيه، والوكالة التي منحها ثقته.',
+    'vision.lang50': 'لغة — يتواصل HYBOTE بأكثر من 50 لغة، بشكل تلقائي كامل ودون أي إعداد.',
+
+    'contact.label':    'التواصل',
+    'contact.h2':       'احجز عرضاً خاصاً.',
+    'contact.sub':      'سنريك في مكالمة خاصة مدتها 20 دقيقة كيف تتعامل HYBOTE مع عملاء HNWI لديك — بدون التزام، وبسرية تامة.',
+    'contact.i1.title': 'محادثة شخصية',
+    'contact.i1.sub':   '20 دقيقة، عبر مؤتمر فيديو',
+    'contact.i2.title': 'رد خلال ساعة',
+    'contact.i2.sub':   'نرد خلال ساعة.',
+    'contact.i3.title': 'بدون التزام',
+    'contact.i3.sub':   'غير ملزم، مجاني، شفاف.',
+  }
+};
+
+let currentLang = 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  const html = document.documentElement;
+  html.setAttribute('lang', lang);
+
+  // RTL for Arabic
+  html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+
+  // Update all translated elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (T[lang] && T[lang][key] !== undefined) {
+      el.innerHTML = T[lang][key];
+    }
+  });
+
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    if (T[lang] && T[lang][key] !== undefined) {
+      el.placeholder = T[lang][key];
+    }
+  });
+
+  // Update page title
+  const titles = {
+    de: 'HYBOTE – KI-Lead-Management für Premium-Makler',
+    en: 'HYBOTE – AI Lead Management for Premium Agents',
+    ar: 'HYBOTE – إدارة العملاء المحتملين للوكلاء المميزين'
+  };
+  document.title = titles[lang];
+
+  // Highlight active button
+  ['de','en','ar'].forEach(l => {
+    document.getElementById('btn-' + l).classList.toggle('active', l === lang);
+  });
+
+  // Adjust text direction for nav hero line animation
+  if (lang === 'ar') {
+    document.querySelectorAll('.hero-line').forEach(el => el.style.transformOrigin = 'right');
+  } else {
+    document.querySelectorAll('.hero-line').forEach(el => el.style.transformOrigin = 'left');
+  }
+
+  // Re-run ROI calculator to apply translated dynamic subtitles
+  if (typeof roiUpdate === 'function') roiUpdate();
+
+  // Update ticker
+  const ti = document.getElementById('ticker-inner');
+  if (ti && T[lang]) {
+    const style = 'padding:0 48px;color:var(--a4);';
+    const lines = [T[lang]['ticker.1'], T[lang]['ticker.2'], T[lang]['ticker.3']].filter(Boolean);
+    if (lines.length === 3) {
+      ti.innerHTML = lines.map(l => `<span class="t-label" style="${style}">${l}</span>`).join('') +
+                     lines.map(l => `<span class="t-label" style="${style}">${l}</span>`).join('');
+    }
+  }
+}
+
+// Initialize English as default on load
+setLang('en');
+</script>
+
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "HYBOTE",
+  "url": "https://hybote.ai",
+  "logo": "https://hybote.ai/logo.png",
+  "description": "AI lead management platform for premium real estate agencies. Responds to every lead immediately via email and contact forms.",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "Contact@hybote.ai",
+    "contactType": "customer service",
+    "availableLanguage": ["English", "German", "Arabic"]
+  },
+  "areaServed": ["DE", "AT", "CH", "AE", "SA", "QA"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"What channels does HYBOTE support?","acceptedAnswer":{"@type":"Answer","text":"HYBOTE supports email and web contact forms simultaneously — all managed by a single AI system that responds immediately on every channel, 24/7."}},
+    {"@type":"Question","name":"How fast does HYBOTE respond to leads?","acceptedAnswer":{"@type":"Answer","text":"Every incoming lead receives a personalized response immediately — regardless of the time of day, channel, or volume of simultaneous inquiries."}},
+    {"@type":"Question","name":"Is HYBOTE data protection compliant?","acceptedAnswer":{"@type":"Answer","text":"Yes. HYBOTE adheres to strict international data protection standards. We do not share data with third parties."}},
+    {"@type":"Question","name":"What does the setup process look like?","acceptedAnswer":{"@type":"Answer","text":"Setup takes less than 24 hours. After a short onboarding call, we configure HYBOTE to your agency's tone, style, and workflows."}},
+    {"@type":"Question","name":"Who is HYBOTE designed for?","acceptedAnswer":{"@type":"Answer","text":"HYBOTE is built specifically for premium and luxury real estate agencies that handle high-value clients and cannot afford to lose a single lead."}}
+  ]
+}
+</script>
+
+<!-- Mobile logo responsive size -->
+<script>
+  function resizeLogo() {
+    const logo = document.getElementById('nav-logo');
+    if (logo) logo.style.height = window.innerWidth < 480 ? '80px' : '130px';
+  }
+  resizeLogo();
+  window.addEventListener('resize', resizeLogo);
+</script>
+
+</body>
+</html>
