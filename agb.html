@@ -1,263 +1,247 @@
 <!DOCTYPE html>
-<html lang="de" class="scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Allgemeine Geschäftsbedingungen – HYBOTE</title>
-  <meta name="description" content="Allgemeine Geschäftsbedingungen (AGB) von HYBOTE – KI-Lead-Management für Premium-Maklerbüros." />
-  <meta name="robots" content="noindex, follow" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>HYBOTE – Terms of Service</title>
+  <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=Cairo:wght@200;300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #ffffff; --fg: #161616; --a1: #3d3d3d; --a2: #646464;
-      --a3: #8b8b8b; --a4: #b8b8b8; --a5: #e0e0e0; --a6: #f4f4f4;
+      --bg: #ffffff; --fg: #161616;
+      --a1: #3d3d3d; --a2: #646464; --a3: #8b8b8b; --a4: #b8b8b8; --a5: #e0e0e0; --a6: #f4f4f4;
       --line: rgba(22,22,22,0.10);
     }
-    body {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 300;
-      background: var(--bg);
-      color: var(--fg);
-      -webkit-font-smoothing: antialiased;
-    }
-    ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-track { background: var(--a6); }
-    ::-webkit-scrollbar-thumb { background: var(--a4); }
-
-    .page-header {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--line);
-      padding: 0 32px;
-    }
-    .page-header-inner {
-      max-width: 860px; margin: 0 auto;
-      height: 80px; display: flex; align-items: center; justify-content: space-between;
-    }
-    .back-link {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'Montserrat', sans-serif; font-weight: 300;
-      font-size: 0.78rem; letter-spacing: 0.06em;
-      color: var(--a2); text-decoration: none;
-      transition: color 180ms ease;
-    }
+    html { background: var(--bg); color: var(--fg); }
+    body { font-family: 'Montserrat', sans-serif; font-weight: 300; background: var(--bg); color: var(--fg); -webkit-font-smoothing: antialiased; }
+    body[dir="rtl"] { font-family: 'Cairo', sans-serif; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 80px 32px 120px; }
+    .logo-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 64px; padding-bottom: 24px; border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 12px; }
+    .logo { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg); text-decoration: none; }
+    .lang-row { display: flex; gap: 12px; }
+    .lang-pill { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; letter-spacing: 0.10em; text-transform: uppercase; color: var(--a3); background: transparent; border: 1px solid var(--line); padding: 5px 12px; cursor: pointer; transition: border-color 150ms, color 150ms; }
+    .lang-pill.active, .lang-pill:hover { color: var(--fg); border-color: var(--fg); }
+    .doc-label { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--a3); margin-bottom: 16px; }
+    h1 { font-family: 'Montserrat', sans-serif; font-weight: 200; font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.1; color: var(--fg); margin-bottom: 8px; }
+    .doc-date { font-size: 0.78rem; color: var(--a3); margin-bottom: 48px; }
+    h2 { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 0.9rem; letter-spacing: 0.04em; color: var(--fg); margin: 40px 0 12px; }
+    p, li { font-family: 'Montserrat', sans-serif; font-weight: 300; font-size: 0.88rem; line-height: 1.85; color: var(--a1); }
+    ul { padding-left: 20px; margin-bottom: 12px; }
+    li { margin-bottom: 4px; }
+    .divider { height: 1px; background: var(--line); margin: 48px 0; }
+    .footer-note { font-size: 0.72rem; color: var(--a4); margin-top: 48px; }
+    .back-link { display: inline-flex; align-items: center; gap: 8px; font-family: 'Montserrat', sans-serif; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--a3); text-decoration: none; margin-bottom: 40px; transition: color 150ms; }
     .back-link:hover { color: var(--fg); }
-
-    .content { max-width: 860px; margin: 0 auto; padding: 80px 32px 120px; }
-
-    .agb-label {
-      font-family: 'Montserrat', sans-serif; font-weight: 400;
-      font-size: 0.65rem; letter-spacing: 0.20em; text-transform: uppercase;
-      color: var(--a3); margin-bottom: 20px;
-    }
-    h1 {
-      font-family: 'Montserrat', sans-serif; font-weight: 200;
-      font-size: clamp(2.2rem, 4vw, 3.2rem); letter-spacing: -0.025em;
-      line-height: 1.1; color: var(--fg); margin-bottom: 12px;
-    }
-    .subtitle {
-      font-family: 'Montserrat', sans-serif; font-weight: 300;
-      font-size: 0.85rem; color: var(--a3); margin-bottom: 60px;
-    }
-    hr.divider {
-      border: none; border-top: 1px solid var(--line); margin: 48px 0;
-    }
-    h2 {
-      font-family: 'Montserrat', sans-serif; font-weight: 300;
-      font-size: 1.15rem; letter-spacing: -0.01em;
-      color: var(--fg); margin-bottom: 16px; margin-top: 48px;
-    }
-    h2:first-of-type { margin-top: 0; }
-    p {
-      font-family: 'Montserrat', sans-serif; font-weight: 300;
-      font-size: 0.875rem; line-height: 1.85; color: var(--a1);
-      margin-bottom: 14px;
-    }
-    ul {
-      list-style: none; margin: 0 0 14px 0; padding: 0;
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    ul li {
-      font-family: 'Montserrat', sans-serif; font-weight: 300;
-      font-size: 0.875rem; line-height: 1.75; color: var(--a1);
-      display: flex; align-items: flex-start; gap: 10px;
-    }
-    ul li::before {
-      content: '—'; color: var(--a4); flex-shrink: 0; margin-top: 1px;
-    }
-    a { color: var(--fg); text-decoration: underline; }
-    a:hover { color: var(--a2); }
-    strong { font-weight: 400; color: var(--fg); }
-
-    .info-box {
-      background: var(--a6); border-left: 2px solid var(--a4);
-      padding: 20px 24px; margin: 24px 0;
-    }
-    .info-box p { margin-bottom: 6px; color: var(--a2); font-size: 0.83rem; }
-    .info-box p:last-child { margin-bottom: 0; }
-
-    footer.page-footer {
-      border-top: 1px solid var(--line);
-      padding: 32px;
-      text-align: center;
-    }
-    footer.page-footer p {
-      font-size: 0.75rem; color: var(--a4); margin: 0;
-    }
-    footer.page-footer a { color: var(--a3); }
+    html[dir="rtl"] ul { padding-left: 0; padding-right: 20px; }
+    html[dir="rtl"] .back-link svg { transform: scaleX(-1); }
+    html[dir="rtl"] .lang-row { flex-direction: row-reverse; }
   </style>
 </head>
 <body>
-
-<header class="page-header">
-  <div class="page-header-inner">
-    <a href="index.html" style="display:flex;align-items:center;text-decoration:none;flex-shrink:0;">
-      <img src="logo.png" alt="HYBOTE" style="height:60px;width:auto;display:block;" />
-    </a>
-    <a href="index.html" class="back-link">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Zurück zur Website
-    </a>
+<div class="wrap">
+  <div class="logo-bar">
+    <a href="index.html" class="logo">HYBOTE</a>
+    <div class="lang-row">
+      <button class="lang-pill" onclick="setLang('en')">EN</button>
+      <button class="lang-pill" onclick="setLang('ar')">AR</button>
+      <button class="lang-pill" onclick="setLang('de')">DE</button>
+    </div>
   </div>
-</header>
 
+  <a href="index.html" class="back-link" id="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    <span id="back-label">Back</span>
+  </a>
 
-<div class="content">
+  <div class="doc-label" id="doc-label">Legal</div>
+  <h1 id="title">Terms of Service</h1>
+  <p class="doc-date" id="doc-date">Last updated: April 2025</p>
 
-  <div class="agb-label">Rechtliches</div>
-  <h1>Allgemeine Geschäfts&shy;bedingungen</h1>
-  <p class="subtitle">Stand: April 2025 &nbsp;·&nbsp; HYBOTE</p>
+  <div id="content"></div>
 
-  <hr class="divider" />
-
-  <!-- 1 -->
-  <h2>§ 1 Geltungsbereich und Anbieter</h2>
-  <p>Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge, die zwischen</p>
-  <div class="info-box">
-    <p><strong>HYBOTE</strong></p>
-    <p>Inhaber: Mohamed Erassas</p>
-    <p>E-Mail: <a href="mailto:Contact@hybote.ai">Contact@hybote.ai</a></p>
-    <p>Website: <a href="https://hybote.ai">hybote.ai</a></p>
-  </div>
-  <p>– nachfolgend <strong>„HYBOTE"</strong> oder <strong>„Anbieter"</strong> – und dem jeweiligen Auftraggeber – nachfolgend <strong>„Kunde"</strong> – über die Nutzung der KI-basierten Lead-Management-Plattform HYBOTE geschlossen werden.</p>
-  <p>Abweichende, entgegenstehende oder ergänzende Allgemeine Geschäftsbedingungen des Kunden werden nur dann Vertragsbestandteil, wenn und soweit HYBOTE ihrer Geltung ausdrücklich schriftlich zugestimmt hat.</p>
-
-  <hr class="divider" />
-
-  <!-- 2 -->
-  <h2>§ 2 Leistungsbeschreibung</h2>
-  <p>HYBOTE stellt eine KI-gestützte Softwareplattform zur automatisierten Verarbeitung, Qualifizierung und Beantwortung von Immobilien-Leads bereit. Die Leistungen umfassen insbesondere:</p>
-  <ul>
-    <li>Automatisierte Entgegennahme und Erstbearbeitung von Leads über E-Mail und Kontaktformulare</li>
-    <li>KI-gestützte Qualifizierung und Lead-Scoring</li>
-    <li>Automatische, personalisierte Sofortantworten im Namen des Kunden</li>
-    <li>Selbstständige Terminvereinbarung durch den KI-Agenten</li>
-    <li>Push-Benachrichtigung an den Makler bei vereinbarten Terminen</li>
-    <li>Datensynchronisation mit kompatiblen CRM-Systemen</li>
-    <li>Onboarding und initiale Konfiguration</li>
-  </ul>
-  <p>Der genaue Leistungsumfang ergibt sich aus dem jeweils abgeschlossenen Einzelvertrag bzw. dem gebuchten Leistungspaket. HYBOTE ist berechtigt, die Plattform laufend weiterzuentwickeln und zu verbessern, sofern dies die vereinbarten Kernfunktionen nicht wesentlich beeinträchtigt.</p>
-
-  <hr class="divider" />
-
-  <!-- 3 -->
-  <h2>§ 3 Vertragsschluss</h2>
-  <p>Die Darstellung der Leistungen auf der Website hybote.ai stellt kein rechtlich bindendes Angebot dar, sondern eine Aufforderung zur Abgabe eines Angebots (invitatio ad offerendum). Ein Vertrag kommt erst durch die schriftliche oder elektronische Bestätigung durch HYBOTE zustande.</p>
-  <p>Der Kunde gibt sein Vertragsangebot durch Ausfüllen und Absenden des Demo-Formulars oder durch eine sonstige schriftliche Anfrage ab. HYBOTE bestätigt den Eingang der Anfrage und übermittelt ein konkretes Angebot. Der Vertrag kommt mit schriftlicher Annahme durch den Kunden oder Beginn der Leistungserbringung durch HYBOTE zustande.</p>
-
-  <hr class="divider" />
-
-  <!-- 4 -->
-  <h2>§ 4 Pflichten des Kunden</h2>
-  <p>Der Kunde verpflichtet sich:</p>
-  <ul>
-    <li>Die Plattform ausschließlich für rechtmäßige Zwecke im Rahmen der Immobilienvermittlung zu nutzen</li>
-    <li>Zugangs- und Konfigurationsdaten vertraulich zu behandeln und nicht an Dritte weiterzugeben</li>
-    <li>HYBOTE unverzüglich über Änderungen relevanter Rahmenbedingungen (z. B. neue Kommunikationskanäle, CRM-Wechsel) zu informieren</li>
-    <li>Sicherzustellen, dass die Nutzung von HYBOTE im Einklang mit den datenschutzrechtlichen Anforderungen der DSGVO steht und die erforderlichen Einwilligungen der von HYBOTE kontaktierten Personen vorliegen</li>
-    <li>Keine Inhalte oder Daten in die Plattform einzuspeisen, die gegen geltendes Recht verstoßen oder Rechte Dritter verletzen</li>
-  </ul>
-
-  <hr class="divider" />
-
-  <!-- 5 -->
-  <h2>§ 5 Vergütung und Zahlungsbedingungen</h2>
-  <p>Die Vergütung richtet sich nach dem im Einzelvertrag vereinbarten Leistungspaket. Alle Preise verstehen sich zuzüglich der gesetzlichen Umsatzsteuer, sofern nicht anders angegeben.</p>
-  <p>Rechnungen sind innerhalb von 14 Tagen nach Rechnungsdatum ohne Abzug zur Zahlung fällig. Bei Zahlungsverzug ist HYBOTE berechtigt, Verzugszinsen in Höhe von 9 Prozentpunkten über dem Basiszinssatz gemäß § 288 BGB zu berechnen sowie die Leistungserbringung bis zur vollständigen Zahlung auszusetzen.</p>
-
-  <hr class="divider" />
-
-  <!-- 6 -->
-  <h2>§ 6 Laufzeit und Kündigung</h2>
-  <p>Der Vertrag wird für die im Einzelvertrag vereinbarte Laufzeit geschlossen. Sofern keine abweichende Vereinbarung getroffen wurde, gilt:</p>
-  <ul>
-    <li>Mindestlaufzeit: keine (monatliche Kündigung möglich)</li>
-    <li>Kündigungsfrist: 14 Tage zum Monatsende</li>
-    <li>Kündigung per E-Mail an <a href="mailto:Contact@hybote.ai">Contact@hybote.ai</a></li>
-  </ul>
-  <p>Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt. Ein wichtiger Grund liegt insbesondere vor, wenn der Kunde gegen wesentliche Vertragspflichten verstößt oder mit Zahlungen in Verzug gerät.</p>
-
-  <hr class="divider" />
-
-  <!-- 7 -->
-  <h2>§ 7 Verfügbarkeit und Wartung</h2>
-  <p>HYBOTE strebt eine Verfügbarkeit der Plattform von 99 % im Jahresdurchschnitt an. Hiervon ausgenommen sind geplante Wartungsarbeiten, die HYBOTE nach Möglichkeit außerhalb der Geschäftszeiten durchführt und dem Kunden vorab ankündigt.</p>
-  <p>HYBOTE ist nicht verantwortlich für Ausfälle, die auf Umständen außerhalb des Einflussbereichs von HYBOTE beruhen, insbesondere auf höherer Gewalt, Ausfall der Internetinfrastruktur des Kunden oder Störungen bei Drittanbietern (E-Mail-Dienstleister, CRM-Systeme).</p>
-
-  <hr class="divider" />
-
-  <!-- 8 -->
-  <h2>§ 8 Haftung</h2>
-  <p>HYBOTE haftet unbeschränkt für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit sowie für Schäden, die auf einer vorsätzlichen oder grob fahrlässigen Pflichtverletzung von HYBOTE beruhen.</p>
-  <p>Für leicht fahrlässige Pflichtverletzungen haftet HYBOTE nur, sofern wesentliche Vertragspflichten verletzt werden. In diesen Fällen ist die Haftung auf den vertragstypischen, vorhersehbaren Schaden begrenzt.</p>
-  <p>HYBOTE übernimmt keine Haftung für den wirtschaftlichen Erfolg des Kunden durch den Einsatz der Plattform. Die Qualität der automatisierten Kommunikation hängt von den durch den Kunden bereitgestellten Konfigurationsdaten ab. HYBOTE ist nicht verantwortlich für Fehler, die aus unvollständigen oder unzutreffenden Kundenangaben resultieren.</p>
-
-  <hr class="divider" />
-
-  <!-- 9 -->
-  <h2>§ 9 Datenschutz und Auftragsverarbeitung</h2>
-  <p>Soweit HYBOTE im Rahmen der Leistungserbringung personenbezogene Daten im Auftrag des Kunden verarbeitet, schließen die Parteien einen gesonderten Auftragsverarbeitungsvertrag (AVV) gemäß Art. 28 DSGVO ab. Die Datenschutzerklärung von HYBOTE ist unter <a href="datenschutz.html" target="_blank">hybote.ai/datenschutz.html</a> abrufbar.</p>
-  <p>Der Kunde ist als Verantwortlicher im Sinne der DSGVO für die rechtmäßige Erhebung und Verarbeitung der Lead-Daten durch HYBOTE verantwortlich. Er stellt sicher, dass die notwendigen Rechtsgrundlagen für die Verarbeitung durch HYBOTE vorliegen.</p>
-
-  <hr class="divider" />
-
-  <!-- 10 -->
-  <h2>§ 10 Geheimhaltung</h2>
-  <p>Beide Parteien verpflichten sich, alle vertraulichen Informationen der jeweils anderen Partei, die ihnen im Rahmen der Geschäftsbeziehung bekannt werden, vertraulich zu behandeln und nicht an Dritte weiterzugeben. Diese Pflicht gilt auch nach Beendigung des Vertragsverhältnisses fort. Davon ausgenommen sind Informationen, die allgemein bekannt sind oder der empfangenden Partei bereits bekannt waren.</p>
-
-  <hr class="divider" />
-
-  <!-- 11 -->
-  <h2>§ 11 Urheberrecht und Nutzungsrechte</h2>
-  <p>Alle Rechte an der HYBOTE-Plattform, ihrer Software, Algorithmen, Designs und Dokumentation verbleiben bei HYBOTE. Der Kunde erhält für die Dauer des Vertrags ein nicht übertragbares, nicht unterlizenzierbares Recht zur Nutzung der Plattform im vereinbarten Umfang.</p>
-  <p>Der Kunde ist nicht berechtigt, die Plattform zu dekompilieren, zu disassemblieren, zurückzuentwickeln oder Dritten zur Nutzung zu überlassen.</p>
-
-  <hr class="divider" />
-
-  <!-- 12 -->
-  <h2>§ 12 Änderungen der AGB</h2>
-  <p>HYBOTE behält sich vor, diese AGB mit Wirkung für die Zukunft zu ändern. Änderungen werden dem Kunden per E-Mail mitgeteilt. Widerspricht der Kunde nicht innerhalb von 30 Tagen nach Zugang der Mitteilung, gelten die geänderten AGB als akzeptiert. Auf dieses Widerspruchsrecht und seine Folgen wird HYBOTE in der Änderungsmitteilung ausdrücklich hinweisen.</p>
-
-  <hr class="divider" />
-
-  <!-- 13 -->
-  <h2>§ 13 Schlussbestimmungen</h2>
-  <p>Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts (CISG).</p>
-  <p>Gerichtsstand für alle Streitigkeiten aus und im Zusammenhang mit diesen AGB ist, soweit gesetzlich zulässig, der Sitz von HYBOTE.</p>
-  <p>Sollten einzelne Bestimmungen dieser AGB unwirksam oder undurchführbar sein oder werden, berührt dies die Wirksamkeit der übrigen Bestimmungen nicht. An die Stelle der unwirksamen oder undurchführbaren Bestimmung tritt eine wirksame Regelung, die dem wirtschaftlichen Zweck der unwirksamen Bestimmung am nächsten kommt.</p>
-
+  <div class="divider"></div>
+  <p class="footer-note">© 2025 HYBOTE · <a href="mailto:Contact@hybote.ai" style="color:inherit;">Contact@hybote.ai</a></p>
 </div>
 
+<script>
+  const C = {
+    en: {
+      lang: 'en', dir: 'ltr',
+      back: 'Back', label: 'Legal', title: 'Terms of Service',
+      date: 'Last updated: April 2025',
+      html: `
+        <h2>1. Scope</h2>
+        <p>These Terms of Service ("Terms") govern the use of all services provided by HYBOTE, operated by Mr. Mohamed Sabri ("we", "us", or "HYBOTE"), including but not limited to the AI lead management platform, WhatsApp Business API integration, email automation, and related digital infrastructure services.</p>
 
-<footer class="page-footer">
-  <p>© 2025 HYBOTE · <a href="index.html">Zurück zur Website</a> · <a href="datenschutz.html" target="_blank">Datenschutz</a> · <a href="mailto:Contact@hybote.ai">Contact@hybote.ai</a></p>
-</footer>
+        <h2>2. Services</h2>
+        <p>HYBOTE provides AI-powered communication and lead management infrastructure designed for luxury real estate agencies. Services include:</p>
+        <ul>
+          <li>Automated lead qualification and response via WhatsApp, email, and web contact forms</li>
+          <li>CRM synchronisation and lead scoring</li>
+          <li>Bespoke response generation in multiple languages</li>
+          <li>Rich media delivery (brochures, floor plans, virtual tours)</li>
+          <li>Real-time reporting and performance analytics</li>
+        </ul>
 
+        <h2>3. Eligibility &amp; Registration</h2>
+        <p>Services are available exclusively to registered business entities and licensed real estate professionals. By registering, you confirm that you have the authority to enter into a binding agreement on behalf of your organisation. Accounts are non-transferable.</p>
+
+        <h2>4. Fees &amp; Payment</h2>
+        <p>Service fees are agreed individually in a separate Service Agreement. All fees are due within 14 days of invoice unless otherwise stated. HYBOTE reserves the right to suspend access for overdue accounts after written notice. Fees are exclusive of any applicable VAT or local taxes.</p>
+
+        <h2>5. Acceptable Use</h2>
+        <p>You agree to use HYBOTE's services only for lawful purposes and in accordance with these Terms. You must not:</p>
+        <ul>
+          <li>Use the platform to transmit spam, unsolicited marketing, or unlawful content</li>
+          <li>Attempt to reverse-engineer, copy, or resell any component of the service</li>
+          <li>Share access credentials with third parties outside your organisation</li>
+          <li>Circumvent any technical limitations or security measures</li>
+        </ul>
+
+        <h2>6. Data &amp; Privacy</h2>
+        <p>HYBOTE processes personal data strictly as a data processor on your behalf. All data handling is governed by our Privacy Policy and any applicable data processing agreement. We do not sell or share client data with third parties. For full details, please refer to our Privacy Policy.</p>
+
+        <h2>7. Limitation of Liability</h2>
+        <p>To the maximum extent permitted by applicable law, HYBOTE shall not be liable for any indirect, incidental, consequential, or punitive damages arising from the use or inability to use our services. Our total aggregate liability shall not exceed the fees paid by you in the three months preceding the claim.</p>
+
+        <h2>8. Termination</h2>
+        <p>Either party may terminate the service agreement with 30 days' written notice. HYBOTE may terminate immediately upon material breach of these Terms. Upon termination, your data will be made available for export for 30 days, after which it will be securely deleted.</p>
+
+        <h2>9. Governing Law</h2>
+        <p>These Terms are governed by applicable international commercial law. Any disputes shall be resolved through good-faith negotiation, and if unresolved, through binding arbitration in a mutually agreed jurisdiction.</p>
+
+        <h2>10. Contact</h2>
+        <p>For any questions regarding these Terms, please contact:<br/>
+        <strong>Mr. Mohamed Sabri — HYBOTE</strong><br/>
+        Email: <a href="mailto:Contact@hybote.ai" style="color:var(--fg);">Contact@hybote.ai</a></p>
+      `
+    },
+    de: {
+      lang: 'de', dir: 'ltr',
+      back: 'Zurück', label: 'Rechtliches', title: 'Allgemeine Geschäftsbedingungen',
+      date: 'Stand: April 2025',
+      html: `
+        <h2>1. Geltungsbereich</h2>
+        <p>Diese Allgemeinen Geschäftsbedingungen („AGB") regeln die Nutzung aller Dienstleistungen von HYBOTE, betrieben durch Herrn Mohamed Sabri („wir", „uns" oder „HYBOTE"), einschließlich der KI-Lead-Management-Plattform, WhatsApp Business API-Integration, E-Mail-Automatisierung und zugehöriger digitaler Infrastrukturdienstleistungen.</p>
+
+        <h2>2. Leistungsumfang</h2>
+        <p>HYBOTE stellt KI-gestützte Kommunikations- und Lead-Management-Infrastruktur für Luxusimmobilienagenturen bereit. Die Leistungen umfassen:</p>
+        <ul>
+          <li>Automatisierte Lead-Qualifizierung und Beantwortung per WhatsApp, E-Mail und Web-Kontaktformularen</li>
+          <li>CRM-Synchronisierung und Lead-Scoring</li>
+          <li>Individuell verfasste Antworten in mehreren Sprachen</li>
+          <li>Zustellung von Rich Media (Exposés, Grundrisse, virtuelle Touren)</li>
+          <li>Echtzeit-Reporting und Performance-Analysen</li>
+        </ul>
+
+        <h2>3. Berechtigung &amp; Registrierung</h2>
+        <p>Die Leistungen stehen ausschließlich registrierten Unternehmen und lizenzierten Immobilienfachleuten zur Verfügung. Mit der Registrierung bestätigen Sie, dass Sie berechtigt sind, eine verbindliche Vereinbarung im Namen Ihrer Organisation einzugehen. Konten sind nicht übertragbar.</p>
+
+        <h2>4. Entgelte &amp; Zahlung</h2>
+        <p>Leistungsentgelte werden individuell in einem gesonderten Servicevertrag vereinbart. Alle Entgelte sind innerhalb von 14 Tagen nach Rechnungsstellung fällig, sofern nicht anders vereinbart. Bei Zahlungsverzug behält sich HYBOTE vor, den Zugang nach schriftlicher Mahnung zu sperren. Alle Preise verstehen sich zzgl. gesetzlicher Mehrwertsteuer.</p>
+
+        <h2>5. Zulässige Nutzung</h2>
+        <p>Sie verpflichten sich, die Leistungen von HYBOTE ausschließlich für rechtmäßige Zwecke zu nutzen. Untersagt ist insbesondere:</p>
+        <ul>
+          <li>Die Nutzung der Plattform zur Übermittlung von Spam oder unerwünschten Werbebotschaften</li>
+          <li>Reverse Engineering, Kopieren oder Weiterverkauf von Plattformkomponenten</li>
+          <li>Weitergabe von Zugangsdaten an Dritte außerhalb Ihrer Organisation</li>
+          <li>Umgehung technischer Schutzmaßnahmen</li>
+        </ul>
+
+        <h2>6. Daten &amp; Datenschutz</h2>
+        <p>HYBOTE verarbeitet personenbezogene Daten ausschließlich als Auftragsverarbeiter in Ihrem Auftrag. Alle Datenverarbeitungen unterliegen unserer Datenschutzerklärung und einem gesonderten Auftragsverarbeitungsvertrag. Wir verkaufen oder teilen Kundendaten nicht mit Dritten. Weitere Einzelheiten entnehmen Sie bitte unserer Datenschutzerklärung.</p>
+
+        <h2>7. Haftungsbeschränkung</h2>
+        <p>Im gesetzlich zulässigen Umfang haftet HYBOTE nicht für mittelbare, zufällige, Folge- oder Strafschäden, die aus der Nutzung oder Nichtnutzung unserer Leistungen entstehen. Die Gesamthaftung ist auf die in den drei Monaten vor dem Schadensfall gezahlten Entgelte begrenzt.</p>
+
+        <h2>8. Kündigung</h2>
+        <p>Beide Parteien können den Servicevertrag mit einer Frist von 30 Tagen schriftlich kündigen. HYBOTE kann bei wesentlichen Vertragsverletzungen fristlos kündigen. Nach Vertragsende stehen Ihre Daten 30 Tage lang zum Export bereit, bevor sie sicher gelöscht werden.</p>
+
+        <h2>9. Anwendbares Recht</h2>
+        <p>Diese AGB unterliegen dem jeweils anwendbaren internationalen Handelsrecht. Streitigkeiten werden zunächst im guten Glauben verhandelt; können sie nicht beigelegt werden, werden sie durch verbindliche Schiedsgerichtsbarkeit in einer einvernehmlich vereinbarten Rechtsordnung entschieden.</p>
+
+        <h2>10. Kontakt</h2>
+        <p>Bei Fragen zu diesen AGB wenden Sie sich bitte an:<br/>
+        <strong>Herr Mohamed Sabri — HYBOTE</strong><br/>
+        E-Mail: <a href="mailto:Contact@hybote.ai" style="color:var(--fg);">Contact@hybote.ai</a></p>
+      `
+    },
+    ar: {
+      lang: 'ar', dir: 'rtl',
+      back: 'رجوع', label: 'قانوني', title: 'شروط الخدمة',
+      date: 'آخر تحديث: أبريل 2025',
+      html: `
+        <h2>1. النطاق</h2>
+        <p>تحكم شروط الخدمة هذه ("الشروط") استخدام جميع الخدمات التي تقدمها HYBOTE، التي يديرها السيد محمد صبري ("نحن" أو "HYBOTE")، بما في ذلك منصة إدارة العملاء المحتملين بالذكاء الاصطناعي، وتكامل واجهة WhatsApp Business API، وأتمتة البريد الإلكتروني، وخدمات البنية التحتية الرقمية ذات الصلة.</p>
+
+        <h2>2. الخدمات</h2>
+        <p>تقدم HYBOTE بنية تحتية لإدارة التواصل والعملاء المحتملين مدعومة بالذكاء الاصطناعي، مصممة لوكالات العقارات الفاخرة. تشمل الخدمات:</p>
+        <ul>
+          <li>تأهيل العملاء المحتملين والرد عليهم تلقائياً عبر واتساب والبريد الإلكتروني ونماذج التواصل</li>
+          <li>مزامنة CRM وتقييم العملاء المحتملين</li>
+          <li>إنشاء ردود مخصصة بلغات متعددة</li>
+          <li>تسليم الوسائط الغنية (الكتيبات، المخططات، الجولات الافتراضية)</li>
+          <li>التقارير الفورية وتحليلات الأداء</li>
+        </ul>
+
+        <h2>3. الأهلية والتسجيل</h2>
+        <p>الخدمات متاحة حصراً للكيانات التجارية المسجلة والمتخصصين العقاريين المرخصين. بالتسجيل، تؤكد أن لديك صلاحية إبرام اتفاقية ملزمة نيابةً عن مؤسستك. الحسابات غير قابلة للنقل.</p>
+
+        <h2>4. الرسوم والدفع</h2>
+        <p>تُتفق رسوم الخدمة بشكل فردي في اتفاقية خدمة منفصلة. جميع الرسوم مستحقة خلال 14 يوماً من الفاتورة ما لم يُذكر خلاف ذلك. تحتفظ HYBOTE بحق تعليق الوصول للحسابات المتأخرة بعد إشعار خطي. الرسوم لا تشمل ضريبة القيمة المضافة أو الضرائب المحلية المعمول بها.</p>
+
+        <h2>5. الاستخدام المقبول</h2>
+        <p>توافق على استخدام خدمات HYBOTE فقط لأغراض مشروعة. يُحظر:</p>
+        <ul>
+          <li>استخدام المنصة لإرسال بريد عشوائي أو محتوى غير مشروع</li>
+          <li>محاولة إجراء هندسة عكسية أو نسخ أو إعادة بيع أي مكوّن من الخدمة</li>
+          <li>مشاركة بيانات الوصول مع أطراف ثالثة خارج مؤسستك</li>
+          <li>التحايل على أي قيود تقنية أو تدابير أمنية</li>
+        </ul>
+
+        <h2>6. البيانات والخصوصية</h2>
+        <p>تعالج HYBOTE البيانات الشخصية حصراً بوصفها معالجاً للبيانات نيابةً عنك. تخضع جميع معالجات البيانات لسياسة الخصوصية الخاصة بنا وأي اتفاقية معالجة بيانات سارية. لا نبيع بيانات العملاء ولا نشاركها مع أطراف ثالثة. للاطلاع على التفاصيل الكاملة، يُرجى الرجوع إلى سياسة الخصوصية.</p>
+
+        <h2>7. تحديد المسؤولية</h2>
+        <p>في أقصى الحدود التي يسمح بها القانون المعمول به، لن تكون HYBOTE مسؤولة عن أي أضرار غير مباشرة أو عرضية أو تبعية أو عقابية تنشأ عن استخدام أو عدم القدرة على استخدام خدماتنا. لا تتجاوز مسؤوليتنا الإجمالية الرسوم المدفوعة خلال الثلاثة أشهر السابقة للمطالبة.</p>
+
+        <h2>8. الإنهاء</h2>
+        <p>يحق لأي طرف إنهاء اتفاقية الخدمة بإشعار خطي قبل 30 يوماً. يجوز لـ HYBOTE الإنهاء الفوري عند الإخلال الجوهري بهذه الشروط. عند الإنهاء، ستُتاح بياناتك للتصدير لمدة 30 يوماً، وبعد ذلك تُحذف بشكل آمن.</p>
+
+        <h2>9. القانون الحاكم</h2>
+        <p>تخضع هذه الشروط للقانون التجاري الدولي المعمول به. تُحل النزاعات أولاً بالتفاوض بحسن نية، وإن لم تُحل، عبر التحكيم الملزم في ولاية قضائية يتفق عليها الطرفان.</p>
+
+        <h2>10. التواصل</h2>
+        <p>لأي استفسارات بشأن هذه الشروط، يُرجى التواصل مع:<br/>
+        <strong>السيد محمد صبري — HYBOTE</strong><br/>
+        البريد الإلكتروني: <a href="mailto:Contact@hybote.ai" style="color:var(--fg);">Contact@hybote.ai</a></p>
+      `
+    }
+  };
+
+  function setLang(lang) {
+    const c = C[lang] || C.en;
+    document.documentElement.setAttribute('lang', c.lang);
+    document.documentElement.setAttribute('dir', c.dir);
+    document.body.setAttribute('dir', c.dir);
+    document.getElementById('back-label').textContent = c.back;
+    document.getElementById('doc-label').textContent = c.label;
+    document.getElementById('title').textContent = c.title;
+    document.getElementById('doc-date').textContent = c.date;
+    document.getElementById('content').innerHTML = c.html;
+    document.querySelectorAll('.lang-pill').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent.toLowerCase() === lang);
+    });
+    document.title = 'HYBOTE – ' + c.title;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const initLang = C[params.get('lang')] ? params.get('lang') : 'en';
+  setLang(initLang);
+</script>
 </body>
 </html>

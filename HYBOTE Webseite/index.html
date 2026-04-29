@@ -463,6 +463,63 @@
       from { width: 0; }
       to   { width: 100%; }
     }
+
+    /* ── Hero ambient glow ───────────────────────────────────────── */
+    @keyframes hero-glow-a {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50%       { transform: translate(40px, -30px) scale(1.08); }
+    }
+    @keyframes hero-glow-b {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50%       { transform: translate(-30px, 25px) scale(1.06); }
+    }
+    .hero-glow-a {
+      position: absolute; pointer-events: none; z-index: 0;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(22,22,22,0.04) 0%, transparent 70%);
+      top: -80px; right: -100px;
+      animation: hero-glow-a 12s ease-in-out infinite;
+    }
+    .hero-glow-b {
+      position: absolute; pointer-events: none; z-index: 0;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(22,22,22,0.03) 0%, transparent 70%);
+      bottom: 0; left: -80px;
+      animation: hero-glow-b 16s ease-in-out infinite;
+    }
+
+    /* ── Problem card enhanced hover ─────────────────────────────── */
+    .prob-card {
+      background: var(--bg);
+      padding: 40px;
+      transition: transform 280ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 280ms ease;
+    }
+    .prob-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(22,22,22,0.08), 0 2px 8px rgba(22,22,22,0.04);
+    }
+
+    /* ── How-it-works step connector ─────────────────────────────── */
+    .how-connector {
+      position: absolute;
+      left: 20px;
+      top: 100%;
+      width: 1px;
+      height: 48px;
+      background: var(--line);
+      transform-origin: top;
+      transform: scaleY(0);
+      transition: transform 600ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.in .how-connector { transform: scaleY(1); }
+
+    /* ── Grain overlay on dark sections ─────────────────────────── */
+    .grain-overlay {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 128px 128px;
+    }
   </style>
 </head>
 
@@ -471,17 +528,17 @@
 <!-- ══════════════════════════════════════════════════════════
      NAVIGATION
 ══════════════════════════════════════════════════════════ -->
-<header id="nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line);transition:box-shadow 300ms ease;">
-  <div style="max-width:1200px;margin:0 auto;padding:0 32px;height:120px;display:flex;align-items:center;justify-content:space-between;">
+<header id="nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--line);transition:box-shadow 300ms ease;">
+  <div style="max-width:1200px;margin:0 auto;padding:0 32px;height:80px;display:flex;align-items:center;justify-content:space-between;">
 
     <!-- Logo -->
     <a href="#" style="display:flex;align-items:center;text-decoration:none;flex-shrink:0;">
-      <img src="logo.png" alt="HYBOTE" style="height:130px;width:auto;display:block;" id="nav-logo" />
+      <img src="logo.png" alt="HYBOTE" style="height:64px;width:auto;display:block;" id="nav-logo" />
     </a>
 
     <!-- Desktop nav -->
     <nav id="d-nav" style="display:none;align-items:center;gap:36px;">
-      <a href="#problem" class="nav-link" data-i18n="nav.problem">Problem</a>
+      <a href="#problem" class="nav-link" data-i18n="nav.problem">Why HYBOTE</a>
       <a href="#loesung" class="nav-link" data-i18n="nav.solution">Lösung</a>
       <a href="#kanaele" class="nav-link" data-i18n="nav.channels">Kanäle</a>
     </nav>
@@ -527,7 +584,9 @@
 <!-- ══════════════════════════════════════════════════════════
      HERO
 ══════════════════════════════════════════════════════════ -->
-<section style="padding:200px 32px 100px;max-width:1200px;margin:0 auto;position:relative;">
+<section style="padding:160px 32px 100px;max-width:1200px;margin:0 auto;position:relative;overflow:hidden;">
+  <div class="hero-glow-a"></div>
+  <div class="hero-glow-b"></div>
 
   <!-- Label -->
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:40px;">
@@ -592,8 +651,8 @@
     </div>
 
     <div class="reveal" style="text-align:center;transition-delay:240ms;">
-      <div class="stat-num"><span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-right:2px;">$</span>0</div>
-      <div class="t-label" style="margin-top:10px;" data-i18n="stat.5">Verpasste Chancen</div>
+      <div class="stat-num" id="stat-5-num">100<span style="font-size:0.45em;letter-spacing:0;font-weight:300;color:var(--a2);margin-left:2px;">%</span></div>
+      <div class="t-label" style="margin-top:10px;" data-i18n="stat.5">Systemverfügbarkeit</div>
     </div>
 
     <div class="reveal" style="text-align:center;transition-delay:300ms;">
@@ -639,19 +698,19 @@
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--line);">
 
-      <div class="reveal" style="background:var(--bg);padding:40px;transition-delay:0ms;">
+      <div class="reveal prob-card" style="transition-delay:0ms;">
         <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:var(--a5);margin-bottom:20px;line-height:1;">01</div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="prob.c1.title">Zu langsame Erstantwort</h3>
         <p class="t-body" style="font-size:0.83rem;" data-i18n="prob.c1.body">Wird ein Lead nicht innerhalb von 5 Minuten kontaktiert, sinkt die Erfolgschance um über 80 %. Die meisten Maklerbüros reagieren in Stunden – oder gar nicht.</p>
       </div>
 
-      <div class="reveal" style="background:var(--bg);padding:40px;transition-delay:80ms;">
+      <div class="reveal prob-card" style="transition-delay:80ms;">
         <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:var(--a5);margin-bottom:20px;line-height:1;">02</div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="prob.c2.title">Personal als Flaschenhals</h3>
         <p class="t-body" style="font-size:0.83rem;" data-i18n="prob.c2.body">Mitarbeiter sind im Gespräch, nach Feierabend oder im Urlaub. E-Mail und Formulare stapeln sich – und Interessenten wechseln zum Mitbewerber.</p>
       </div>
 
-      <div class="reveal" style="background:var(--bg);padding:40px;transition-delay:160ms;">
+      <div class="reveal prob-card" style="transition-delay:160ms;">
         <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:var(--a5);margin-bottom:20px;line-height:1;">03</div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="prob.c3.title">Inkonsistente Qualität</h3>
         <p class="t-body" style="font-size:0.83rem;" data-i18n="prob.c3.body">High-End-Käufer erwarten Premium-Kommunikation bei jedem Kontakt. Eine schwache Erstantwort zerstört den ersten Eindruck – unwiederbringlich.</p>
@@ -921,8 +980,9 @@
 <!-- ══════════════════════════════════════════════════════════
      MISSION & VISION
 ══════════════════════════════════════════════════════════ -->
-<section id="mission" style="padding:100px 32px;background:var(--fg);">
-  <div style="max-width:1100px;margin:0 auto;">
+<section id="mission" style="padding:100px 32px;background:var(--fg);position:relative;">
+  <div class="grain-overlay"></div>
+  <div style="max-width:1100px;margin:0 auto;position:relative;z-index:2;">
 
     <div style="display:grid;gap:1px;background:rgba(255,255,255,0.06);" id="mv-grid">
 
@@ -1414,8 +1474,8 @@
         <div>
           <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:16px;" data-i18n="footer.col3">Legal</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="datenschutz.html" target="_blank" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.privacy">Privacy Policy</a>
-            <a href="agb.html" target="_blank" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.terms">Terms</a>
+            <a href="datenschutz.html" id="link-privacy" target="_blank" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.privacy">Privacy Policy</a>
+            <a href="agb.html" id="link-terms" target="_blank" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'" data-i18n="footer.terms">Terms</a>
           </div>
         </div>
       </div>
@@ -1453,6 +1513,53 @@
     });
   }, { threshold: 0.10, rootMargin: '0px 0px -32px 0px' });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     STATS COUNT-UP ANIMATION
+══════════════════════════════════════════════════════════ -->
+<script>
+  (function() {
+    const statsData = [
+      { el: document.querySelectorAll('#stats-grid .stat-num')[0], target: 1, prefix: '< ', suffix: 's', decimals: 0 },
+      { el: document.querySelectorAll('#stats-grid .stat-num')[1], target: 98, suffix: '%', decimals: 0 },
+      { el: document.querySelectorAll('#stats-grid .stat-num')[2], target: 3, suffix: '×', decimals: 0 },
+      { el: document.querySelectorAll('#stats-grid .stat-num')[3], target: 24, suffix: '/7', decimals: 0 },
+      { el: document.querySelectorAll('#stats-grid .stat-num')[4], target: 100, suffix: '%', decimals: 0 },
+      { el: document.querySelectorAll('#stats-grid .stat-num')[5], target: 50, suffix: '+', decimals: 0 },
+    ];
+
+    function animateCount(data) {
+      const { el, target, prefix = '', suffix = '', decimals } = data;
+      if (!el) return;
+      const origHTML = el.innerHTML;
+      const duration = 1200;
+      const start = performance.now();
+      function step(now) {
+        const elapsed = Math.min(now - start, duration);
+        const progress = elapsed / duration;
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const val = Math.round(ease * target);
+        el.textContent = (prefix ? prefix : '') + val + suffix;
+        if (elapsed < duration) requestAnimationFrame(step);
+        else el.innerHTML = origHTML;
+      }
+      requestAnimationFrame(step);
+    }
+
+    const statsObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          statsData.forEach(animateCount);
+          statsObs.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    const grid = document.getElementById('stats-grid');
+    if (grid) statsObs.observe(grid);
+  })();
 </script>
 
 
@@ -1607,16 +1714,17 @@
 <script>
 const T = {
   de: {
-    'nav.problem':  'Problem',
+    'nav.problem':  'Warum HYBOTE',
     'nav.solution': 'Lösung',
     'nav.channels': 'Kanäle',
     'nav.results':  'Ergebnisse',
     'nav.status':   'System aktiv',
     'nav.cta':      'Demo anfragen',
+    'wa.tooltip':   'Auf WhatsApp schreiben',
 
     'hero.badge':  'Digitale Concierge-Infrastruktur für Premium-Makler in der MENA-Region',
     'hero.h1':     'Die Infrastruktur,<br/>auf die Elite-Agenturen<br/><span style="font-style:italic;color:var(--a2);">vertrauen.</span>',
-    'hero.sub':    'HYBOTE ist die unsichtbare Intelligenz hinter Ihrer Kundenkommunikation — qualifiziert HNWI-Interessenten mit chirurgischer Präzision, liefert maßgeschneiderte Antworten via WhatsApp und schützt diskret deren Privatsphäre. <strong style="font-weight:400;color:var(--fg);">Rund um die Uhr.</strong>',
+    'hero.sub':    'HYBOTE ist die unsichtbare Intelligenz hinter Ihrer Kundenkommunikation — qualifiziert Luxus-Interessenten mit chirurgischer Präzision, liefert maßgeschneiderte Antworten via WhatsApp und schützt diskret deren Privatsphäre. <strong style="font-weight:400;color:var(--fg);">Rund um die Uhr.</strong>',
     'hero.cta1':   'Private Demo buchen',
     'hero.cta2':   'So funktioniert es',
     'hero.trust1': 'Eigene WhatsApp API',
@@ -1628,14 +1736,14 @@ const T = {
     'stat.2': 'Erreichbarkeit',
     'stat.3': 'Mehr Conversions',
     'stat.4': 'Automatisch aktiv',
-    'stat.5': 'Verpasste Chancen',
+    'stat.5': 'Systemverfügbarkeit',
     'stat.6': 'Sprachen',
 
-    'prob.label':    'Das Problem',
-    'prob.h2':       'Jede Stunde Stille<br/>kostet einen HNWI-Kunden.',
+    'prob.label':    'Warum HYBOTE',
+    'prob.h2':       'Jede Stunde Stille<br/>kostet einen Luxus-Klienten.',
     'prob.sub':      'In den Luxusmärkten der MENA-Region agieren internationale Käufer schnell und erwarten Diskretion. Die Erstantwortzeit ist kein Höflichkeitsakt – sie ist Ihr Wettbewerbsvorteil.',
     'prob.c1.title': 'Stille zerstört den Deal',
-    'prob.c1.body':  'In den Luxusmärkten der MENA-Region spricht ein HNWI-Interessent, der minutenlang keine Antwort erhält, bereits mit Ihrem Wettbewerber. Es gibt keinen zweiten Eindruck.',
+    'prob.c1.body':  'In den Luxusmärkten der MENA-Region spricht ein Premium-Interessent, der minutenlang keine Antwort erhält, bereits mit Ihrem Wettbewerber. Es gibt keinen zweiten Eindruck.',
     'prob.c2.title': 'Personal kann die Nachfrage nicht skalieren',
     'prob.c2.body':  'Internationale Käufer wenden sich über Zeitzonen und Kanäle hinweg an Sie. Manuelle Antworten können weder das Volumen noch die Geschwindigkeit abdecken, die der Luxusmarkt der MENA-Region verlangt.',
     'prob.c3.title': 'Generische Antworten schädigen die Marke',
@@ -1643,8 +1751,8 @@ const T = {
 
     'sol.label':   'Die Lösung',
     'sol.h2':      'HYBOTE — Ihr digitaler Concierge,<br/>der <em>niemals</em> schläft.',
-    'sol.sub':     'Unsichtbar. Präzise. Diskret. HYBOTE qualifiziert jeden HNWI-Interessenten mit chirurgischer Genauigkeit, antwortet auf dem bevorzugten Kanal und schützt diskret dessen Privatsphäre – bevor Ihr erstes Gespräch beginnt.',
-    'sol.f1.title':'HNWI-Qualifizierung',
+    'sol.sub':     'Unsichtbar. Präzise. Diskret. HYBOTE qualifiziert jeden Premium-Interessenten mit chirurgischer Genauigkeit, antwortet auf dem bevorzugten Kanal und schützt diskret dessen Privatsphäre – bevor Ihr erstes Gespräch beginnt.',
+    'sol.f1.title':'Luxus-Qualifizierung',
     'sol.f1.body': 'Budgetrahmen, Kaufintention, Nationalität und Zeitplan werden in unter einer Sekunde bewertet – ohne generische Fragebögen, ohne Reibung.',
     'sol.f2.title':'Maßgeschneiderte Erstantwort',
     'sol.f2.body': 'Jede Antwort wird individuell verfasst – im Ton Ihrer Agentur, auf dem bevorzugten Kanal des Interessenten zugestellt.',
@@ -1669,7 +1777,7 @@ const T = {
     'how.label':    'Ablauf',
     'how.h2':       'Von der Anfrage zum Termin<br/><em>nahtlos.</em>',
     'how.s1.title': 'Lead trifft ein',
-    'how.s1.body':  'Ein internationaler HNWI-Interessent meldet sich – via WhatsApp, E-Mail oder Kontaktformular. HYBOTE empfängt die Anfrage in Echtzeit, auf allen Kanälen gleichzeitig.',
+    'how.s1.body':  'Ein internationaler Premium-Interessent meldet sich – via WhatsApp, E-Mail oder Kontaktformular. HYBOTE empfängt die Anfrage in Echtzeit, auf allen Kanälen gleichzeitig.',
     'how.s2.title': 'KI-Analyse &amp; Qualifizierung',
     'how.s2.body':  'Budgetrahmen, Kaufintention, Nationalität, Finanzierungsprofil und bevorzugter Immobilientyp werden in unter einer Sekunde bewertet. Ein Lead-Score wird vergeben und eine maßgeschneiderte Antwortstrategie entwickelt.',
     'how.s3.title': 'Maßgeschneiderte Sofort-Antwort',
@@ -1710,7 +1818,7 @@ const T = {
     'form.choose':  'Bitte wählen',
     'form.leadopt4':'Mehr als 100 Leads',
     'form.msg':     'Nachricht (optional)',
-    'form.consent': 'Ich stimme der Verarbeitung meiner Daten gemäß <a href="datenschutz.html" style="color:var(--fg);text-decoration:underline;">Datenschutzerklärung</a> zu.',
+    'form.consent': 'Ich stimme der Verarbeitung meiner Daten gemäß <a id="consent-link-de" href="datenschutz.html?lang=de" style="color:var(--fg);text-decoration:underline;">Datenschutzerklärung</a> zu.',
     'form.submit':  'Demo-Termin anfragen',
     'form.thanks.title': 'Vielen Dank.',
     'form.thanks.sub':   'Wir melden uns innerhalb von 24 Stunden – natürlich schneller.',
@@ -1720,7 +1828,7 @@ const T = {
     'form.ph.msg':     'Kurze Beschreibung oder spezifische Fragen...',
     'form.error':      'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt an <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a>',
 
-    'footer.tagline': 'Die KI-Concierge-Infrastruktur für den Luxusimmobilienmarkt der MENA-Region. Jeder HNWI-Klient wird sofort, diskret und präzise betreut.',
+    'footer.tagline': 'Die KI-Concierge-Infrastruktur für den Luxusimmobilienmarkt der MENA-Region. Jeder Luxus-Klient wird sofort, diskret und präzise betreut.',
     'footer.status':  'System aktiv · 24 / 7',
     'footer.col1':    'Produkt',
     'footer.sol':     'Lösung',
@@ -1741,10 +1849,10 @@ const T = {
     'demo.msg':         '„Guten Morgen, ich suche ein Penthouse in der Dubai Marina oder auf dem Palm Jumeirah – Nordausrichtung, ab dem 40. Stock. Budget 8–12 Mio. USD. Können wir diese Woche eine diskrete Besichtigung arrangieren?"',
     'demo.reply.label': 'HYBOTE Antwort',
     'demo.reply.body':  'Guten Morgen, Herr Al-Rashidi, wir haben drei außergewöhnliche Off-Market-Penthouses, die Ihren Kriterien entsprechen – darunter zwei auf dem Palm Jumeirah mit unverstelltem Meerblick. Ich habe ein exklusives Dossier für Ihre Einsicht beigefügt. Würde Donnerstag um 11&thinsp;Uhr oder Samstag um 15&thinsp;Uhr für eine private Besichtigung passen?',
-    'demo.tag1':        'HNWI qualifiziert',
+    'demo.tag1':        'Luxusklient qualifiziert',
     'demo.tag2':        'CRM aktualisiert · Dossier gesendet',
 
-    'ticker.1': 'Anfrage eingegangen &ensp;·&ensp; Palm Jumeirah Villa &ensp;·&ensp; HNWI qualifiziert &ensp;·&ensp; Dossier in 1,8&thinsp;s gesendet',
+    'ticker.1': 'Anfrage eingegangen &ensp;·&ensp; Palm Jumeirah Villa &ensp;·&ensp; Luxusklient qualifiziert &ensp;·&ensp; Dossier in 1,8&thinsp;s gesendet',
     'ticker.2': 'WhatsApp-Nachricht &ensp;·&ensp; Dubai Marina Penthouse &ensp;·&ensp; Lead-Score 94 &ensp;·&ensp; Besichtigung in 2,1&thinsp;s vorgeschlagen',
     'ticker.3': 'Internationale Investor-Anfrage &ensp;·&ensp; CRM synchronisiert &ensp;·&ensp; Sofortantwort via WhatsApp &ensp;·&ensp; 2,3&thinsp;s',
 
@@ -1776,16 +1884,16 @@ const T = {
     'faq.a9':    'Diskretion ist nicht verhandelbar. HYBOTE arbeitet mit strikter Datenisolierung pro Agentur – keine kanalübergreifende Datenweitergabe, Ende-zu-Ende-Verschlüsselung aller WhatsApp-Kommunikation und null Weitergabe an Datenhändler. VIP-Klientenidentitäten und Transaktionsdetails verbleiben ausschließlich in Ihrem System.',
 
     'mission.label': 'Unsere Mission',
-    'mission.h2':    'Kein HNWI-Klient<br/>ohne Antwort.',
+    'mission.h2':    'Kein Luxus-Klient<br/>ohne Antwort.',
     'mission.body':  'Wir sind angetreten, um die Lücke zwischen dem Eintreffen einer hochwertigen Anfrage und dem Beginn eines Gesprächs zu schließen. Jede Sekunde der Stille signalisiert, dass der Klient keine Priorität ist. HYBOTE schließt diese Lücke dauerhaft – mit KI, die in der Geschwindigkeit der Erwartung operiert.',
     'vision.label':  'Unsere Vision',
     'vision.h2':     'Der KI-Concierge-Standard<br/>für Luxusimmobilien.',
-    'vision.body':   'Der definierende KI-Concierge-Standard für Premium-Immobilienagenturen in der MENA-Region und darüber hinaus zu werden — wo jeder HNWI-Klient eine Antwort erhält, die der Immobilie gerecht wird, die er in Betracht zieht, und der Agentur, der er sein Vertrauen schenkt.',
+    'vision.body':   'Der definierende KI-Concierge-Standard für Premium-Immobilienagenturen in der MENA-Region und darüber hinaus zu werden — wo jeder Luxus-Klient eine Antwort erhält, die der Immobilie gerecht wird, die er in Betracht zieht, und der Agentur, der er sein Vertrauen schenkt.',
     'vision.lang50': 'Sprachen — HYBOTE kommuniziert in über 50 Sprachen, vollautomatisch und ohne Konfigurationsaufwand.',
 
     'contact.label':    'Kontakt',
     'contact.h2':       'Private Demo buchen.',
-    'contact.sub':      'Wir zeigen Ihnen in einem 20-minütigen vertraulichen Gespräch, wie HYBOTE Ihre HNWI-Leads behandelt – unverbindlich, vollständig vertraulich.',
+    'contact.sub':      'Wir zeigen Ihnen in einem 20-minütigen vertraulichen Gespräch, wie HYBOTE Ihre Premium-Leads behandelt – unverbindlich, vollständig vertraulich.',
     'contact.i1.title': 'Persönliches Gespräch',
     'contact.i1.sub':   '20 Minuten, per Videokonferenz',
     'contact.i2.title': 'Antwort innerhalb einer Stunde',
@@ -1795,8 +1903,9 @@ const T = {
   },
 
   en: {
-    'nav.problem':  'Problem',
+    'nav.problem':  'Why HYBOTE',
     'nav.solution': 'Solution',
+    'wa.tooltip':   'Chat on WhatsApp',
     'nav.channels': 'Channels',
     'nav.results':  'Results',
     'nav.status':   'System active',
@@ -1804,7 +1913,7 @@ const T = {
 
     'hero.badge':  'Digital Concierge Infrastructure for MENA\'s Luxury Agents',
     'hero.h1':     'The infrastructure<br/>elite agencies<br/><span style="font-style:italic;color:var(--a2);">rely on.</span>',
-    'hero.sub':    'HYBOTE is the invisible intelligence behind your client communications — qualifying HNWI prospects with surgical precision, delivering bespoke responses via WhatsApp, and protecting their privacy. <strong style="font-weight:400;color:var(--fg);">Around the clock.</strong>',
+    'hero.sub':    'HYBOTE is the invisible intelligence behind your client communications — qualifying luxury prospects with surgical precision, delivering bespoke responses via WhatsApp, and protecting their privacy. <strong style="font-weight:400;color:var(--fg);">Around the clock.</strong>',
     'hero.cta1':   'Book a Private Demo',
     'hero.cta2':   'See how it works',
     'hero.trust1': 'Proprietary WhatsApp API',
@@ -1816,14 +1925,14 @@ const T = {
     'stat.2': 'Availability',
     'stat.3': 'More conversions',
     'stat.4': 'Always active',
-    'stat.5': 'Missed opportunities',
+    'stat.5': 'Uptime',
     'stat.6': 'Languages',
 
-    'prob.label':    'The Problem',
-    'prob.h2':       'Every silent hour<br/>loses a HNWI client.',
+    'prob.label':    'Why HYBOTE',
+    'prob.h2':       'Every silent hour<br/>loses a luxury client.',
     'prob.sub':      'Across MENA\'s luxury markets, international buyers move fast and expect discretion. First response time is not a courtesy — it is your competitive edge.',
     'prob.c1.title': 'Silence kills the deal',
-    'prob.c1.body':  'Across MENA\'s luxury markets, a HNWI prospect who receives no reply within minutes is already in conversation with your competitor. There is no second impression.',
+    'prob.c1.body':  'Across MENA\'s luxury markets, a premium prospect who receives no reply within minutes is already in conversation with your competitor. There is no second impression.',
     'prob.c2.title': 'Staff cannot scale to demand',
     'prob.c2.body':  'International buyers reach out across time zones and channels. Manual response cannot match the volume or the speed that MENA\'s luxury market demands.',
     'prob.c3.title': 'Generic responses betray the brand',
@@ -1831,8 +1940,8 @@ const T = {
 
     'sol.label':   'The Solution',
     'sol.h2':      'HYBOTE — Your digital concierge<br/>that <em>never</em> sleeps.',
-    'sol.sub':     'Invisible. Precise. Discreet. HYBOTE qualifies every HNWI prospect with surgical precision, responds through their preferred channel, and protects their privacy — before your first conversation even begins.',
-    'sol.f1.title':'HNWI Qualification',
+    'sol.sub':     'Invisible. Precise. Discreet. HYBOTE qualifies every luxury prospect with surgical precision, responds through their preferred channel, and protects their privacy — before your first conversation even begins.',
+    'sol.f1.title':'Luxury Qualification',
     'sol.f1.body': 'Budget range, purchase intent, nationality, and timeline are assessed in under one second — no generic questionnaires, no friction.',
     'sol.f2.title':'Bespoke First Response',
     'sol.f2.body': 'Every response is crafted individually — tone-matched to your agency, delivered through the prospect\'s preferred channel.',
@@ -1857,7 +1966,7 @@ const T = {
     'how.label':    'Process',
     'how.h2':       'From enquiry to appointment<br/><em>seamlessly.</em>',
     'how.s1.title': 'Enquiry arrives',
-    'how.s1.body':  'An international HNWI prospect reaches out — via WhatsApp, email, or contact form. HYBOTE receives the enquiry in real time, across all channels simultaneously.',
+    'how.s1.body':  'An international luxury prospect reaches out — via WhatsApp, email, or contact form. HYBOTE receives the enquiry in real time, across all channels simultaneously.',
     'how.s2.title': 'AI analysis & qualification',
     'how.s2.body':  'Budget range, purchase intent, nationality, financing profile, and preferred property type are assessed in under one second. A lead score is assigned and a bespoke response strategy formulated.',
     'how.s3.title': 'Bespoke instant response',
@@ -1898,7 +2007,7 @@ const T = {
     'form.choose':  'Please select',
     'form.leadopt4':'More than 100 leads',
     'form.msg':     'Message (optional)',
-    'form.consent': 'I agree to the processing of my data in accordance with the <a href="datenschutz.html" style="color:var(--fg);text-decoration:underline;">Privacy Policy</a>.',
+    'form.consent': 'I agree to the processing of my data in accordance with the <a href="datenschutz.html?lang=en" style="color:var(--fg);text-decoration:underline;">Privacy Policy</a>.',
     'form.submit':  'Request demo appointment',
     'form.thanks.title': 'Thank you.',
     'form.thanks.sub':   'We\'ll be in touch within 24 hours – faster, of course.',
@@ -1908,7 +2017,7 @@ const T = {
     'form.ph.msg':     'Brief description or specific questions...',
     'form.error':      'Something went wrong. Please try again or email us directly at <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a>',
 
-    'footer.tagline': 'The AI concierge infrastructure for MENA\'s luxury real estate market. Every HNWI client attended to — immediately, discreetly, precisely.',
+    'footer.tagline': 'The AI concierge infrastructure for MENA\'s luxury real estate market. Every luxury client attended to — immediately, discreetly, precisely.',
     'footer.status':  'System active · 24 / 7',
     'footer.col1':    'Product',
     'footer.sol':     'Solution',
@@ -1929,10 +2038,10 @@ const T = {
     'demo.msg':         '"Good morning, I\'m looking for a penthouse in Dubai Marina or Palm Jumeirah — north-facing, above the 40th floor. Budget $8–12M. Can we arrange a discreet viewing this week?"',
     'demo.reply.label': 'HYBOTE Response',
     'demo.reply.body':  'Good morning Mr. Al-Rashidi, we have three exceptional off-market penthouses matching your criteria — including two on Palm Jumeirah with unobstructed sea views. I\'ve attached an exclusive dossier for your review. Would Thursday at 11&thinsp;AM or Saturday at 3&thinsp;PM suit a private walkthrough?',
-    'demo.tag1':        'HNWI Qualified',
+    'demo.tag1':        'Luxury Client Qualified',
     'demo.tag2':        'CRM Updated · Dossier Sent',
 
-    'ticker.1': 'Enquiry received &ensp;·&ensp; Palm Jumeirah Villa &ensp;·&ensp; HNWI Qualified &ensp;·&ensp; Dossier sent in 1.8&thinsp;s',
+    'ticker.1': 'Enquiry received &ensp;·&ensp; Palm Jumeirah Villa &ensp;·&ensp; Luxury Client Qualified &ensp;·&ensp; Dossier sent in 1.8&thinsp;s',
     'ticker.2': 'WhatsApp message &ensp;·&ensp; Dubai Marina Penthouse &ensp;·&ensp; Lead score 94 &ensp;·&ensp; Viewing proposed in 2.1&thinsp;s',
     'ticker.3': 'International investor enquiry &ensp;·&ensp; CRM synced &ensp;·&ensp; Instant reply via WhatsApp &ensp;·&ensp; 2.3&thinsp;s',
 
@@ -1964,16 +2073,16 @@ const T = {
     'faq.a9':    'Discretion is non-negotiable. HYBOTE operates under strict data isolation per agency — no cross-client data sharing, end-to-end encryption on all WhatsApp communications, and zero third-party data brokering. VIP client identities and transaction details remain exclusively within your system.',
 
     'mission.label': 'Our Mission',
-    'mission.h2':    'No HNWI client<br/>left unattended.',
+    'mission.h2':    'No luxury client<br/>left unattended.',
     'mission.body':  'We exist to eliminate the gap between a high-value enquiry arriving and a conversation starting. Every second of silence signals that the client is not a priority. HYBOTE closes that gap permanently — with AI that operates at the speed of expectation.',
     'vision.label':  'Our Vision',
     'vision.h2':     'The AI concierge standard<br/>for luxury real estate.',
-    'vision.body':   'To become the defining AI concierge infrastructure for luxury real estate agencies across MENA and beyond — where every HNWI client receives a response worthy of the property they are considering, and the agency they chose to trust.',
+    'vision.body':   'To become the defining AI concierge infrastructure for luxury real estate agencies across MENA and beyond — where every luxury client receives a response worthy of the property they are considering, and the agency they chose to trust.',
     'vision.lang50': 'Languages — HYBOTE communicates in over 50 languages, fully automated and with zero configuration.',
 
     'contact.label':    'Contact',
     'contact.h2':       'Book a private demo.',
-    'contact.sub':      'We\'ll show you in a 20-minute private call exactly how HYBOTE handles your HNWI leads — no obligation, completely confidential.',
+    'contact.sub':      'We\'ll show you in a 20-minute private call exactly how HYBOTE handles your luxury leads — no obligation, completely confidential.',
     'contact.i1.title': 'Personal call',
     'contact.i1.sub':   '20 minutes, via video conference',
     'contact.i2.title': 'Response within the hour',
@@ -1983,8 +2092,9 @@ const T = {
   },
 
   ar: {
-    'nav.problem':  'المشكلة',
+    'nav.problem':  'لماذا HYBOTE',
     'nav.solution': 'الحل',
+    'wa.tooltip':   'تواصل عبر واتساب',
     'nav.channels': 'القنوات',
     'nav.results':  'النتائج',
     'nav.status':   'النظام نشط',
@@ -1992,7 +2102,7 @@ const T = {
 
     'hero.badge':  'بنية تحتية للكونسيرج الرقمي لوكلاء العقارات الفاخرة في منطقة الشرق الأوسط',
     'hero.h1':     'البنية التحتية التي<br/>تعتمد عليها<br/><span style="font-style:italic;color:var(--a2);">الوكالات الرائدة.</span>',
-    'hero.sub':    'HYBOTE هو الذكاء غير المرئي خلف تواصلك مع العملاء — يؤهل عملاء HNWI بدقة جراحية، ويقدم ردوداً مخصصة عبر واتساب، ويحمي خصوصيتهم. <strong style="font-weight:400;color:var(--fg);">على مدار الساعة.</strong>',
+    'hero.sub':    'HYBOTE هو الذكاء غير المرئي خلف تواصلك مع العملاء — يؤهل العملاء الفاخرين بدقة جراحية، ويقدم ردوداً مخصصة عبر واتساب، ويحمي خصوصيتهم. <strong style="font-weight:400;color:var(--fg);">على مدار الساعة.</strong>',
     'hero.cta1':   'احجز عرضاً خاصاً',
     'hero.cta2':   'كيف يعمل',
     'hero.trust1': 'واجهة WhatsApp خاصة',
@@ -2004,14 +2114,14 @@ const T = {
     'stat.2': 'معدل التوفر',
     'stat.3': 'مزيد من التحويلات',
     'stat.4': 'نشط تلقائياً',
-    'stat.5': 'الفرص الفائتة',
+    'stat.5': 'وقت التشغيل',
     'stat.6': 'لغة',
 
-    'prob.label':    'المشكلة',
-    'prob.h2':       'كل ساعة صمت<br/>تكلّفك عميل HNWI.',
+    'prob.label':    'لماذا HYBOTE',
+    'prob.h2':       'كل ساعة صمت<br/>تكلّفك عميلاً فاخراً.',
     'prob.sub':      'في أسواق الفاخرة بمنطقة الشرق الأوسط، يتحرك المشترون الدوليون بسرعة ويتوقعون السرية. وقت الاستجابة الأولى ليس مجاملة — إنه ميزتك التنافسية.',
     'prob.c1.title': 'الصمت يقتل الصفقة',
-    'prob.c1.body':  'في أسواق العقارات الفاخرة بمنطقة الشرق الأوسط، عميل HNWI الذي لا يتلقى رداً خلال دقائق يكون بالفعل في محادثة مع منافسك. لا توجد فرصة ثانية.',
+    'prob.c1.body':  'في أسواق العقارات الفاخرة بمنطقة الشرق الأوسط، العميل الفاخر الذي لا يتلقى رداً خلال دقائق يكون بالفعل في محادثة مع منافسك. لا توجد فرصة ثانية.',
     'prob.c2.title': 'الموظفون لا يستطيعون مواكبة الطلب',
     'prob.c2.body':  'يتواصل المشترون الدوليون عبر المناطق الزمنية والقنوات المختلفة. لا يمكن للردود اليدوية مواكبة الحجم أو السرعة التي يتطلبها سوق العقارات الفاخرة في منطقة الشرق الأوسط.',
     'prob.c3.title': 'الردود العامة تخون العلامة التجارية',
@@ -2019,8 +2129,8 @@ const T = {
 
     'sol.label':   'الحل',
     'sol.h2':      'HYBOTE — كونسيرجك الرقمي<br/>الذي لا <em>ينام</em> أبداً.',
-    'sol.sub':     'غير مرئي. دقيق. سري. تؤهل HYBOTE كل عميل HNWI بدقة جراحية، وترد عبر القناة المفضلة لديه، وتحمي خصوصيته — قبل أن تبدأ محادثتك الأولى.',
-    'sol.f1.title':'تأهيل HNWI',
+    'sol.sub':     'غير مرئي. دقيق. سري. تؤهل HYBOTE كل عميل فاخر بدقة جراحية، وترد عبر القناة المفضلة لديه، وتحمي خصوصيته — قبل أن تبدأ محادثتك الأولى.',
+    'sol.f1.title':'تأهيل الفئة الراقية',
     'sol.f1.body': 'يُقيَّم نطاق الميزانية ونية الشراء والجنسية والجدول الزمني في أقل من ثانية — دون استبيانات عامة، دون عقبات.',
     'sol.f2.title':'رد أول حصري',
     'sol.f2.body': 'كل رد يُصاغ بشكل فردي — بأسلوب وكالتك، عبر القناة التي يختارها العميل.',
@@ -2045,7 +2155,7 @@ const T = {
     'how.label':    'آلية العمل',
     'how.h2':       'من الاستفسار إلى الموعد<br/><em>بسلاسة.</em>',
     'how.s1.title': 'وصول الاستفسار',
-    'how.s1.body':  'يتواصل مستثمر HNWI دولي — عبر واتساب أو البريد الإلكتروني أو نموذج التواصل. تستقبل HYBOTE الاستفسار في الوقت الفعلي، عبر جميع القنوات في آنٍ واحد.',
+    'how.s1.body':  'يتواصل مستثمر فاخر دولي — عبر واتساب أو البريد الإلكتروني أو نموذج التواصل. تستقبل HYBOTE الاستفسار في الوقت الفعلي، عبر جميع القنوات في آنٍ واحد.',
     'how.s2.title': 'تحليل الذكاء الاصطناعي والتأهيل',
     'how.s2.body':  'يُقيَّم نطاق الميزانية ونية الشراء والجنسية وملف التمويل ونوع العقار المفضل في أقل من ثانية. تُحدَّد نقاط العميل وتُصاغ استراتيجية رد مخصصة.',
     'how.s3.title': 'رد أول حصري',
@@ -2086,7 +2196,7 @@ const T = {
     'form.choose':  'الرجاء الاختيار',
     'form.leadopt4':'أكثر من 100 عميل',
     'form.msg':     'رسالة (اختيارية)',
-    'form.consent': 'أوافق على معالجة بياناتي وفقاً لـ<a href="datenschutz.html" style="color:var(--fg);text-decoration:underline;">سياسة الخصوصية</a>.',
+    'form.consent': 'أوافق على معالجة بياناتي وفقاً لـ<a href="datenschutz.html?lang=ar" style="color:var(--fg);text-decoration:underline;">سياسة الخصوصية</a>.',
     'form.submit':  'طلب موعد العرض التوضيحي',
     'form.thanks.title': 'شكراً جزيلاً.',
     'form.thanks.sub':   'سنتواصل معك خلال 24 ساعة – بالطبع أسرع من ذلك.',
@@ -2096,7 +2206,7 @@ const T = {
     'form.ph.msg':     'وصف مختصر أو أسئلة محددة...',
     'form.error':      'حدث خطأ ما. يرجى المحاولة مرة أخرى أو مراسلتنا مباشرة على <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a>',
 
-    'footer.tagline': 'البنية التحتية للكونسيرج الذكي لسوق العقارات الفاخرة في منطقة الشرق الأوسط. كل عميل HNWI يُخدَم — فوراً، بسرية، وبدقة.',
+    'footer.tagline': 'البنية التحتية للكونسيرج الذكي لسوق العقارات الفاخرة في منطقة الشرق الأوسط. كل عميل فاخر يُخدَم — فوراً، بسرية، وبدقة.',
     'footer.status':  'النظام نشط · 24 / 7',
     'footer.col1':    'المنتج',
     'footer.sol':     'الحل',
@@ -2117,10 +2227,10 @@ const T = {
     'demo.msg':         '"صباح الخير، أبحث عن بنتهاوس في مارينا دبي أو نخلة جميرا — اتجاه شمالي، فوق الطابق الأربعين. الميزانية 8–12 مليون دولار. هل يمكن ترتيب معاينة سرية هذا الأسبوع؟"',
     'demo.reply.label': 'رد HYBOTE',
     'demo.reply.body':  'صباح الخير السيد الرشيدي، لدينا ثلاثة بنتهاوسات استثنائية خارج السوق تتوافق مع معاييرك — من بينها اثنان في نخلة جميرا مع إطلالة بحرية بلا حواجز. لقد أرفقت ملفاً حصرياً لمراجعتك. هل يناسبك الخميس الساعة 11&thinsp;صباحاً أو السبت الساعة 3&thinsp;عصراً لجولة خاصة؟',
-    'demo.tag1':        'مؤهل HNWI',
+    'demo.tag1':        'عميل فاخر مؤهل',
     'demo.tag2':        'تم تحديث CRM · أُرسل الملف',
 
-    'ticker.1': 'استفسار وارد &ensp;·&ensp; فيلا نخلة جميرا &ensp;·&ensp; مؤهل HNWI &ensp;·&ensp; أُرسل الملف في 1,8&thinsp;ث',
+    'ticker.1': 'استفسار وارد &ensp;·&ensp; فيلا نخلة جميرا &ensp;·&ensp; عميل فاخر مؤهل &ensp;·&ensp; أُرسل الملف في 1,8&thinsp;ث',
     'ticker.2': 'رسالة واتساب &ensp;·&ensp; بنتهاوس مارينا دبي &ensp;·&ensp; نقاط العميل 94 &ensp;·&ensp; اقتُرحت معاينة في 2,1&thinsp;ث',
     'ticker.3': 'استفسار مستثمر دولي &ensp;·&ensp; مُزامَن CRM &ensp;·&ensp; رد فوري عبر واتساب &ensp;·&ensp; 2,3&thinsp;ث',
 
@@ -2152,16 +2262,16 @@ const T = {
     'faq.a9':    'السرية غير قابلة للتفاوض. تعمل HYBOTE بعزل صارم للبيانات لكل وكالة — لا مشاركة بيانات بين العملاء، تشفير شامل لجميع اتصالات واتساب، وصفر مشاركة مع وسطاء البيانات. هويات العملاء VIP وتفاصيل المعاملات تبقى حصراً داخل نظامك.',
 
     'mission.label': 'مهمتنا',
-    'mission.h2':    'لا عميل HNWI<br/>دون اهتمام.',
+    'mission.h2':    'لا عميل فاخر<br/>دون اهتمام.',
     'mission.body':  'وُجدنا لسد الفجوة بين وصول استفسار عالي القيمة وبدء المحادثة. كل ثانية من الصمت تُشير إلى أن العميل ليس أولوية. HYBOTE يسد هذه الفجوة بشكل دائم — بذكاء اصطناعي يعمل بسرعة التوقعات.',
     'vision.label':  'رؤيتنا',
     'vision.h2':     'المعيار الذكي للكونسيرج<br/>في العقارات الفاخرة.',
-    'vision.body':   'أن نصبح البنية التحتية المرجعية للكونسيرج الذكي لوكالات العقارات الفاخرة في منطقة MENA وما وراءها — حيث يتلقى كل عميل HNWI رداً يليق بالعقار الذي يفكر فيه، والوكالة التي منحها ثقته.',
+    'vision.body':   'أن نصبح البنية التحتية المرجعية للكونسيرج الذكي لوكالات العقارات الفاخرة في منطقة MENA وما وراءها — حيث يتلقى كل عميل فاخر رداً يليق بالعقار الذي يفكر فيه، والوكالة التي منحها ثقته.',
     'vision.lang50': 'لغة — يتواصل HYBOTE بأكثر من 50 لغة، بشكل تلقائي كامل ودون أي إعداد.',
 
     'contact.label':    'التواصل',
     'contact.h2':       'احجز عرضاً خاصاً.',
-    'contact.sub':      'سنريك في مكالمة خاصة مدتها 20 دقيقة كيف تتعامل HYBOTE مع عملاء HNWI لديك — بدون التزام، وبسرية تامة.',
+    'contact.sub':      'سنريك في مكالمة خاصة مدتها 20 دقيقة كيف تتعامل HYBOTE مع عملائك الفاخرين — بدون التزام، وبسرية تامة.',
     'contact.i1.title': 'محادثة شخصية',
     'contact.i1.sub':   '20 دقيقة، عبر مؤتمر فيديو',
     'contact.i2.title': 'رد خلال ساعة',
@@ -2216,6 +2326,12 @@ function setLang(lang) {
   } else {
     document.querySelectorAll('.hero-line').forEach(el => el.style.transformOrigin = 'left');
   }
+
+  // Update legal page links to pass current language
+  const lp = document.getElementById('link-privacy');
+  const lt = document.getElementById('link-terms');
+  if (lp) lp.href = 'datenschutz.html?lang=' + lang;
+  if (lt) lt.href = 'agb.html?lang=' + lang;
 
   // Re-run ROI calculator to apply translated dynamic subtitles
   if (typeof roiUpdate === 'function') roiUpdate();
@@ -2273,10 +2389,121 @@ setLang('en');
 <script>
   function resizeLogo() {
     const logo = document.getElementById('nav-logo');
-    if (logo) logo.style.height = window.innerWidth < 480 ? '80px' : '130px';
+    if (logo) logo.style.height = window.innerWidth < 480 ? '50px' : '64px';
   }
   resizeLogo();
   window.addEventListener('resize', resizeLogo);
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     WHATSAPP FLOATING BUTTON
+══════════════════════════════════════════════════════════ -->
+<style>
+  .wa-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 56px;
+    height: 56px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.35), 0 2px 8px rgba(0,0,0,0.15);
+    text-decoration: none;
+    z-index: 200;
+    transition: transform 200ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 200ms ease;
+    cursor: pointer;
+  }
+  .wa-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 28px rgba(37,211,102,0.45), 0 4px 12px rgba(0,0,0,0.18);
+  }
+  .wa-btn::before {
+    content: '';
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(37,211,102,0.4);
+    animation: wa-pulse 2.4s ease-out infinite;
+  }
+  @keyframes wa-pulse {
+    0%   { transform: scale(1);   opacity: 0.7; }
+    70%  { transform: scale(1.6); opacity: 0; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+  .wa-tooltip {
+    position: absolute;
+    right: 68px;
+    bottom: 50%;
+    transform: translateY(50%);
+    background: var(--fg);
+    color: var(--bg);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    padding: 6px 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+  .wa-tooltip::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-left-color: var(--fg);
+    border-right: none;
+  }
+  .wa-btn:hover .wa-tooltip { opacity: 1; }
+  html[dir="rtl"] .wa-btn {
+    right: auto;
+    left: 28px;
+  }
+  html[dir="rtl"] .wa-tooltip {
+    right: auto;
+    left: 68px;
+  }
+  html[dir="rtl"] .wa-tooltip::after {
+    right: auto;
+    left: -5px;
+    border-left: none;
+    border-right: 5px solid var(--fg);
+  }
+</style>
+
+<a class="wa-btn" href="https://wa.me/491528356558" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <span class="wa-tooltip" id="wa-tip">Chat on WhatsApp</span>
+  <svg width="26" height="26" viewBox="0 0 32 32" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 2C8.268 2 2 8.268 2 16c0 2.462.665 4.766 1.825 6.748L2 30l7.44-1.795A13.93 13.93 0 0016 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm0 25.5a11.45 11.45 0 01-5.836-1.597l-.418-.248-4.418 1.066 1.1-4.295-.273-.44A11.468 11.468 0 014.5 16C4.5 9.649 9.649 4.5 16 4.5S27.5 9.649 27.5 16 22.351 27.5 16 27.5zm6.29-8.61c-.344-.172-2.035-1.004-2.35-1.118-.316-.115-.546-.172-.777.172-.23.344-.89 1.118-1.09 1.348-.2.23-.402.258-.746.086-.344-.172-1.452-.535-2.766-1.707-1.022-.913-1.712-2.04-1.912-2.384-.2-.344-.021-.53.15-.701.155-.154.344-.402.516-.603.172-.2.23-.344.344-.573.115-.23.058-.43-.028-.603-.086-.172-.777-1.876-1.065-2.567-.28-.673-.565-.582-.777-.593l-.662-.011c-.23 0-.603.086-.918.43-.316.344-1.205 1.177-1.205 2.87s1.234 3.329 1.406 3.559c.172.23 2.43 3.71 5.886 5.203.822.355 1.464.567 1.963.726.825.263 1.576.226 2.17.137.662-.1 2.035-.831 2.322-1.634.287-.803.287-1.49.2-1.634-.086-.143-.316-.23-.66-.401z"/>
+  </svg>
+</a>
+
+<script>
+  (function() {
+    const waBtn = document.querySelector('.wa-btn');
+    const waTip = document.getElementById('wa-tip');
+    function updateWaLang(lang) {
+      if (waTip && T[lang] && T[lang]['wa.tooltip']) {
+        waTip.textContent = T[lang]['wa.tooltip'];
+      }
+    }
+    const _setLang = window.setLang;
+    if (typeof _setLang === 'function') {
+      window.setLang = function(lang) {
+        _setLang(lang);
+        updateWaLang(lang);
+      };
+    }
+    updateWaLang(typeof currentLang !== 'undefined' ? currentLang : 'en');
+  })();
 </script>
 
 </body>
