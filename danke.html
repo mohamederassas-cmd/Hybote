@@ -7,16 +7,23 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=Cairo:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=Cairo:wght@200;300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #ffffff;
-      --fg: #161616;
-      --a1: #3d3d3d;
-      --a2: #646464;
-      --a3: #8b8b8b;
-      --a4: #b8b8b8;
-      --line: rgba(22,22,22,0.10);
+      --bg:       #080d1a;
+      --s1:       #0f1629;
+      --s2:       #162040;
+      --s3:       #1e2a52;
+      --gold:     #c9a053;
+      --gold-lt:  #e8c47a;
+      --teal:     #4ecdc4;
+      --fg:       #f5f1eb;
+      --a1:       #d4cfc8;
+      --a2:       #b0a898;
+      --a3:       #8b95aa;
+      --a4:       #566070;
+      --line:     rgba(255,255,255,0.06);
+      --line-med: rgba(255,255,255,0.10);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { background: var(--bg); color: var(--fg); }
@@ -29,7 +36,7 @@
       align-items: center;
       justify-content: center;
       padding: 40px 24px;
-      background: var(--bg);
+      background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(201,160,83,0.06) 0%, transparent 60%), var(--bg);
     }
     body[dir="rtl"] { font-family: 'Cairo', sans-serif; }
     .wrap {
@@ -39,28 +46,22 @@
     }
     .logo {
       display: inline-block;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 400;
-      font-size: 1.1rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--fg);
-      text-decoration: none;
       margin-bottom: 64px;
     }
     .check-circle {
       width: 64px;
       height: 64px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--gold);
+      background: rgba(201,160,83,0.06);
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 32px;
     }
     h1 {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Cormorant Garamond', 'Montserrat', serif;
       font-weight: 300;
-      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
       line-height: 1.15;
       letter-spacing: -0.02em;
       color: var(--fg);
@@ -79,21 +80,21 @@
       align-items: center;
       gap: 10px;
       padding: 14px 28px;
-      background: var(--fg);
-      color: var(--bg);
+      background: linear-gradient(135deg, var(--gold) 0%, #b8893a 50%, var(--gold-lt) 100%);
+      color: #080d1a;
       font-family: 'Montserrat', sans-serif;
-      font-weight: 300;
+      font-weight: 500;
       font-size: 0.78rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       text-decoration: none;
-      transition: opacity 180ms ease;
+      transition: transform 200ms ease, box-shadow 200ms ease;
     }
-    .btn:hover { opacity: 0.8; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,160,83,0.3); }
     .divider {
       width: 40px;
       height: 1px;
-      background: var(--line);
+      background: linear-gradient(90deg, var(--gold), transparent);
       margin: 48px auto;
     }
     .footer-note {
@@ -101,16 +102,17 @@
       color: var(--a4);
       letter-spacing: 0.06em;
     }
+    .footer-note a { color: inherit; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <a href="index.html" class="logo">
-      <img src="logo.png" alt="HYBOTE" style="height:52px;width:auto;display:block;margin:0 auto;" />
+      <img src="logo.png" alt="HYBOTE" style="height:52px;width:auto;display:block;margin:0 auto;filter:invert(1);" />
     </a>
 
     <div class="check-circle">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
 
     <h1 id="title">Your enquiry has been received.</h1>
@@ -122,7 +124,7 @@
     </a>
 
     <div class="divider"></div>
-    <p class="footer-note" id="footer-note">© 2025 HYBOTE · <a href="mailto:Contact@hybote.ai" style="color:inherit;">Contact@hybote.ai</a></p>
+    <p class="footer-note" id="footer-note">© 2025 HYBOTE · <a href="mailto:Contact@hybote.ai">Contact@hybote.ai</a></p>
   </div>
 
   <script>
