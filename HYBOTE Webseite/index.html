@@ -708,7 +708,7 @@
   <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:48px;" id="stats-grid">
 
     <div class="reveal" style="text-align:center;">
-      <div class="stat-num" style="font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-0.01em;">sofort</div>
+      <div class="stat-num" data-i18n="stat.1.num" style="font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-0.01em;">Sofort</div>
       <div class="t-label" style="margin-top:10px;" data-i18n="stat.1">Reaktionszeit</div>
     </div>
 
@@ -1022,7 +1022,7 @@
         <div class="step-num">02</div>
         <div style="padding-top:10px;">
           <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:var(--fg);margin-bottom:10px;" data-i18n="how.s2.title">KI-Analyse &amp; Qualifizierung</h3>
-          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:var(--a3);line-height:1.8;" data-i18n="how.s2.body">Intent, Kaufbereitschaft, Preissegment und Zeitrahmen werden in unter einer Sekunde analysiert. Ein Lead-Score wird berechnet, eine Antwortstrategie entwickelt.</p>
+          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:var(--a3);line-height:1.8;" data-i18n="how.s2.body">Intent, Kaufbereitschaft, Preissegment und Zeitrahmen werden in Sekunden analysiert. Ein Lead-Score wird berechnet, eine Antwortstrategie entwickelt.</p>
         </div>
       </div>
 
@@ -1454,7 +1454,7 @@
       </form>
 
       <div id="form-err" style="display:none;padding:12px 16px;border:1px solid rgba(220,50,50,0.2);background:rgba(220,50,50,0.04);margin-top:-8px;">
-        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.82rem;color:#c53030;" data-i18n="form.error">Something went wrong. Please try again or email us directly at <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a></p>
+        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.82rem;color:#c53030;" data-i18n="form.error">Something went wrong. Please try again or email us directly at <a href="mailto:contact@hybote.ai" style="color:inherit;text-decoration:underline;">contact@hybote.ai</a></p>
       </div>
       <div id="ok" style="display:none;text-align:center;padding:32px 0;">
         <div style="width:48px;height:48px;border:1px solid var(--gold);background:rgba(201,160,83,0.06);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
@@ -1589,7 +1589,6 @@
 <script>
   (function() {
     const statsData = [
-      { el: document.querySelectorAll('#stats-grid .stat-num')[0], target: 1, prefix: '< ', suffix: 's', decimals: 0 },
       { el: document.querySelectorAll('#stats-grid .stat-num')[1], target: 98, suffix: '%', decimals: 0 },
       { el: document.querySelectorAll('#stats-grid .stat-num')[2], target: 3, suffix: '×', decimals: 0 },
       { el: document.querySelectorAll('#stats-grid .stat-num')[3], target: 24, suffix: '/7', decimals: 0 },
@@ -1800,6 +1799,7 @@ const T = {
     'hero.trust3': 'Keine Bindung',
     'hero.trust4': '24 / 7 Aktiv',
 
+    'stat.1.num': 'Sofort',
     'stat.1': 'Reaktionszeit',
     'stat.2': 'Erreichbarkeit',
     'stat.3': 'Mehr Conversions',
@@ -1834,7 +1834,7 @@ const T = {
     'ch.h2':      'Egal wie Ihr Lead<br/>Sie <em>erreicht.</em>',
     'ch.sub':     'HYBOTE überwacht alle eingehenden Kanäle gleichzeitig und antwortet auf jedem mit Präzision – ohne Ausnahmen, ohne Verzögerungen.',
     'ch.wa.body': 'HYBOTE ist über eine Enterprise-Grade WhatsApp Business API angebunden — zuverlässig, stabil und Ende-zu-Ende-verschlüsselt. Jede Anfrage wird in Echtzeit mit vollständiger Diskretion verarbeitet. Hochwertige Assets (Exposés, Grundrisse, virtuelle Touren) werden direkt im Chat übermittelt. Nahtlos mit gängigen CRM-Systemen verbunden.',
-    'ch.wa.tag1': 'Eigene Architektur', 'ch.wa.tag2': 'Rich Media', 'ch.wa.tag3': 'CRM-Sync',
+    'ch.wa.tag1': 'Enterprise-Verbindung', 'ch.wa.tag2': 'Rich Media', 'ch.wa.tag3': 'CRM-Sync',
     'ch.em.title':'E-Mail',
     'ch.em.body': 'Eingehende E-Mails werden sofort analysiert, priorisiert und beantwortet. Hochwertige Leads erhalten eine maßgeschneiderte Antwort im Ton und Stil Ihrer Agentur.',
     'ch.em.tag1': 'Priorisierung', 'ch.em.tag2': 'Signatur-Match', 'ch.em.tag3': 'Follow-up',
@@ -1849,7 +1849,7 @@ const T = {
     'how.s1.title': 'Lead trifft ein',
     'how.s1.body':  'Ein internationaler Premium-Interessent meldet sich – via WhatsApp, E-Mail, Telefon oder Kontaktformular. HYBOTE empfängt die Anfrage in Echtzeit, auf allen Kanälen gleichzeitig.',
     'how.s2.title': 'KI-Analyse &amp; Qualifizierung',
-    'how.s2.body':  'Budgetrahmen, Kaufintention, Nationalität, Finanzierungsprofil und bevorzugter Immobilientyp werden in unter einer Sekunde bewertet. Ein Lead-Score wird vergeben und eine maßgeschneiderte Antwortstrategie entwickelt.',
+    'how.s2.body':  'Budgetrahmen, Kaufintention, Nationalität, Finanzierungsprofil und bevorzugter Immobilientyp werden in Sekunden bewertet. Ein Lead-Score wird vergeben und eine maßgeschneiderte Antwortstrategie entwickelt.',
     'how.s3.title': 'Maßgeschneiderte Sofort-Antwort',
     'how.s3.body':  'HYBOTE sendet eine individuelle, markenkonforme Antwort im Namen Ihrer Agentur – auf dem bevorzugten Kanal des Interessenten, inklusive relevanter Immobilien-Assets.',
     'how.s4.title': 'Termin vereinbart · Sie sind informiert',
@@ -1897,7 +1897,7 @@ const T = {
     'form.ph.last':    'Mustermann',
     'form.ph.company': 'Mustermann Immobilien GmbH',
     'form.ph.msg':     'Kurze Beschreibung oder spezifische Fragen...',
-    'form.error':      'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt an <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a>',
+    'form.error':      'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt an <a href="mailto:contact@hybote.ai" style="color:inherit;text-decoration:underline;">contact@hybote.ai</a>',
 
     'footer.tagline': 'Die KI-Concierge-Infrastruktur für den Luxusimmobilienmarkt der MENA-Region. Jeder Luxus-Klient wird sofort, diskret und präzise betreut.',
     'footer.status':  'System aktiv · 24 / 7',
@@ -1950,7 +1950,7 @@ const T = {
     'faq.q7':    'Für wen ist HYBOTE gedacht?',
     'faq.a7':    'HYBOTE wurde speziell für Premium- und Luxusimmobilienbüros entwickelt, die hochwertige Kunden betreuen und es sich nicht leisten können, auch nur einen einzigen Lead zu verlieren. Ob 10 oder 200 Leads pro Monat — HYBOTE skaliert mit Ihnen.',
     'faq.q8':    'Nutzt HYBOTE die offizielle WhatsApp Business API?',
-    'faq.a8':    'Ja. HYBOTE ist über eine offizielle, Enterprise-Grade WhatsApp Business API angebunden — mit stabiler Verbindung, Ende-zu-Ende-Verschlüsselung und hoher Zuverlässigkeit auch bei großem Nachrichtenvolumen. Die Anbindung ist auf die Anforderungen des Luxusimmobilienmarkts ausgelegt.',
+    'faq.a8':    'HYBOTE kommuniziert über WhatsApp mit Enterprise-Zuverlässigkeit und stabiler, sicherer Verbindung. Alle WhatsApp-Kommunikation ist Ende-zu-Ende-verschlüsselt. Qualifizierte Leads werden in gängige Immobilien-CRM-Systeme synchronisiert, damit Ihr Team stets mit vorqualifizierten Interessenten arbeitet.',
     'faq.q9':    'Wie schützt HYBOTE die Privatsphäre von vermögenden Klienten?',
     'faq.a9':    'Diskretion ist nicht verhandelbar. HYBOTE arbeitet mit strikter Datenisolierung pro Agentur – keine kanalübergreifende Datenweitergabe, Ende-zu-Ende-Verschlüsselung aller WhatsApp-Kommunikation und null Weitergabe an Datenhändler. VIP-Klientenidentitäten und Transaktionsdetails verbleiben ausschließlich in Ihrem System.',
 
@@ -1996,6 +1996,7 @@ const T = {
     'hero.trust3': 'No Commitment',
     'hero.trust4': '24 / 7 Active',
 
+    'stat.1.num': 'Instantly',
     'stat.1': 'Response time',
     'stat.2': 'Availability',
     'stat.3': 'More conversions',
@@ -2030,7 +2031,7 @@ const T = {
     'ch.h2':      'No matter how your lead<br/><em>reaches</em> you.',
     'ch.sub':     'HYBOTE monitors every incoming channel simultaneously and responds on each with precision — no exceptions, no delays.',
     'ch.wa.body': 'HYBOTE connects via an enterprise-grade WhatsApp Business API — reliable, stable, and end-to-end encrypted. Every enquiry is processed in real time with full discretion. Rich media assets (property brochures, floor plans, virtual tours) are delivered directly in the conversation. Seamlessly connected with common CRM systems.',
-    'ch.wa.tag1': 'Proprietary Architecture', 'ch.wa.tag2': 'Rich Media', 'ch.wa.tag3': 'CRM Sync',
+    'ch.wa.tag1': 'Enterprise Connection', 'ch.wa.tag2': 'Rich Media', 'ch.wa.tag3': 'CRM Sync',
     'ch.em.title':'Email',
     'ch.em.body': 'Incoming emails are instantly analysed, prioritised, and answered. High-value leads receive a tailored response matching your agency\'s voice and style.',
     'ch.em.tag1': 'Prioritization', 'ch.em.tag2': 'Signature match', 'ch.em.tag3': 'Follow-up',
@@ -2045,7 +2046,7 @@ const T = {
     'how.s1.title': 'Enquiry arrives',
     'how.s1.body':  'An international luxury prospect reaches out — via WhatsApp, email, phone, or contact form. HYBOTE receives the enquiry in real time, across all channels simultaneously.',
     'how.s2.title': 'AI analysis & qualification',
-    'how.s2.body':  'Budget range, purchase intent, nationality, financing profile, and preferred property type are assessed in under one second. A lead score is assigned and a bespoke response strategy formulated.',
+    'how.s2.body':  'Budget range, purchase intent, nationality, financing profile, and preferred property type are assessed in seconds. A lead score is assigned and a bespoke response strategy formulated.',
     'how.s3.title': 'Bespoke instant response',
     'how.s3.body':  'HYBOTE sends a personalised, brand-matched response on behalf of your agency — via the prospect\'s preferred channel, with relevant property assets included.',
     'how.s4.title': 'Appointment Booked · You\'re Briefed',
@@ -2093,7 +2094,7 @@ const T = {
     'form.ph.last':    'Smith',
     'form.ph.company': 'Smith Real Estate Ltd.',
     'form.ph.msg':     'Brief description or specific questions...',
-    'form.error':      'Something went wrong. Please try again or email us directly at <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a>',
+    'form.error':      'Something went wrong. Please try again or email us directly at <a href="mailto:contact@hybote.ai" style="color:inherit;text-decoration:underline;">contact@hybote.ai</a>',
 
     'footer.tagline': 'The AI concierge infrastructure for MENA\'s luxury real estate market. Every luxury client attended to — immediately, discreetly, precisely.',
     'footer.status':  'System active · 24 / 7',
@@ -2146,7 +2147,7 @@ const T = {
     'faq.q7':    'Who is HYBOTE designed for?',
     'faq.a7':    'HYBOTE is built specifically for premium and luxury real estate agencies that handle high-value clients and cannot afford to lose a single lead. Whether you receive 10 or 200 leads per month, HYBOTE scales with you.',
     'faq.q8':    'Does HYBOTE use the official WhatsApp Business API?',
-    'faq.a8':    'Yes. HYBOTE connects via the official, enterprise-grade WhatsApp Business API — with a stable connection, end-to-end encryption, and high reliability even at scale. The integration is designed for the demands of the luxury real estate market.',
+    'faq.a8':    'HYBOTE communicates via WhatsApp with enterprise-grade reliability and a stable, secure connection. All WhatsApp communication is end-to-end encrypted. Qualified leads are synced into common real estate CRM systems so your team always works with pre-qualified prospects.',
     'faq.q9':    'How does HYBOTE protect the privacy of high-net-worth clients?',
     'faq.a9':    'Discretion is non-negotiable. HYBOTE operates under strict data isolation per agency — no cross-client data sharing, end-to-end encryption on all WhatsApp communications, and zero third-party data brokering. VIP client identities and transaction details remain exclusively within your system.',
 
@@ -2192,6 +2193,7 @@ const T = {
     'hero.trust3': 'بدون التزام',
     'hero.trust4': 'نشط 24/7',
 
+    'stat.1.num': 'فوراً',
     'stat.1': 'وقت الاستجابة',
     'stat.2': 'معدل التوفر',
     'stat.3': 'مزيد من التحويلات',
@@ -2226,7 +2228,7 @@ const T = {
     'ch.h2':      'بغض النظر عن كيفية<br/><em>تواصل</em> عميلك معك.',
     'ch.sub':     'تراقب HYBOTE كل القنوات الواردة في آنٍ واحد وترد على كل منها بدقة — دون استثناءات، دون تأخير.',
     'ch.wa.body': 'تعتمد HYBOTE على اتصال بمستوى المؤسسات عبر WhatsApp Business API — موثوق وثابت ومشفر من طرف إلى طرف. كل استفسار يُعالَج في الوقت الفعلي بسرية تامة. الأصول عالية الجودة (الكتيبات، المخططات، الجولات الافتراضية) تُسلَّم مباشرة في المحادثة. متكاملة بسلاسة مع أنظمة CRM الشائعة.',
-    'ch.wa.tag1': 'بنية تحتية خاصة', 'ch.wa.tag2': 'وسائط غنية', 'ch.wa.tag3': 'مزامنة CRM',
+    'ch.wa.tag1': 'اتصال المؤسسات', 'ch.wa.tag2': 'وسائط غنية', 'ch.wa.tag3': 'مزامنة CRM',
     'ch.em.title':'البريد الإلكتروني',
     'ch.em.body': 'يتم تحليل رسائل البريد الإلكتروني الواردة وترتيب أولوياتها والرد عليها فوراً. يحصل العملاء المميزون على ردود مخصصة تتناسب مع صوت وكالتك وأسلوبها.',
     'ch.em.tag1': 'ترتيب الأولويات', 'ch.em.tag2': 'مطابقة التوقيع', 'ch.em.tag3': 'متابعة',
@@ -2241,7 +2243,7 @@ const T = {
     'how.s1.title': 'وصول الاستفسار',
     'how.s1.body':  'يتواصل مستثمر فاخر دولي — عبر واتساب أو البريد الإلكتروني أو الهاتف أو نموذج التواصل. تستقبل HYBOTE الاستفسار في الوقت الفعلي، عبر جميع القنوات في آنٍ واحد.',
     'how.s2.title': 'تحليل الذكاء الاصطناعي والتأهيل',
-    'how.s2.body':  'يُقيَّم نطاق الميزانية ونية الشراء والجنسية وملف التمويل ونوع العقار المفضل في أقل من ثانية. تُحدَّد نقاط العميل وتُصاغ استراتيجية رد مخصصة.',
+    'how.s2.body':  'يُقيَّم نطاق الميزانية ونية الشراء والجنسية وملف التمويل ونوع العقار المفضل في ثوانٍ. تُحدَّد نقاط العميل وتُصاغ استراتيجية رد مخصصة.',
     'how.s3.title': 'رد أول حصري',
     'how.s3.body':  'ترسل HYBOTE رداً فردياً ومتوافقاً مع علامتك التجارية باسم وكالتك — عبر القناة المفضلة للعميل، مع إرفاق أصول العقار ذات الصلة.',
     'how.s4.title': 'الموعد محجوز · أنت مُطلَع',
@@ -2289,7 +2291,7 @@ const T = {
     'form.ph.last':    'الأحمد',
     'form.ph.company': 'شركة الأحمد للعقارات',
     'form.ph.msg':     'وصف مختصر أو أسئلة محددة...',
-    'form.error':      'حدث خطأ ما. يرجى المحاولة مرة أخرى أو مراسلتنا مباشرة على <a href="mailto:Contact@hybote.ai" style="color:inherit;text-decoration:underline;">Contact@hybote.ai</a>',
+    'form.error':      'حدث خطأ ما. يرجى المحاولة مرة أخرى أو مراسلتنا مباشرة على <a href="mailto:contact@hybote.ai" style="color:inherit;text-decoration:underline;">contact@hybote.ai</a>',
 
     'footer.tagline': 'البنية التحتية للكونسيرج الذكي لسوق العقارات الفاخرة في منطقة الشرق الأوسط. كل عميل فاخر يُخدَم — فوراً، بسرية، وبدقة.',
     'footer.status':  'النظام نشط · 24 / 7',
@@ -2342,7 +2344,7 @@ const T = {
     'faq.q7':    'لمن صُمم HYBOTE؟',
     'faq.a7':    'صُمم HYBOTE خصيصاً لوكالات العقارات الفاخرة والمميزة التي تتعامل مع عملاء رفيعي المستوى ولا تستطيع تحمّل خسارة أي عميل محتمل. سواء تلقيت 10 أو 200 عميل شهرياً، HYBOTE يتوسع معك.',
     'faq.q8':    'هل تستخدم HYBOTE واجهة WhatsApp Business API الرسمية؟',
-    'faq.a8':    'نعم. تتصل HYBOTE عبر واجهة WhatsApp Business API الرسمية بمستوى المؤسسات — باتصال مستقر وتشفير من طرف إلى طرف وموثوقية عالية حتى في الأحجام الكبيرة. التكامل مُصمَّم لمتطلبات سوق العقارات الفاخرة.',
+    'faq.a8':    'تتواصل HYBOTE عبر واتساب بموثوقية على مستوى المؤسسات واتصال مستقر وآمن. جميع اتصالات واتساب مشفرة من طرف إلى طرف. تُزامَن العملاء المؤهلون في أنظمة CRM العقارية الشائعة حتى يعمل فريقك دائماً مع مهتمين مؤهلين مسبقاً.',
     'faq.q9':    'كيف تحمي HYBOTE خصوصية العملاء الأثرياء؟',
     'faq.a9':    'السرية غير قابلة للتفاوض. تعمل HYBOTE بعزل صارم للبيانات لكل وكالة — لا مشاركة بيانات بين العملاء، تشفير شامل لجميع اتصالات واتساب، وصفر مشاركة مع وسطاء البيانات. هويات العملاء VIP وتفاصيل المعاملات تبقى حصراً داخل نظامك.',
 
@@ -2452,7 +2454,7 @@ setLang('en');
   "description": "AI lead management platform for premium real estate agencies. Responds to every lead immediately via email and contact forms.",
   "contactPoint": {
     "@type": "ContactPoint",
-    "email": "Contact@hybote.ai",
+    "email": "contact@hybote.ai",
     "contactType": "customer service",
     "availableLanguage": ["English", "German", "Arabic"]
   },
@@ -2637,7 +2639,7 @@ setLang('en');
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
 </a>
 
-<a class="wa-btn" href="https://wa.me/15559946512" target="_blank" rel="noopener" aria-label="WhatsApp">
+<a class="wa-btn" href="https://wa.me/19129783592" target="_blank" rel="noopener" aria-label="WhatsApp">
   <span class="wa-tooltip" id="wa-tip">Chat on WhatsApp</span>
   <svg width="26" height="26" viewBox="0 0 32 32" fill="white" xmlns="http://www.w3.org/2000/svg">
     <path d="M16 2C8.268 2 2 8.268 2 16c0 2.462.665 4.766 1.825 6.748L2 30l7.44-1.795A13.93 13.93 0 0016 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm0 25.5a11.45 11.45 0 01-5.836-1.597l-.418-.248-4.418 1.066 1.1-4.295-.273-.44A11.468 11.468 0 014.5 16C4.5 9.649 9.649 4.5 16 4.5S27.5 9.649 27.5 16 22.351 27.5 16 27.5zm6.29-8.61c-.344-.172-2.035-1.004-2.35-1.118-.316-.115-.546-.172-.777.172-.23.344-.89 1.118-1.09 1.348-.2.23-.402.258-.746.086-.344-.172-1.452-.535-2.766-1.707-1.022-.913-1.712-2.04-1.912-2.384-.2-.344-.021-.53.15-.701.155-.154.344-.402.516-.603.172-.2.23-.344.344-.573.115-.23.058-.43-.028-.603-.086-.172-.777-1.876-1.065-2.567-.28-.673-.565-.582-.777-.593l-.662-.011c-.23 0-.603.086-.918.43-.316.344-1.205 1.177-1.205 2.87s1.234 3.329 1.406 3.559c.172.23 2.43 3.71 5.886 5.203.822.355 1.464.567 1.963.726.825.263 1.576.226 2.17.137.662-.1 2.035-.831 2.322-1.634.287-.803.287-1.49.2-1.634-.086-.143-.316-.23-.66-.401z"/>
