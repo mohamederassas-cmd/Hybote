@@ -1526,21 +1526,31 @@
 <footer style="background:var(--s1);padding:60px 32px 40px;border-top:1px solid rgba(201,160,83,0.15);">
   <div style="max-width:1100px;margin:0 auto;">
 
-    <div style="display:grid;gap:48px;margin-bottom:48px;" id="footer-top">
+    <div style="display:grid;gap:48px;margin-bottom:48px;align-items:start;" id="footer-top">
 
       <div>
         <!-- Logo white invert -->
-        <div style="margin-bottom:16px;filter:invert(1);">
-          <img src="logo.png" alt="HYBOTE" style="height:220px;width:auto;display:block;opacity:0.9;" />
+        <div style="margin-bottom:20px;filter:invert(1);">
+          <img src="logo.png" alt="HYBOTE" style="height:34px;width:auto;display:block;opacity:0.9;" />
         </div>
-        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);line-height:1.7;max-width:260px;" data-i18n="footer.tagline">AI lead management for premium brokerages. No lead ever lost — ever again.</p>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:16px;">
+        <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);line-height:1.7;max-width:240px;" data-i18n="footer.tagline">AI lead management for premium brokerages. No lead ever lost — ever again.</p>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:20px;">
           <span class="dot-live"></span>
           <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:var(--a4);letter-spacing:0.04em;" data-i18n="footer.status">System active · 24 / 7</span>
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;" id="footer-links">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px;" id="footer-links">
+        <div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--a3);margin-bottom:16px;" data-i18n="footer.col0">Services</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="#kanaele" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.svc1">WhatsApp Agent</a>
+            <a href="#kanaele" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.svc2">24/7 Voice Agent</a>
+            <a href="#loesung" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.svc3">Digital Concierge</a>
+            <a href="#kanaele" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.svc4">E-Mail Agent</a>
+            <a href="#ergebnisse" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.svc5">Lead Intelligence</a>
+          </div>
+        </div>
         <div>
           <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--a3);margin-bottom:16px;" data-i18n="footer.col1">Product</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
@@ -1923,6 +1933,12 @@ const T = {
 
     'footer.tagline': 'Die KI-Concierge-Infrastruktur für den Luxusimmobilienmarkt der MENA-Region. Jeder Luxus-Klient wird sofort, diskret und präzise betreut.',
     'footer.status':  'System aktiv · 24 / 7',
+    'footer.col0':    'Leistungen',
+    'footer.svc1':    'WhatsApp Agent',
+    'footer.svc2':    '24/7 Voice Agent',
+    'footer.svc3':    'Digital Concierge',
+    'footer.svc4':    'E-Mail Agent',
+    'footer.svc5':    'Lead Intelligence',
     'footer.col1':    'Produkt',
     'footer.sol':     'Lösung',
     'footer.ch':      'Kanäle',
@@ -2124,6 +2140,12 @@ const T = {
 
     'footer.tagline': 'The AI concierge infrastructure for MENA\'s luxury real estate market. Every luxury client attended to — immediately, discreetly, precisely.',
     'footer.status':  'System active · 24 / 7',
+    'footer.col0':    'Services',
+    'footer.svc1':    'WhatsApp Agent',
+    'footer.svc2':    '24/7 Voice Agent',
+    'footer.svc3':    'Digital Concierge',
+    'footer.svc4':    'E-Mail Agent',
+    'footer.svc5':    'Lead Intelligence',
     'footer.col1':    'Product',
     'footer.sol':     'Solution',
     'footer.ch':      'Channels',
@@ -2325,6 +2347,12 @@ const T = {
 
     'footer.tagline': 'البنية التحتية للكونسيرج الذكي لسوق العقارات الفاخرة في منطقة الشرق الأوسط. كل عميل فاخر يُخدَم — فوراً، بسرية، وبدقة.',
     'footer.status':  'النظام نشط · 24 / 7',
+    'footer.col0':    'خدماتنا',
+    'footer.svc1':    'وكيل واتساب',
+    'footer.svc2':    'وكيل صوتي ٢٤/٧',
+    'footer.svc3':    'كونسيرج رقمي',
+    'footer.svc4':    'وكيل البريد',
+    'footer.svc5':    'ذكاء العملاء',
     'footer.col1':    'المنتج',
     'footer.sol':     'الحل',
     'footer.ch':      'القنوات',
