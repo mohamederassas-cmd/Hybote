@@ -986,8 +986,17 @@
         <p class="t-body" style="font-size:0.83rem;margin-bottom:0;" data-i18n="ch.cf.body">Jede Formularanfrage auf Ihrer Website wird instantan verarbeitet. HYBOTE antwortet per E-Mail – professionell, personalisiert, umgehend.</p>
       </div>
 
-      <!-- KI-Qualifizierung -->
+      <!-- Social-DMs & Messenger -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:240ms;">
+        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>
+        </div>
+        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.social.title">Social-DMs & Messenger</h3>
+        <p class="t-body" style="font-size:0.83rem;margin-bottom:0;" data-i18n="ch.social.body">Eingehende Nachrichten über Instagram, Facebook Messenger und Google-Business-Chat werden in Echtzeit erfasst, qualifiziert und beantwortet – ein weiterer eingehender Lead-Kanal, derselbe automatisierte Prozess.</p>
+      </div>
+
+      <!-- KI-Qualifizierung -->
+      <div class="card-filled reveal" style="padding:40px;transition-delay:280ms;">
         <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         </div>
@@ -996,7 +1005,7 @@
       </div>
 
       <!-- CRM-Integration -->
-      <div class="card-filled reveal" style="padding:40px;transition-delay:280ms;">
+      <div class="card-filled reveal" style="padding:40px;transition-delay:320ms;">
         <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         </div>
@@ -1821,7 +1830,7 @@ const T = {
 
     'hero.badge':  'Lead-System aktiv — Kein Lead geht verloren',
     'hero.h1':     'Kein Lead geht<br/>verloren.<br/><span style="font-style:italic;color:var(--gold);">Nie wieder.</span>',
-    'hero.sub':    'HYBOTE ist die unsichtbare Intelligenz hinter Ihrer Kundenkommunikation — qualifiziert Luxus-Interessenten mit chirurgischer Präzision, liefert maßgeschneiderte Antworten via WhatsApp, E-Mail, Telefon und Kontaktformular und schützt diskret deren Privatsphäre. <strong style="font-weight:400;color:var(--fg);">Rund um die Uhr.</strong>',
+    'hero.sub':    'HYBOTE ist die unsichtbare Intelligenz hinter Ihrer Kundenkommunikation — qualifiziert Luxus-Interessenten mit chirurgischer Präzision, liefert maßgeschneiderte Antworten via WhatsApp, E-Mail, Telefon, Kontaktformular, Social-DMs und Google-Business-Chat und schützt diskret deren Privatsphäre. <strong style="font-weight:400;color:var(--fg);">Rund um die Uhr.</strong>',
     'hero.cta1':   'Live Demo buchen',
     'hero.cta2':   'So funktioniert es',
     'hero.trust1': 'Enterprise WhatsApp API',
@@ -1871,17 +1880,19 @@ const T = {
     'ch.cf.title':'Kontaktformular',
     'ch.cf.body': 'Jede Formularanfrage auf Ihrer Website wird sofort verarbeitet. HYBOTE antwortet auf dem bevorzugten Kanal des Interessenten – professionell, persönlich, umgehend.',
     'ch.cf.tag1': 'Mehrkanalig', 'ch.cf.tag2': 'Instant-Antwort', 'ch.cf.tag3': 'Smart Routing',
+    'ch.social.title':'Social-DMs & Messenger',
+    'ch.social.body': 'Eingehende Nachrichten über Instagram, Facebook Messenger und Google-Business-Chat werden in Echtzeit erfasst, qualifiziert und beantwortet – ein weiterer eingehender Lead-Kanal, derselbe automatisierte Prozess.',
     'ch.tel.title':'24/7 Sprachagent',
     'ch.tel.body': 'Eingehende Anrufe werden von einem KI-Sprachagenten sofort und professionell angenommen – rund um die Uhr, in der Sprache des Anrufers. Der Agent qualifiziert das Anliegen, beantwortet erste Fragen und vereinbart bei Bedarf direkt einen Termin.',
     'ch.qi.title': 'KI-Qualifizierung',
     'ch.qi.body':  'Jeder Lead wird automatisch bewertet und priorisiert – kanalübergreifend. Die heißesten Interessenten landen immer ganz oben, damit Ihr Team sich auf das Wesentliche konzentriert.',
     'ch.crm.title':'CRM-Integration',
-    'ch.crm.body': 'Jedes Gespräch und jeder Kontakt wird in Echtzeit in Ihr bestehendes CRM-System übertragen. Keine manuelle Dateneingabe – alle Informationen sind sofort dort, wo sie gebraucht werden.',
+    'ch.crm.body': 'Jedes Gespräch und jeder Kontakt wird in Echtzeit in Ihr bestehendes CRM-System übertragen. Keine manuelle Dateneingabe – alle Informationen sind sofort dort, wo sie gebraucht werden. Ergänzend erhalten Sie Zugriff auf ein gebrandetes Echtzeit-Dashboard und eine mobile App mit Push-Benachrichtigungen – alle qualifizierten Leads und gebuchten Termine jederzeit im Blick.',
 
     'how.label':    'Ablauf',
     'how.h2':       'Von der Anfrage zum Termin<br/><em>nahtlos.</em>',
     'how.s1.title': 'Lead trifft ein',
-    'how.s1.body':  'Ein internationaler Premium-Interessent meldet sich – via WhatsApp, E-Mail, Telefon oder Kontaktformular. HYBOTE empfängt die Anfrage in Echtzeit, auf allen Kanälen gleichzeitig.',
+    'how.s1.body':  'Ein internationaler Premium-Interessent meldet sich – via WhatsApp, E-Mail, Telefon, Kontaktformular, Social-DM oder Google-Business-Chat. HYBOTE empfängt die Anfrage in Echtzeit, auf allen Kanälen gleichzeitig.',
     'how.s2.title': 'KI-Analyse &amp; Qualifizierung',
     'how.s2.body':  'Budgetrahmen, Kaufintention, Nationalität, Finanzierungsprofil und bevorzugter Immobilientyp werden in Sekunden bewertet. Ein Lead-Score wird vergeben und eine maßgeschneiderte Antwortstrategie entwickelt.',
     'how.s3.title': 'Maßgeschneiderte Sofort-Antwort',
@@ -1976,7 +1987,7 @@ const T = {
     'faq.label': 'FAQ',
     'faq.h2':    'Häufig gestellte<br/>Fragen.',
     'faq.q1':    'Welche Kanäle unterstützt HYBOTE?',
-    'faq.a1':    'HYBOTE unterstützt WhatsApp Business, E-Mail, Telefon (KI-Sprachagent) und Web-Kontaktformulare gleichzeitig — alles verwaltet von einem KI-System, das auf jedem Kanal sofort antwortet, 24/7.',
+    'faq.a1':    'HYBOTE unterstützt WhatsApp Business, E-Mail, Telefon (KI-Sprachagent), Web-Kontaktformulare, Social-DMs (Instagram, Facebook Messenger) und Google-Business-Chat gleichzeitig — alles verwaltet von einem KI-System, das auf jedem Kanal sofort antwortet, 24/7.',
     'faq.q2':    'Wie schnell antwortet HYBOTE auf Leads?',
     'faq.a2':    'Jeder eingehende Lead erhält eine personalisierte Antwort umgehend — unabhängig von der Tageszeit, dem Kanal oder der Anzahl gleichzeitiger Anfragen.',
     'faq.q3':    'Ist HYBOTE datenschutzkonform?',
@@ -2028,7 +2039,7 @@ const T = {
 
     'hero.badge':  'Lead Capture System — Online 24 / 7',
     'hero.h1':     'Never miss a lead.<br/><span style="font-style:italic;color:var(--gold);">Ever again.</span>',
-    'hero.sub':    'HYBOTE is the invisible intelligence behind your client communications — qualifying luxury prospects with surgical precision, delivering bespoke responses via WhatsApp, email, phone, and contact form, and protecting their privacy. <strong style="font-weight:400;color:var(--fg);">Around the clock.</strong>',
+    'hero.sub':    'HYBOTE is the invisible intelligence behind your client communications — qualifying luxury prospects with surgical precision, delivering bespoke responses via WhatsApp, email, phone, contact form, social DMs and Google Business Chat, and protecting their privacy. <strong style="font-weight:400;color:var(--fg);">Around the clock.</strong>',
     'hero.cta1':   'Book a Live Demo',
     'hero.cta2':   'See how it works',
     'hero.trust1': 'Enterprise WhatsApp API',
@@ -2078,17 +2089,19 @@ const T = {
     'ch.cf.title':'Contact Form',
     'ch.cf.body': 'Every form request on your website is processed instantly. HYBOTE replies on the prospect\'s preferred channel — professionally, personally, immediately.',
     'ch.cf.tag1': 'Multi-channel', 'ch.cf.tag2': 'Instant reply', 'ch.cf.tag3': 'Smart routing',
+    'ch.social.title':'Social DMs & Messenger',
+    'ch.social.body': 'Incoming messages via Instagram, Facebook Messenger, and Google Business Chat are captured, qualified, and answered in real time — another inbound lead channel, the same automated process.',
     'ch.tel.title':'24/7 Voice Agent',
     'ch.tel.body': 'Incoming calls are answered immediately and professionally by an AI voice agent — around the clock, in the caller\'s language. The agent qualifies the enquiry, answers initial questions, and schedules an appointment directly if needed.',
     'ch.qi.title': 'AI Lead Scoring',
     'ch.qi.body':  'Every lead is automatically scored and prioritised across all channels. The hottest prospects always surface first so your team can focus on closing.',
     'ch.crm.title':'CRM Integration',
-    'ch.crm.body': 'Every conversation and contact record is synced to your existing CRM in real time. No manual data entry — all information is instantly where it needs to be.',
+    'ch.crm.body': 'Every conversation and contact record is synced to your existing CRM in real time. No manual data entry — all information is instantly where it needs to be. You also get access to a branded real-time dashboard and mobile app with push notifications — all qualified leads and booked appointments visible at a glance.',
 
     'how.label':    'Process',
     'how.h2':       'From enquiry to appointment<br/><em>seamlessly.</em>',
     'how.s1.title': 'Enquiry arrives',
-    'how.s1.body':  'An international luxury prospect reaches out — via WhatsApp, email, phone, or contact form. HYBOTE receives the enquiry in real time, across all channels simultaneously.',
+    'how.s1.body':  'An international luxury prospect reaches out — via WhatsApp, email, phone, contact form, social DM, or Google Business Chat. HYBOTE receives the enquiry in real time, across all channels simultaneously.',
     'how.s2.title': 'AI analysis & qualification',
     'how.s2.body':  'Budget range, purchase intent, nationality, financing profile, and preferred property type are assessed in seconds. A lead score is assigned and a bespoke response strategy formulated.',
     'how.s3.title': 'Bespoke instant response',
@@ -2183,7 +2196,7 @@ const T = {
     'faq.label': 'FAQ',
     'faq.h2':    'Frequently asked<br/>questions.',
     'faq.q1':    'What channels does HYBOTE support?',
-    'faq.a1':    'HYBOTE supports WhatsApp Business, email, phone (AI voice agent), and web contact forms simultaneously — all managed by a single AI system that responds on every channel immediately, 24/7.',
+    'faq.a1':    'HYBOTE supports WhatsApp Business, email, phone (AI voice agent), web contact forms, social DMs (Instagram, Facebook Messenger), and Google Business Chat simultaneously — all managed by a single AI system that responds on every channel immediately, 24/7.',
     'faq.q2':    'How fast does HYBOTE respond to leads?',
     'faq.a2':    'Every incoming lead receives a personalized response immediately — regardless of the time of day, channel, or volume of simultaneous inquiries.',
     'faq.q3':    'Is HYBOTE data protection compliant?',
@@ -2235,7 +2248,7 @@ const T = {
 
     'hero.badge':  'نظام استقطاب العملاء — متاح 24 / 7',
     'hero.h1':     'لا تفوّت أي عميل<br/>محتمل.<br/><span style="font-style:italic;color:var(--gold);">أبداً.</span>',
-    'hero.sub':    'HYBOTE هو الذكاء غير المرئي خلف تواصلك مع العملاء — يؤهل العملاء الفاخرين بدقة جراحية، ويقدم ردوداً مخصصة عبر واتساب والبريد الإلكتروني والهاتف ونماذج التواصل، ويحمي خصوصيتهم. <strong style="font-weight:400;color:var(--fg);">على مدار الساعة.</strong>',
+    'hero.sub':    'HYBOTE هو الذكاء غير المرئي خلف تواصلك مع العملاء — يؤهل العملاء الفاخرين بدقة جراحية، ويقدم ردوداً مخصصة عبر واتساب والبريد الإلكتروني والهاتف ونماذج التواصل والرسائل المباشرة على السوشيال ميديا وGoogle Business Chat، ويحمي خصوصيتهم. <strong style="font-weight:400;color:var(--fg);">على مدار الساعة.</strong>',
     'hero.cta1':   'احجز عرضاً مباشراً',
     'hero.cta2':   'كيف يعمل',
     'hero.trust1': 'واجهة WhatsApp للمؤسسات',
@@ -2285,17 +2298,19 @@ const T = {
     'ch.cf.title':'نموذج التواصل',
     'ch.cf.body': 'تتم معالجة كل طلب نموذج على موقعك فورياً. ترد HYBOTE عبر القناة المفضلة للعميل — باحترافية وتخصيص وبشكل فوري.',
     'ch.cf.tag1': 'متعدد القنوات', 'ch.cf.tag2': 'رد فوري', 'ch.cf.tag3': 'توجيه ذكي',
+    'ch.social.title':'رسائل مباشرة',
+    'ch.social.body': 'يتم التقاط الرسائل الواردة عبر Instagram وFacebook Messenger وGoogle Business Chat وتأهيلها والرد عليها في الوقت الفعلي — قناة استقطاب عملاء واردة أخرى، نفس العملية الآلية.',
     'ch.tel.title':'وكيل صوتي 24/7',
     'ch.tel.body': 'يتم الرد على المكالمات الواردة فوراً وباحترافية من قِبَل وكيل صوتي بالذكاء الاصطناعي — على مدار الساعة، بلغة المتصل. يؤهّل الوكيل الطلب، ويجيب على الأسئلة الأولية، ويحجز موعداً مباشرة عند الحاجة.',
     'ch.qi.title': 'تأهيل العملاء بالذكاء الاصطناعي',
     'ch.qi.body':  'يتم تقييم كل عميل محتمل وترتيب أولوياته تلقائياً عبر جميع القنوات. العملاء الأكثر اهتماماً يظهرون دائماً في المقدمة ليتمكن فريقك من التركيز على الإغلاق.',
     'ch.crm.title':'تكامل CRM',
-    'ch.crm.body': 'تتم مزامنة كل محادثة وجهة اتصال مع نظام CRM الحالي لديك في الوقت الفعلي. لا إدخال يدوي للبيانات — جميع المعلومات متاحة فوراً في مكانها الصحيح.',
+    'ch.crm.body': 'تتم مزامنة كل محادثة وجهة اتصال مع نظام CRM الحالي لديك في الوقت الفعلي. لا إدخال يدوي للبيانات — جميع المعلومات متاحة فوراً في مكانها الصحيح. كما تحصل على لوحة تحكم ذات علامة تجارية في الوقت الفعلي وتطبيق جوّال مع إشعارات دفع — جميع العملاء المؤهلين والمواعيد المحجوزة في متناول يدك.',
 
     'how.label':    'آلية العمل',
     'how.h2':       'من الاستفسار إلى الموعد<br/><em>بسلاسة.</em>',
     'how.s1.title': 'وصول الاستفسار',
-    'how.s1.body':  'يتواصل مستثمر فاخر دولي — عبر واتساب أو البريد الإلكتروني أو الهاتف أو نموذج التواصل. تستقبل HYBOTE الاستفسار في الوقت الفعلي، عبر جميع القنوات في آنٍ واحد.',
+    'how.s1.body':  'يتواصل مستثمر فاخر دولي — عبر واتساب أو البريد الإلكتروني أو الهاتف أو نموذج التواصل أو رسالة مباشرة على السوشيال ميديا أو Google Business Chat. تستقبل HYBOTE الاستفسار في الوقت الفعلي، عبر جميع القنوات في آنٍ واحد.',
     'how.s2.title': 'تحليل الذكاء الاصطناعي والتأهيل',
     'how.s2.body':  'يُقيَّم نطاق الميزانية ونية الشراء والجنسية وملف التمويل ونوع العقار المفضل في ثوانٍ. تُحدَّد نقاط العميل وتُصاغ استراتيجية رد مخصصة.',
     'how.s3.title': 'رد أول حصري',
@@ -2390,7 +2405,7 @@ const T = {
     'faq.label': 'الأسئلة الشائعة',
     'faq.h2':    'الأسئلة<br/>المتكررة.',
     'faq.q1':    'ما هي القنوات التي يدعمها HYBOTE؟',
-    'faq.a1':    'يدعم HYBOTE WhatsApp Business والبريد الإلكتروني والهاتف (وكيل صوتي بالذكاء الاصطناعي) ونماذج التواصل على الويب في آنٍ واحد — كلها يديرها نظام ذكاء اصطناعي واحد يرد فوراً على كل قناة، على مدار الساعة.',
+    'faq.a1':    'يدعم HYBOTE WhatsApp Business والبريد الإلكتروني والهاتف (وكيل صوتي بالذكاء الاصطناعي) ونماذج التواصل على الويب والرسائل المباشرة على وسائل التواصل الاجتماعي (إنستغرام، فيسبوك ماسنجر) وGoogle Business Chat في آنٍ واحد — كلها يديرها نظام ذكاء اصطناعي واحد يرد فوراً على كل قناة، على مدار الساعة.',
     'faq.q2':    'ما مدى سرعة استجابة HYBOTE للعملاء المحتملين؟',
     'faq.a2':    'يتلقى كل عميل محتمل وارد رداً مخصصاً فوراً — بغض النظر عن وقت اليوم أو القناة أو حجم الاستفسارات المتزامنة.',
     'faq.q3':    'هل HYBOTE متوافق مع معايير حماية البيانات؟',
