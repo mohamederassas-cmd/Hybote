@@ -1642,6 +1642,7 @@
 
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
       <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:var(--a3);" data-i18n="footer.copy">© 2026 HYBOTE. All rights reserved.</span>
+      <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:var(--a4);" data-i18n="footer.powered">Powered and designed by HYBOTE AI Systems LLC</span>
     </div>
   </div>
 </footer>
@@ -2094,6 +2095,7 @@ const T = {
     'footer.privacy': 'Datenschutz',
     'footer.terms':   'AGB',
     'footer.copy':    '© 2026 HYBOTE. Alle Rechte vorbehalten.',
+    'footer.powered': 'Powered and designed by HYBOTE AI Systems LLC',
     'footer.trust':   'Enterprise WhatsApp API · KI-Sprachagent · DSGVO-konform',
 
     'demo.header':      'Eingehende Anfrage',
@@ -2355,6 +2357,7 @@ const T = {
     'footer.privacy': 'Privacy Policy',
     'footer.terms':   'Terms',
     'footer.copy':    '© 2026 HYBOTE. All rights reserved.',
+    'footer.powered': 'Powered and designed by HYBOTE AI Systems LLC',
     'footer.trust':   'Enterprise WhatsApp API · AI Voice Agent · GDPR Compliant',
 
     'demo.header':      'Incoming Enquiry',
@@ -2616,6 +2619,7 @@ const T = {
     'footer.privacy': 'سياسة الخصوصية',
     'footer.terms':   'الشروط والأحكام',
     'footer.copy':    '© 2026 HYBOTE. جميع الحقوق محفوظة.',
+    'footer.powered': 'Powered and designed by HYBOTE AI Systems LLC',
     'footer.trust':   'واجهة WhatsApp للمؤسسات · صوت ذكي · متوافق مع GDPR',
 
     'demo.header':      'استفسار وارد',
@@ -3010,6 +3014,29 @@ setLang('en');
     }
     updateFloatingLang(typeof currentLang !== 'undefined' ? currentLang : 'en');
   })();
+</script>
+
+<!-- ══════════════════════════════════════════════════════════
+     COOKIE CONSENT BANNER
+══════════════════════════════════════════════════════════ -->
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:var(--s1);border-top:1px solid rgba(201,160,83,0.25);padding:16px 24px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+  <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.78rem;color:var(--a2);line-height:1.6;margin:0;flex:1;min-width:200px;">
+    This website uses cookies essential to its operation. By continuing, you accept our
+    <a href="datenschutz.html?lang=en" target="_blank" style="color:var(--gold-lt);text-decoration:none;border-bottom:1px solid rgba(232,196,122,0.35);">Privacy Policy</a>.
+  </p>
+  <button onclick="acceptCookies()" style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.7rem;letter-spacing:0.10em;text-transform:uppercase;color:var(--bg);background:var(--gold);border:none;padding:9px 20px;cursor:pointer;white-space:nowrap;transition:opacity 150ms;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Accept</button>
+</div>
+<script>
+  (function() {
+    if (!localStorage.getItem('cookie_consent')) {
+      var b = document.getElementById('cookie-banner');
+      b.style.display = 'flex';
+    }
+  })();
+  function acceptCookies() {
+    localStorage.setItem('cookie_consent', '1');
+    document.getElementById('cookie-banner').style.display = 'none';
+  }
 </script>
 
 </body>
