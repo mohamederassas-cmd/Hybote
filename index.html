@@ -119,7 +119,7 @@
     /* ── Scrollbar ───────────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--s3); }
+    ::-webkit-scrollbar-thumb { background: rgba(201,160,83,0.35); }
 
     /* ── Typography scale ────────────────────────────────────────── */
     .t-display {
@@ -280,27 +280,29 @@
 
     /* ── Cards ───────────────────────────────────────────────────── */
     .card {
-      border: 1px solid var(--line-med);
-      background: var(--s2);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(201,160,83,0.14);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       transition: border-color 250ms ease, box-shadow 250ms ease, transform 250ms cubic-bezier(0.34,1.56,0.64,1);
     }
     .card:hover {
-      border-color: rgba(201,160,83,0.3);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,160,83,0.12);
+      border-color: rgba(201,160,83,0.4);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,160,83,0.14);
       transform: translateY(-3px);
     }
 
     .card-filled {
-      background: var(--s1);
-      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,160,83,0.12);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       transition: background 250ms ease, border-color 250ms ease, box-shadow 250ms ease, transform 250ms cubic-bezier(0.34,1.56,0.64,1);
     }
     .card-filled:hover {
-      background: var(--s2);
-      border-color: rgba(78,205,196,0.25);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(78,205,196,0.1);
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(201,160,83,0.35);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,160,83,0.12);
       transform: translateY(-3px);
     }
 
@@ -342,7 +344,7 @@
       appearance: none;
       width: 100%;
       height: 2px;
-      background: var(--s3);
+      background: rgba(255,255,255,0.12);
       outline: none;
       border: none;
       padding: 0;
@@ -370,7 +372,7 @@
       cursor: pointer;
     }
     .roi-slider::-webkit-slider-runnable-track { height: 2px; }
-    .roi-slider::-moz-range-track { height: 2px; background: var(--s3); }
+    .roi-slider::-moz-range-track { height: 2px; background: rgba(255,255,255,0.12); }
 
     /* ── Counter ─────────────────────────────────────────────────── */
     .kpi-counter { display: inline; }
@@ -425,7 +427,9 @@
       font-weight: 300;
       font-size: 0.85rem;
       color: var(--fg);
-      background: var(--s1);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--line-med);
       padding: 13px 16px;
       width: 100%;
@@ -454,7 +458,7 @@
       border-color: var(--gold);
       box-shadow: none;
     }
-    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b95aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; background-color: var(--s1); padding-right: 40px; cursor: pointer; }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b95aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; background-color: rgba(12,14,20,0.85); padding-right: 40px; cursor: pointer; }
     label {
       display: block;
       font-family: 'Montserrat', sans-serif;
@@ -566,7 +570,10 @@
 
     /* ── Problem card enhanced hover ─────────────────────────────── */
     .prob-card {
-      background: var(--s1);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(201,160,83,0.12);
       padding: 40px;
       transition: transform 280ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 280ms ease, border-color 280ms ease;
     }
@@ -605,14 +612,15 @@
     .ast-options { display:flex;flex-direction:column;gap:8px; }
     .ast-opt {
       display:block;width:100%;text-align:left;padding:14px 20px;
-      background:var(--s2);border:1px solid var(--line);
+      background:rgba(255,255,255,0.03);border:1px solid rgba(201,160,83,0.12);
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
       font-family:'Montserrat',sans-serif;font-size:0.88rem;font-weight:300;
       color:var(--fg);cursor:pointer;
       transition:border-color 0.15s,background 0.15s;letter-spacing:0.01em;
     }
-    .ast-opt:hover { border-color:var(--a3);background:var(--s3); }
-    .ast-opt:focus-visible { outline:2px solid var(--fg);outline-offset:2px; }
-    .ast-opt--active { border-color:var(--fg);background:var(--s3);font-weight:400; }
+    .ast-opt:hover { border-color:rgba(201,160,83,0.4);background:rgba(255,255,255,0.06); }
+    .ast-opt:focus-visible { outline:2px solid var(--gold);outline-offset:2px; }
+    .ast-opt--active { border-color:var(--gold);background:rgba(201,160,83,0.1);font-weight:400; }
     html[lang="ar"] .ast-opt { text-align:right; }
 
     /* ══ Cinematic upgrade ════════════════════════════════════════ */
@@ -648,18 +656,14 @@
 
     /* Hero card + Spline */
     .hero-card {
-      position: relative; overflow: hidden;
+      position: relative;
       border-radius: 24px;
       background:
-        radial-gradient(120% 120% at 80% 0%, rgba(201,160,83,0.06) 0%, transparent 55%),
-        linear-gradient(160deg, rgba(15,22,41,0.86) 0%, rgba(8,13,26,0.92) 100%);
-      border: 1px solid var(--line-med);
-      box-shadow:
-        0 1px 0 rgba(255,255,255,0.04) inset,
-        0 40px 120px -30px rgba(0,0,0,0.75),
-        0 0 0 1px rgba(201,160,83,0.04);
+        radial-gradient(120% 120% at 80% 0%, rgba(201,160,83,0.05) 0%, transparent 55%);
+      border: none;
+      box-shadow: none;
     }
-    .hero-spline { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hero-spline { position: absolute; inset: 0; width: 100%; height: 100%; transform: translateX(clamp(20px, 4vw, 70px)); }
     .hero-spline spline-viewer { width: 100%; height: 100%; display: block; }
     /* fade the left edge of the 3D scene into the card so text stays legible */
     .hero-spline::after {
@@ -805,8 +809,8 @@
 
       <!-- Headline -->
       <h1 class="t-display" style="font-size:clamp(2.7rem,5.2vw,5rem);margin-bottom:14px;hyphens:none;overflow-wrap:normal;" data-i18n="hero.h1">
-        Künstliche Intelligenz,<br/>
-        <span class="grad-text" style="font-style:italic;">die für Sie arbeitet.</span>
+        Die Zukunft läuft<br/>
+        <span class="grad-text" style="font-style:italic;">von selbst.</span>
       </h1>
 
       <!-- Underline -->
@@ -814,7 +818,7 @@
 
       <!-- Sub -->
       <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:clamp(0.95rem,1.4vw,1.08rem);color:var(--a1);line-height:1.8;max-width:520px;margin-bottom:40px;" data-i18n="hero.sub">
-        Wir entwerfen, bauen und integrieren KI, die Ihr Unternehmen leise im Hintergrund schneller, schlanker und <strong style="font-weight:400;color:var(--fg);">rund um die Uhr</strong> laufen lässt.
+        Wir bauen KI, die im Hintergrund arbeitet — leise, präzise, <strong style="font-weight:400;color:var(--fg);">rund um die Uhr.</strong>
       </p>
 
       <!-- CTAs -->
@@ -843,9 +847,27 @@
       // Only fetch/initialise the 3D scene on tablet+ to keep phones light.
       (function(){
         var sv = document.getElementById('hero-spline-viewer');
-        if (sv && window.matchMedia('(min-width: 601px)').matches) {
+        if (!sv) return;
+        if (window.matchMedia('(min-width: 601px)').matches) {
           sv.setAttribute('url', sv.dataset.url);
         }
+        // Remove the "Built with Spline" watermark (rendered inside the viewer's shadow DOM).
+        function stripSplineBadge(){
+          if (!sv.shadowRoot) return false;
+          var logo = sv.shadowRoot.querySelector('#logo');
+          if (logo) { logo.remove(); return true; }
+          return false;
+        }
+        var tries = 0;
+        var iv = setInterval(function(){
+          if (stripSplineBadge() || ++tries > 40) clearInterval(iv);
+        }, 250);
+        try {
+          var mo = new MutationObserver(stripSplineBadge);
+          var startObs = function(){ if (sv.shadowRoot) mo.observe(sv.shadowRoot, { childList:true, subtree:true }); };
+          startObs();
+          sv.addEventListener('load', function(){ stripSplineBadge(); startObs(); });
+        } catch(e){}
       })();
     </script>
 
@@ -856,7 +878,7 @@
 <!-- ══════════════════════════════════════════════════════════
      STATS BAR
 ══════════════════════════════════════════════════════════ -->
-<section style="padding:64px 32px;background:rgba(15,22,41,0.82);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+<section style="padding:64px 32px;background:transparent;border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
   <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:48px;align-items:center;" id="stats-grid">
 
     <div class="reveal" style="text-align:center;">
@@ -896,7 +918,7 @@
 <!-- ══════════════════════════════════════════════════════════
      TICKER
 ══════════════════════════════════════════════════════════ -->
-<div class="tick-wrap" style="padding:14px 0;background:var(--s1);border-bottom:1px solid var(--line);">
+<div class="tick-wrap" style="padding:14px 0;background:transparent;border-bottom:1px solid var(--line);">
   <div class="tick-inner" id="ticker-inner">
     <span class="t-label" style="padding:0 48px;color:var(--a3);">Neue Anfrage eingegangen &ensp;<span style="color:var(--gold);">·</span>&ensp; Qualifiziert &ensp;<span style="color:var(--gold);">·</span>&ensp; Sofortantwort gesendet</span>
     <span class="t-label" style="padding:0 48px;color:var(--a3);">E-Mail von Interessent &ensp;<span style="color:var(--gold);">·</span>&ensp; Lead-Score berechnet &ensp;<span style="color:var(--gold);">·</span>&ensp; Terminvorschlag sofort gesendet</span>
@@ -954,7 +976,7 @@
 <!-- ══════════════════════════════════════════════════════════
      SOLUTION
 ══════════════════════════════════════════════════════════ -->
-<section id="loesung" style="padding:100px 32px;background:rgba(15,22,41,0.82);">
+<section id="loesung" style="padding:100px 32px;background:transparent;">
   <div style="max-width:1100px;margin:0 auto;">
 
     <div style="display:grid;gap:72px;align-items:start;" id="sol-grid">
@@ -1024,9 +1046,9 @@
           </div>
 
           <!-- Incoming message -->
-          <div style="background:var(--s1);padding:18px;margin-bottom:16px;border:1px solid var(--line);">
+          <div style="background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:18px;margin-bottom:16px;border:1px solid rgba(201,160,83,0.12);">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-              <div style="width:36px;height:36px;background:var(--s3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <div style="width:36px;height:36px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
               </div>
               <div>
@@ -1039,7 +1061,7 @@
 
           <!-- Progress bar -->
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-            <div style="flex:1;height:2px;background:var(--s3);position:relative;overflow:hidden;">
+            <div style="flex:1;height:2px;background:rgba(255,255,255,0.1);position:relative;overflow:hidden;">
               <div style="position:absolute;inset:0;background:linear-gradient(90deg,var(--gold),var(--gold-lt));transform-origin:left;animation:bar-fill 2.5s ease-out forwards;"></div>
             </div>
             <span class="t-small">sofort</span>
@@ -1105,7 +1127,7 @@
 
       <!-- WhatsApp -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:80ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;">WhatsApp</h3>
@@ -1114,7 +1136,7 @@
 
       <!-- 24/7 Voice Agent -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:120ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.tel.title">24/7 Sprachagent</h3>
@@ -1123,7 +1145,7 @@
 
       <!-- Social-DMs & Messenger -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:160ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.social.title">Social-DMs & Messenger</h3>
@@ -1132,7 +1154,7 @@
 
       <!-- E-Mail & Kontaktformular -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:200ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="1"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:10px;" data-i18n="ch.emcf.title">Schriftliche Anfragen</h3>
@@ -1145,7 +1167,7 @@
 
       <!-- CRM-Integration -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:240ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.crm.title">CRM-Integration</h3>
@@ -1154,7 +1176,7 @@
 
       <!-- KI-Qualifizierung -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:280ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.qi.title">KI-Qualifizierung</h3>
@@ -1171,7 +1193,7 @@
 <!-- ══════════════════════════════════════════════════════════
      HOW IT WORKS
 ══════════════════════════════════════════════════════════ -->
-<section style="padding:100px 32px;background:rgba(15,22,41,0.82);position:relative;overflow:hidden;">
+<section style="padding:100px 32px;background:transparent;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 80% 50%,rgba(78,205,196,0.04) 0%,transparent 60%);z-index:0;"></div>
   <div style="max-width:900px;margin:0 auto;position:relative;z-index:1;">
 
@@ -1227,14 +1249,14 @@
 <!-- ══════════════════════════════════════════════════════════
      MISSION & VISION
 ══════════════════════════════════════════════════════════ -->
-<section id="mission" style="padding:100px 32px;background:rgba(15,22,41,0.82);position:relative;">
+<section id="mission" style="padding:100px 32px;background:transparent;position:relative;">
   <div class="grain-overlay"></div>
   <div style="max-width:1100px;margin:0 auto;position:relative;z-index:2;">
 
     <div style="display:grid;gap:1px;background:var(--line);" id="mv-grid">
 
       <!-- Mission -->
-      <div class="reveal" style="padding:64px;background:var(--s1);">
+      <div class="reveal" style="padding:64px;background:rgba(255,255,255,0.03);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(201,160,83,0.12);">
         <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;">
           <span style="display:block;width:24px;height:1px;background:var(--gold);"></span>
           <span style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);" data-i18n="mission.label">Our Mission</span>
@@ -1244,7 +1266,7 @@
       </div>
 
       <!-- Vision -->
-      <div class="reveal" style="padding:64px;background:var(--s2);transition-delay:80ms;">
+      <div class="reveal" style="padding:64px;background:rgba(255,255,255,0.05);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(201,160,83,0.18);transition-delay:80ms;">
         <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;">
           <span style="display:block;width:24px;height:1px;background:var(--gold);"></span>
           <span style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);" data-i18n="vision.label">Our Vision</span>
@@ -1278,7 +1300,7 @@
 <!-- ══════════════════════════════════════════════════════════
      ASSESSMENT
 ══════════════════════════════════════════════════════════ -->
-<section id="assessment" style="padding:100px 32px;background:rgba(15,22,41,0.82);">
+<section id="assessment" style="padding:100px 32px;background:transparent;">
   <div style="max-width:760px;margin:0 auto;">
 
     <div style="margin-bottom:56px;">
@@ -1349,7 +1371,7 @@
         <p class="ast-q-label" data-i18n="ast.q6">Durchschnittliche Stundenkosten pro Person (€)?</p>
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
           <input type="number" id="ast-hourly" min="15" max="500" value="35" step="5"
-            style="width:120px;padding:12px 16px;border:1px solid var(--line-med);background:var(--s2);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:300;color:var(--fg);outline:none;border-radius:2px;"
+            style="width:120px;padding:12px 16px;border:1px solid var(--line-med);background:rgba(255,255,255,0.03);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:300;color:var(--fg);outline:none;border-radius:2px;"
             oninput="astHourlyChange()" />
           <span class="t-label" style="color:var(--a3);">€ / Std.</span>
         </div>
@@ -1364,7 +1386,7 @@
 
       <!-- Result -->
       <div id="ast-result" style="display:none;">
-        <div style="padding:40px;background:var(--s2);border:1px solid var(--line);margin-bottom:20px;">
+        <div style="padding:40px;background:rgba(255,255,255,0.04);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(201,160,83,0.18);margin-bottom:20px;">
           <p class="t-label" style="margin-bottom:16px;color:var(--a3);">Ihr Ergebnis</p>
           <p id="ast-result-head" style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.95rem;line-height:1.8;color:var(--fg);margin-bottom:28px;"></p>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-top:1px solid var(--line);padding-top:28px;margin-bottom:28px;">
@@ -1559,7 +1581,7 @@
 
       <div style="display:flex;flex-direction:column;gap:20px;">
         <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:80ms;">
-          <div style="width:36px;height:36px;background:var(--s2);border:1px solid var(--line-med);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(201,160,83,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
           <div>
@@ -1568,7 +1590,7 @@
           </div>
         </div>
         <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:120ms;">
-          <div style="width:36px;height:36px;background:var(--s2);border:1px solid var(--line-med);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(201,160,83,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
           <div>
@@ -1577,7 +1599,7 @@
           </div>
         </div>
         <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:160ms;">
-          <div style="width:36px;height:36px;background:var(--s2);border:1px solid var(--line-med);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(201,160,83,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
           <div>
@@ -1717,7 +1739,7 @@
 <!-- ══════════════════════════════════════════════════════════
      FOOTER
 ══════════════════════════════════════════════════════════ -->
-<footer style="background:var(--s1);padding:60px 32px 40px;border-top:1px solid rgba(201,160,83,0.15);">
+<footer style="background:transparent;padding:60px 32px 40px;border-top:1px solid rgba(201,160,83,0.15);">
   <div style="max-width:1100px;margin:0 auto;">
 
     <div style="display:grid;gap:48px;margin-bottom:48px;align-items:start;" id="footer-top">
@@ -2087,8 +2109,8 @@ const T = {
 
     'hero.badge':  'KI-Automatisierung — 24/7 aktiv',
     'hero.eyebrow': 'KI-AUTOMATISIERUNG · BERATUNG · PROZESSOPTIMIERUNG',
-    'hero.h1':     'Künstliche Intelligenz,<br/><span class="grad-text" style="font-style:italic;">die für Sie arbeitet.</span>',
-    'hero.sub':    'Wir designen, bauen und integrieren KI-Lösungen, die still im Hintergrund laufen — und Ihr Unternehmen schneller, effizienter und <strong style="font-weight:400;color:var(--fg);">rund um die Uhr verfügbar</strong> machen.',
+    'hero.h1':     'Die Zukunft läuft<br/><span class="grad-text" style="font-style:italic;">von selbst.</span>',
+    'hero.sub':    'Wir bauen KI, die im Hintergrund arbeitet — leise, präzise, <strong style="font-weight:400;color:var(--fg);">rund um die Uhr.</strong>',
     'hero.cta1':   'Kostenlosen KI-Audit anfragen',
     'hero.cta2':   'Automatisierungspotenzial testen',
     'hero.trust1': 'Enterprise WhatsApp API',
@@ -2349,8 +2371,8 @@ const T = {
 
     'hero.badge':  'AI Automation System — Active 24/7',
     'hero.eyebrow': 'AI AUTOMATION · CONSULTING · PROCESS OPTIMIZATION',
-    'hero.h1':     'Artificial intelligence<br/><span class="grad-text" style="font-style:italic;">that works for you.</span>',
-    'hero.sub':    'We design, build and integrate AI solutions that run quietly in the background — making your business faster, leaner and <strong style="font-weight:400;color:var(--fg);">available around the clock.</strong>',
+    'hero.h1':     'The future runs<br/><span class="grad-text" style="font-style:italic;">on its own.</span>',
+    'hero.sub':    'We build AI that works in the background — quiet, precise, <strong style="font-weight:400;color:var(--fg);">around the clock.</strong>',
     'hero.cta1':   'Book a free AI audit',
     'hero.cta2':   'Test your automation potential',
     'hero.trust1': 'Enterprise WhatsApp API',
@@ -2611,8 +2633,8 @@ const T = {
 
     'hero.badge':  'نظام أتمتة الذكاء الاصطناعي — نشط 24/7',
     'hero.eyebrow': 'أتمتة الذكاء الاصطناعي · الاستشارات · تحسين العمليات',
-    'hero.h1':     'ذكاء اصطناعي<br/><span class="grad-text">يعمل من أجلك.</span>',
-    'hero.sub':    'نصمم ونبني وندمج حلول ذكاء اصطناعي تعمل بهدوء في الخلفية، لتجعل عملك أسرع وأكثر كفاءة <strong style="font-weight:400;color:var(--fg);">ومتاحًا على مدار الساعة.</strong>',
+    'hero.h1':     'المستقبل يعمل<br/><span class="grad-text">من تلقاء نفسه.</span>',
+    'hero.sub':    'نبني ذكاءً اصطناعياً يعمل في الخلفية — بهدوء ودقة، <strong style="font-weight:400;color:var(--fg);">على مدار الساعة.</strong>',
     'hero.cta1':   'احجز تدقيقًا مجانيًا للذكاء الاصطناعي',
     'hero.cta2':   'اختبر إمكانية الأتمتة',
     'hero.trust1': 'واجهة WhatsApp للمؤسسات',
@@ -2980,8 +3002,10 @@ setLang('en');
     right: 28px;
     width: 56px;
     height: 56px;
-    background: var(--s2);
-    border: 1px solid rgba(201,160,83,0.22);
+    background: rgba(12,14,20,0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(201,160,83,0.3);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -3047,8 +3071,10 @@ setLang('en');
     right: 28px;
     width: 56px;
     height: 56px;
-    background: var(--s2);
-    border: 1px solid rgba(201,160,83,0.22);
+    background: rgba(12,14,20,0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(201,160,83,0.3);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -3151,7 +3177,7 @@ setLang('en');
 <!-- ══════════════════════════════════════════════════════════
      COOKIE CONSENT BANNER
 ══════════════════════════════════════════════════════════ -->
-<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:var(--s1);border-top:1px solid rgba(201,160,83,0.25);padding:16px 24px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(8,11,18,0.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(201,160,83,0.25);padding:16px 24px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
   <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.78rem;color:var(--a2);line-height:1.6;margin:0;flex:1;min-width:200px;">
     This website uses cookies essential to its operation. By continuing, you accept our
     <a href="datenschutz.html?lang=en" target="_blank" style="color:var(--gold-lt);text-decoration:none;border-bottom:1px solid rgba(232,196,122,0.35);">Privacy Policy</a>.

@@ -31,6 +31,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=Cairo:wght@200;300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
 
+  <!-- 3D / motion deps (no build step — pure CDN) -->
+  <script type="importmap">
+  { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+  </script>
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.48/build/spline-viewer.js"></script>
+
   <style>
     /* Arabic font override */
     html[lang="ar"] body,
@@ -102,7 +108,8 @@
     body {
       font-family: 'Montserrat', sans-serif;
       font-weight: 300;
-      background: var(--bg);
+      /* transparent so the fixed #dotted-bg (z-index:-1) shows through */
+      background: transparent;
       color: var(--fg);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -112,7 +119,7 @@
     /* ── Scrollbar ───────────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--s3); }
+    ::-webkit-scrollbar-thumb { background: rgba(201,160,83,0.35); }
 
     /* ── Typography scale ────────────────────────────────────────── */
     .t-display {
@@ -273,27 +280,29 @@
 
     /* ── Cards ───────────────────────────────────────────────────── */
     .card {
-      border: 1px solid var(--line-med);
-      background: var(--s2);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(201,160,83,0.14);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       transition: border-color 250ms ease, box-shadow 250ms ease, transform 250ms cubic-bezier(0.34,1.56,0.64,1);
     }
     .card:hover {
-      border-color: rgba(201,160,83,0.3);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,160,83,0.12);
+      border-color: rgba(201,160,83,0.4);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,160,83,0.14);
       transform: translateY(-3px);
     }
 
     .card-filled {
-      background: var(--s1);
-      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,160,83,0.12);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       transition: background 250ms ease, border-color 250ms ease, box-shadow 250ms ease, transform 250ms cubic-bezier(0.34,1.56,0.64,1);
     }
     .card-filled:hover {
-      background: var(--s2);
-      border-color: rgba(78,205,196,0.25);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(78,205,196,0.1);
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(201,160,83,0.35);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,160,83,0.12);
       transform: translateY(-3px);
     }
 
@@ -335,7 +344,7 @@
       appearance: none;
       width: 100%;
       height: 2px;
-      background: var(--s3);
+      background: rgba(255,255,255,0.12);
       outline: none;
       border: none;
       padding: 0;
@@ -363,7 +372,7 @@
       cursor: pointer;
     }
     .roi-slider::-webkit-slider-runnable-track { height: 2px; }
-    .roi-slider::-moz-range-track { height: 2px; background: var(--s3); }
+    .roi-slider::-moz-range-track { height: 2px; background: rgba(255,255,255,0.12); }
 
     /* ── Counter ─────────────────────────────────────────────────── */
     .kpi-counter { display: inline; }
@@ -418,7 +427,9 @@
       font-weight: 300;
       font-size: 0.85rem;
       color: var(--fg);
-      background: var(--s1);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--line-med);
       padding: 13px 16px;
       width: 100%;
@@ -447,7 +458,7 @@
       border-color: var(--gold);
       box-shadow: none;
     }
-    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b95aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; background-color: var(--s1); padding-right: 40px; cursor: pointer; }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b95aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; background-color: rgba(12,14,20,0.85); padding-right: 40px; cursor: pointer; }
     label {
       display: block;
       font-family: 'Montserrat', sans-serif;
@@ -559,7 +570,10 @@
 
     /* ── Problem card enhanced hover ─────────────────────────────── */
     .prob-card {
-      background: var(--s1);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(201,160,83,0.12);
       padding: 40px;
       transition: transform 280ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 280ms ease, border-color 280ms ease;
     }
@@ -598,19 +612,103 @@
     .ast-options { display:flex;flex-direction:column;gap:8px; }
     .ast-opt {
       display:block;width:100%;text-align:left;padding:14px 20px;
-      background:var(--s2);border:1px solid var(--line);
+      background:rgba(255,255,255,0.03);border:1px solid rgba(201,160,83,0.12);
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
       font-family:'Montserrat',sans-serif;font-size:0.88rem;font-weight:300;
       color:var(--fg);cursor:pointer;
       transition:border-color 0.15s,background 0.15s;letter-spacing:0.01em;
     }
-    .ast-opt:hover { border-color:var(--a3);background:var(--s3); }
-    .ast-opt:focus-visible { outline:2px solid var(--fg);outline-offset:2px; }
-    .ast-opt--active { border-color:var(--fg);background:var(--s3);font-weight:400; }
+    .ast-opt:hover { border-color:rgba(201,160,83,0.4);background:rgba(255,255,255,0.06); }
+    .ast-opt:focus-visible { outline:2px solid var(--gold);outline-offset:2px; }
+    .ast-opt--active { border-color:var(--gold);background:rgba(201,160,83,0.1);font-weight:400; }
     html[lang="ar"] .ast-opt { text-align:right; }
+
+    /* ══ Cinematic upgrade ════════════════════════════════════════ */
+
+    /* Global animated dotted-surface background (fixed → only text scrolls) */
+    #dotted-bg {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      opacity: 0; transition: opacity 1.4s ease;
+    }
+    #dotted-bg.in { opacity: 1; }
+    #dotted-bg canvas { display: block; }
+
+    /* Spotlight (aceternity) */
+    @keyframes animate-spotlight {
+      0%   { opacity: 0; transform: translate(-72%, -62%) scale(0.5); }
+      100% { opacity: 1; transform: translate(-50%, -40%) scale(1); }
+    }
+    .spotlight {
+      position: absolute; z-index: 1; pointer-events: none;
+      height: 169%; width: 138%; top: 0; left: 0; opacity: 0;
+      animation: animate-spotlight 2.4s ease 0.6s forwards;
+    }
+    @media (min-width: 1024px) { .spotlight { width: 84%; } }
+
+    /* Spline loader fallback */
+    .loader {
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 2px solid rgba(201,160,83,0.18);
+      border-top-color: var(--gold);
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Hero card + Spline */
+    .hero-card {
+      position: relative;
+      border-radius: 24px;
+      background:
+        radial-gradient(120% 120% at 80% 0%, rgba(201,160,83,0.05) 0%, transparent 55%);
+      border: none;
+      box-shadow: none;
+    }
+    .hero-spline { position: absolute; inset: 0; width: 100%; height: 100%; transform: translateX(clamp(20px, 4vw, 70px)); }
+    .hero-spline spline-viewer { width: 100%; height: 100%; display: block; }
+    /* fade the left edge of the 3D scene into the card so text stays legible */
+    .hero-spline::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(90deg, rgba(8,13,26,0.92) 0%, rgba(8,13,26,0.45) 28%, transparent 60%);
+    }
+    @media (max-width: 880px) {
+      .hero-spline { min-height: 300px; }
+      .hero-spline::after {
+        background: linear-gradient(180deg, transparent 0%, rgba(8,13,26,0.4) 55%, rgba(8,13,26,0.92) 100%);
+      }
+    }
+    /* Phones: drop the heavy 3D scene for a fast, clean text hero */
+    @media (max-width: 600px) {
+      .hero-spline { display: none; }
+    }
+
+    /* Animated gradient headline shimmer */
+    .grad-text {
+      background: linear-gradient(100deg, var(--gold-lt) 0%, var(--gold) 25%, #fff6e2 50%, var(--gold) 75%, var(--gold-lt) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      animation: shimmer 6s linear infinite;
+    }
+
+    /* Respect reduced motion — kill loops + reveals */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
+      .spotlight, .grad-text { animation: none !important; }
+      #dotted-bg { opacity: 1; }
+    }
   </style>
 </head>
 
 <body>
+
+<!-- Global animated dotted-surface background (Three.js) -->
+<div id="dotted-bg" aria-hidden="true"></div>
 
 <!-- ══════════════════════════════════════════════════════════
      NAVIGATION
@@ -671,60 +769,116 @@
 <!-- ══════════════════════════════════════════════════════════
      HERO
 ══════════════════════════════════════════════════════════ -->
-<section style="padding:160px 32px 100px;max-width:1200px;margin:0 auto;position:relative;overflow:hidden;">
-  <!-- Dark gradient mesh background -->
-  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 120% 80% at 65% 0%,rgba(201,160,83,0.07) 0%,transparent 60%),radial-gradient(ellipse 80% 60% at 5% 85%,rgba(78,205,196,0.05) 0%,transparent 50%),linear-gradient(170deg,#0f1629 0%,#080d1a 100%);"></div>
-  <!-- Floating particle dots -->
-  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
-    <div style="position:absolute;width:2px;height:2px;border-radius:50%;background:var(--gold);opacity:0.4;top:15%;left:25%;animation:particle-drift 8s ease-in-out infinite;"></div>
-    <div style="position:absolute;width:1px;height:1px;border-radius:50%;background:var(--teal);opacity:0.5;top:40%;right:20%;animation:particle-drift 12s ease-in-out 2s infinite;"></div>
-    <div style="position:absolute;width:2px;height:2px;border-radius:50%;background:var(--gold);opacity:0.3;top:60%;left:60%;animation:particle-drift 10s ease-in-out 4s infinite;"></div>
-    <div style="position:absolute;width:1px;height:1px;border-radius:50%;background:var(--fg);opacity:0.3;top:25%;right:40%;animation:particle-drift 14s ease-in-out 1s infinite;"></div>
-    <div style="position:absolute;width:2px;height:2px;border-radius:50%;background:var(--teal);opacity:0.3;bottom:20%;left:30%;animation:particle-drift 9s ease-in-out 3s infinite;"></div>
-  </div>
+<section style="padding:150px 24px 96px;max-width:1240px;margin:0 auto;position:relative;overflow:hidden;">
+  <!-- Ambient depth layers behind the hero card -->
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 120% 80% at 65% 0%,rgba(201,160,83,0.06) 0%,transparent 60%),radial-gradient(ellipse 80% 60% at 5% 85%,rgba(78,205,196,0.04) 0%,transparent 50%);"></div>
   <div class="hero-glow-a"></div>
   <div class="hero-glow-b"></div>
   <div class="hero-glow-c"></div>
 
-  <!-- Label -->
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:40px;">
-    <span class="dot-live"></span>
-    <span class="t-label" data-i18n="hero.badge">AI Automation System — Active 24 / 7</span>
+  <!-- ── Cinematic hero card ──────────────────────────────────── -->
+  <div class="hero-card" style="position:relative;z-index:2;display:flex;flex-wrap:wrap;align-items:stretch;min-height:560px;">
+
+    <!-- Spotlight (aceternity) -->
+    <svg class="spotlight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3787 2842" fill="none">
+      <g filter="url(#hero-spotlight)">
+        <ellipse cx="1924.71" cy="273.501" rx="1924.71" ry="273.501"
+          transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)"
+          fill="rgba(232,196,122,0.85)" fill-opacity="0.18"></ellipse>
+      </g>
+      <defs>
+        <filter id="hero-spotlight" x="0.860352" y="0.838989" width="3785.16" height="2840.26"
+          filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
+          <feGaussianBlur stdDeviation="151" result="effect1_foregroundBlur_1065_8"></feGaussianBlur>
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- Left: copy -->
+    <div style="flex:1 1 460px;min-width:0;padding:clamp(34px,4.6vw,68px);display:flex;flex-direction:column;justify-content:center;position:relative;z-index:10;">
+      <!-- Label -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:30px;">
+        <span class="dot-live"></span>
+        <span class="t-label" data-i18n="hero.badge">AI Automation System — Active 24 / 7</span>
+      </div>
+
+      <!-- Eyebrow -->
+      <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--a3);margin-bottom:18px;" data-i18n="hero.eyebrow">KI-AUTOMATISIERUNG · BERATUNG · PROZESSOPTIMIERUNG</div>
+
+      <!-- Headline -->
+      <h1 class="t-display" style="font-size:clamp(2.7rem,5.2vw,5rem);margin-bottom:14px;hyphens:none;overflow-wrap:normal;" data-i18n="hero.h1">
+        Die Zukunft läuft<br/>
+        <span class="grad-text" style="font-style:italic;">von selbst.</span>
+      </h1>
+
+      <!-- Underline -->
+      <div class="hero-line" style="height:1px;background:linear-gradient(90deg,var(--gold),rgba(201,160,83,0.2),transparent);width:160px;margin-bottom:32px;"></div>
+
+      <!-- Sub -->
+      <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:clamp(0.95rem,1.4vw,1.08rem);color:var(--a1);line-height:1.8;max-width:520px;margin-bottom:40px;" data-i18n="hero.sub">
+        Wir bauen KI, die im Hintergrund arbeitet — leise, präzise, <strong style="font-weight:400;color:var(--fg);">rund um die Uhr.</strong>
+      </p>
+
+      <!-- CTAs -->
+      <div style="display:flex;flex-wrap:wrap;gap:14px;">
+        <a href="#kontakt" class="btn-dark">
+          <span data-i18n="hero.cta1">Kostenloses KI-Audit buchen</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#assessment" class="btn-outline" data-i18n="hero.cta2">Automatisierungs-Potenzial testen</a>
+      </div>
+    </div>
+
+    <!-- Right: interactive 3D robot (Spline) -->
+    <div class="hero-spline" style="flex:1 1 420px;min-width:0;min-height:440px;">
+      <div id="spline-loader" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:0;">
+        <span class="loader"></span>
+      </div>
+      <spline-viewer
+        id="hero-spline-viewer"
+        data-url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+        events-target="global"
+        style="position:relative;z-index:1;"
+        onload="var l=document.getElementById('spline-loader'); if(l) l.style.display='none';"></spline-viewer>
+    </div>
+    <script>
+      // Only fetch/initialise the 3D scene on tablet+ to keep phones light.
+      (function(){
+        var sv = document.getElementById('hero-spline-viewer');
+        if (!sv) return;
+        if (window.matchMedia('(min-width: 601px)').matches) {
+          sv.setAttribute('url', sv.dataset.url);
+        }
+        // Remove the "Built with Spline" watermark (rendered inside the viewer's shadow DOM).
+        function stripSplineBadge(){
+          if (!sv.shadowRoot) return false;
+          var logo = sv.shadowRoot.querySelector('#logo');
+          if (logo) { logo.remove(); return true; }
+          return false;
+        }
+        var tries = 0;
+        var iv = setInterval(function(){
+          if (stripSplineBadge() || ++tries > 40) clearInterval(iv);
+        }, 250);
+        try {
+          var mo = new MutationObserver(stripSplineBadge);
+          var startObs = function(){ if (sv.shadowRoot) mo.observe(sv.shadowRoot, { childList:true, subtree:true }); };
+          startObs();
+          sv.addEventListener('load', function(){ stripSplineBadge(); startObs(); });
+        } catch(e){}
+      })();
+    </script>
+
   </div>
-
-  <!-- Headline -->
-  <div style="max-width:900px;margin-bottom:40px;">
-    <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--a3);margin-bottom:16px;" data-i18n="hero.eyebrow">KI-AUTOMATISIERUNG · BERATUNG · PROZESSOPTIMIERUNG</div>
-    <h1 class="t-display" style="margin-bottom:12px;hyphens:none;overflow-wrap:normal;" data-i18n="hero.h1">
-      Künstliche Intelligenz,<br/>
-      <span style="font-style:italic;color:var(--gold);">die für Sie arbeitet.</span>
-    </h1>
-  </div>
-
-  <!-- Underline -->
-  <div style="height:1px;background:linear-gradient(90deg,var(--gold),rgba(201,160,83,0.2),transparent);width:160px;margin-bottom:40px;" class="hero-line"></div>
-
-  <!-- Sub -->
-  <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:clamp(0.95rem,2vw,1.1rem);color:var(--a1);line-height:1.8;max-width:560px;margin-bottom:52px;" data-i18n="hero.sub">
-    Wir entwerfen, bauen und integrieren KI, die Ihr Unternehmen leise im Hintergrund schneller, schlanker und <strong style="font-weight:400;color:var(--fg);">rund um die Uhr</strong> laufen lässt.
-  </p>
-
-  <!-- CTAs -->
-  <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:80px;">
-    <a href="#kontakt" class="btn-dark">
-      <span data-i18n="hero.cta1">Kostenloses KI-Audit buchen</span>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-    <a href="#assessment" class="btn-outline" data-i18n="hero.cta2">Automatisierungs-Potenzial testen</a>
-  </div>
-
 </section>
 
 
 <!-- ══════════════════════════════════════════════════════════
      STATS BAR
 ══════════════════════════════════════════════════════════ -->
-<section style="padding:64px 32px;background:var(--s1);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+<section style="padding:64px 32px;background:transparent;border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
   <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:48px;align-items:center;" id="stats-grid">
 
     <div class="reveal" style="text-align:center;">
@@ -764,7 +918,7 @@
 <!-- ══════════════════════════════════════════════════════════
      TICKER
 ══════════════════════════════════════════════════════════ -->
-<div class="tick-wrap" style="padding:14px 0;background:var(--s1);border-bottom:1px solid var(--line);">
+<div class="tick-wrap" style="padding:14px 0;background:transparent;border-bottom:1px solid var(--line);">
   <div class="tick-inner" id="ticker-inner">
     <span class="t-label" style="padding:0 48px;color:var(--a3);">Neue Anfrage eingegangen &ensp;<span style="color:var(--gold);">·</span>&ensp; Qualifiziert &ensp;<span style="color:var(--gold);">·</span>&ensp; Sofortantwort gesendet</span>
     <span class="t-label" style="padding:0 48px;color:var(--a3);">E-Mail von Interessent &ensp;<span style="color:var(--gold);">·</span>&ensp; Lead-Score berechnet &ensp;<span style="color:var(--gold);">·</span>&ensp; Terminvorschlag sofort gesendet</span>
@@ -822,7 +976,7 @@
 <!-- ══════════════════════════════════════════════════════════
      SOLUTION
 ══════════════════════════════════════════════════════════ -->
-<section id="loesung" style="padding:100px 32px;background:var(--s1);">
+<section id="loesung" style="padding:100px 32px;background:transparent;">
   <div style="max-width:1100px;margin:0 auto;">
 
     <div style="display:grid;gap:72px;align-items:start;" id="sol-grid">
@@ -892,9 +1046,9 @@
           </div>
 
           <!-- Incoming message -->
-          <div style="background:var(--s1);padding:18px;margin-bottom:16px;border:1px solid var(--line);">
+          <div style="background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:18px;margin-bottom:16px;border:1px solid rgba(201,160,83,0.12);">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-              <div style="width:36px;height:36px;background:var(--s3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <div style="width:36px;height:36px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
               </div>
               <div>
@@ -907,7 +1061,7 @@
 
           <!-- Progress bar -->
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-            <div style="flex:1;height:2px;background:var(--s3);position:relative;overflow:hidden;">
+            <div style="flex:1;height:2px;background:rgba(255,255,255,0.1);position:relative;overflow:hidden;">
               <div style="position:absolute;inset:0;background:linear-gradient(90deg,var(--gold),var(--gold-lt));transform-origin:left;animation:bar-fill 2.5s ease-out forwards;"></div>
             </div>
             <span class="t-small">sofort</span>
@@ -973,7 +1127,7 @@
 
       <!-- WhatsApp -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:80ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;">WhatsApp</h3>
@@ -982,7 +1136,7 @@
 
       <!-- 24/7 Voice Agent -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:120ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.tel.title">24/7 Sprachagent</h3>
@@ -991,7 +1145,7 @@
 
       <!-- Social-DMs & Messenger -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:160ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.social.title">Social-DMs & Messenger</h3>
@@ -1000,7 +1154,7 @@
 
       <!-- E-Mail & Kontaktformular -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:200ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="1"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:10px;" data-i18n="ch.emcf.title">Schriftliche Anfragen</h3>
@@ -1013,7 +1167,7 @@
 
       <!-- CRM-Integration -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:240ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.crm.title">CRM-Integration</h3>
@@ -1022,7 +1176,7 @@
 
       <!-- KI-Qualifizierung -->
       <div class="card-filled reveal" style="padding:40px;transition-delay:280ms;">
-        <div style="width:48px;height:48px;background:var(--s2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid var(--line-med);">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;border:1px solid rgba(201,160,83,0.2);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="ch.qi.title">KI-Qualifizierung</h3>
@@ -1039,7 +1193,7 @@
 <!-- ══════════════════════════════════════════════════════════
      HOW IT WORKS
 ══════════════════════════════════════════════════════════ -->
-<section style="padding:100px 32px;background:var(--s1);position:relative;overflow:hidden;">
+<section style="padding:100px 32px;background:transparent;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 80% 50%,rgba(78,205,196,0.04) 0%,transparent 60%);z-index:0;"></div>
   <div style="max-width:900px;margin:0 auto;position:relative;z-index:1;">
 
@@ -1095,14 +1249,14 @@
 <!-- ══════════════════════════════════════════════════════════
      MISSION & VISION
 ══════════════════════════════════════════════════════════ -->
-<section id="mission" style="padding:100px 32px;background:var(--s1);position:relative;">
+<section id="mission" style="padding:100px 32px;background:transparent;position:relative;">
   <div class="grain-overlay"></div>
   <div style="max-width:1100px;margin:0 auto;position:relative;z-index:2;">
 
     <div style="display:grid;gap:1px;background:var(--line);" id="mv-grid">
 
       <!-- Mission -->
-      <div class="reveal" style="padding:64px;background:var(--s1);">
+      <div class="reveal" style="padding:64px;background:rgba(255,255,255,0.03);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(201,160,83,0.12);">
         <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;">
           <span style="display:block;width:24px;height:1px;background:var(--gold);"></span>
           <span style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);" data-i18n="mission.label">Our Mission</span>
@@ -1112,7 +1266,7 @@
       </div>
 
       <!-- Vision -->
-      <div class="reveal" style="padding:64px;background:var(--s2);transition-delay:80ms;">
+      <div class="reveal" style="padding:64px;background:rgba(255,255,255,0.05);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(201,160,83,0.18);transition-delay:80ms;">
         <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;">
           <span style="display:block;width:24px;height:1px;background:var(--gold);"></span>
           <span style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);" data-i18n="vision.label">Our Vision</span>
@@ -1146,7 +1300,7 @@
 <!-- ══════════════════════════════════════════════════════════
      ASSESSMENT
 ══════════════════════════════════════════════════════════ -->
-<section id="assessment" style="padding:100px 32px;background:var(--s1);">
+<section id="assessment" style="padding:100px 32px;background:transparent;">
   <div style="max-width:760px;margin:0 auto;">
 
     <div style="margin-bottom:56px;">
@@ -1217,7 +1371,7 @@
         <p class="ast-q-label" data-i18n="ast.q6">Durchschnittliche Stundenkosten pro Person (€)?</p>
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
           <input type="number" id="ast-hourly" min="15" max="500" value="35" step="5"
-            style="width:120px;padding:12px 16px;border:1px solid var(--line-med);background:var(--s2);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:300;color:var(--fg);outline:none;border-radius:2px;"
+            style="width:120px;padding:12px 16px;border:1px solid var(--line-med);background:rgba(255,255,255,0.03);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:300;color:var(--fg);outline:none;border-radius:2px;"
             oninput="astHourlyChange()" />
           <span class="t-label" style="color:var(--a3);">€ / Std.</span>
         </div>
@@ -1232,7 +1386,7 @@
 
       <!-- Result -->
       <div id="ast-result" style="display:none;">
-        <div style="padding:40px;background:var(--s2);border:1px solid var(--line);margin-bottom:20px;">
+        <div style="padding:40px;background:rgba(255,255,255,0.04);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(201,160,83,0.18);margin-bottom:20px;">
           <p class="t-label" style="margin-bottom:16px;color:var(--a3);">Ihr Ergebnis</p>
           <p id="ast-result-head" style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.95rem;line-height:1.8;color:var(--fg);margin-bottom:28px;"></p>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-top:1px solid var(--line);padding-top:28px;margin-bottom:28px;">
@@ -1427,7 +1581,7 @@
 
       <div style="display:flex;flex-direction:column;gap:20px;">
         <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:80ms;">
-          <div style="width:36px;height:36px;background:var(--s2);border:1px solid var(--line-med);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(201,160,83,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
           <div>
@@ -1436,7 +1590,7 @@
           </div>
         </div>
         <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:120ms;">
-          <div style="width:36px;height:36px;background:var(--s2);border:1px solid var(--line-med);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(201,160,83,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
           <div>
@@ -1445,7 +1599,7 @@
           </div>
         </div>
         <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:160ms;">
-          <div style="width:36px;height:36px;background:var(--s2);border:1px solid var(--line-med);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(201,160,83,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
           <div>
@@ -1585,7 +1739,7 @@
 <!-- ══════════════════════════════════════════════════════════
      FOOTER
 ══════════════════════════════════════════════════════════ -->
-<footer style="background:var(--s1);padding:60px 32px 40px;border-top:1px solid rgba(201,160,83,0.15);">
+<footer style="background:transparent;padding:60px 32px 40px;border-top:1px solid rgba(201,160,83,0.15);">
   <div style="max-width:1100px;margin:0 auto;">
 
     <div style="display:grid;gap:48px;margin-bottom:48px;align-items:start;" id="footer-top">
@@ -1955,8 +2109,8 @@ const T = {
 
     'hero.badge':  'KI-Automatisierung — 24/7 aktiv',
     'hero.eyebrow': 'KI-AUTOMATISIERUNG · BERATUNG · PROZESSOPTIMIERUNG',
-    'hero.h1':     'Künstliche Intelligenz,<br/><span style="font-style:italic;color:var(--gold);">die für Sie arbeitet.</span>',
-    'hero.sub':    'Wir designen, bauen und integrieren KI-Lösungen, die still im Hintergrund laufen — und Ihr Unternehmen schneller, effizienter und <strong style="font-weight:400;color:var(--fg);">rund um die Uhr verfügbar</strong> machen.',
+    'hero.h1':     'Die Zukunft läuft<br/><span class="grad-text" style="font-style:italic;">von selbst.</span>',
+    'hero.sub':    'Wir bauen KI, die im Hintergrund arbeitet — leise, präzise, <strong style="font-weight:400;color:var(--fg);">rund um die Uhr.</strong>',
     'hero.cta1':   'Kostenlosen KI-Audit anfragen',
     'hero.cta2':   'Automatisierungspotenzial testen',
     'hero.trust1': 'Enterprise WhatsApp API',
@@ -2217,8 +2371,8 @@ const T = {
 
     'hero.badge':  'AI Automation System — Active 24/7',
     'hero.eyebrow': 'AI AUTOMATION · CONSULTING · PROCESS OPTIMIZATION',
-    'hero.h1':     'Artificial intelligence<br/><span style="font-style:italic;color:var(--gold);">that works for you.</span>',
-    'hero.sub':    'We design, build and integrate AI solutions that run quietly in the background — making your business faster, leaner and <strong style="font-weight:400;color:var(--fg);">available around the clock.</strong>',
+    'hero.h1':     'The future runs<br/><span class="grad-text" style="font-style:italic;">on its own.</span>',
+    'hero.sub':    'We build AI that works in the background — quiet, precise, <strong style="font-weight:400;color:var(--fg);">around the clock.</strong>',
     'hero.cta1':   'Book a free AI audit',
     'hero.cta2':   'Test your automation potential',
     'hero.trust1': 'Enterprise WhatsApp API',
@@ -2479,8 +2633,8 @@ const T = {
 
     'hero.badge':  'نظام أتمتة الذكاء الاصطناعي — نشط 24/7',
     'hero.eyebrow': 'أتمتة الذكاء الاصطناعي · الاستشارات · تحسين العمليات',
-    'hero.h1':     'ذكاء اصطناعي<br/><span style="color:var(--gold);">يعمل من أجلك.</span>',
-    'hero.sub':    'نصمم ونبني وندمج حلول ذكاء اصطناعي تعمل بهدوء في الخلفية، لتجعل عملك أسرع وأكثر كفاءة <strong style="font-weight:400;color:var(--fg);">ومتاحًا على مدار الساعة.</strong>',
+    'hero.h1':     'المستقبل يعمل<br/><span class="grad-text">من تلقاء نفسه.</span>',
+    'hero.sub':    'نبني ذكاءً اصطناعياً يعمل في الخلفية — بهدوء ودقة، <strong style="font-weight:400;color:var(--fg);">على مدار الساعة.</strong>',
     'hero.cta1':   'احجز تدقيقًا مجانيًا للذكاء الاصطناعي',
     'hero.cta2':   'اختبر إمكانية الأتمتة',
     'hero.trust1': 'واجهة WhatsApp للمؤسسات',
@@ -2848,8 +3002,10 @@ setLang('en');
     right: 28px;
     width: 56px;
     height: 56px;
-    background: var(--s2);
-    border: 1px solid rgba(201,160,83,0.22);
+    background: rgba(12,14,20,0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(201,160,83,0.3);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -2915,8 +3071,10 @@ setLang('en');
     right: 28px;
     width: 56px;
     height: 56px;
-    background: var(--s2);
-    border: 1px solid rgba(201,160,83,0.22);
+    background: rgba(12,14,20,0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(201,160,83,0.3);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -3019,7 +3177,7 @@ setLang('en');
 <!-- ══════════════════════════════════════════════════════════
      COOKIE CONSENT BANNER
 ══════════════════════════════════════════════════════════ -->
-<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:var(--s1);border-top:1px solid rgba(201,160,83,0.25);padding:16px 24px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(8,11,18,0.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(201,160,83,0.25);padding:16px 24px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
   <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.78rem;color:var(--a2);line-height:1.6;margin:0;flex:1;min-width:200px;">
     This website uses cookies essential to its operation. By continuing, you accept our
     <a href="datenschutz.html?lang=en" target="_blank" style="color:var(--gold-lt);text-decoration:none;border-bottom:1px solid rgba(232,196,122,0.35);">Privacy Policy</a>.
@@ -3036,6 +3194,124 @@ setLang('en');
   function acceptCookies() {
     localStorage.setItem('cookie_consent', '1');
     document.getElementById('cookie-banner').style.display = 'none';
+  }
+</script>
+
+<!-- ══════════════════════════════════════════════════════════
+     DOTTED SURFACE — global animated background (Three.js)
+     Vanilla port of dotted-surface.tsx · brand-tinted · fixed
+══════════════════════════════════════════════════════════ -->
+<script type="module">
+  import * as THREE from 'three';
+
+  const container = document.getElementById('dotted-bg');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Skip the heavy 3D layer on very small / low-power screens.
+  if (container && !window.matchMedia('(max-width: 600px)').matches) {
+    const SEPARATION = 150;
+    const AMOUNTX = window.innerWidth < 1100 ? 28 : 40;
+    const AMOUNTY = window.innerWidth < 1100 ? 42 : 60;
+
+    // Brand palette for the dots (normalised 0..1, low brightness for elegance)
+    const PALETTE = [
+      [0.79, 0.63, 0.33], // gold   #c9a053
+      [0.91, 0.77, 0.48], // gold-l #e8c47a
+      [0.31, 0.80, 0.77], // teal   #4ecdc4
+      [0.96, 0.94, 0.92], // cream  #f5f1eb
+    ];
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x080d1a, 2000, 10000);
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 10000);
+    camera.position.set(0, 355, 1220);
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x080d1a, 0);
+    container.appendChild(renderer.domElement);
+
+    const geometry = new THREE.BufferGeometry();
+    const positions = [];
+    const colors = [];
+    for (let ix = 0; ix < AMOUNTX; ix++) {
+      for (let iy = 0; iy < AMOUNTY; iy++) {
+        positions.push(
+          ix * SEPARATION - (AMOUNTX * SEPARATION) / 2,
+          0,
+          iy * SEPARATION - (AMOUNTY * SEPARATION) / 2,
+        );
+        const c = PALETTE[(ix * 31 + iy * 17) % PALETTE.length];
+        const b = 0.45 + ((ix + iy) % 5) * 0.07; // subtle per-dot brightness variation
+        colors.push(c[0] * b, c[1] * b, c[2] * b);
+      }
+    }
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 7,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      sizeAttenuation: true,
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    let count = 0;
+    let running = true;
+    let scrollDrift = 0;
+
+    const render = () => {
+      const pos = geometry.attributes.position.array;
+      let i = 0;
+      for (let ix = 0; ix < AMOUNTX; ix++) {
+        for (let iy = 0; iy < AMOUNTY; iy++) {
+          pos[i * 3 + 1] = Math.sin((ix + count) * 0.3) * 50 + Math.sin((iy + count) * 0.5) * 50;
+          i++;
+        }
+      }
+      geometry.attributes.position.needsUpdate = true;
+      // gentle scroll-coupled depth so the field breathes as you read
+      camera.position.y = 355 + scrollDrift;
+      camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera);
+      count += 0.1;
+    };
+
+    const animate = () => {
+      if (!running) return;
+      requestAnimationFrame(animate);
+      render();
+    };
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    window.addEventListener('scroll', () => {
+      scrollDrift = Math.min(window.scrollY * 0.05, 140);
+    }, { passive: true });
+
+    // Pause the loop when the tab is hidden to save battery/CPU.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { running = false; }
+      else if (!reduceMotion) { running = true; animate(); }
+    });
+
+    requestAnimationFrame(() => container.classList.add('in'));
+
+    if (reduceMotion) {
+      render(); // single static frame, no loop
+    } else {
+      animate();
+    }
   }
 </script>
 
