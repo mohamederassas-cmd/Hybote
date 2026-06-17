@@ -646,24 +646,15 @@
       box-shadow: none;
     }
     .hero-spline { position: absolute; inset: 0; width: 100%; height: 100%; transform: translateX(clamp(20px, 4vw, 70px)); }
-    .hero-spline spline-viewer { width: 100%; height: 100%; display: block; }
-    /* Soft navy feather on the robot's left edge so it melts into the background — no hard seam */
-    .hero-spline::after {
-      content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: linear-gradient(90deg, rgba(7,11,22,0.85) 0%, rgba(7,11,22,0.35) 34%, transparent 64%);
-    }
+    /* Transparent Spline scene → robot floats directly on the beams. A soft drop-shadow
+       keeps it grounded (placed, not pasted). No dark masking overlay. */
+    .hero-spline spline-viewer { width: 100%; height: 100%; display: block; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.45)); }
     /* Desktop: keep the robot in the right half so it never crowds the copy */
     @media (min-width: 881px) {
       .hero-spline { left: auto; right: 0; width: min(54%, 700px); transform: none; }
-      .hero-spline::after {
-        background: linear-gradient(90deg, rgba(7,11,22,0.78) 0%, rgba(7,11,22,0.22) 30%, transparent 58%);
-      }
     }
     @media (max-width: 880px) {
       .hero-spline { min-height: 300px; }
-      .hero-spline::after {
-        background: linear-gradient(180deg, transparent 0%, rgba(7,11,22,0.35) 58%, rgba(7,11,22,0.85) 100%);
-      }
     }
     /* Phones: drop the heavy 3D scene for a fast, clean text hero */
     @media (max-width: 600px) {
@@ -1072,19 +1063,19 @@
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--line);">
 
       <div class="reveal prob-card" style="transition-delay:0ms;">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:rgba(201,160,83,0.18);margin-bottom:20px;line-height:1;">01</div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:rgba(201,160,83,0.45);margin-bottom:20px;line-height:1;">01</div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="prob.c1.title">Zu langsame Erstantwort</h3>
         <p class="t-body" style="font-size:0.83rem;" data-i18n="prob.c1.body">Wird eine Anfrage nicht innerhalb von 5 Minuten beantwortet, sinkt die Konversionschance um über 80 %. Die meisten Unternehmen reagieren in Stunden – oder gar nicht.</p>
       </div>
 
       <div class="reveal prob-card" style="transition-delay:80ms;">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:rgba(201,160,83,0.18);margin-bottom:20px;line-height:1;">02</div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:rgba(201,160,83,0.45);margin-bottom:20px;line-height:1;">02</div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="prob.c2.title">Personal als Flaschenhals</h3>
         <p class="t-body" style="font-size:0.83rem;" data-i18n="prob.c2.body">Mitarbeiter sind im Gespräch, nach Feierabend oder im Urlaub. E-Mail und Formulare stapeln sich – und Interessenten wechseln zum Mitbewerber.</p>
       </div>
 
       <div class="reveal prob-card" style="transition-delay:160ms;">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:rgba(201,160,83,0.18);margin-bottom:20px;line-height:1;">03</div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:rgba(201,160,83,0.45);margin-bottom:20px;line-height:1;">03</div>
         <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="prob.c3.title">Inkonsistente Qualität</h3>
         <p class="t-body" style="font-size:0.83rem;" data-i18n="prob.c3.body">High-End-Käufer erwarten Premium-Kommunikation bei jedem Kontakt. Eine schwache Erstantwort zerstört den ersten Eindruck – unwiederbringlich.</p>
       </div>
