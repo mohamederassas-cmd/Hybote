@@ -73,17 +73,18 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* ── Dark surface hierarchy (neutral, no blue cast) ─── */
-      --bg:       #0a0a0c;
-      --s1:       #131316;
-      --s2:       #1b1b20;
-      --s3:       #24242c;
+      /* ── Deep midnight-navy surface hierarchy ─────────── */
+      --bg:       #070b16;
+      --s1:       #0c1222;
+      --s2:       #131b30;
+      --s3:       #1c2740;
 
-      /* ── Accent palette ───────────────────────────── */
+      /* ── Accent palette (gold is the single accent) ──── */
       --gold:     #c9a053;
       --gold-lt:  #e8c47a;
-      --teal:     #4ecdc4;
-      --teal-dim: #2a8a84;
+      /* Teal retired — aliased to gold so any stray ref stays on-brand */
+      --teal:     #c9a053;
+      --teal-dim: #8a6f37;
 
       /* ── Text palette ─────────────────────────────── */
       --fg:       #f5f1eb;
@@ -543,27 +544,7 @@
       90%  { opacity: 0.6; }
       100% { transform: translateY(-120px) translateX(40px); opacity: 0; }
     }
-    .hero-glow-a {
-      position: absolute; pointer-events: none; z-index: 0;
-      width: 700px; height: 700px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(201,160,83,0.08) 0%, rgba(201,160,83,0.03) 40%, transparent 70%);
-      top: -120px; right: -150px;
-      animation: orb-a 18s ease-in-out infinite;
-    }
-    .hero-glow-b {
-      position: absolute; pointer-events: none; z-index: 0;
-      width: 550px; height: 550px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(78,205,196,0.07) 0%, rgba(78,205,196,0.02) 40%, transparent 70%);
-      bottom: -80px; left: -100px;
-      animation: orb-b 22s ease-in-out infinite;
-    }
-    .hero-glow-c {
-      position: absolute; pointer-events: none; z-index: 0;
-      width: 400px; height: 400px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(201,160,83,0.07) 0%, transparent 70%);
-      top: 30%; left: 20%;
-      animation: orb-c 14s ease-in-out infinite;
-    }
+    /* (hero ambient orbs removed — the fixed beams field now supplies hero depth) */
 
     /* ── Problem card enhanced hover ─────────────────────────────── */
     .prob-card {
@@ -622,78 +603,31 @@
 
     /* ══ Cinematic upgrade ════════════════════════════════════════ */
 
-    /* Global animated spotlight background (fixed → only text scrolls) */
-    #spotlight-bg {
+    /* Global animated beams background (fixed → only text scrolls over it) */
+    #beams-bg {
       position: fixed; inset: 0; z-index: -1; pointer-events: none;
       overflow: hidden; background: var(--bg);
-      opacity: 0; transition: opacity 1.4s ease;
+      opacity: 0; transition: opacity 1.6s ease;
     }
-    #spotlight-bg.in { opacity: 1; }
-
-    /* Soft, drifting light-cones — brand gold / teal on navy */
-    .spot {
-      position: absolute;
-      width: 90vw; height: 90vw;
-      max-width: 1100px; max-height: 1100px;
-      border-radius: 50%;
-      filter: blur(70px);
-      mix-blend-mode: screen;
+    #beams-bg.in { opacity: 1; }
+    /* Wrapper carries the subtle cursor-parallax translate; canvas fills it */
+    #beams-bg .beams-shift {
+      position: absolute; inset: -6%;          /* slight overscan so parallax never reveals an edge */
       will-change: transform;
     }
-    .spot-1 {
-      top: -28%; left: -18%;
-      background: radial-gradient(circle at center, rgba(201,160,83,0.20) 0%, rgba(201,160,83,0.07) 38%, transparent 70%);
-      animation: spot-drift-a 16s ease-in-out infinite alternate;
+    #beams-bg canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      filter: blur(14px);
     }
-    .spot-2 {
-      top: 8%; right: -22%;
-      background: radial-gradient(circle at center, rgba(78,205,196,0.16) 0%, rgba(78,205,196,0.05) 40%, transparent 70%);
-      animation: spot-drift-b 21s ease-in-out infinite alternate;
-      animation-delay: -4s;
+    /* Soft vignette + top sheen → blends the beams into a premium navy field */
+    #beams-bg .beams-veil {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(120% 90% at 50% -10%, rgba(201,160,83,0.08) 0%, transparent 55%),
+        radial-gradient(120% 120% at 50% 120%, rgba(7,11,22,0.55) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(7,11,22,0.20) 0%, transparent 22%, transparent 78%, rgba(7,11,22,0.45) 100%);
     }
-    .spot-3 {
-      bottom: -32%; left: 22%;
-      background: radial-gradient(circle at center, rgba(232,196,122,0.14) 0%, rgba(78,205,196,0.07) 42%, transparent 72%);
-      animation: spot-drift-c 26s ease-in-out infinite alternate;
-      animation-delay: -8s;
-    }
-    @keyframes spot-drift-a {
-      0%   { transform: translate(-6%, -4%) rotate(0deg)  scale(1); }
-      50%  { transform: translate(14%,  10%) rotate(14deg) scale(1.12); }
-      100% { transform: translate(-2%,  16%) rotate(-8deg) scale(1.04); }
-    }
-    @keyframes spot-drift-b {
-      0%   { transform: translate(0%, 0%)   rotate(-12deg) scale(1.06); }
-      50%  { transform: translate(-16%, 12%) rotate(6deg)  scale(0.94); }
-      100% { transform: translate(8%, -8%)  rotate(18deg) scale(1.1); }
-    }
-    @keyframes spot-drift-c {
-      0%   { transform: translate(0%, 0%)   rotate(8deg)  scale(1); }
-      50%  { transform: translate(-14%, -10%) rotate(-10deg) scale(1.14); }
-      100% { transform: translate(10%, 6%)  rotate(20deg) scale(1.02); }
-    }
-    /* Phones: shrink the cones + lighten the blur so it stays smooth */
-    @media (max-width: 600px) {
-      .spot { width: 130vw; height: 130vw; filter: blur(48px); }
-    }
-
-    /* Spotlight (aceternity) — fade in once, then drift forever */
-    @keyframes animate-spotlight {
-      0%   { opacity: 0; transform: translate(-72%, -62%) scale(0.5); }
-      100% { opacity: 1; transform: translate(-50%, -40%) scale(1); }
-    }
-    @keyframes spotlight-live {
-      0%   { transform: translate(-50%, -40%) scale(1)    rotate(0deg); }
-      50%  { transform: translate(-43%, -33%) scale(1.09) rotate(5deg); }
-      100% { transform: translate(-50%, -40%) scale(1)    rotate(0deg); }
-    }
-    .spotlight {
-      position: absolute; z-index: 1; pointer-events: none;
-      height: 169%; width: 138%; top: 0; left: 0; opacity: 0;
-      animation: animate-spotlight 2s ease 0.4s forwards,
-                 spotlight-live 13s ease-in-out 2.4s infinite;
-    }
-    @media (min-width: 1024px) { .spotlight { width: 84%; } }
 
     /* Spline loader fallback */
     .loader {
@@ -704,33 +638,31 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Hero card + Spline */
+    /* Hero — no card, no frame: text + robot float directly on the beams field */
     .hero-card {
       position: relative;
-      border-radius: 24px;
-      background:
-        radial-gradient(120% 120% at 80% 0%, rgba(201,160,83,0.05) 0%, transparent 55%);
+      background: transparent;
       border: none;
       box-shadow: none;
     }
     .hero-spline { position: absolute; inset: 0; width: 100%; height: 100%; transform: translateX(clamp(20px, 4vw, 70px)); }
     .hero-spline spline-viewer { width: 100%; height: 100%; display: block; }
-    /* fade the left edge of the 3D scene into the card so text stays legible */
+    /* Soft navy feather on the robot's left edge so it melts into the background — no hard seam */
     .hero-spline::after {
       content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: linear-gradient(90deg, rgba(10,10,12,0.92) 0%, rgba(10,10,12,0.45) 28%, transparent 60%);
+      background: linear-gradient(90deg, rgba(7,11,22,0.85) 0%, rgba(7,11,22,0.35) 34%, transparent 64%);
     }
-    /* Desktop: confine the robot to the right half so it never overlaps the copy column */
+    /* Desktop: keep the robot in the right half so it never crowds the copy */
     @media (min-width: 881px) {
       .hero-spline { left: auto; right: 0; width: min(54%, 700px); transform: none; }
       .hero-spline::after {
-        background: linear-gradient(90deg, rgba(10,10,12,0.95) 0%, rgba(10,10,12,0.4) 22%, transparent 50%);
+        background: linear-gradient(90deg, rgba(7,11,22,0.78) 0%, rgba(7,11,22,0.22) 30%, transparent 58%);
       }
     }
     @media (max-width: 880px) {
       .hero-spline { min-height: 300px; }
       .hero-spline::after {
-        background: linear-gradient(180deg, transparent 0%, rgba(10,10,12,0.4) 55%, rgba(10,10,12,0.92) 100%);
+        background: linear-gradient(180deg, transparent 0%, rgba(7,11,22,0.35) 58%, rgba(7,11,22,0.85) 100%);
       }
     }
     /* Phones: drop the heavy 3D scene for a fast, clean text hero */
@@ -756,53 +688,145 @@
         scroll-behavior: auto !important;
       }
       .reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
-      .spotlight, .grad-text { animation: none !important; }
-      .spot { animation: none !important; }
-      #spotlight-bg { opacity: 1; }
+      .grad-text { animation: none !important; }
+      #beams-bg { opacity: 1; }
     }
   </style>
 </head>
 
 <body>
 
-<!-- Global animated spotlight background (pure CSS) -->
-<div id="spotlight-bg" aria-hidden="true">
-  <span class="spot spot-1"></span>
-  <span class="spot spot-2"></span>
-  <span class="spot spot-3"></span>
+<!-- Global animated beams background (canvas, fixed → only content scrolls over it) -->
+<div id="beams-bg" aria-hidden="true">
+  <div class="beams-shift"><canvas id="beams-canvas"></canvas></div>
+  <div class="beams-veil"></div>
 </div>
 <script>
-  // Fade the background in once, then let it gently follow the cursor.
-  // It's position:fixed, so the cones stay put while only the text scrolls.
-  (function(){
-    var el = document.getElementById('spotlight-bg');
-    if (!el) return;
-    requestAnimationFrame(function(){ el.classList.add('in'); });
+  // Drifting golden light-beams on deep navy. Canvas is position:fixed, so the
+  // field stays put while only the text scrolls — and it gently follows the cursor.
+  (function () {
+    var wrap   = document.getElementById('beams-bg');
+    var shift  = wrap && wrap.querySelector('.beams-shift');
+    var canvas = document.getElementById('beams-canvas');
+    if (!canvas || !canvas.getContext) return;
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    requestAnimationFrame(function () { wrap.classList.add('in'); });
 
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce || !window.matchMedia('(pointer: fine)').matches) return;
+    var fine   = window.matchMedia('(pointer: fine)').matches;
+    var phone  = window.matchMedia('(max-width: 600px)').matches;
 
-    var tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
-    function tick(){
-      cx += (tx - cx) * 0.06;
-      cy += (ty - cy) * 0.06;
-      el.style.transform = 'translate3d(' + cx.toFixed(2) + 'px,' + cy.toFixed(2) + 'px,0)';
-      if (Math.abs(tx - cx) > 0.1 || Math.abs(ty - cy) > 0.1) {
-        raf = requestAnimationFrame(tick);
-      } else { raf = null; }
+    var BASE_HUE = 41;                 // warm gold/amber
+    var beams = [], dpr = 1, vw = 0, vh = 0;
+    var MIN_BEAMS = phone ? 14 : 24;
+
+    function rand(min, max) { return min + Math.random() * (max - min); }
+
+    function createBeam() {
+      return {
+        x: rand(-0.25, 1.25) * vw,
+        y: rand(-0.25, 1.25) * vh,
+        width: rand(70, 160),
+        length: vh * 2.6,
+        angle: -34 + rand(0, 10),       // tilted, like falling light
+        speed: 0.32 + rand(0, 0.5),     // calm, premium drift
+        opacity: 0.15 + rand(0, 0.14),
+        hue: BASE_HUE + rand(-6, 12),   // gold → amber spread
+        pulse: rand(0, Math.PI * 2),
+        pulseSpeed: 0.018 + rand(0, 0.022)
+      };
     }
-    window.addEventListener('pointermove', function(e){
-      tx = (e.clientX / window.innerWidth  - 0.5) * 46;
-      ty = (e.clientY / window.innerHeight - 0.5) * 46;
-      if (!raf) raf = requestAnimationFrame(tick);
-    }, { passive: true });
+
+    function resetBeam(b, i, total) {
+      var col = i % 3, spacing = vw / 3;
+      b.y = vh + 120;
+      b.x = col * spacing + spacing / 2 + rand(-0.5, 0.5) * spacing * 0.55;
+      b.width = 80 + rand(0, 110);
+      b.speed = 0.32 + rand(0, 0.4);
+      b.hue = BASE_HUE + (i * 14) / total - 6;
+      b.opacity = 0.17 + rand(0, 0.12);
+      return b;
+    }
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      vw = window.innerWidth; vh = window.innerHeight;
+      canvas.width  = Math.floor(vw * dpr);
+      canvas.height = Math.floor(vh * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var total = Math.floor(MIN_BEAMS * 1.5);
+      beams = Array.from({ length: total }, createBeam);
+    }
+
+    function drawBeam(b) {
+      ctx.save();
+      ctx.translate(b.x, b.y);
+      ctx.rotate((b.angle * Math.PI) / 180);
+      var o = b.opacity * (0.84 + Math.sin(b.pulse) * 0.16);
+      var g = ctx.createLinearGradient(0, 0, 0, b.length);
+      g.addColorStop(0,    'hsla(' + b.hue + ', 80%, 64%, 0)');
+      g.addColorStop(0.1,  'hsla(' + b.hue + ', 84%, 66%, ' + (o * 0.55) + ')');
+      g.addColorStop(0.42, 'hsla(' + b.hue + ', 88%, 68%, ' + o + ')');
+      g.addColorStop(0.6,  'hsla(' + b.hue + ', 88%, 68%, ' + o + ')');
+      g.addColorStop(0.9,  'hsla(' + b.hue + ', 84%, 66%, ' + (o * 0.55) + ')');
+      g.addColorStop(1,    'hsla(' + b.hue + ', 80%, 64%, 0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(-b.width / 2, 0, b.width, b.length);
+      ctx.restore();
+    }
+
+    function frame() {
+      ctx.clearRect(0, 0, vw, vh);
+      ctx.filter = phone ? 'blur(22px)' : 'blur(28px)';
+      var total = beams.length;
+      for (var i = 0; i < total; i++) {
+        var b = beams[i];
+        b.y -= b.speed;
+        b.pulse += b.pulseSpeed;
+        if (b.y + b.length < -120) resetBeam(b, i, total);
+        drawBeam(b);
+      }
+      raf = requestAnimationFrame(frame);
+    }
+
+    var raf = null;
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    if (reduce) {
+      // Render a single static frame — no looping animation.
+      ctx.filter = 'blur(28px)';
+      beams.forEach(drawBeam);
+    } else {
+      raf = requestAnimationFrame(frame);
+    }
+
+    // Subtle cursor-parallax on the wrapper (fixed → only the field shifts).
+    if (!reduce && fine && shift) {
+      var tx = 0, ty = 0, cx = 0, cy = 0, praf = null;
+      function tick() {
+        cx += (tx - cx) * 0.06;
+        cy += (ty - cy) * 0.06;
+        shift.style.transform = 'translate3d(' + cx.toFixed(2) + 'px,' + cy.toFixed(2) + 'px,0)';
+        if (Math.abs(tx - cx) > 0.1 || Math.abs(ty - cy) > 0.1) {
+          praf = requestAnimationFrame(tick);
+        } else { praf = null; }
+      }
+      window.addEventListener('pointermove', function (e) {
+        tx = (e.clientX / window.innerWidth  - 0.5) * 38;
+        ty = (e.clientY / window.innerHeight - 0.5) * 38;
+        if (!praf) praf = requestAnimationFrame(tick);
+      }, { passive: true });
+    }
   })();
 </script>
 
 <!-- ══════════════════════════════════════════════════════════
      NAVIGATION
 ══════════════════════════════════════════════════════════ -->
-<header id="nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,12,0.80);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.07);transition:box-shadow 300ms ease, border-color 300ms ease;">
+<header id="nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,12,24,0.72);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.07);transition:box-shadow 300ms ease, border-color 300ms ease;">
   <div style="max-width:1200px;margin:0 auto;padding:0 32px;height:180px;display:flex;align-items:center;justify-content:space-between;">
 
     <!-- Logo -->
@@ -855,39 +879,48 @@
   });
 </script>
 
+<script>
+  // Cinematic hero scroll: the beams field is fixed, so only the copy moves.
+  // The headline lifts gently and fades out as you scroll past the hero.
+  function initHeroScroll() {
+    var copy = document.getElementById('hero-copy');
+    if (!copy) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var y = window.scrollY || window.pageYOffset;
+      var fade = Math.max(0, Math.min(1, y / 520));   // 0 → 1 over the first ~520px
+      copy.style.transform = 'translate3d(0,' + (-y * 0.28).toFixed(1) + 'px,0)';
+      copy.style.opacity = (1 - fade * 0.95).toFixed(3);
+      copy.style.pointerEvents = fade > 0.92 ? 'none' : '';
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeroScroll);
+  } else {
+    initHeroScroll();
+  }
+</script>
+
 
 <!-- ══════════════════════════════════════════════════════════
      HERO
 ══════════════════════════════════════════════════════════ -->
 <section style="padding:150px 24px 96px;max-width:1240px;margin:0 auto;position:relative;overflow:hidden;">
-  <!-- Ambient depth layers behind the hero card -->
-  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 120% 80% at 65% 0%,rgba(201,160,83,0.06) 0%,transparent 60%),radial-gradient(ellipse 80% 60% at 5% 85%,rgba(78,205,196,0.04) 0%,transparent 50%);"></div>
-  <div class="hero-glow-a"></div>
-  <div class="hero-glow-b"></div>
-  <div class="hero-glow-c"></div>
+  <!-- Single soft gold halo behind the copy — the beams field supplies the rest of the depth -->
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 90% 70% at 22% 38%,rgba(201,160,83,0.06) 0%,transparent 60%);"></div>
 
-  <!-- ── Cinematic hero card ──────────────────────────────────── -->
+  <!-- ── Hero: copy + robot floating on the beams field (no card, no frame) ── -->
   <div class="hero-card" style="position:relative;z-index:2;display:flex;flex-wrap:wrap;align-items:stretch;min-height:560px;">
 
-    <!-- Spotlight (aceternity) -->
-    <svg class="spotlight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3787 2842" fill="none">
-      <g filter="url(#hero-spotlight)">
-        <ellipse cx="1924.71" cy="273.501" rx="1924.71" ry="273.501"
-          transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)"
-          fill="rgba(232,196,122,0.85)" fill-opacity="0.18"></ellipse>
-      </g>
-      <defs>
-        <filter id="hero-spotlight" x="0.860352" y="0.838989" width="3785.16" height="2840.26"
-          filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-          <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
-          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
-          <feGaussianBlur stdDeviation="151" result="effect1_foregroundBlur_1065_8"></feGaussianBlur>
-        </filter>
-      </defs>
-    </svg>
-
     <!-- Left: copy -->
-    <div style="flex:1 1 460px;min-width:0;max-width:720px;padding:clamp(34px,4.6vw,68px);display:flex;flex-direction:column;justify-content:center;position:relative;z-index:10;">
+    <div id="hero-copy" style="flex:1 1 460px;min-width:0;max-width:720px;padding:clamp(34px,4.6vw,68px);display:flex;flex-direction:column;justify-content:center;position:relative;z-index:10;will-change:transform,opacity;">
       <!-- Label -->
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:30px;">
         <span class="dot-live"></span>
@@ -1285,7 +1318,7 @@
      HOW IT WORKS
 ══════════════════════════════════════════════════════════ -->
 <section id="ablauf" style="padding:100px 32px;background:transparent;position:relative;overflow:hidden;">
-  <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 80% 50%,rgba(78,205,196,0.04) 0%,transparent 60%);z-index:0;"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 80% 50%,rgba(201,160,83,0.04) 0%,transparent 60%);z-index:0;"></div>
   <div style="max-width:900px;margin:0 auto;position:relative;z-index:1;">
 
     <div style="margin-bottom:64px;">
