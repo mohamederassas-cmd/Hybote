@@ -4,37 +4,49 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HYBOTE – Terms of Service</title>
-  <meta name="robots" content="noindex, nofollow" />
+  <meta name="robots" content="index, follow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=Cairo:wght@200;300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #ffffff; --fg: #161616;
-      --a1: #3d3d3d; --a2: #646464; --a3: #8b8b8b; --a4: #b8b8b8; --a5: #e0e0e0; --a6: #f4f4f4;
-      --line: rgba(22,22,22,0.10);
+      --bg:       #080d1a;
+      --s1:       #0f1629;
+      --fg:       #f5f1eb;
+      --a1:       #d4cfc8;
+      --a2:       #b0a898;
+      --a3:       #8b95aa;
+      --a4:       #566070;
+      --a5:       #2c3550;
+      --a6:       #101728;
+      --gold:     #c9a053;
+      --gold-lt:  #e8c47a;
+      --line:     rgba(255,255,255,0.06);
+      --line-med: rgba(255,255,255,0.10);
     }
     html { background: var(--bg); color: var(--fg); }
     body { font-family: 'Montserrat', sans-serif; font-weight: 300; background: var(--bg); color: var(--fg); -webkit-font-smoothing: antialiased; }
     body[dir="rtl"] { font-family: 'Cairo', sans-serif; }
     .wrap { max-width: 760px; margin: 0 auto; padding: 80px 32px 120px; }
-    .logo-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 64px; padding-bottom: 24px; border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 12px; }
-    .logo { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg); text-decoration: none; }
+    .logo-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 64px; padding-bottom: 24px; border-bottom: 1px solid rgba(201,160,83,0.15); flex-wrap: wrap; gap: 12px; }
+    .logo { display: inline-flex; align-items: center; text-decoration: none; }
+    .logo img { height: 36px; opacity: 0.9; transition: opacity 150ms; }
+    .logo:hover img { opacity: 1; }
     .lang-row { display: flex; gap: 12px; }
     .lang-pill { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; letter-spacing: 0.10em; text-transform: uppercase; color: var(--a3); background: transparent; border: 1px solid var(--line); padding: 5px 12px; cursor: pointer; transition: border-color 150ms, color 150ms; }
-    .lang-pill.active, .lang-pill:hover { color: var(--fg); border-color: var(--fg); }
+    .lang-pill.active, .lang-pill:hover { color: var(--gold); border-color: var(--gold); }
     .doc-label { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--a3); margin-bottom: 16px; }
     h1 { font-family: 'Montserrat', sans-serif; font-weight: 200; font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.1; color: var(--fg); margin-bottom: 8px; }
     .doc-date { font-size: 0.78rem; color: var(--a3); margin-bottom: 48px; }
-    h2 { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 0.9rem; letter-spacing: 0.04em; color: var(--fg); margin: 40px 0 12px; }
+    h2 { font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 0.9rem; letter-spacing: 0.04em; color: var(--gold); margin: 40px 0 12px; }
     p, li { font-family: 'Montserrat', sans-serif; font-weight: 300; font-size: 0.88rem; line-height: 1.85; color: var(--a1); }
     ul { padding-left: 20px; margin-bottom: 12px; }
     li { margin-bottom: 4px; }
-    .divider { height: 1px; background: var(--line); margin: 48px 0; }
+    .divider { height: 1px; background: rgba(201,160,83,0.15); margin: 48px 0; }
     .footer-note { font-size: 0.72rem; color: var(--a4); margin-top: 48px; }
     .back-link { display: inline-flex; align-items: center; gap: 8px; font-family: 'Montserrat', sans-serif; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--a3); text-decoration: none; margin-bottom: 40px; transition: color 150ms; }
-    .back-link:hover { color: var(--fg); }
+    .back-link:hover { color: var(--gold-lt); }
     html[dir="rtl"] ul { padding-left: 0; padding-right: 20px; }
     html[dir="rtl"] .back-link svg { transform: scaleX(-1); }
     html[dir="rtl"] .lang-row { flex-direction: row-reverse; }
@@ -43,7 +55,7 @@
 <body>
 <div class="wrap">
   <div class="logo-bar">
-    <a href="index.html" class="logo">HYBOTE</a>
+    <a href="index.html" class="logo"><img src="logo.png" alt="HYBOTE" /></a>
     <div class="lang-row">
       <button class="lang-pill" onclick="setLang('en')">EN</button>
       <button class="lang-pill" onclick="setLang('ar')">AR</button>
@@ -63,7 +75,7 @@
   <div id="content"></div>
 
   <div class="divider"></div>
-  <p class="footer-note">© 2025 HYBOTE · <a href="mailto:Contact@hybote.ai" style="color:inherit;">Contact@hybote.ai</a></p>
+  <p class="footer-note">© 2026 Hybote AI Systems LLC · <a href="mailto:Contact@hybote.ai" style="color:inherit;">Contact@hybote.ai</a></p>
 </div>
 
 <script>
@@ -71,10 +83,10 @@
     en: {
       lang: 'en', dir: 'ltr',
       back: 'Back', label: 'Legal', title: 'Terms of Service',
-      date: 'Last updated: April 2025',
+      date: 'Last updated: June 2026',
       html: `
         <h2>1. Scope</h2>
-        <p>These Terms of Service ("Terms") govern the use of all services provided by HYBOTE, operated by Mr. Mohamed Sabri ("we", "us", or "HYBOTE"), including but not limited to the AI lead management platform, WhatsApp Business API integration, email automation, and related digital infrastructure services.</p>
+        <p>These Terms of Service ("Terms") govern the use of all services provided by HYBOTE, operated by Hybote AI Systems LLC ("we", "us", or "HYBOTE"), including but not limited to the AI lead management platform, WhatsApp Business API integration, email automation, and related digital infrastructure services.</p>
 
         <h2>2. Services</h2>
         <p>HYBOTE provides AI-powered communication and lead management infrastructure designed for luxury real estate agencies. Services include:</p>
@@ -115,17 +127,20 @@
 
         <h2>10. Contact</h2>
         <p>For any questions regarding these Terms, please contact:<br/>
-        <strong>Mr. Mohamed Sabri — HYBOTE</strong><br/>
-        Email: <a href="mailto:Contact@hybote.ai" style="color:var(--fg);">Contact@hybote.ai</a></p>
+        <strong>Hybote AI Systems LLC</strong><br/>
+        30 N Gould St, Ste R<br/>
+        Sheridan, Wyoming 82801<br/>
+        USA<br/>
+        Email: <a href="mailto:Contact@hybote.ai" style="color:var(--gold-lt);">Contact@hybote.ai</a></p>
       `
     },
     de: {
       lang: 'de', dir: 'ltr',
       back: 'Zurück', label: 'Rechtliches', title: 'Allgemeine Geschäftsbedingungen',
-      date: 'Stand: April 2025',
+      date: 'Stand: Juni 2026',
       html: `
         <h2>1. Geltungsbereich</h2>
-        <p>Diese Allgemeinen Geschäftsbedingungen („AGB") regeln die Nutzung aller Dienstleistungen von HYBOTE, betrieben durch Herrn Mohamed Sabri („wir", „uns" oder „HYBOTE"), einschließlich der KI-Lead-Management-Plattform, WhatsApp Business API-Integration, E-Mail-Automatisierung und zugehöriger digitaler Infrastrukturdienstleistungen.</p>
+        <p>Diese Allgemeinen Geschäftsbedingungen („AGB") regeln die Nutzung aller Dienstleistungen von HYBOTE, betrieben durch die Hybote AI Systems LLC („wir", „uns" oder „HYBOTE"), einschließlich der KI-Lead-Management-Plattform, WhatsApp Business API-Integration, E-Mail-Automatisierung und zugehöriger digitaler Infrastrukturdienstleistungen.</p>
 
         <h2>2. Leistungsumfang</h2>
         <p>HYBOTE stellt KI-gestützte Kommunikations- und Lead-Management-Infrastruktur für Luxusimmobilienagenturen bereit. Die Leistungen umfassen:</p>
@@ -166,17 +181,20 @@
 
         <h2>10. Kontakt</h2>
         <p>Bei Fragen zu diesen AGB wenden Sie sich bitte an:<br/>
-        <strong>Herr Mohamed Sabri — HYBOTE</strong><br/>
-        E-Mail: <a href="mailto:Contact@hybote.ai" style="color:var(--fg);">Contact@hybote.ai</a></p>
+        <strong>Hybote AI Systems LLC</strong><br/>
+        30 N Gould St, Ste R<br/>
+        Sheridan, Wyoming 82801<br/>
+        USA<br/>
+        E-Mail: <a href="mailto:Contact@hybote.ai" style="color:var(--gold-lt);">Contact@hybote.ai</a></p>
       `
     },
     ar: {
       lang: 'ar', dir: 'rtl',
       back: 'رجوع', label: 'قانوني', title: 'شروط الخدمة',
-      date: 'آخر تحديث: أبريل 2025',
+      date: 'آخر تحديث: يونيو 2026',
       html: `
         <h2>1. النطاق</h2>
-        <p>تحكم شروط الخدمة هذه ("الشروط") استخدام جميع الخدمات التي تقدمها HYBOTE، التي يديرها السيد محمد صبري ("نحن" أو "HYBOTE")، بما في ذلك منصة إدارة العملاء المحتملين بالذكاء الاصطناعي، وتكامل واجهة WhatsApp Business API، وأتمتة البريد الإلكتروني، وخدمات البنية التحتية الرقمية ذات الصلة.</p>
+        <p>تحكم شروط الخدمة هذه ("الشروط") استخدام جميع الخدمات التي تقدمها HYBOTE، التي تديرها شركة Hybote AI Systems LLC ("نحن" أو "HYBOTE")، بما في ذلك منصة إدارة العملاء المحتملين بالذكاء الاصطناعي، وتكامل واجهة WhatsApp Business API، وأتمتة البريد الإلكتروني، وخدمات البنية التحتية الرقمية ذات الصلة.</p>
 
         <h2>2. الخدمات</h2>
         <p>تقدم HYBOTE بنية تحتية لإدارة التواصل والعملاء المحتملين مدعومة بالذكاء الاصطناعي، مصممة لوكالات العقارات الفاخرة. تشمل الخدمات:</p>
@@ -217,8 +235,11 @@
 
         <h2>10. التواصل</h2>
         <p>لأي استفسارات بشأن هذه الشروط، يُرجى التواصل مع:<br/>
-        <strong>السيد محمد صبري — HYBOTE</strong><br/>
-        البريد الإلكتروني: <a href="mailto:Contact@hybote.ai" style="color:var(--fg);">Contact@hybote.ai</a></p>
+        <strong>Hybote AI Systems LLC</strong><br/>
+        30 N Gould St, Ste R<br/>
+        Sheridan, Wyoming 82801<br/>
+        USA<br/>
+        البريد الإلكتروني: <a href="mailto:Contact@hybote.ai" style="color:var(--gold-lt);">Contact@hybote.ai</a></p>
       `
     }
   };
