@@ -610,6 +610,11 @@
     /* Global animated 3D terrain background (fixed → only text scrolls over it) */
     #beams-bg {
       position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      /* Pin to the LARGE viewport so the canvas does NOT resize as the mobile
+         URL bar collapses on scroll — that per-scroll resize was re-projecting
+         the camera and warping/jittering the terrain. lvh stays constant;
+         100vh is the fallback (already the constant value on older mobile). */
+      height: 100vh; height: 100lvh;
       overflow: hidden; background: var(--bg);
       opacity: 0; transition: opacity 1.6s ease;
     }
@@ -730,18 +735,24 @@
 
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var fine   = window.matchMedia('(pointer: fine)').matches;
-    var phone  = window.matchMedia('(max-width: 600px)').matches;
+    var coarse = window.matchMedia('(pointer: coarse)').matches;
+    // Treat phones AND touch tablets as the "mobile" / low-power render path.
+    var phone  = window.matchMedia('(max-width: 600px)').matches
+              || (coarse && window.matchMedia('(max-width: 1024px)').matches);
 
-    // Tunables
-    var SEGMENTS = phone ? 128 : 256;   // plane resolution (perf vs. detail)
+    // Tunables — lighter geometry + steady cadence on mobile so the drift
+    // never stutters (the vertex shader runs 3× Perlin noise per vertex).
+    var SEGMENTS = phone ? 96 : 256;    // plane resolution (perf vs. detail)
     var PLANE    = 256;                  // world size of the terrain plane
     var SPEED    = 0.5;                  // drift speed
     var CAMERA_Z = 125;
+    var FRAME_MS = phone ? 1000 / 30 : 0; // cap mobile to a steady 30fps (0 = uncapped)
 
     // WebGL guard → bail to the CSS fallback if unsupported.
     var renderer;
     try {
-      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      // MSAA (antialias) is expensive on mobile tiled GPUs → off on phones.
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !phone, alpha: true });
     } catch (e) { renderer = null; }
     if (!renderer) { wrap.classList.add('no-webgl', 'in'); return; }
 
@@ -855,24 +866,38 @@
     var mesh = new THREE.Mesh(new THREE.PlaneGeometry(PLANE, PLANE, SEGMENTS, SEGMENTS), material);
     scene.add(mesh);
 
-    function resize() {
+    var lastW = -1, lastH = -1, rzRaf = null;
+    function applySize() {
+      rzRaf = null;
       // size to the (slightly overscanned) canvas box so parallax never reveals an edge
       var w = canvas.clientWidth  || window.innerWidth;
       var h = canvas.clientHeight || window.innerHeight;
+      // Ignore the resize churn the mobile URL bar fires on every scroll — only a
+      // genuine width/height change re-projects the camera (this was the warp).
+      if (w === lastW && h === lastH) return;
+      lastW = w; lastH = h;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);   // false → keep CSS-driven canvas size
     }
-    resize();
+    function resize() {                // coalesce bursts of resize events into one frame
+      if (!rzRaf) rzRaf = requestAnimationFrame(applySize);
+    }
+    applySize();
     window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('orientationchange', resize, { passive: true });
 
     requestAnimationFrame(function () { wrap.classList.add('in'); });
 
-    var raf = null;
-    function frame() {
+    var raf = null, prevTs = 0;
+    function frame(ts) {
+      raf = requestAnimationFrame(frame);
+      if (FRAME_MS) {                  // hold a steady cadence on mobile (smoother than a jittery 45fps)
+        if ((ts || 0) - prevTs < FRAME_MS) return;
+        prevTs = ts || 0;
+      }
       uniforms.time.value += clock.getDelta() * SPEED;
       renderer.render(scene, camera);
-      raf = requestAnimationFrame(frame);
     }
     if (reduce) {
       uniforms.time.value = 4.0;        // one calm static frame, no loop
