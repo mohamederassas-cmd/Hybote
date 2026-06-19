@@ -636,6 +636,28 @@
         radial-gradient(90% 80% at 82% 112%, rgba(14,165,233,0.07) 0%, transparent 60%),
         var(--bg);
     }
+    /* MOBILE BACKGROUND — replaces the 3D terrain on phones/touch devices.
+       A calm cyan-on-navy field with a slow, GPU-composited glow drift. It is
+       purely 2D (no perspective camera, no resize/URL-bar coupling), so it can
+       never distort on a portrait viewport. Desktop never gets this class. */
+    #beams-bg.mobile-field {
+      background:
+        radial-gradient(120% 80% at 50% -10%, rgba(56,189,248,0.12) 0%, transparent 55%),
+        radial-gradient(90% 70% at 80% 112%, rgba(14,165,233,0.08) 0%, transparent 60%),
+        var(--bg);
+    }
+    #beams-bg.mobile-field::before {
+      content: ""; position: absolute; inset: -25%;
+      background:
+        radial-gradient(38% 32% at 32% 30%, rgba(56,189,248,0.12) 0%, transparent 60%),
+        radial-gradient(42% 36% at 72% 72%, rgba(14,165,233,0.10) 0%, transparent 62%);
+      will-change: transform;                 /* transform-only → composited, no repaint */
+      animation: fieldDrift 28s ease-in-out infinite alternate;
+    }
+    @keyframes fieldDrift {
+      from { transform: translate3d(-3%, -2.5%, 0) scale(1.04); }
+      to   { transform: translate3d( 3%,  2.5%, 0) scale(1.12); }
+    }
     /* Soft vignette + top sheen → blends the terrain into a premium navy field */
     #beams-bg .beams-veil {
       position: absolute; inset: 0; pointer-events: none;
@@ -721,13 +743,12 @@
   })();
 </script>
 <script type="module">
-  // Animated, flowing 3D noise-terrain ("hills") on deep navy — replaces the old
-  // golden beams. The canvas is position:fixed, so the field stays put while only
-  // the text scrolls, and it gently follows the cursor. Kept deliberately
-  // monochrome (cool near-silver) so the cyan accent and copy stay in front.
-  import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-
-  (function () {
+  // DESKTOP: animated, flowing 3D noise-terrain ("hills") on deep navy that
+  // gently follows the cursor. MOBILE: skipped entirely — a calm 2D CSS field
+  // (.mobile-field) is shown instead, because the perspective terrain looked
+  // distorted on a tall portrait viewport. Three.js is therefore imported on
+  // demand, only when the terrain will actually run (never on phones).
+  (async function () {
     var wrap   = document.getElementById('beams-bg');
     var shift  = wrap && wrap.querySelector('.beams-shift');
     var canvas = document.getElementById('beams-canvas');
@@ -736,23 +757,39 @@
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var fine   = window.matchMedia('(pointer: fine)').matches;
     var coarse = window.matchMedia('(pointer: coarse)').matches;
-    // Treat phones AND touch tablets as the "mobile" / low-power render path.
+    // Treat phones AND touch tablets as "mobile".
     var phone  = window.matchMedia('(max-width: 600px)').matches
               || (coarse && window.matchMedia('(max-width: 1024px)').matches);
 
-    // Tunables — lighter geometry + steady cadence on mobile so the drift
-    // never stutters (the vertex shader runs 3× Perlin noise per vertex).
-    var SEGMENTS = phone ? 96 : 256;    // plane resolution (perf vs. detail)
+    // ── MOBILE: no 3D terrain ────────────────────────────────────────────
+    // Show the calm, purely-2D animated field (.mobile-field). It cannot warp
+    // on any viewport and does not download Three.js. Desktop is untouched.
+    if (phone) {
+      window.__hillsReady = true;            // cancel the 3s WebGL-fallback safety net
+      wrap.classList.add('mobile-field', 'in');
+      return;
+    }
+
+    // ── DESKTOP ONLY past this point ─────────────────────────────────────
+    var THREE;
+    try {
+      THREE = await import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js");
+    } catch (e) {
+      wrap.classList.add('no-webgl', 'in');  // CDN/import failed → calm CSS field
+      return;
+    }
+
+    // Tunables.
+    var SEGMENTS = 256;                  // plane resolution (perf vs. detail)
     var PLANE    = 256;                  // world size of the terrain plane
     var SPEED    = 0.5;                  // drift speed
     var CAMERA_Z = 125;
-    var FRAME_MS = phone ? 1000 / 30 : 0; // cap mobile to a steady 30fps (0 = uncapped)
+    var FRAME_MS = 0;                    // uncapped on desktop
 
     // WebGL guard → bail to the CSS fallback if unsupported.
     var renderer;
     try {
-      // MSAA (antialias) is expensive on mobile tiled GPUs → off on phones.
-      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !phone, alpha: true });
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
     } catch (e) { renderer = null; }
     if (!renderer) { wrap.classList.add('no-webgl', 'in'); return; }
 
@@ -760,7 +797,7 @@
     wrap.classList.remove('no-webgl');   // in case the safety timeout already fired
 
     renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, phone ? 1.5 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
     var scene  = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(45, 1, 1, 10000);
