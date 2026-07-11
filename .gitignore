@@ -25,3 +25,4 @@ serve.mjs
 
 # Claude-spezifisch
 .claude/
+.vercel
