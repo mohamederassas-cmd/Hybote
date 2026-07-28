@@ -26,7 +26,8 @@ const mime = {
 };
 
 createServer(async (req, res) => {
-  let url = req.url === '/' ? '/index.html' : req.url;
+  let url = req.url.split('?')[0].split('#')[0];
+  if (url === '/') url = '/index.html';
   const filePath = join(__dirname, url);
   try {
     const data = await readFile(filePath);
