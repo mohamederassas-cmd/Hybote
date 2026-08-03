@@ -117,20 +117,20 @@ export default {
         },
         {
           k: { en: 'Avg. value per visit', de: 'Ø Wert pro Behandlung', ar: 'متوسط قيمة الزيارة' },
-          v: { en: '€180 per treatment', de: '180 € pro Behandlung', ar: '180 يورو للعلاج' },
+          v: { en: '$180 per treatment', de: '180 $ pro Behandlung', ar: '180 دولار للعلاج' },
         },
         {
           k: { en: 'Lost per month', de: 'Verlust pro Monat', ar: 'الخسارة شهرياً' },
-          v: { en: 'approx. €10,800', de: 'ca. 10.800 €', ar: 'نحو 10,800 يورو' },
+          v: { en: 'approx. $10,800', de: 'ca. 10.800 $', ar: 'نحو 10,800 دولار' },
         },
       ],
       yearLabel: { en: 'Lost per year (approx.)', de: 'Verlust pro Jahr (ca.)', ar: 'الخسارة سنوياً (تقريباً)' },
-      year: { en: '€130,000', de: '130.000 €', ar: '130,000 يورو' },
+      year: { en: '$130,000', de: '130.000 $', ar: '130,000 دولار' },
       howTag: { en: 'How the figure is derived', de: 'Wie die Zahl zustande kommt', ar: 'كيف نصل إلى الرقم' },
       how: {
-        en: 'Of 600 monthly calls, roughly 150 go unanswered. If 40 percent of those would have become an appointment, that is 60 treatments a month. At €180 average value this comes to about €10,800 a month, or roughly €130,000 a year.',
-        de: 'Von 600 Anrufen im Monat bleiben rund 150 unbeantwortet. Wären davon 40 Prozent zu einem Termin geworden, sind das 60 Behandlungen im Monat. Bei 180 € Durchschnittswert ergibt das etwa 10.800 € im Monat oder rund 130.000 € im Jahr.',
-        ar: 'من بين 600 مكالمة شهرياً، تبقى نحو 150 دون رد. ولو تحوّل 40 بالمئة منها إلى مواعيد، فتلك 60 حالة علاج شهرياً. وبمتوسط قيمة 180 يورو يبلغ ذلك نحو 10,800 يورو شهرياً، أي قرابة 130,000 يورو سنوياً.',
+        en: 'Of 600 monthly calls, roughly 150 go unanswered. If 40 percent of those would have become an appointment, that is 60 treatments a month. At $180 average value this comes to about $10,800 a month, or roughly $130,000 a year.',
+        de: 'Von 600 Anrufen im Monat bleiben rund 150 unbeantwortet. Wären davon 40 Prozent zu einem Termin geworden, sind das 60 Behandlungen im Monat. Bei 180 $ Durchschnittswert ergibt das etwa 10.800 $ im Monat oder rund 130.000 $ im Jahr.',
+        ar: 'من بين 600 مكالمة شهرياً، تبقى نحو 150 دون رد. ولو تحوّل 40 بالمئة منها إلى مواعيد، فتلك 60 حالة علاج شهرياً. وبمتوسط قيمة 180 دولار يبلغ ذلك نحو 10,800 دولار شهرياً، أي قرابة 130,000 دولار سنوياً.',
       },
       withLabel: { en: 'With HYBOTE:', de: 'Mit HYBOTE:', ar: 'مع HYBOTE:' },
       with: {

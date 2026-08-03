@@ -116,20 +116,20 @@ export default {
         },
         {
           k: { en: 'Avg. value per deal', de: 'Ø Wert pro Abschluss', ar: 'متوسط قيمة الصفقة' },
-          v: { en: '€6,000 commission', de: '6.000 € Provision', ar: '6,000 يورو عمولة' },
+          v: { en: '$6,000 commission', de: '6.000 $ Provision', ar: '6,000 دولار عمولة' },
         },
         {
           k: { en: 'Lost per month', de: 'Verlust pro Monat', ar: 'الخسارة شهرياً' },
-          v: { en: 'approx. €12,600', de: 'ca. 12.600 €', ar: 'نحو 12,600 يورو' },
+          v: { en: 'approx. $12,600', de: 'ca. 12.600 $', ar: 'نحو 12,600 دولار' },
         },
       ],
       yearLabel: { en: 'Lost per year (approx.)', de: 'Verlust pro Jahr (ca.)', ar: 'الخسارة سنوياً (تقريباً)' },
-      year: { en: '€151,000', de: '151.000 €', ar: '151,000 يورو' },
+      year: { en: '$151,000', de: '151.000 $', ar: '151,000 دولار' },
       howTag: { en: 'How the figure is derived', de: 'Wie die Zahl zustande kommt', ar: 'كيف نصل إلى الرقم' },
       how: {
-        en: 'Of 200 monthly enquiries, roughly 70 are answered outside the window in which a prospect is still deciding. At a conservative 3 percent close rate that is 2.1 lost deals a month. At €6,000 average commission this comes to about €12,600 a month, or roughly €151,000 a year.',
-        de: 'Von 200 Anfragen im Monat werden rund 70 außerhalb des Zeitfensters beantwortet, in dem sich ein Interessent noch entscheidet. Bei konservativen 3 Prozent Abschlussquote sind das 2,1 verlorene Abschlüsse pro Monat. Bei 6.000 € Durchschnittsprovision ergibt das etwa 12.600 € im Monat oder rund 151.000 € im Jahr.',
-        ar: 'من بين 200 استفسار شهرياً، يُجاب نحو 70 خارج النافذة الزمنية التي لا يزال المهتم يقرر خلالها. وبنسبة إغلاق متحفظة قدرها 3 بالمئة، فتلك 2.1 صفقة ضائعة شهرياً. وبمتوسط عمولة 6,000 يورو يبلغ ذلك نحو 12,600 يورو شهرياً، أي قرابة 151,000 يورو سنوياً.',
+        en: 'Of 200 monthly enquiries, roughly 70 are answered outside the window in which a prospect is still deciding. At a conservative 3 percent close rate that is 2.1 lost deals a month. At $6,000 average commission this comes to about $12,600 a month, or roughly $151,000 a year.',
+        de: 'Von 200 Anfragen im Monat werden rund 70 außerhalb des Zeitfensters beantwortet, in dem sich ein Interessent noch entscheidet. Bei konservativen 3 Prozent Abschlussquote sind das 2,1 verlorene Abschlüsse pro Monat. Bei 6.000 $ Durchschnittsprovision ergibt das etwa 12.600 $ im Monat oder rund 151.000 $ im Jahr.',
+        ar: 'من بين 200 استفسار شهرياً، يُجاب نحو 70 خارج النافذة الزمنية التي لا يزال المهتم يقرر خلالها. وبنسبة إغلاق متحفظة قدرها 3 بالمئة، فتلك 2.1 صفقة ضائعة شهرياً. وبمتوسط عمولة 6,000 دولار يبلغ ذلك نحو 12,600 دولار شهرياً، أي قرابة 151,000 دولار سنوياً.',
       },
       withLabel: { en: 'With HYBOTE:', de: 'Mit HYBOTE:', ar: 'مع HYBOTE:' },
       with: {

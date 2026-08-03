@@ -115,20 +115,20 @@ export default {
         },
         {
           k: { en: 'Avg. value per deal', de: 'Ø Wert pro Abschluss', ar: 'متوسط قيمة الصفقة' },
-          v: { en: '€1,800 margin', de: '1.800 € Marge', ar: '1,800 يورو هامش' },
+          v: { en: '$1,800 margin', de: '1.800 $ Marge', ar: '1,800 دولار هامش' },
         },
         {
           k: { en: 'Lost per month', de: 'Verlust pro Monat', ar: 'الخسارة شهرياً' },
-          v: { en: 'approx. €11,300', de: 'ca. 11.300 €', ar: 'نحو 11,300 يورو' },
+          v: { en: 'approx. $11,300', de: 'ca. 11.300 $', ar: 'نحو 11,300 دولار' },
         },
       ],
       yearLabel: { en: 'Lost per year (approx.)', de: 'Verlust pro Jahr (ca.)', ar: 'الخسارة سنوياً (تقريباً)' },
-      year: { en: '€136,000', de: '136.000 €', ar: '136,000 يورو' },
+      year: { en: '$136,000', de: '136.000 $', ar: '136,000 دولار' },
       howTag: { en: 'How the figure is derived', de: 'Wie die Zahl zustande kommt', ar: 'كيف نصل إلى الرقم' },
       how: {
-        en: 'Of 350 monthly enquiries, roughly 105 are answered after the buyer has already booked a test drive elsewhere. At a 6 percent close rate that is about 6.3 lost sales a month. At €1,800 average margin this comes to roughly €11,300 a month, or about €136,000 a year.',
-        de: 'Von 350 Anfragen im Monat werden rund 105 beantwortet, nachdem der Käufer bereits woanders eine Probefahrt gebucht hat. Bei 6 Prozent Abschlussquote sind das etwa 6,3 verlorene Verkäufe pro Monat. Bei 1.800 € Durchschnittsmarge ergibt das rund 11.300 € im Monat oder etwa 136.000 € im Jahr.',
-        ar: 'من بين 350 استفساراً شهرياً، يُجاب نحو 105 بعد أن يكون المشتري قد حجز تجربة قيادة في مكان آخر. وبنسبة إغلاق 6 بالمئة، فتلك نحو 6.3 صفقة ضائعة شهرياً. وبمتوسط هامش 1,800 يورو يبلغ ذلك قرابة 11,300 يورو شهرياً، أي نحو 136,000 يورو سنوياً.',
+        en: 'Of 350 monthly enquiries, roughly 105 are answered after the buyer has already booked a test drive elsewhere. At a 6 percent close rate that is about 6.3 lost sales a month. At $1,800 average margin this comes to roughly $11,300 a month, or about $136,000 a year.',
+        de: 'Von 350 Anfragen im Monat werden rund 105 beantwortet, nachdem der Käufer bereits woanders eine Probefahrt gebucht hat. Bei 6 Prozent Abschlussquote sind das etwa 6,3 verlorene Verkäufe pro Monat. Bei 1.800 $ Durchschnittsmarge ergibt das rund 11.300 $ im Monat oder etwa 136.000 $ im Jahr.',
+        ar: 'من بين 350 استفساراً شهرياً، يُجاب نحو 105 بعد أن يكون المشتري قد حجز تجربة قيادة في مكان آخر. وبنسبة إغلاق 6 بالمئة، فتلك نحو 6.3 صفقة ضائعة شهرياً. وبمتوسط هامش 1,800 دولار يبلغ ذلك قرابة 11,300 دولار شهرياً، أي نحو 136,000 دولار سنوياً.',
       },
       withLabel: { en: 'With HYBOTE:', de: 'Mit HYBOTE:', ar: 'مع HYBOTE:' },
       with: {
