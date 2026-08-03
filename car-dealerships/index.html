@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI for Car Dealerships | Every Test Drive Booked | HYBOTE</title>
-  <meta name="description" content="Listing enquiries, availability questions, test drive requests. HYBOTE answers every dealership enquiry in under 60 seconds and puts the appointment straight into your salesperson’s calendar. Book a free intro call." />
+  <meta name="description" content="Listing enquiries, availability questions, test drive requests. HYBOTE answers every dealership enquiry immediately and puts the appointment straight into your salesperson’s calendar. Book a free intro call." />
   <!-- SEO -->
   <meta name="robots" content="index, follow" />
   <meta name="keywords" content="AI for car dealerships, test drive booking automation, automotive lead response, dealership WhatsApp assistant, vehicle enquiry AI, KI Autohaus" />
@@ -12,14 +12,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://hybote.ai/car-dealerships" />
   <meta property="og:title" content="AI for Car Dealerships | Every Test Drive Booked | HYBOTE" />
-  <meta property="og:description" content="Listing enquiries, availability questions, test drive requests. HYBOTE answers every dealership enquiry in under 60 seconds and puts the appointment straight into your salesperson’s calendar. Book a free intro call." />
+  <meta property="og:description" content="Listing enquiries, availability questions, test drive requests. HYBOTE answers every dealership enquiry immediately and puts the appointment straight into your salesperson’s calendar. Book a free intro call." />
   <meta property="og:image" content="https://hybote.ai/og-image.png?v=2" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="AI for Car Dealerships | Every Test Drive Booked | HYBOTE" />
-  <meta name="twitter:description" content="Listing enquiries, availability questions, test drive requests. HYBOTE answers every dealership enquiry in under 60 seconds and puts the appointment straight into your salesperson’s calendar. Book a free intro call." />
+  <meta name="twitter:description" content="Listing enquiries, availability questions, test drive requests. HYBOTE answers every dealership enquiry immediately and puts the appointment straight into your salesperson’s calendar. Book a free intro call." />
   <meta name="twitter:image" content="https://hybote.ai/og-image.png?v=2" />
   <!-- Hreflang -->
   <link rel="alternate" hreflang="en" href="https://hybote.ai/car-dealerships" />
@@ -651,12 +651,15 @@
       box-shadow: none;
     }
     .hero-spline { position: absolute; inset: 0; width: 100%; height: 100%; transform: translateX(clamp(20px, 4vw, 70px)); }
+    html[dir="rtl"] .hero-spline { transform: translateX(clamp(-70px, -4vw, -20px)); }
     /* Transparent Spline scene → robot floats directly on the beams. A soft drop-shadow
        keeps it grounded (placed, not pasted). No dark masking overlay. */
     .hero-spline spline-viewer { width: 100%; height: 100%; display: block; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.45)); }
     /* Desktop: keep the robot in the right half so it never crowds the copy */
     @media (min-width: 881px) {
       .hero-spline { left: auto; right: 0; width: min(54%, 700px); transform: none; }
+      /* RTL: copy sits in the right half, so the robot moves to the left half */
+      html[dir="rtl"] .hero-spline { right: auto; left: 0; transform: none; }
     }
     @media (max-width: 880px) {
       .hero-spline { min-height: 300px; }
@@ -1295,7 +1298,7 @@
           <span data-i18n="lp.faq.items.4.q">How long until it is live?</span>
           <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="faq-a" id="faq-a-4"><div class="faq-a-inner t-body" data-i18n="lp.faq.items.4.a">First automations typically go live within a few weeks. The exact timeline depends on how your inventory system is connected, and we set it after the analysis.</div></div>
+        <div class="faq-a" id="faq-a-4"><div class="faq-a-inner t-body" data-i18n="lp.faq.items.4.a">First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it after the analysis.</div></div>
       </div>
 
       <div class="faq-item reveal" style="transition-delay:200ms;">
@@ -1807,7 +1810,7 @@ const T = {
     "faq.q3": "Wie läuft die Zusammenarbeit ab?",
     "faq.a3": "Analyse → Design → Umsetzung → Integration → Optimierung. Wir starten immer mit einer Analyse, um die größten Hebel zu identifizieren.",
     "faq.q4": "Wie schnell sehen wir Ergebnisse?",
-    "faq.a4": "Erste Automatisierungen laufen oft innerhalb weniger Wochen. Den genauen Zeitrahmen legen wir nach der Analyse fest.",
+    "faq.a4": "Erste Automatisierungen laufen oft innerhalb weniger Tage. Den genauen Zeitrahmen legen wir nach der Analyse fest.",
     "faq.q5": "Was ist mit unseren Daten und der Sicherheit?",
     "faq.a5": "Ihre Daten bleiben Ihre Daten. Wir arbeiten nach dem Prinzip der Datensparsamkeit, DSGVO-konform, und integrieren uns in Ihre bestehenden sicheren Systeme.",
     "faq.q6": "Welche Kanäle und Sprachen werden unterstützt?",
@@ -1860,7 +1863,7 @@ const T = {
     "ex.c1.value": "6.000 € Provision",
     "ex.c1.month": "ca. 12.600 €",
     "ex.c1.year": "151.000 €",
-    "ex.c1.with": "Jede Anfrage wird in unter 60 Sekunden beantwortet und qualifiziert, auch abends und am Wochenende.",
+    "ex.c1.with": "Jede Anfrage wird sofort beantwortet und qualifiziert, auch abends und am Wochenende.",
     "ex.c2.tag": "Autohaus",
     "ex.c2.setup": "350 Anfragen im Monat über Inserate, Telefon und Kontaktformular.",
     "ex.c2.late": "105 pro Monat",
@@ -2057,7 +2060,7 @@ const T = {
     "faq.q3": "How does working together work?",
     "faq.a3": "Analysis, design, build, integration, optimisation. We always start by mapping your processes to find the biggest levers.",
     "faq.q4": "How fast do we see results?",
-    "faq.a4": "First automations typically go live within a few weeks. We set the exact timeline once the analysis is done.",
+    "faq.a4": "First automations typically go live within a few days. We set the exact timeline once the analysis is done.",
     "faq.q5": "What about our data and security?",
     "faq.a5": "Your data stays yours. We operate on a data-minimisation principle, GDPR-compliant, and integrate into your existing secure systems.",
     "faq.q6": "Which channels and languages are supported?",
@@ -2110,7 +2113,7 @@ const T = {
     "ex.c1.value": "€6,000 commission",
     "ex.c1.month": "approx. €12,600",
     "ex.c1.year": "€151,000",
-    "ex.c1.with": "Every enquiry is answered and qualified in under 60 seconds, evenings and weekends included.",
+    "ex.c1.with": "Every enquiry is answered and qualified immediately, evenings and weekends included.",
     "ex.c2.tag": "Car dealership",
     "ex.c2.setup": "350 enquiries a month from listings, phone and the contact form.",
     "ex.c2.late": "105 a month",
@@ -2307,7 +2310,7 @@ const T = {
     "faq.q3": "كيف تسير عملية العمل معكم؟",
     "faq.a3": "التدقيق ← التصميم ← البناء ← الدمج ← التحسين. نبدأ دائمًا بتدقيق لتحديد أكبر نقاط التأثير.",
     "faq.q4": "ما مدى سرعة ظهور النتائج؟",
-    "faq.a4": "غالبًا ما تنطلق أولى الأتمتات خلال أسابيع قليلة؛ ونحدد الإطار الزمني الدقيق بعد التدقيق.",
+    "faq.a4": "غالبًا ما تنطلق أولى الأتمتات خلال أيام قليلة؛ ونحدد الإطار الزمني الدقيق بعد التدقيق.",
     "faq.q5": "ماذا عن بياناتنا وأمنها؟",
     "faq.a5": "بياناتك تبقى ملكك. نعمل بأقل قدر من البيانات، وبما يتوافق مع حماية البيانات (GDPR)، وندمج حلولنا في أنظمتك الآمنة القائمة.",
     "faq.q6": "ما القنوات واللغات المدعومة؟",
@@ -2360,7 +2363,7 @@ const T = {
     "ex.c1.value": "6.000 يورو عمولة",
     "ex.c1.month": "حوالي 12.600 يورو",
     "ex.c1.year": "151.000 يورو",
-    "ex.c1.with": "يتم الرد على كل طلب وتأهيله في أقل من 60 ثانية، مساءً وفي عطلات نهاية الأسبوع أيضاً.",
+    "ex.c1.with": "يتم الرد على كل طلب وتأهيله فوراً، مساءً وفي عطلات نهاية الأسبوع أيضاً.",
     "ex.c2.tag": "معرض سيارات",
     "ex.c2.setup": "350 طلب شهرياً عبر الإعلانات والهاتف ونموذج التواصل.",
     "ex.c2.late": "105 شهرياً",
@@ -2537,7 +2540,7 @@ function setLang(lang) {
     "lp.faq.items.3.q": "Does it also handle service and workshop bookings?",
     "lp.faq.items.3.a": "Yes. Service enquiries follow the same pattern: describe the issue, check the calendar, book the slot, send a reminder. Many dealerships start there because the volume is predictable.",
     "lp.faq.items.4.q": "How long until it is live?",
-    "lp.faq.items.4.a": "First automations typically go live within a few weeks. The exact timeline depends on how your inventory system is connected, and we set it after the analysis.",
+    "lp.faq.items.4.a": "First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it after the analysis.",
     "lp.faq.items.5.q": "What about data protection and customer data?",
     "lp.faq.items.5.a": "Your data stays yours. We work on a data minimisation principle, GDPR compliant, with strict separation between clients. Customer data is not used to train anything and is not passed on.",
     "lp.cross.label": "Also built for",
@@ -2614,7 +2617,7 @@ function setLang(lang) {
     "lp.faq.items.3.q": "Übernimmt es auch Service- und Werkstatttermine?",
     "lp.faq.items.3.a": "Ja. Serviceanfragen folgen demselben Muster: Anliegen aufnehmen, Kalender prüfen, Termin buchen, Erinnerung senden. Viele Autohäuser starten dort, weil das Volumen planbar ist.",
     "lp.faq.items.4.q": "Wie lange dauert es bis zum Livegang?",
-    "lp.faq.items.4.a": "Erste Automatisierungen gehen meist innerhalb weniger Wochen live. Der genaue Zeitplan hängt davon ab, wie Ihr Bestandssystem angebunden wird, und wir legen ihn nach der Analyse fest.",
+    "lp.faq.items.4.a": "Erste Automatisierungen gehen meist innerhalb weniger Tage live. Der genaue Zeitplan hängt davon ab, wie Ihr Bestandssystem angebunden wird, und wir legen ihn nach der Analyse fest.",
     "lp.faq.items.5.q": "Wie ist das mit Datenschutz und Kundendaten?",
     "lp.faq.items.5.a": "Ihre Daten bleiben Ihre Daten. Wir arbeiten nach dem Prinzip der Datensparsamkeit, DSGVO-konform und mit strikter Trennung zwischen Mandanten. Kundendaten werden nicht zum Training verwendet und nicht weitergegeben.",
     "lp.cross.label": "Ebenfalls im Einsatz für",
@@ -2691,7 +2694,7 @@ function setLang(lang) {
     "lp.faq.items.3.q": "هل يتولى أيضاً مواعيد الخدمة والورشة؟",
     "lp.faq.items.3.a": "نعم. تتبع استفسارات الخدمة النمط نفسه: توصيف العطل، ومراجعة التقويم، وحجز الموعد، وإرسال تذكير. وكثير من الوكالات تبدأ من هنا لأن الحجم قابل للتنبؤ.",
     "lp.faq.items.4.q": "كم يستغرق الأمر حتى يبدأ العمل؟",
-    "lp.faq.items.4.a": "تبدأ الأتمتة الأولى بالعمل عادة خلال أسابيع قليلة. ويعتمد الجدول الدقيق على طريقة ربط نظام المخزون، ونحدده بعد التحليل.",
+    "lp.faq.items.4.a": "تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. ويعتمد الجدول الدقيق على طريقة ربط نظام المخزون، ونحدده بعد التحليل.",
     "lp.faq.items.5.q": "ماذا عن حماية البيانات وبيانات العملاء؟",
     "lp.faq.items.5.a": "بياناتك تبقى ملكك. نعمل بمبدأ تقليل البيانات، بما يتوافق مع اللائحة الأوروبية، مع فصل صارم بين العملاء. ولا تُستخدم بيانات العملاء للتدريب ولا تُشارَك.",
     "lp.cross.label": "مصمم أيضاً لـ",
@@ -2742,7 +2745,7 @@ function setLang(lang) {
   "@type": "Service",
   "name": "AI enquiry response for car dealerships",
   "serviceType": "AI enquiry response for car dealerships",
-  "description": "Listing enquiries, availability questions, test drive requests. HYBOTE answers every dealership enquiry in under 60 seconds and puts the appointment straight into your salesperson’s calendar. Book a free intro call.",
+  "description": "Listing enquiries, availability questions, test drive requests. HYBOTE answers every dealership enquiry immediately and puts the appointment straight into your salesperson’s calendar. Book a free intro call.",
   "provider": {
     "@type": "Organization",
     "name": "HYBOTE",
@@ -2798,7 +2801,7 @@ function setLang(lang) {
       "name": "How long until it is live?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "First automations typically go live within a few weeks. The exact timeline depends on how your inventory system is connected, and we set it after the analysis."
+        "text": "First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it after the analysis."
       }
     },
     {

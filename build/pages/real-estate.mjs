@@ -12,9 +12,9 @@ export default {
       ar: 'الذكاء الاصطناعي لوكالات العقارات | الرد على كل استفسار | HYBOTE',
     },
     desc: {
-      en: 'Portal enquiries at 10pm, viewing requests at the weekend. HYBOTE answers and qualifies every property enquiry in under 60 seconds, on WhatsApp, phone and email. Book a free intro call.',
-      de: 'Portalanfragen um 22 Uhr, Besichtigungswünsche am Wochenende. HYBOTE beantwortet und qualifiziert jede Immobilienanfrage in unter 60 Sekunden, auf WhatsApp, Telefon und E-Mail. Kostenloses Kennenlerngespräch buchen.',
-      ar: 'استفسارات المنصات في العاشرة مساءً وطلبات المعاينة في عطلة نهاية الأسبوع. يرد HYBOTE على كل استفسار عقاري ويؤهله في أقل من 60 ثانية عبر واتساب والهاتف والبريد الإلكتروني. احجز مكالمة تعارف مجانية.',
+      en: 'Portal enquiries at 10pm, viewing requests at the weekend. HYBOTE answers and qualifies every property enquiry immediately, on WhatsApp, phone and email. Book a free intro call.',
+      de: 'Portalanfragen um 22 Uhr, Besichtigungswünsche am Wochenende. HYBOTE beantwortet und qualifiziert jede Immobilienanfrage sofort, auf WhatsApp, Telefon und E-Mail. Kostenloses Kennenlerngespräch buchen.',
+      ar: 'استفسارات المنصات في العاشرة مساءً وطلبات المعاينة في عطلة نهاية الأسبوع. يرد HYBOTE على كل استفسار عقاري ويؤهله فوراً عبر واتساب والهاتف والبريد الإلكتروني. احجز مكالمة تعارف مجانية.',
     },
     keywords: 'AI for real estate agents, real estate lead response, property enquiry automation, WhatsApp assistant estate agency, viewing appointment booking AI, KI Immobilienmakler',
     lead: { en: 'Real estate agencies', de: 'Immobilienmakler', ar: 'وكالات العقارات' },
@@ -38,9 +38,9 @@ export default {
         ar: 'لوكالات العقارات · أتمتة الذكاء الاصطناعي',
       },
       h1: {
-        en: 'Every property enquiry<br/><span class="grad-text" style="font-style:italic;">answered in 60 seconds.</span>',
-        de: 'Jede Immobilienanfrage<br/><span class="grad-text" style="font-style:italic;">in 60 Sekunden beantwortet.</span>',
-        ar: 'كل استفسار عقاري<br/><span class="grad-text" style="font-style:italic;">يُجاب خلال 60 ثانية.</span>',
+        en: 'Every property enquiry<br/><span class="grad-text" style="font-style:italic;">answered immediately.</span>',
+        de: 'Jede Immobilienanfrage<br/><span class="grad-text" style="font-style:italic;">sofort beantwortet.</span>',
+        ar: 'كل استفسار عقاري<br/><span class="grad-text" style="font-style:italic;">يُجاب فوراً.</span>',
       },
       sub: {
         en: 'Portal enquiries do not arrive during office hours. HYBOTE replies, answers questions about the listing, qualifies the prospect and books the viewing, <strong style="font-weight:400;color:var(--fg);">at any hour, on any channel.</strong>',
@@ -133,9 +133,9 @@ export default {
       },
       withLabel: { en: 'With HYBOTE:', de: 'Mit HYBOTE:', ar: 'مع HYBOTE:' },
       with: {
-        en: 'Every enquiry is answered and qualified in under 60 seconds, evenings and weekends included.',
-        de: 'Jede Anfrage wird in unter 60 Sekunden beantwortet und qualifiziert, abends und am Wochenende inklusive.',
-        ar: 'يُجاب على كل استفسار ويُؤهَّل في أقل من 60 ثانية، مساءً وفي عطلات نهاية الأسبوع أيضاً.',
+        en: 'Every enquiry is answered and qualified immediately, evenings and weekends included.',
+        de: 'Jede Anfrage wird sofort beantwortet und qualifiziert, abends und am Wochenende inklusive.',
+        ar: 'يُجاب على كل استفسار ويُؤهَّل فوراً، مساءً وفي عطلات نهاية الأسبوع أيضاً.',
       },
       disclaimer: {
         en: 'Illustrative example calculation based on typical industry figures. No guarantee of actual results.',
@@ -310,9 +310,9 @@ export default {
             ar: 'كم يستغرق الأمر حتى يبدأ العمل؟',
           },
           a: {
-            en: 'First automations typically go live within a few weeks. We set the exact timeline once the analysis is done, because it depends on how many systems need connecting.',
-            de: 'Erste Automatisierungen gehen meist innerhalb weniger Wochen live. Den genauen Zeitplan legen wir nach der Analyse fest, denn er hängt davon ab, wie viele Systeme angebunden werden.',
-            ar: 'تبدأ الأتمتة الأولى بالعمل عادة خلال أسابيع قليلة. ونحدد الجدول الزمني الدقيق بعد التحليل، لأنه يعتمد على عدد الأنظمة المطلوب ربطها.',
+            en: 'First automations typically go live within a few days. We set the exact timeline once the analysis is done, because it depends on how many systems need connecting.',
+            de: 'Erste Automatisierungen gehen meist innerhalb weniger Tage live. Den genauen Zeitplan legen wir nach der Analyse fest, denn er hängt davon ab, wie viele Systeme angebunden werden.',
+            ar: 'تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. ونحدد الجدول الزمني الدقيق بعد التحليل، لأنه يعتمد على عدد الأنظمة المطلوب ربطها.',
           },
         },
         {

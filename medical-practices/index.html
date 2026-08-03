@@ -651,12 +651,15 @@
       box-shadow: none;
     }
     .hero-spline { position: absolute; inset: 0; width: 100%; height: 100%; transform: translateX(clamp(20px, 4vw, 70px)); }
+    html[dir="rtl"] .hero-spline { transform: translateX(clamp(-70px, -4vw, -20px)); }
     /* Transparent Spline scene → robot floats directly on the beams. A soft drop-shadow
        keeps it grounded (placed, not pasted). No dark masking overlay. */
     .hero-spline spline-viewer { width: 100%; height: 100%; display: block; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.45)); }
     /* Desktop: keep the robot in the right half so it never crowds the copy */
     @media (min-width: 881px) {
       .hero-spline { left: auto; right: 0; width: min(54%, 700px); transform: none; }
+      /* RTL: copy sits in the right half, so the robot moves to the left half */
+      html[dir="rtl"] .hero-spline { right: auto; left: 0; transform: none; }
     }
     @media (max-width: 880px) {
       .hero-spline { min-height: 300px; }
@@ -1303,7 +1306,7 @@
           <span data-i18n="lp.faq.items.5.q">How long until it is live?</span>
           <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="faq-a" id="faq-a-5"><div class="faq-a-inner t-body" data-i18n="lp.faq.items.5.a">First automations typically go live within a few weeks. In a practice setting we usually start with appointment booking and routine questions, then extend step by step once the team is comfortable.</div></div>
+        <div class="faq-a" id="faq-a-5"><div class="faq-a-inner t-body" data-i18n="lp.faq.items.5.a">First automations typically go live within a few days. In a practice setting we usually start with appointment booking and routine questions, then extend step by step once the team is comfortable.</div></div>
       </div>
     </div>
   </div>
@@ -1807,7 +1810,7 @@ const T = {
     "faq.q3": "Wie läuft die Zusammenarbeit ab?",
     "faq.a3": "Analyse → Design → Umsetzung → Integration → Optimierung. Wir starten immer mit einer Analyse, um die größten Hebel zu identifizieren.",
     "faq.q4": "Wie schnell sehen wir Ergebnisse?",
-    "faq.a4": "Erste Automatisierungen laufen oft innerhalb weniger Wochen. Den genauen Zeitrahmen legen wir nach der Analyse fest.",
+    "faq.a4": "Erste Automatisierungen laufen oft innerhalb weniger Tage. Den genauen Zeitrahmen legen wir nach der Analyse fest.",
     "faq.q5": "Was ist mit unseren Daten und der Sicherheit?",
     "faq.a5": "Ihre Daten bleiben Ihre Daten. Wir arbeiten nach dem Prinzip der Datensparsamkeit, DSGVO-konform, und integrieren uns in Ihre bestehenden sicheren Systeme.",
     "faq.q6": "Welche Kanäle und Sprachen werden unterstützt?",
@@ -1860,7 +1863,7 @@ const T = {
     "ex.c1.value": "6.000 € Provision",
     "ex.c1.month": "ca. 12.600 €",
     "ex.c1.year": "151.000 €",
-    "ex.c1.with": "Jede Anfrage wird in unter 60 Sekunden beantwortet und qualifiziert, auch abends und am Wochenende.",
+    "ex.c1.with": "Jede Anfrage wird sofort beantwortet und qualifiziert, auch abends und am Wochenende.",
     "ex.c2.tag": "Autohaus",
     "ex.c2.setup": "350 Anfragen im Monat über Inserate, Telefon und Kontaktformular.",
     "ex.c2.late": "105 pro Monat",
@@ -2057,7 +2060,7 @@ const T = {
     "faq.q3": "How does working together work?",
     "faq.a3": "Analysis, design, build, integration, optimisation. We always start by mapping your processes to find the biggest levers.",
     "faq.q4": "How fast do we see results?",
-    "faq.a4": "First automations typically go live within a few weeks. We set the exact timeline once the analysis is done.",
+    "faq.a4": "First automations typically go live within a few days. We set the exact timeline once the analysis is done.",
     "faq.q5": "What about our data and security?",
     "faq.a5": "Your data stays yours. We operate on a data-minimisation principle, GDPR-compliant, and integrate into your existing secure systems.",
     "faq.q6": "Which channels and languages are supported?",
@@ -2110,7 +2113,7 @@ const T = {
     "ex.c1.value": "€6,000 commission",
     "ex.c1.month": "approx. €12,600",
     "ex.c1.year": "€151,000",
-    "ex.c1.with": "Every enquiry is answered and qualified in under 60 seconds, evenings and weekends included.",
+    "ex.c1.with": "Every enquiry is answered and qualified immediately, evenings and weekends included.",
     "ex.c2.tag": "Car dealership",
     "ex.c2.setup": "350 enquiries a month from listings, phone and the contact form.",
     "ex.c2.late": "105 a month",
@@ -2307,7 +2310,7 @@ const T = {
     "faq.q3": "كيف تسير عملية العمل معكم؟",
     "faq.a3": "التدقيق ← التصميم ← البناء ← الدمج ← التحسين. نبدأ دائمًا بتدقيق لتحديد أكبر نقاط التأثير.",
     "faq.q4": "ما مدى سرعة ظهور النتائج؟",
-    "faq.a4": "غالبًا ما تنطلق أولى الأتمتات خلال أسابيع قليلة؛ ونحدد الإطار الزمني الدقيق بعد التدقيق.",
+    "faq.a4": "غالبًا ما تنطلق أولى الأتمتات خلال أيام قليلة؛ ونحدد الإطار الزمني الدقيق بعد التدقيق.",
     "faq.q5": "ماذا عن بياناتنا وأمنها؟",
     "faq.a5": "بياناتك تبقى ملكك. نعمل بأقل قدر من البيانات، وبما يتوافق مع حماية البيانات (GDPR)، وندمج حلولنا في أنظمتك الآمنة القائمة.",
     "faq.q6": "ما القنوات واللغات المدعومة؟",
@@ -2360,7 +2363,7 @@ const T = {
     "ex.c1.value": "6.000 يورو عمولة",
     "ex.c1.month": "حوالي 12.600 يورو",
     "ex.c1.year": "151.000 يورو",
-    "ex.c1.with": "يتم الرد على كل طلب وتأهيله في أقل من 60 ثانية، مساءً وفي عطلات نهاية الأسبوع أيضاً.",
+    "ex.c1.with": "يتم الرد على كل طلب وتأهيله فوراً، مساءً وفي عطلات نهاية الأسبوع أيضاً.",
     "ex.c2.tag": "معرض سيارات",
     "ex.c2.setup": "350 طلب شهرياً عبر الإعلانات والهاتف ونموذج التواصل.",
     "ex.c2.late": "105 شهرياً",
@@ -2539,7 +2542,7 @@ function setLang(lang) {
     "lp.faq.items.4.q": "Will patients accept talking to a machine?",
     "lp.faq.items.4.a": "Experience suggests most people prefer an immediate, clear answer to an engaged tone. HYBOTE identifies itself openly and hands over to a person whenever the caller asks for one.",
     "lp.faq.items.5.q": "How long until it is live?",
-    "lp.faq.items.5.a": "First automations typically go live within a few weeks. In a practice setting we usually start with appointment booking and routine questions, then extend step by step once the team is comfortable.",
+    "lp.faq.items.5.a": "First automations typically go live within a few days. In a practice setting we usually start with appointment booking and routine questions, then extend step by step once the team is comfortable.",
     "lp.cross.label": "Also built for",
     "lp.cross.real_estate": "Real estate agencies",
     "lp.cross.car_dealerships": "Car dealerships"
@@ -2616,7 +2619,7 @@ function setLang(lang) {
     "lp.faq.items.4.q": "Akzeptieren Patienten es, mit einer Maschine zu sprechen?",
     "lp.faq.items.4.a": "Die Erfahrung zeigt, dass die meisten eine sofortige, klare Antwort einem Besetztzeichen vorziehen. HYBOTE weist sich offen aus und übergibt an einen Menschen, sobald der Anrufer das möchte.",
     "lp.faq.items.5.q": "Wie lange dauert es bis zum Livegang?",
-    "lp.faq.items.5.a": "Erste Automatisierungen gehen meist innerhalb weniger Wochen live. Im Praxisumfeld starten wir in der Regel mit Terminvergabe und Routinefragen und erweitern schrittweise, sobald das Team sich sicher fühlt.",
+    "lp.faq.items.5.a": "Erste Automatisierungen gehen meist innerhalb weniger Tage live. Im Praxisumfeld starten wir in der Regel mit Terminvergabe und Routinefragen und erweitern schrittweise, sobald das Team sich sicher fühlt.",
     "lp.cross.label": "Ebenfalls im Einsatz für",
     "lp.cross.real_estate": "Immobilienmakler",
     "lp.cross.car_dealerships": "Autohäuser"
@@ -2693,7 +2696,7 @@ function setLang(lang) {
     "lp.faq.items.4.q": "هل يتقبّل المرضى التحدث إلى نظام آلي؟",
     "lp.faq.items.4.a": "تشير التجربة إلى أن معظم الناس يفضلون رداً فورياً وواضحاً على نغمة انشغال. ويعرّف HYBOTE عن نفسه بوضوح ويحوّل إلى شخص متى طلب المتصل ذلك.",
     "lp.faq.items.5.q": "كم يستغرق الأمر حتى يبدأ العمل؟",
-    "lp.faq.items.5.a": "تبدأ الأتمتة الأولى بالعمل عادة خلال أسابيع قليلة. وفي بيئة العيادات نبدأ غالباً بحجز المواعيد والأسئلة الروتينية ثم نوسّع تدريجياً متى اطمأن الفريق.",
+    "lp.faq.items.5.a": "تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. وفي بيئة العيادات نبدأ غالباً بحجز المواعيد والأسئلة الروتينية ثم نوسّع تدريجياً متى اطمأن الفريق.",
     "lp.cross.label": "مصمم أيضاً لـ",
     "lp.cross.real_estate": "وكالات العقارات",
     "lp.cross.car_dealerships": "وكالات السيارات"
@@ -2806,7 +2809,7 @@ function setLang(lang) {
       "name": "How long until it is live?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "First automations typically go live within a few weeks. In a practice setting we usually start with appointment booking and routine questions, then extend step by step once the team is comfortable."
+        "text": "First automations typically go live within a few days. In a practice setting we usually start with appointment booking and routine questions, then extend step by step once the team is comfortable."
       }
     }
   ]

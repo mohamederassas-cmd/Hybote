@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI for Real Estate Agencies | Every Enquiry Answered | HYBOTE</title>
-  <meta name="description" content="Portal enquiries at 10pm, viewing requests at the weekend. HYBOTE answers and qualifies every property enquiry in under 60 seconds, on WhatsApp, phone and email. Book a free intro call." />
+  <meta name="description" content="Portal enquiries at 10pm, viewing requests at the weekend. HYBOTE answers and qualifies every property enquiry immediately, on WhatsApp, phone and email. Book a free intro call." />
   <!-- SEO -->
   <meta name="robots" content="index, follow" />
   <meta name="keywords" content="AI for real estate agents, real estate lead response, property enquiry automation, WhatsApp assistant estate agency, viewing appointment booking AI, KI Immobilienmakler" />
@@ -12,14 +12,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://hybote.ai/real-estate" />
   <meta property="og:title" content="AI for Real Estate Agencies | Every Enquiry Answered | HYBOTE" />
-  <meta property="og:description" content="Portal enquiries at 10pm, viewing requests at the weekend. HYBOTE answers and qualifies every property enquiry in under 60 seconds, on WhatsApp, phone and email. Book a free intro call." />
+  <meta property="og:description" content="Portal enquiries at 10pm, viewing requests at the weekend. HYBOTE answers and qualifies every property enquiry immediately, on WhatsApp, phone and email. Book a free intro call." />
   <meta property="og:image" content="https://hybote.ai/og-image.png?v=2" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="AI for Real Estate Agencies | Every Enquiry Answered | HYBOTE" />
-  <meta name="twitter:description" content="Portal enquiries at 10pm, viewing requests at the weekend. HYBOTE answers and qualifies every property enquiry in under 60 seconds, on WhatsApp, phone and email. Book a free intro call." />
+  <meta name="twitter:description" content="Portal enquiries at 10pm, viewing requests at the weekend. HYBOTE answers and qualifies every property enquiry immediately, on WhatsApp, phone and email. Book a free intro call." />
   <meta name="twitter:image" content="https://hybote.ai/og-image.png?v=2" />
   <!-- Hreflang -->
   <link rel="alternate" hreflang="en" href="https://hybote.ai/real-estate" />
@@ -651,12 +651,15 @@
       box-shadow: none;
     }
     .hero-spline { position: absolute; inset: 0; width: 100%; height: 100%; transform: translateX(clamp(20px, 4vw, 70px)); }
+    html[dir="rtl"] .hero-spline { transform: translateX(clamp(-70px, -4vw, -20px)); }
     /* Transparent Spline scene → robot floats directly on the beams. A soft drop-shadow
        keeps it grounded (placed, not pasted). No dark masking overlay. */
     .hero-spline spline-viewer { width: 100%; height: 100%; display: block; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.45)); }
     /* Desktop: keep the robot in the right half so it never crowds the copy */
     @media (min-width: 881px) {
       .hero-spline { left: auto; right: 0; width: min(54%, 700px); transform: none; }
+      /* RTL: copy sits in the right half, so the robot moves to the left half */
+      html[dir="rtl"] .hero-spline { right: auto; left: 0; transform: none; }
     }
     @media (max-width: 880px) {
       .hero-spline { min-height: 300px; }
@@ -1045,7 +1048,7 @@
 
     <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--a3);margin-bottom:18px;" data-i18n="lp.hero.eyebrow">FOR REAL ESTATE AGENCIES · AI AUTOMATION</div>
 
-    <h1 class="t-display" style="font-size:clamp(2.3rem,4.4vw,4rem);margin-bottom:14px;max-width:900px;hyphens:none;overflow-wrap:normal;" data-i18n="lp.hero.h1">Every property enquiry<br/><span class="grad-text" style="font-style:italic;">answered in 60 seconds.</span></h1>
+    <h1 class="t-display" style="font-size:clamp(2.3rem,4.4vw,4rem);margin-bottom:14px;max-width:900px;hyphens:none;overflow-wrap:normal;" data-i18n="lp.hero.h1">Every property enquiry<br/><span class="grad-text" style="font-style:italic;">answered immediately.</span></h1>
 
     <div class="hero-line" style="height:1px;background:linear-gradient(90deg,#c9a053,#c9a05333,transparent);width:160px;margin-bottom:32px;"></div>
 
@@ -1141,7 +1144,7 @@
         <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;" data-i18n="lp.math.howTag">How the figure is derived</div>
         <p class="t-body" style="font-size:0.83rem;margin-bottom:20px;" data-i18n="lp.math.how">Of 200 monthly enquiries, roughly 70 are answered outside the window in which a prospect is still deciding. At a conservative 3 percent close rate that is 2.1 lost deals a month. At €6,000 average commission this comes to about €12,600 a month, or roughly €151,000 a year.</p>
         <div style="margin-top:auto;border-top:1px solid var(--line);padding-top:24px;">
-          <p class="t-body" style="font-size:0.8rem;color:var(--a3);"><strong style="font-weight:400;color:var(--fg);" data-i18n="lp.math.withLabel">With HYBOTE:</strong> <span data-i18n="lp.math.with">Every enquiry is answered and qualified in under 60 seconds, evenings and weekends included.</span></p>
+          <p class="t-body" style="font-size:0.8rem;color:var(--a3);"><strong style="font-weight:400;color:var(--fg);" data-i18n="lp.math.withLabel">With HYBOTE:</strong> <span data-i18n="lp.math.with">Every enquiry is answered and qualified immediately, evenings and weekends included.</span></p>
         </div>
       </div>
 
@@ -1295,7 +1298,7 @@
           <span data-i18n="lp.faq.items.4.q">How long until it is live?</span>
           <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="faq-a" id="faq-a-4"><div class="faq-a-inner t-body" data-i18n="lp.faq.items.4.a">First automations typically go live within a few weeks. We set the exact timeline once the analysis is done, because it depends on how many systems need connecting.</div></div>
+        <div class="faq-a" id="faq-a-4"><div class="faq-a-inner t-body" data-i18n="lp.faq.items.4.a">First automations typically go live within a few days. We set the exact timeline once the analysis is done, because it depends on how many systems need connecting.</div></div>
       </div>
 
       <div class="faq-item reveal" style="transition-delay:200ms;">
@@ -1807,7 +1810,7 @@ const T = {
     "faq.q3": "Wie läuft die Zusammenarbeit ab?",
     "faq.a3": "Analyse → Design → Umsetzung → Integration → Optimierung. Wir starten immer mit einer Analyse, um die größten Hebel zu identifizieren.",
     "faq.q4": "Wie schnell sehen wir Ergebnisse?",
-    "faq.a4": "Erste Automatisierungen laufen oft innerhalb weniger Wochen. Den genauen Zeitrahmen legen wir nach der Analyse fest.",
+    "faq.a4": "Erste Automatisierungen laufen oft innerhalb weniger Tage. Den genauen Zeitrahmen legen wir nach der Analyse fest.",
     "faq.q5": "Was ist mit unseren Daten und der Sicherheit?",
     "faq.a5": "Ihre Daten bleiben Ihre Daten. Wir arbeiten nach dem Prinzip der Datensparsamkeit, DSGVO-konform, und integrieren uns in Ihre bestehenden sicheren Systeme.",
     "faq.q6": "Welche Kanäle und Sprachen werden unterstützt?",
@@ -1860,7 +1863,7 @@ const T = {
     "ex.c1.value": "6.000 € Provision",
     "ex.c1.month": "ca. 12.600 €",
     "ex.c1.year": "151.000 €",
-    "ex.c1.with": "Jede Anfrage wird in unter 60 Sekunden beantwortet und qualifiziert, auch abends und am Wochenende.",
+    "ex.c1.with": "Jede Anfrage wird sofort beantwortet und qualifiziert, auch abends und am Wochenende.",
     "ex.c2.tag": "Autohaus",
     "ex.c2.setup": "350 Anfragen im Monat über Inserate, Telefon und Kontaktformular.",
     "ex.c2.late": "105 pro Monat",
@@ -2057,7 +2060,7 @@ const T = {
     "faq.q3": "How does working together work?",
     "faq.a3": "Analysis, design, build, integration, optimisation. We always start by mapping your processes to find the biggest levers.",
     "faq.q4": "How fast do we see results?",
-    "faq.a4": "First automations typically go live within a few weeks. We set the exact timeline once the analysis is done.",
+    "faq.a4": "First automations typically go live within a few days. We set the exact timeline once the analysis is done.",
     "faq.q5": "What about our data and security?",
     "faq.a5": "Your data stays yours. We operate on a data-minimisation principle, GDPR-compliant, and integrate into your existing secure systems.",
     "faq.q6": "Which channels and languages are supported?",
@@ -2110,7 +2113,7 @@ const T = {
     "ex.c1.value": "€6,000 commission",
     "ex.c1.month": "approx. €12,600",
     "ex.c1.year": "€151,000",
-    "ex.c1.with": "Every enquiry is answered and qualified in under 60 seconds, evenings and weekends included.",
+    "ex.c1.with": "Every enquiry is answered and qualified immediately, evenings and weekends included.",
     "ex.c2.tag": "Car dealership",
     "ex.c2.setup": "350 enquiries a month from listings, phone and the contact form.",
     "ex.c2.late": "105 a month",
@@ -2307,7 +2310,7 @@ const T = {
     "faq.q3": "كيف تسير عملية العمل معكم؟",
     "faq.a3": "التدقيق ← التصميم ← البناء ← الدمج ← التحسين. نبدأ دائمًا بتدقيق لتحديد أكبر نقاط التأثير.",
     "faq.q4": "ما مدى سرعة ظهور النتائج؟",
-    "faq.a4": "غالبًا ما تنطلق أولى الأتمتات خلال أسابيع قليلة؛ ونحدد الإطار الزمني الدقيق بعد التدقيق.",
+    "faq.a4": "غالبًا ما تنطلق أولى الأتمتات خلال أيام قليلة؛ ونحدد الإطار الزمني الدقيق بعد التدقيق.",
     "faq.q5": "ماذا عن بياناتنا وأمنها؟",
     "faq.a5": "بياناتك تبقى ملكك. نعمل بأقل قدر من البيانات، وبما يتوافق مع حماية البيانات (GDPR)، وندمج حلولنا في أنظمتك الآمنة القائمة.",
     "faq.q6": "ما القنوات واللغات المدعومة؟",
@@ -2360,7 +2363,7 @@ const T = {
     "ex.c1.value": "6.000 يورو عمولة",
     "ex.c1.month": "حوالي 12.600 يورو",
     "ex.c1.year": "151.000 يورو",
-    "ex.c1.with": "يتم الرد على كل طلب وتأهيله في أقل من 60 ثانية، مساءً وفي عطلات نهاية الأسبوع أيضاً.",
+    "ex.c1.with": "يتم الرد على كل طلب وتأهيله فوراً، مساءً وفي عطلات نهاية الأسبوع أيضاً.",
     "ex.c2.tag": "معرض سيارات",
     "ex.c2.setup": "350 طلب شهرياً عبر الإعلانات والهاتف ونموذج التواصل.",
     "ex.c2.late": "105 شهرياً",
@@ -2470,7 +2473,7 @@ function setLang(lang) {
   "en": {
     "lp.hero.badge": "System live · active 24/7",
     "lp.hero.eyebrow": "FOR REAL ESTATE AGENCIES · AI AUTOMATION",
-    "lp.hero.h1": "Every property enquiry<br/><span class=\"grad-text\" style=\"font-style:italic;\">answered in 60 seconds.</span>",
+    "lp.hero.h1": "Every property enquiry<br/><span class=\"grad-text\" style=\"font-style:italic;\">answered immediately.</span>",
     "lp.hero.sub": "Portal enquiries do not arrive during office hours. HYBOTE replies, answers questions about the listing, qualifies the prospect and books the viewing, <strong style=\"font-weight:400;color:var(--fg);\">at any hour, on any channel.</strong>",
     "lp.hero.cta1": "Free intro call",
     "lp.hero.cta2": "See the numbers",
@@ -2499,7 +2502,7 @@ function setLang(lang) {
     "lp.math.howTag": "How the figure is derived",
     "lp.math.how": "Of 200 monthly enquiries, roughly 70 are answered outside the window in which a prospect is still deciding. At a conservative 3 percent close rate that is 2.1 lost deals a month. At €6,000 average commission this comes to about €12,600 a month, or roughly €151,000 a year.",
     "lp.math.withLabel": "With HYBOTE:",
-    "lp.math.with": "Every enquiry is answered and qualified in under 60 seconds, evenings and weekends included.",
+    "lp.math.with": "Every enquiry is answered and qualified immediately, evenings and weekends included.",
     "lp.math.disclaimer": "Illustrative example calculation based on typical industry figures. No guarantee of actual results.",
     "lp.caps.label": "In practice",
     "lp.caps.h2": "What HYBOTE handles<br/><em>for an agency.</em>",
@@ -2537,7 +2540,7 @@ function setLang(lang) {
     "lp.faq.items.3.q": "What happens with data protection and prospect data?",
     "lp.faq.items.3.a": "Your data stays yours. We work on a data minimisation principle, GDPR compliant, with strict separation between clients. Prospect data is not used to train anything and is not passed on.",
     "lp.faq.items.4.q": "How long until it is live?",
-    "lp.faq.items.4.a": "First automations typically go live within a few weeks. We set the exact timeline once the analysis is done, because it depends on how many systems need connecting.",
+    "lp.faq.items.4.a": "First automations typically go live within a few days. We set the exact timeline once the analysis is done, because it depends on how many systems need connecting.",
     "lp.faq.items.5.q": "We are a team of three. Is that too small?",
     "lp.faq.items.5.a": "No. Small teams often gain the most, because there is nobody who can answer enquiries in the evening. The scope of the setup follows the size of the agency, and so does the price.",
     "lp.cross.label": "Also built for",
@@ -2547,7 +2550,7 @@ function setLang(lang) {
   "de": {
     "lp.hero.badge": "System live · aktiv rund um die Uhr",
     "lp.hero.eyebrow": "FÜR IMMOBILIENMAKLER · KI-AUTOMATISIERUNG",
-    "lp.hero.h1": "Jede Immobilienanfrage<br/><span class=\"grad-text\" style=\"font-style:italic;\">in 60 Sekunden beantwortet.</span>",
+    "lp.hero.h1": "Jede Immobilienanfrage<br/><span class=\"grad-text\" style=\"font-style:italic;\">sofort beantwortet.</span>",
     "lp.hero.sub": "Portalanfragen kommen nicht zu Bürozeiten. HYBOTE antwortet, beantwortet Fragen zum Objekt, qualifiziert den Interessenten und vereinbart die Besichtigung, <strong style=\"font-weight:400;color:var(--fg);\">zu jeder Uhrzeit, auf jedem Kanal.</strong>",
     "lp.hero.cta1": "Kostenloses Kennenlerngespräch",
     "lp.hero.cta2": "Zahlen ansehen",
@@ -2576,7 +2579,7 @@ function setLang(lang) {
     "lp.math.howTag": "Wie die Zahl zustande kommt",
     "lp.math.how": "Von 200 Anfragen im Monat werden rund 70 außerhalb des Zeitfensters beantwortet, in dem sich ein Interessent noch entscheidet. Bei konservativen 3 Prozent Abschlussquote sind das 2,1 verlorene Abschlüsse pro Monat. Bei 6.000 € Durchschnittsprovision ergibt das etwa 12.600 € im Monat oder rund 151.000 € im Jahr.",
     "lp.math.withLabel": "Mit HYBOTE:",
-    "lp.math.with": "Jede Anfrage wird in unter 60 Sekunden beantwortet und qualifiziert, abends und am Wochenende inklusive.",
+    "lp.math.with": "Jede Anfrage wird sofort beantwortet und qualifiziert, abends und am Wochenende inklusive.",
     "lp.math.disclaimer": "Illustrative Beispielrechnung auf Basis typischer Branchenwerte. Keine Garantie für tatsächliche Ergebnisse.",
     "lp.caps.label": "In der Praxis",
     "lp.caps.h2": "Was HYBOTE<br/><em>für ein Maklerbüro übernimmt.</em>",
@@ -2614,7 +2617,7 @@ function setLang(lang) {
     "lp.faq.items.3.q": "Wie ist das mit Datenschutz und Interessentendaten?",
     "lp.faq.items.3.a": "Ihre Daten bleiben Ihre Daten. Wir arbeiten nach dem Prinzip der Datensparsamkeit, DSGVO-konform und mit strikter Trennung zwischen Mandanten. Interessentendaten werden nicht zum Training verwendet und nicht weitergegeben.",
     "lp.faq.items.4.q": "Wie lange dauert es bis zum Livegang?",
-    "lp.faq.items.4.a": "Erste Automatisierungen gehen meist innerhalb weniger Wochen live. Den genauen Zeitplan legen wir nach der Analyse fest, denn er hängt davon ab, wie viele Systeme angebunden werden.",
+    "lp.faq.items.4.a": "Erste Automatisierungen gehen meist innerhalb weniger Tage live. Den genauen Zeitplan legen wir nach der Analyse fest, denn er hängt davon ab, wie viele Systeme angebunden werden.",
     "lp.faq.items.5.q": "Wir sind ein Team von drei Personen. Ist das zu klein?",
     "lp.faq.items.5.a": "Nein. Kleine Teams profitieren oft am meisten, weil niemand da ist, der abends Anfragen beantwortet. Der Umfang des Setups richtet sich nach der Größe des Büros, und der Preis ebenso.",
     "lp.cross.label": "Ebenfalls im Einsatz für",
@@ -2624,7 +2627,7 @@ function setLang(lang) {
   "ar": {
     "lp.hero.badge": "النظام يعمل · متاح على مدار الساعة",
     "lp.hero.eyebrow": "لوكالات العقارات · أتمتة الذكاء الاصطناعي",
-    "lp.hero.h1": "كل استفسار عقاري<br/><span class=\"grad-text\" style=\"font-style:italic;\">يُجاب خلال 60 ثانية.</span>",
+    "lp.hero.h1": "كل استفسار عقاري<br/><span class=\"grad-text\" style=\"font-style:italic;\">يُجاب فوراً.</span>",
     "lp.hero.sub": "استفسارات المنصات لا تصل في ساعات العمل. يرد HYBOTE ويجيب عن أسئلة العقار ويؤهل المهتم ويحدد موعد المعاينة، <strong style=\"font-weight:400;color:var(--fg);\">في أي وقت وعلى أي قناة.</strong>",
     "lp.hero.cta1": "مكالمة تعارف مجانية",
     "lp.hero.cta2": "اطّلع على الأرقام",
@@ -2653,7 +2656,7 @@ function setLang(lang) {
     "lp.math.howTag": "كيف نصل إلى الرقم",
     "lp.math.how": "من بين 200 استفسار شهرياً، يُجاب نحو 70 خارج النافذة الزمنية التي لا يزال المهتم يقرر خلالها. وبنسبة إغلاق متحفظة قدرها 3 بالمئة، فتلك 2.1 صفقة ضائعة شهرياً. وبمتوسط عمولة 6,000 يورو يبلغ ذلك نحو 12,600 يورو شهرياً، أي قرابة 151,000 يورو سنوياً.",
     "lp.math.withLabel": "مع HYBOTE:",
-    "lp.math.with": "يُجاب على كل استفسار ويُؤهَّل في أقل من 60 ثانية، مساءً وفي عطلات نهاية الأسبوع أيضاً.",
+    "lp.math.with": "يُجاب على كل استفسار ويُؤهَّل فوراً، مساءً وفي عطلات نهاية الأسبوع أيضاً.",
     "lp.math.disclaimer": "حساب توضيحي مبني على أرقام نموذجية في القطاع. لا ضمان للنتائج الفعلية.",
     "lp.caps.label": "على أرض الواقع",
     "lp.caps.h2": "ما يتولاه HYBOTE<br/><em>لمكتب عقاري.</em>",
@@ -2691,7 +2694,7 @@ function setLang(lang) {
     "lp.faq.items.3.q": "ماذا عن حماية البيانات وبيانات المهتمين؟",
     "lp.faq.items.3.a": "بياناتك تبقى ملكك. نعمل بمبدأ تقليل البيانات، بما يتوافق مع اللائحة الأوروبية، مع فصل صارم بين العملاء. ولا تُستخدم بيانات المهتمين للتدريب ولا تُشارَك.",
     "lp.faq.items.4.q": "كم يستغرق الأمر حتى يبدأ العمل؟",
-    "lp.faq.items.4.a": "تبدأ الأتمتة الأولى بالعمل عادة خلال أسابيع قليلة. ونحدد الجدول الزمني الدقيق بعد التحليل، لأنه يعتمد على عدد الأنظمة المطلوب ربطها.",
+    "lp.faq.items.4.a": "تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. ونحدد الجدول الزمني الدقيق بعد التحليل، لأنه يعتمد على عدد الأنظمة المطلوب ربطها.",
     "lp.faq.items.5.q": "نحن فريق من ثلاثة أشخاص. هل هذا صغير جداً؟",
     "lp.faq.items.5.a": "لا. غالباً ما تستفيد الفرق الصغيرة أكثر، لعدم وجود من يرد على الاستفسارات مساءً. ويتناسب نطاق الإعداد مع حجم المكتب، وكذلك السعر.",
     "lp.cross.label": "مصمم أيضاً لـ",
@@ -2742,7 +2745,7 @@ function setLang(lang) {
   "@type": "Service",
   "name": "AI enquiry response for real estate agencies",
   "serviceType": "AI enquiry response for real estate agencies",
-  "description": "Portal enquiries at 10pm, viewing requests at the weekend. HYBOTE answers and qualifies every property enquiry in under 60 seconds, on WhatsApp, phone and email. Book a free intro call.",
+  "description": "Portal enquiries at 10pm, viewing requests at the weekend. HYBOTE answers and qualifies every property enquiry immediately, on WhatsApp, phone and email. Book a free intro call.",
   "provider": {
     "@type": "Organization",
     "name": "HYBOTE",
@@ -2798,7 +2801,7 @@ function setLang(lang) {
       "name": "How long until it is live?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "First automations typically go live within a few weeks. We set the exact timeline once the analysis is done, because it depends on how many systems need connecting."
+        "text": "First automations typically go live within a few days. We set the exact timeline once the analysis is done, because it depends on how many systems need connecting."
       }
     },
     {

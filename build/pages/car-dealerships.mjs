@@ -11,9 +11,9 @@ export default {
       ar: 'الذكاء الاصطناعي لوكالات السيارات | حجز كل تجربة قيادة | HYBOTE',
     },
     desc: {
-      en: 'Listing enquiries, availability questions, test drive requests. HYBOTE answers every dealership enquiry in under 60 seconds and puts the appointment straight into your salesperson’s calendar. Book a free intro call.',
-      de: 'Inseratsanfragen, Verfügbarkeitsfragen, Probefahrtwünsche. HYBOTE beantwortet jede Autohausanfrage in unter 60 Sekunden und legt den Termin direkt in den Kalender Ihres Verkäufers. Kostenloses Kennenlerngespräch buchen.',
-      ar: 'استفسارات الإعلانات وأسئلة التوفر وطلبات تجربة القيادة. يرد HYBOTE على كل استفسار للوكالة في أقل من 60 ثانية ويضع الموعد مباشرة في تقويم مندوب المبيعات. احجز مكالمة تعارف مجانية.',
+      en: 'Listing enquiries, availability questions, test drive requests. HYBOTE answers every dealership enquiry immediately and puts the appointment straight into your salesperson’s calendar. Book a free intro call.',
+      de: 'Inseratsanfragen, Verfügbarkeitsfragen, Probefahrtwünsche. HYBOTE beantwortet jede Autohausanfrage sofort und legt den Termin direkt in den Kalender Ihres Verkäufers. Kostenloses Kennenlerngespräch buchen.',
+      ar: 'استفسارات الإعلانات وأسئلة التوفر وطلبات تجربة القيادة. يرد HYBOTE على كل استفسار للوكالة فوراً ويضع الموعد مباشرة في تقويم مندوب المبيعات. احجز مكالمة تعارف مجانية.',
     },
     keywords: 'AI for car dealerships, test drive booking automation, automotive lead response, dealership WhatsApp assistant, vehicle enquiry AI, KI Autohaus',
     lead: { en: 'Car dealerships', de: 'Autohäuser', ar: 'وكالات السيارات' },
@@ -309,9 +309,9 @@ export default {
             ar: 'كم يستغرق الأمر حتى يبدأ العمل؟',
           },
           a: {
-            en: 'First automations typically go live within a few weeks. The exact timeline depends on how your inventory system is connected, and we set it after the analysis.',
-            de: 'Erste Automatisierungen gehen meist innerhalb weniger Wochen live. Der genaue Zeitplan hängt davon ab, wie Ihr Bestandssystem angebunden wird, und wir legen ihn nach der Analyse fest.',
-            ar: 'تبدأ الأتمتة الأولى بالعمل عادة خلال أسابيع قليلة. ويعتمد الجدول الدقيق على طريقة ربط نظام المخزون، ونحدده بعد التحليل.',
+            en: 'First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it after the analysis.',
+            de: 'Erste Automatisierungen gehen meist innerhalb weniger Tage live. Der genaue Zeitplan hängt davon ab, wie Ihr Bestandssystem angebunden wird, und wir legen ihn nach der Analyse fest.',
+            ar: 'تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. ويعتمد الجدول الدقيق على طريقة ربط نظام المخزون، ونحدده بعد التحليل.',
           },
         },
         {

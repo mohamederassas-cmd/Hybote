@@ -323,9 +323,9 @@ export default {
             ar: 'كم يستغرق الأمر حتى يبدأ العمل؟',
           },
           a: {
-            en: 'First automations typically go live within a few weeks. In a practice setting we usually start with appointment booking and routine questions, then extend step by step once the team is comfortable.',
-            de: 'Erste Automatisierungen gehen meist innerhalb weniger Wochen live. Im Praxisumfeld starten wir in der Regel mit Terminvergabe und Routinefragen und erweitern schrittweise, sobald das Team sich sicher fühlt.',
-            ar: 'تبدأ الأتمتة الأولى بالعمل عادة خلال أسابيع قليلة. وفي بيئة العيادات نبدأ غالباً بحجز المواعيد والأسئلة الروتينية ثم نوسّع تدريجياً متى اطمأن الفريق.',
+            en: 'First automations typically go live within a few days. In a practice setting we usually start with appointment booking and routine questions, then extend step by step once the team is comfortable.',
+            de: 'Erste Automatisierungen gehen meist innerhalb weniger Tage live. Im Praxisumfeld starten wir in der Regel mit Terminvergabe und Routinefragen und erweitern schrittweise, sobald das Team sich sicher fühlt.',
+            ar: 'تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. وفي بيئة العيادات نبدأ غالباً بحجز المواعيد والأسئلة الروتينية ثم نوسّع تدريجياً متى اطمأن الفريق.',
           },
         },
       ],
