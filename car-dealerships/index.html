@@ -31,6 +31,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=Cairo:wght@200;300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://assets.calendly.com" />
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
 
   <!-- 3D / motion deps (no build step, pure CDN) -->
   <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.48/build/spline-viewer.js"></script>
@@ -106,9 +108,8 @@
       --glass:    rgba(255,255,255,0.05);
     }
 
-    /* clip (not hidden) so no scroll container is created and position:fixed keeps working.
-       Needed because the booking widget parks its original iframe at left:-9999px, which in
-       RTL (Arabic) would otherwise make the whole page scroll sideways. */
+    /* clip (not hidden) so no scroll container is created and position:fixed keeps working,
+       while wide decorative layers cannot make the page scroll sideways. */
     html { background: var(--bg); overflow-x: clip; }
 
     body {
@@ -314,6 +315,137 @@
       border-color: rgba(56,189,248,0.4);
       box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(56,189,248,0.14);
       transform: translateY(-3px);
+    }
+
+    /* ── Calendly booking card ───────────────────────────────────── */
+    #kontakt { scroll-margin-top: 118px; }
+    .calendly-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(56,189,248,0.34);
+      background:
+        radial-gradient(80% 45% at 100% 0%, rgba(56,189,248,0.12), transparent 72%),
+        rgba(9,15,30,0.88);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.36), 0 0 48px rgba(56,189,248,0.08);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .calendly-card::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(125,211,252,0.9), transparent);
+      pointer-events: none;
+    }
+    .calendly-card-head { padding: 36px 36px 26px; }
+    .calendly-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 7px 10px;
+      border: 1px solid rgba(56,189,248,0.2);
+      background: rgba(56,189,248,0.06);
+      color: var(--accent-lt);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.67rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+    }
+    .calendly-meta-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(56,189,248,0.8);
+      flex-shrink: 0;
+    }
+    .calendly-surface {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      min-height: 700px;
+      overflow: hidden;
+      direction: ltr;
+      background: #ffffff;
+      border-block: 1px solid rgba(56,189,248,0.28);
+    }
+    .hybote-calendly-widget {
+      width: 100%;
+      min-width: 320px;
+      min-height: 700px;
+      direction: ltr;
+    }
+    .calendly-status {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px;
+      color: #334155;
+      background: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .calendly-status[hidden] { display: none; }
+    .calendly-spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #dbeafe;
+      border-top-color: #0ea5e9;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+    .calendly-fallback {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 36px;
+      color: var(--a3);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      line-height: 1.6;
+    }
+    .calendly-fallback a {
+      color: var(--accent-lt);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(125,211,252,0.42);
+      white-space: nowrap;
+      transition: color 180ms ease, border-color 180ms ease;
+    }
+    .calendly-fallback a:hover { color: var(--fg); border-color: var(--fg); }
+    .calendly-fallback a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+    @media (max-width: 600px) {
+      #kontakt { padding-inline: 24px !important; }
+      .calendly-card {
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+        border-inline: 0;
+        box-shadow: 0 18px 56px rgba(0,0,0,0.34), 0 0 32px rgba(56,189,248,0.07);
+      }
+      .calendly-card-head { padding: 28px 24px 22px; }
+      .calendly-fallback { align-items: flex-start; padding: 18px 24px 22px; }
+      .calendly-card:hover { transform: none; }
+    }
+
+    @media (max-width: 360px) {
+      #kontakt { padding-inline: 20px !important; }
+      .calendly-fallback { flex-direction: column; gap: 8px; }
+      .service-grid { grid-template-columns: minmax(0, 1fr) !important; }
+      .service-grid .card-filled { padding: 28px !important; }
+    }
+
+    @media (max-width: 480px) {
+      #nav-cta { display: none; }
     }
 
     .card-filled {
@@ -985,7 +1117,7 @@
         <button class="lang-btn" onclick="setLang('de')" id="btn-de">DE</button>
       </div>
 
-      <a href="#kontakt" class="btn-dark" style="padding:11px 22px;font-size:0.68rem;" data-i18n="nav.cta">Book a call</a>
+      <a href="#kontakt" class="btn-dark" id="nav-cta" style="padding:11px 22px;font-size:0.68rem;" data-i18n="nav.cta">Book a call</a>
     </div>
 
   </div>
@@ -1110,7 +1242,7 @@
       <p class="t-body reveal" style="margin-top:20px;" data-i18n="lp.math.sub">A dealership with steady listing traffic, calculated with conservative assumptions. Run your own numbers with us in the intro call.</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line);">
+    <div class="service-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line);">
 
       <div class="card-filled reveal" style="padding:40px;display:flex;flex-direction:column;background:linear-gradient(160deg,rgba(56,189,248,0.10) 0%,rgba(255,255,255,0.04) 60%);border:1px solid rgba(56,189,248,0.45);">
         <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;" data-i18n="lp.math.tag">Car dealership</div>
@@ -1416,14 +1548,32 @@
     <!-- Right: Calendar (primary) + Form (secondary) -->
     <div style="display:flex;flex-direction:column;gap:32px;">
 
-      <!-- Calendar embed: primary CTA -->
-      <div class="card reveal" style="padding:40px;transition-delay:100ms;">
-        <h3 class="t-h3" style="margin-bottom:8px;" data-i18n="contact.cal.h3">Book your slot directly</h3>
-        <p class="t-body" style="font-size:0.8rem;margin-bottom:24px;color:var(--a3);" data-i18n="contact.cal.sub">Pick an available time and book your appointment directly.</p>
+      <!-- Calendly embed: primary CTA -->
+      <div class="calendly-card reveal" style="transition-delay:100ms;">
+        <div class="calendly-card-head">
+          <h3 class="t-h3" style="margin-bottom:8px;" data-i18n="contact.cal.h3">Book your slot directly</h3>
+          <p class="t-body" style="font-size:0.8rem;color:var(--a3);" data-i18n="contact.cal.sub">Pick an available time and book your appointment directly.</p>
+          <div class="calendly-meta">
+            <span class="calendly-meta-dot" aria-hidden="true"></span>
+            <span data-i18n="contact.cal.meta">20 minutes · Microsoft Teams · free</span>
+          </div>
+        </div>
 
-        <iframe src="https://api.leadconnectorhq.com/widget/booking/Jx1FkV2twfBqn2dmWSN9" style="width:100%;border:none;overflow:hidden;min-height:700px;" scrolling="no" id="Jx1FkV2twfBqn2dmWSN9_1779632247797"></iframe>
-        <script src="https://link.msgsndr.com/js/form_embed.js" type="text/javascript"></script>
+        <div class="calendly-surface" dir="ltr">
+          <div id="calendly-status" class="calendly-status" role="status" aria-live="polite">
+            <span class="calendly-spinner" aria-hidden="true"></span>
+            <span data-i18n="contact.cal.loading">Loading available appointments…</span>
+          </div>
+          <div id="calendly-inline-widget" class="hybote-calendly-widget" aria-label="Free HYBOTE Intro Call booking calendar"></div>
+        </div>
+
+        <div class="calendly-fallback">
+          <span data-i18n="contact.cal.fallback">Calendar not displaying?</span>
+          <a id="calendly-fallback-link" href="https://calendly.com/hybote-demo/free-intro-call" target="_blank" rel="noopener noreferrer" data-i18n="contact.cal.open">Open Calendly directly</a>
+        </div>
       </div>
+
+      <script id="calendly-widget-script" src="https://assets.calendly.com/assets/external/widget.js" defer></script>
 
       <!-- Form: secondary option -->
       <div class="card reveal" style="padding:40px;transition-delay:160ms;">
@@ -1509,11 +1659,105 @@
 <script>
   const cg = document.getElementById('contact-grid');
   const nr = document.getElementById('name-row');
+  const CALENDLY_EVENT_URL = 'https://calendly.com/hybote-demo/free-intro-call';
+  let calendlyInitialized = false;
+
   function setCGrid() {
     cg.style.gridTemplateColumns = window.innerWidth >= 900 ? '1fr 1fr' : '1fr';
     nr.style.gridTemplateColumns = window.innerWidth < 480 ? '1fr' : '1fr 1fr';
   }
   setCGrid(); window.addEventListener('resize', setCGrid);
+
+  function calendlyTracking() {
+    const lang = ['en', 'de', 'ar'].includes(document.documentElement.lang)
+      ? document.documentElement.lang
+      : 'en';
+    const page = window.location.pathname.replace(/^\/+|\/+$/g, '') || 'home';
+    return {
+      lang,
+      content: page.replace(/\//g, '_') + '_' + lang
+    };
+  }
+
+  function showCalendlyError() {
+    const status = document.getElementById('calendly-status');
+    if (!status) return;
+    status.hidden = false;
+    status.classList.add('is-error');
+    const spinner = status.querySelector('.calendly-spinner');
+    if (spinner) spinner.hidden = true;
+    const message = status.querySelector('[data-i18n]');
+    if (message) {
+      message.dataset.i18n = 'contact.cal.error';
+      const lang = ['en', 'de', 'ar'].includes(document.documentElement.lang)
+        ? document.documentElement.lang
+        : 'en';
+      if (typeof T !== 'undefined' && T[lang]) message.innerHTML = T[lang]['contact.cal.error'];
+      else message.textContent = 'The calendar could not be loaded. Please use the direct Calendly link below.';
+    }
+  }
+
+  function handleCalendlyError() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', showCalendlyError, { once: true });
+    } else {
+      showCalendlyError();
+    }
+  }
+
+  function mountHyboteCalendly() {
+    if (calendlyInitialized) return;
+    const parent = document.getElementById('calendly-inline-widget');
+    if (!parent || !window.Calendly) {
+      showCalendlyError();
+      return;
+    }
+
+    calendlyInitialized = true;
+    const tracking = calendlyTracking();
+    const fallback = document.getElementById('calendly-fallback-link');
+    const trackedFallback = new URL(CALENDLY_EVENT_URL);
+    trackedFallback.searchParams.set('utm_source', 'hybote.ai');
+    trackedFallback.searchParams.set('utm_medium', 'website');
+    trackedFallback.searchParams.set('utm_campaign', 'free_intro_call');
+    trackedFallback.searchParams.set('utm_content', tracking.content);
+    if (fallback) fallback.href = trackedFallback.toString();
+
+    window.Calendly.initInlineWidget({
+      url: CALENDLY_EVENT_URL + '?hide_event_type_details=1&hide_gdpr_banner=1',
+      parentElement: parent,
+      resize: true,
+      utm: {
+        utmSource: 'hybote.ai',
+        utmMedium: 'website',
+        utmCampaign: 'free_intro_call',
+        utmContent: tracking.content
+      }
+    });
+  }
+
+  function initHyboteCalendly() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', mountHyboteCalendly, { once: true });
+    } else {
+      mountHyboteCalendly();
+    }
+  }
+
+  window.addEventListener('message', function (event) {
+    if (event.origin !== 'https://calendly.com' || !event.data || event.data.event !== 'calendly.event_type_viewed') return;
+    const status = document.getElementById('calendly-status');
+    if (status) status.hidden = true;
+  });
+
+  const calendlyScript = document.getElementById('calendly-widget-script');
+  if (window.Calendly) {
+    initHyboteCalendly();
+  } else if (calendlyScript) {
+    calendlyScript.addEventListener('load', initHyboteCalendly, { once: true });
+    calendlyScript.addEventListener('error', handleCalendlyError, { once: true });
+  }
+
   async function handleSub(e) {
     e.preventDefault();
     const btn = e.target.querySelector('[type="submit"]');
@@ -1833,6 +2077,14 @@ const T = {
     "contact.sub": "Wir zeigen Ihnen in 20 Minuten, wo in Ihrem Betrieb der größte Hebel liegt. Unverbindlich und kostenlos.",
     "contact.cal.h3": "Termin direkt buchen",
     "contact.cal.sub": "Wählen Sie einen freien Slot und buchen Sie Ihren Termin direkt.",
+    "contact.cal.meta": "20 Minuten · Microsoft Teams · kostenlos",
+    "contact.cal.loading": "Verfügbare Termine werden geladen…",
+    "contact.cal.error": "Der Kalender konnte nicht geladen werden. Bitte nutzen Sie den direkten Calendly-Link darunter.",
+    "contact.cal.fallback": "Kalender wird nicht angezeigt?",
+    "contact.cal.open": "Calendly direkt öffnen",
+    "cookie.notice": "Calendly wird für die Terminbuchung sofort geladen und kann Buchungs- sowie technische Daten in den USA verarbeiten.",
+    "cookie.link": "Mehr in der Datenschutzerklärung",
+    "cookie.dismiss": "Verstanden",
     "contact.form.alt": "Lieber schreiben? Anfrage senden",
     "contact.i1.title": "Kennenlerngespräch",
     "contact.i1.sub": "20 Minuten, per Videokonferenz",
@@ -2083,6 +2335,14 @@ const T = {
     "contact.sub": "We'll show you in 20 minutes where the biggest lever sits in your business. No commitment, free of charge.",
     "contact.cal.h3": "Book your slot directly",
     "contact.cal.sub": "Pick an available time and book your appointment directly.",
+    "contact.cal.meta": "20 minutes · Microsoft Teams · free",
+    "contact.cal.loading": "Loading available appointments…",
+    "contact.cal.error": "The calendar could not be loaded. Please use the direct Calendly link below.",
+    "contact.cal.fallback": "Calendar not displaying?",
+    "contact.cal.open": "Open Calendly directly",
+    "cookie.notice": "Calendly is loaded immediately for appointment booking and may process booking and technical data in the USA.",
+    "cookie.link": "Details in our Privacy Policy",
+    "cookie.dismiss": "Got it",
     "contact.form.alt": "Prefer to write? Send a request",
     "contact.i1.title": "Intro call",
     "contact.i1.sub": "20 minutes, via video call",
@@ -2333,6 +2593,14 @@ const T = {
     "contact.sub": "سنريك في 20 دقيقة أين تكمن أكبر رافعة في عملك. بدون التزام ومجاناً.",
     "contact.cal.h3": "احجز وقتك مباشرة",
     "contact.cal.sub": "اختر وقتاً متاحاً واحجز موعدك مباشرة.",
+    "contact.cal.meta": "20 دقيقة · Microsoft Teams · مجاناً",
+    "contact.cal.loading": "جارٍ تحميل المواعيد المتاحة…",
+    "contact.cal.error": "تعذر تحميل التقويم. يُرجى استخدام رابط Calendly المباشر أدناه.",
+    "contact.cal.fallback": "ألا يظهر التقويم؟",
+    "contact.cal.open": "افتح Calendly مباشرة",
+    "cookie.notice": "يتم تحميل Calendly فوراً لحجز المواعيد، وقد يعالج بيانات الحجز والبيانات التقنية في الولايات المتحدة.",
+    "cookie.link": "التفاصيل في سياسة الخصوصية",
+    "cookie.dismiss": "فهمت",
     "contact.form.alt": "تفضل الكتابة؟ أرسل طلباً",
     "contact.i1.title": "مكالمة تعارف",
     "contact.i1.sub": "20 دقيقة، عبر مكالمة فيديو",
@@ -2438,8 +2706,10 @@ function setLang(lang) {
   // Update legal page links to pass current language
   const lp = document.getElementById('link-privacy');
   const lt = document.getElementById('link-terms');
-  if (lp) lp.href = 'datenschutz.html?lang=' + lang;
-  if (lt) lt.href = 'agb.html?lang=' + lang;
+  const cp = document.getElementById('cookie-privacy-link');
+  if (lp) lp.href = '/datenschutz.html?lang=' + lang;
+  if (lt) lt.href = '/agb.html?lang=' + lang;
+  if (cp) cp.href = '/datenschutz.html?lang=' + lang;
 
   // Re-run ROI calculator to apply translated dynamic subtitles
 
@@ -2831,20 +3101,25 @@ function setLang(lang) {
 ══════════════════════════════════════════════════════════ -->
 <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(8,11,18,0.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(56,189,248,0.25);padding:16px 24px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
   <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.78rem;color:var(--a2);line-height:1.6;margin:0;flex:1;min-width:200px;">
-    This website uses cookies essential to its operation. By continuing, you accept our
-    <a href="/datenschutz.html?lang=en" target="_blank" style="color:var(--gold-lt);text-decoration:none;border-bottom:1px solid rgba(125,211,252,0.35);">Privacy Policy</a>.
+    <span data-i18n="cookie.notice">Calendly is loaded immediately for appointment booking and may process booking and technical data in the USA.</span>
+    <a id="cookie-privacy-link" href="/datenschutz.html?lang=en" target="_blank" rel="noopener" style="color:var(--gold-lt);text-decoration:none;border-bottom:1px solid rgba(125,211,252,0.35);" data-i18n="cookie.link">Details in our Privacy Policy</a>.
   </p>
-  <button onclick="acceptCookies()" style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.7rem;letter-spacing:0.10em;text-transform:uppercase;color:var(--bg);background:var(--gold);border:none;padding:9px 20px;cursor:pointer;white-space:nowrap;transition:opacity 150ms;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Accept</button>
+  <button onclick="dismissCookieNotice()" style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.7rem;letter-spacing:0.10em;text-transform:uppercase;color:var(--bg);background:var(--gold);border:none;padding:9px 20px;cursor:pointer;white-space:nowrap;transition:opacity 150ms;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'" data-i18n="cookie.dismiss">Got it</button>
 </div>
 <script>
   (function() {
-    if (!localStorage.getItem('cookie_consent')) {
+    document.querySelectorAll('#cookie-banner [data-i18n]').forEach(function (el) {
+      var key = el.dataset.i18n;
+      if (T[currentLang] && T[currentLang][key] !== undefined) el.innerHTML = T[currentLang][key];
+    });
+    document.getElementById('cookie-privacy-link').href = '/datenschutz.html?lang=' + currentLang;
+    if (!localStorage.getItem('calendly_notice_v1')) {
       var b = document.getElementById('cookie-banner');
       b.style.display = 'flex';
     }
   })();
-  function acceptCookies() {
-    localStorage.setItem('cookie_consent', '1');
+  function dismissCookieNotice() {
+    localStorage.setItem('calendly_notice_v1', '1');
     document.getElementById('cookie-banner').style.display = 'none';
   }
 </script>

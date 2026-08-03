@@ -66,7 +66,7 @@ export function readShell(indexPath) {
     // Trennlinien selbst und bekäme sonst zwei direkt hintereinander.
     faq: between(src, '<style>\n  .faq-item {', '<hr class="rule" />\n\n\n' + sec('CONTACT'), 'faq'),
 
-    // Buchungsblock: LeadConnector-Kalender + Web3Forms-Formular
+    // Buchungsblock: Calendly-Kalender + Web3Forms-Formular
     contact: between(src, '<section id="kontakt"', sec('FOOTER'), 'contact'),
 
     // Footer inkl. Grid-Resize-Script

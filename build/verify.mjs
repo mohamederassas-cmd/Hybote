@@ -13,6 +13,16 @@ import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SLUGS = ['real-estate', 'car-dealerships', 'medical-practices'];
+const BOOKING_PAGES = [
+  ['index.html', join(ROOT, 'index.html')],
+  ...SLUGS.map((slug) => [`${slug}/index.html`, join(ROOT, slug, 'index.html')]),
+];
+const LEGACY_CALENDAR_MARKERS = [
+  'lead' + 'connector',
+  'msg' + 'sndr',
+  'go' + 'highlevel',
+  'go high' + ' level',
+];
 
 let failures = 0;
 
@@ -24,6 +34,34 @@ function report(name, checks) {
       ? `  ✗ ${name}\n      ${bad.join('\n      ')}`
       : `  ✓ ${name}  (${Object.keys(checks).length} Prüfungen)`
   );
+}
+
+/* ── Gemeinsamer Buchungsblock ─────────────────────────────────────────── */
+console.log('\nCalendly-Buchungsblock');
+for (const [name, path] of BOOKING_PAGES) {
+  const h = readFileSync(path, 'utf8');
+  report(name, {
+    'kein alter Kalender-Anbieter':
+      !LEGACY_CALENDAR_MARKERS.some((marker) => h.toLowerCase().includes(marker)),
+    'genau ein Calendly-Widget': (h.match(/id="calendly-inline-widget"/g) || []).length === 1,
+    'genau ein Calendly-Embed-Script':
+      (h.match(/assets\.calendly\.com\/assets\/external\/widget\.js/g) || []).length === 1,
+    'direkter Fallback-Link vorhanden':
+      h.includes('href="https://calendly.com/hybote-demo/free-intro-call"'),
+    'Advanced Embed mit automatischer Höhe':
+      h.includes('Calendly.initInlineWidget({') && h.includes('resize: true'),
+    'doppelte Details und Calendly-Banner ausgeblendet':
+      h.includes('hide_event_type_details=1&hide_gdpr_banner=1'),
+    'vollständiges Kampagnen-Tracking':
+      h.includes("utmSource: 'hybote.ai'") &&
+      h.includes("utmMedium: 'website'") &&
+      h.includes("utmCampaign: 'free_intro_call'") &&
+      h.includes('utmContent: tracking.content'),
+    'Loader, Fehlerzustand und LTR-Kalender vorhanden':
+      h.includes('id="calendly-status"') &&
+      h.includes("'contact.cal.error'") &&
+      h.includes('class="calendly-surface" dir="ltr"'),
+  });
 }
 
 /* ── Landingpages ───────────────────────────────────────────────────────── */
@@ -94,6 +132,12 @@ console.log('\nWeitere Dateien');
       SLUGS.every((s) => sm.includes(`<loc>https://hybote.ai/${s}</loc>`)),
     'Analytics in allen drei Sprachblöcken der Datenschutzerklärung':
       (ds.match(/Vercel Web Analytics/g) || []).length === 3,
+    'Calendly-Datenschutzhinweis in allen drei Sprachblöcken':
+      (ds.match(/calendly\.com\/legal\/privacy-notice/g) || []).length === 3,
+    'Calendly-DPA in allen drei Sprachblöcken':
+      (ds.match(/calendly\.com\/legal\/data-processing-addendum/g) || []).length === 3,
+    'Teams-Übergabe in allen drei Sprachblöcken':
+      (ds.match(/Microsoft(?:-| )Teams/g) || []).length >= 3,
   });
 }
 
