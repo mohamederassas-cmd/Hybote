@@ -3462,13 +3462,13 @@ function setLang(lang) {
 
 
 <!-- ══════════════════════════════════════════════════════════
-     WHATSAPP FLOATING BUTTON
+     FLOATING CONTACT BUTTONS
 ══════════════════════════════════════════════════════════ -->
 <style>
-  .wa-btn {
+  .wa-btn,
+  .call-btn {
     position: fixed;
     bottom: 28px;
-    right: 28px;
     width: 56px;
     height: 56px;
     background: var(--accent);
@@ -3482,11 +3482,20 @@ function setLang(lang) {
     transition: transform 200ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 200ms ease;
     cursor: pointer;
   }
-  .wa-btn:hover {
+  .wa-btn { right: 28px; }
+  .call-btn { left: 28px; }
+  .wa-btn:hover,
+  .call-btn:hover {
     transform: scale(1.08);
     box-shadow: 0 6px 28px rgba(56,189,248,0.5), 0 4px 12px rgba(0,0,0,0.3);
   }
-  .wa-btn::before {
+  .wa-btn:focus-visible,
+  .call-btn:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 4px;
+  }
+  .wa-btn::before,
+  .call-btn::before {
     content: '';
     position: absolute;
     width: 56px;
@@ -3500,9 +3509,9 @@ function setLang(lang) {
     70%  { transform: scale(1.6); opacity: 0; }
     100% { transform: scale(1.6); opacity: 0; }
   }
-  .wa-tooltip {
+  .wa-tooltip,
+  .call-tooltip {
     position: absolute;
-    right: 68px;
     bottom: 50%;
     transform: translateY(50%);
     background: var(--fg);
@@ -3517,6 +3526,8 @@ function setLang(lang) {
     opacity: 0;
     transition: opacity 180ms ease;
   }
+  .wa-tooltip { right: 68px; }
+  .call-tooltip { left: 68px; }
   .wa-tooltip::after {
     content: '';
     position: absolute;
@@ -3527,22 +3538,54 @@ function setLang(lang) {
     border-left-color: var(--fg);
     border-right: none;
   }
-  .wa-btn:hover .wa-tooltip { opacity: 1; }
+  .call-tooltip::after {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: var(--fg);
+    border-left: none;
+  }
+  .wa-btn:hover .wa-tooltip,
+  .wa-btn:focus-visible .wa-tooltip,
+  .call-btn:hover .call-tooltip,
+  .call-btn:focus-visible .call-tooltip { opacity: 1; }
   html[dir="rtl"] .wa-btn {
+    right: 28px;
+    left: auto;
+  }
+  html[dir="rtl"] .wa-tooltip {
+    right: 68px;
+    left: auto;
+  }
+  html[dir="rtl"] .wa-tooltip::after {
+    right: -5px;
+    left: auto;
+    border-left: 5px solid var(--fg);
+    border-right: none;
+  }
+  html[dir="rtl"] .call-btn {
     right: auto;
     left: 28px;
   }
-  html[dir="rtl"] .wa-tooltip {
+  html[dir="rtl"] .call-tooltip {
     right: auto;
     left: 68px;
   }
-  html[dir="rtl"] .wa-tooltip::after {
-    right: auto;
-    left: -5px;
-    border-left: none;
-    border-right: 5px solid var(--fg);
+  @media (prefers-reduced-motion: reduce) {
+    .wa-btn::before,
+    .call-btn::before { animation: none; }
   }
 </style>
+
+<a class="call-btn" href="tel:+16505146359" aria-label="Call HYBOTE at +1 650 514 6359">
+  <span class="call-tooltip" id="call-tip">Call us</span>
+  <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#070b16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.8a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.33 1.84.56 2.8.69A2 2 0 0 1 22 16.92z"/>
+  </svg>
+</a>
 
 <a class="wa-btn" href="https://wa.me/16505146359" target="_blank" rel="noopener" aria-label="WhatsApp">
   <span class="wa-tooltip" id="wa-tip">Chat on WhatsApp</span>
@@ -3554,19 +3597,25 @@ function setLang(lang) {
 <script>
   (function() {
     const waTip = document.getElementById('wa-tip');
-    function updateWaLang(lang) {
+    const callTip = document.getElementById('call-tip');
+    const callButton = document.querySelector('.call-btn');
+    function updateContactLang(lang) {
       if (waTip && T[lang] && T[lang]['wa.tooltip']) {
         waTip.textContent = T[lang]['wa.tooltip'];
+      }
+      if (callTip && callButton && T[lang] && T[lang]['call.tooltip']) {
+        callTip.textContent = T[lang]['call.tooltip'];
+        callButton.setAttribute('aria-label', T[lang]['call.tooltip'] + ': +1 650 514 6359');
       }
     }
     const _setLang = window.setLang;
     if (typeof _setLang === 'function') {
       window.setLang = function(lang) {
         _setLang(lang);
-        updateWaLang(lang);
+        updateContactLang(lang);
       };
     }
-    updateWaLang(typeof currentLang !== 'undefined' ? currentLang : 'en');
+    updateContactLang(typeof currentLang !== 'undefined' ? currentLang : 'en');
   })();
 </script>
 

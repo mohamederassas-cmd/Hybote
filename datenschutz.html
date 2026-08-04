@@ -86,7 +86,7 @@
     en: {
       lang: 'en', dir: 'ltr',
       back: 'Back', label: 'Legal', title: 'Privacy Policy',
-      date: 'Last updated: August 2026',
+      date: 'Last updated: 4 August 2026',
       html: `
         <h2>1. Data Controller</h2>
         <p>The data controller responsible for the processing of personal data in connection with HYBOTE's services is:<br/>
@@ -100,7 +100,8 @@
         <p>We collect and process the following categories of personal data:</p>
         <ul>
           <li><strong>Contact data:</strong> Name, email address, phone number, company name</li>
-          <li><strong>Communication data:</strong> Content of messages sent via WhatsApp, email, or contact forms</li>
+          <li><strong>Communication data:</strong> Content of messages sent via WhatsApp, email, contact forms, or spoken during telephone calls</li>
+          <li><strong>Call data:</strong> Phone number, call date, start time, duration, routing and technical connection data, and appointment or qualification information provided during the call</li>
           <li><strong>Usage data:</strong> Interaction logs, lead scores, response timestamps</li>
           <li><strong>Technical data:</strong> IP address, browser type, device information (for the website)</li>
         </ul>
@@ -120,12 +121,13 @@
           <li>Provide and operate the HYBOTE platform and its features</li>
           <li>Respond to leads and enquiries on behalf of our clients</li>
           <li>Qualify and score incoming leads using AI analysis</li>
+          <li>Answer telephone enquiries through an AI voice assistant, arrange appointments, and hand conversations over to a human on request</li>
           <li>Synchronise lead data with client CRM systems</li>
           <li>Communicate with clients regarding their account and service</li>
           <li>Comply with legal obligations</li>
         </ul>
 
-        <h2>5. WhatsApp Communication</h2>
+        <h2>5. WhatsApp and AI-supported Communication</h2>
         <div class="wa-box">
           <p>HYBOTE uses the <strong>WhatsApp Business Platform</strong>, operated by Meta Platforms Ireland Ltd. (Merrion Road, Dublin 4, D04 X2K5, Ireland), to communicate with our clients and their leads.</p>
           <p style="margin-top:16px;"><strong>How we use WhatsApp:</strong></p>
@@ -147,20 +149,36 @@
           As part of operating the WhatsApp Business API, Meta processes certain technical and communication data (including message delivery metadata) in accordance with their own privacy policy: <a href="https://www.whatsapp.com/legal/privacy-policy" style="color:var(--gold-lt);" target="_blank" rel="noopener">whatsapp.com/legal/privacy-policy</a></p>
           <p style="margin-top:16px;"><strong>Opt-out:</strong><br/>
           To stop receiving WhatsApp messages from HYBOTE, reply <strong>"STOP"</strong> to any of our messages or contact us at <a href="mailto:Contact@hybote.ai" style="color:var(--gold-lt);">Contact@hybote.ai</a>.</p>
+          <p style="margin-top:16px;"><strong>Use of artificial intelligence:</strong><br/>
+          Our WhatsApp assistant uses artificial intelligence to answer enquiries, qualify requests, arrange appointments, and prepare a handover to our team. The assistant clearly identifies itself as an AI system at the beginning of the interaction. You may request contact with a human at any time. The assistant does not make decisions based solely on automated processing that produce legal or similarly significant effects.</p>
         </div>
 
-        <h2>6. Data Sharing</h2>
+        <h2>6. AI-supported Telephone Communication with Retell AI</h2>
+        <div class="wa-box">
+          <p>Calls to HYBOTE may be answered by an AI voice assistant. At the beginning of the call, the assistant clearly informs callers that they are interacting with an AI system. It can answer general enquiries, collect contact and request details, qualify an enquiry, arrange appointments, and transfer or refer the caller to a human. It does not make decisions based solely on automated processing that produce legal or similarly significant effects.</p>
+          <p style="margin-top:16px;"><strong>Technical service provider:</strong><br/>
+          We use Retell AI, Inc., 540 Price Ave, Redwood City, CA 94063, USA ("Retell"), as a processor for live voice, telephony, and AI processing. Retell and its authorised subprocessors process the caller's phone number, call time and duration, routing and technical connection data, the spoken content required during the live interaction, and any appointment or qualification details provided.</p>
+          <p style="margin-top:16px;"><strong>Purpose and legal basis:</strong><br/>
+          Processing is necessary to answer the call, respond to the caller's request, arrange appointments, and take pre-contractual steps at the caller's request (Art. 6(1)(b) GDPR). Limited technical metadata is processed to ensure secure, reliable, and abuse-resistant operation of the telephone service on the basis of our legitimate interests (Art. 6(1)(f) GDPR).</p>
+          <p style="margin-top:16px;"><strong>No recording or permanent transcript:</strong><br/>
+          Retell is configured to store basic call attributes only. We do not retain call recordings, transcripts, or conversation logs, and we do not export them through webhooks or store them in a CRM. Necessary call metadata is retained for no longer than 30 days and is then automatically deleted. If call recording is introduced in the future, it will only begin after the caller has given prior, explicit, and verifiable consent.</p>
+          <p style="margin-top:16px;"><strong>Processing in the United States:</strong><br/>
+          Retell currently provides its services outside the European Union. International transfers are governed by a data processing agreement that includes the EU Standard Contractual Clauses. Further information is available in the <a href="https://www.retellai.com/legal/privacy-policy" style="color:var(--gold-lt);" target="_blank" rel="noopener">Retell Privacy Policy</a> and its <a href="https://docs.retellai.com/general/compliance" style="color:var(--gold-lt);" target="_blank" rel="noopener">security and compliance information</a>.</p>
+        </div>
+
+        <h2>7. Data Sharing</h2>
         <p>We do not sell personal data. We may share data with:</p>
         <ul>
-          <li>Trusted technology sub-processors necessary to operate the service (e.g. cloud infrastructure, WhatsApp Business API providers), all bound by strict data processing agreements</li>
+          <li>Trusted technology sub-processors necessary to operate the service (e.g. cloud infrastructure, WhatsApp Business API providers, Retell AI and its telephony, speech-processing, and AI subprocessors), all bound by strict data processing agreements</li>
           <li>Regulatory authorities if required by applicable law</li>
         </ul>
         <p>We never share client or prospect data with other agencies or marketing partners.</p>
 
-        <h2>7. Data Retention</h2>
+        <h2>8. Data Retention</h2>
         <p>We retain personal data for as long as necessary to fulfil the purposes for which it was collected, or as required by law. Client account data is retained for the duration of the service agreement plus 90 days. Upon account termination, data is securely deleted within 30 days of the export window closing.</p>
+        <p>For AI-supported telephone calls, no recording or transcript is retained. Necessary call metadata is automatically deleted after no more than 30 days.</p>
 
-        <h2>8. Your Rights</h2>
+        <h2>9. Your Rights</h2>
         <p>Depending on your jurisdiction, you may have the right to:</p>
         <ul>
           <li>Access the personal data we hold about you</li>
@@ -172,19 +190,19 @@
         </ul>
         <p>To exercise any of these rights, please contact us at <a href="mailto:Contact@hybote.ai" style="color:var(--gold-lt);">Contact@hybote.ai</a>.</p>
 
-        <h2>9. Security</h2>
+        <h2>10. Security</h2>
         <p>We implement industry-standard security measures to protect personal data, including end-to-end encryption for WhatsApp communications, strict data isolation per client account, and access controls limiting data access to authorised personnel only.</p>
 
-        <h2>10. Appointment Booking with Calendly, Cookies and Audience Measurement</h2>
+        <h2>11. Appointment Booking with Calendly, Cookies and Audience Measurement</h2>
         <p>We embed Calendly, a service provided by Calendly LLC, to enable visitors to select and book a free introductory call directly on our website. Calendly is loaded immediately when a page containing the booking calendar is opened. The embedded Calendly cookie banner is hidden because we provide this information ourselves. During loading, Calendly may establish connections to its systems and process technical data or use cookies and similar technologies that are necessary to provide and secure the scheduling service.</p>
         <p>If you book an appointment, Calendly processes your name, email address, company name and website, your optional answer about the process you would like to improve, the selected date and time, your time zone, and related technical booking data. Calendly processes booking data on our behalf as a data processor. The purpose is to arrange and administer the requested introductory call. The legal basis is Art. 6(1)(b) GDPR for pre-contractual steps at your request and, for the secure operation of the embed, Art. 6(1)(f) GDPR.</p>
         <p>The meeting location is Microsoft Teams. To create and administer the online meeting, the necessary appointment and participant details are transferred to our connected Microsoft Teams account. Calendly and its subprocessors may process data in the United States. The contractual safeguards for such processing are governed by Calendly's Data Processing Addendum. Further information is available in the <a href="https://calendly.com/legal/privacy-notice" style="color:var(--gold-lt);" target="_blank" rel="noopener">Calendly Privacy Notice</a> and the <a href="https://calendly.com/legal/data-processing-addendum" style="color:var(--gold-lt);" target="_blank" rel="noopener">Calendly Data Processing Addendum</a>. You can alternatively contact us by email without using the calendar.</p>
-        <p>To understand how our website is used, we use Vercel Web Analytics, a service provided by Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA. This service works without cookies and without any device identifier stored on your device. No IP addresses are stored, no cross-site profiles are created and the data cannot be used to identify you personally. Recorded are the page visited, the referring page, and coarse information such as country, browser type and device category. The legal basis is Art. 6(1)(f) GDPR, our legitimate interest in a needs-based and technically sound design of our website. You may object to this processing at any time using the contact details in section 12.</p>
+        <p>To understand how our website is used, we use Vercel Web Analytics, a service provided by Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA. This service works without cookies and without any device identifier stored on your device. No IP addresses are stored, no cross-site profiles are created and the data cannot be used to identify you personally. Recorded are the page visited, the referring page, and coarse information such as country, browser type and device category. The legal basis is Art. 6(1)(f) GDPR, our legitimate interest in a needs-based and technically sound design of our website. You may object to this processing at any time using the contact details in section 13.</p>
 
-        <h2>11. Changes to This Policy</h2>
+        <h2>12. Changes to This Policy</h2>
         <p>We may update this Privacy Policy from time to time. Material changes will be communicated to existing clients via email. Continued use of our services after such notification constitutes acceptance of the updated policy.</p>
 
-        <h2>12. Contact</h2>
+        <h2>13. Contact</h2>
         <p>For any privacy-related questions or to exercise your rights, please contact:<br/>
         <strong>Hybote AI Systems LLC</strong><br/>
         30 N Gould St, Ste R<br/>
@@ -196,7 +214,7 @@
     de: {
       lang: 'de', dir: 'ltr',
       back: 'Zurück', label: 'Rechtliches', title: 'Datenschutzerklärung',
-      date: 'Stand: August 2026',
+      date: 'Stand: 4. August 2026',
       html: `
         <h2>1. Verantwortlicher</h2>
         <p>Verantwortlicher für die Verarbeitung personenbezogener Daten im Zusammenhang mit den Leistungen von HYBOTE ist:<br/>
@@ -210,7 +228,8 @@
         <p>Wir erheben und verarbeiten folgende Kategorien personenbezogener Daten:</p>
         <ul>
           <li><strong>Kontaktdaten:</strong> Name, E-Mail-Adresse, Telefonnummer, Unternehmensname</li>
-          <li><strong>Kommunikationsdaten:</strong> Inhalte von Nachrichten über WhatsApp, E-Mail oder Kontaktformulare</li>
+          <li><strong>Kommunikationsdaten:</strong> Inhalte von Nachrichten über WhatsApp, E-Mail oder Kontaktformulare sowie während eines Telefonats gesprochene Inhalte</li>
+          <li><strong>Anrufdaten:</strong> Telefonnummer, Datum, Beginn und Dauer des Anrufs, Routing- und technische Verbindungsdaten sowie im Gespräch mitgeteilte Termin- oder Qualifizierungsinformationen</li>
           <li><strong>Nutzungsdaten:</strong> Interaktionsprotokolle, Lead-Scores, Antwortzeitstempel</li>
           <li><strong>Technische Daten:</strong> IP-Adresse, Browsertyp, Geräteinformationen (für die Website)</li>
         </ul>
@@ -230,12 +249,13 @@
           <li>Die HYBOTE-Plattform und ihre Funktionen bereitzustellen und zu betreiben</li>
           <li>Im Auftrag unserer Kunden auf Leads und Anfragen zu reagieren</li>
           <li>Eingehende Leads mithilfe von KI-Analyse zu qualifizieren und zu bewerten</li>
+          <li>Telefonische Anfragen durch einen KI-Sprachassistenten zu beantworten, Termine zu vereinbaren und Gespräche auf Wunsch an einen Menschen zu übergeben</li>
           <li>Lead-Daten mit den CRM-Systemen unserer Kunden zu synchronisieren</li>
           <li>Mit Kunden bezüglich ihres Kontos und des Dienstes zu kommunizieren</li>
           <li>Gesetzlichen Verpflichtungen nachzukommen</li>
         </ul>
 
-        <h2>5. WhatsApp-Kommunikation</h2>
+        <h2>5. WhatsApp- und KI-gestützte Kommunikation</h2>
         <div class="wa-box">
           <p>HYBOTE nutzt die <strong>WhatsApp Business Platform</strong>, die von Meta Platforms Ireland Ltd. (Merrion Road, Dublin 4, D04 X2K5, Irland) betrieben wird, zur Kommunikation mit unseren Kunden und deren Interessenten.</p>
           <p style="margin-top:16px;"><strong>Verwendung von WhatsApp:</strong></p>
@@ -257,20 +277,36 @@
           Im Rahmen des Betriebs der WhatsApp Business API verarbeitet Meta bestimmte technische Daten und Kommunikationsdaten (inkl. Zustellungsmetadaten) gemäß ihrer eigenen Datenschutzrichtlinie: <a href="https://www.whatsapp.com/legal/privacy-policy" style="color:var(--gold-lt);" target="_blank" rel="noopener">whatsapp.com/legal/privacy-policy</a></p>
           <p style="margin-top:16px;"><strong>Abmeldung:</strong><br/>
           Um keine WhatsApp-Nachrichten von HYBOTE mehr zu erhalten, antworten Sie mit <strong>„STOPP"</strong> auf eine unserer Nachrichten oder kontaktieren Sie uns unter <a href="mailto:Contact@hybote.ai" style="color:var(--gold-lt);">Contact@hybote.ai</a>.</p>
+          <p style="margin-top:16px;"><strong>Einsatz künstlicher Intelligenz:</strong><br/>
+          Unser WhatsApp-Assistent verwendet künstliche Intelligenz, um Anfragen zu beantworten, Anliegen zu qualifizieren, Termine zu vereinbaren und eine Übergabe an unser Team vorzubereiten. Der Assistent weist zu Beginn der Interaktion klar darauf hin, dass es sich um ein KI-System handelt. Sie können jederzeit den Kontakt mit einem Menschen verlangen. Der Assistent trifft keine ausschließlich automatisierten Entscheidungen, die Ihnen gegenüber rechtliche Wirkung entfalten oder Sie in ähnlicher Weise erheblich beeinträchtigen.</p>
         </div>
 
-        <h2>6. Datenweitergabe</h2>
+        <h2>6. KI-gestützte Telefonkommunikation mit Retell AI</h2>
+        <div class="wa-box">
+          <p>Anrufe bei HYBOTE können durch einen KI-Sprachassistenten beantwortet werden. Zu Beginn des Anrufs weist der Assistent klar darauf hin, dass die anrufende Person mit einem KI-System interagiert. Er kann allgemeine Anfragen beantworten, Kontakt- und Anliegeninformationen aufnehmen, eine Anfrage qualifizieren, Termine vereinbaren und auf Wunsch an einen Menschen übergeben oder verweisen. Er trifft keine ausschließlich automatisierten Entscheidungen, die rechtliche Wirkung entfalten oder eine Person in ähnlicher Weise erheblich beeinträchtigen.</p>
+          <p style="margin-top:16px;"><strong>Technischer Dienstleister:</strong><br/>
+          Für die Live-Sprach-, Telefonie- und KI-Verarbeitung setzen wir Retell AI, Inc., 540 Price Ave, Redwood City, CA 94063, USA („Retell“), als Auftragsverarbeiter ein. Retell und seine autorisierten Unterauftragsverarbeiter verarbeiten die Telefonnummer der anrufenden Person, Zeitpunkt und Dauer des Anrufs, Routing- und technische Verbindungsdaten, die während der Live-Interaktion benötigten gesprochenen Inhalte sowie mitgeteilte Termin- oder Qualifizierungsinformationen.</p>
+          <p style="margin-top:16px;"><strong>Zweck und Rechtsgrundlage:</strong><br/>
+          Die Verarbeitung ist erforderlich, um den Anruf entgegenzunehmen, das Anliegen zu beantworten, Termine zu vereinbaren und auf Anfrage der anrufenden Person vorvertragliche Maßnahmen durchzuführen (Art. 6 Abs. 1 lit. b DSGVO). Begrenzte technische Metadaten werden zur sicheren, zuverlässigen und missbrauchsresistenten Bereitstellung des Telefondienstes auf Grundlage unserer berechtigten Interessen verarbeitet (Art. 6 Abs. 1 lit. f DSGVO).</p>
+          <p style="margin-top:16px;"><strong>Keine Aufzeichnung und kein dauerhaftes Transkript:</strong><br/>
+          Retell ist so konfiguriert, dass nur grundlegende Anrufattribute gespeichert werden. Wir speichern keine Gesprächsaufnahmen, Transkripte oder Gesprächsprotokolle und exportieren diese weder über Webhooks noch in ein CRM. Erforderliche Anrufmetadaten werden höchstens 30 Tage gespeichert und anschließend automatisch gelöscht. Sollte künftig eine Gesprächsaufzeichnung eingeführt werden, beginnt diese erst nach einer vorherigen, ausdrücklichen und nachweisbaren Einwilligung der anrufenden Person.</p>
+          <p style="margin-top:16px;"><strong>Verarbeitung in den USA:</strong><br/>
+          Retell erbringt seine Dienste derzeit außerhalb der Europäischen Union. Internationale Übermittlungen werden durch einen Auftragsverarbeitungsvertrag einschließlich der EU-Standardvertragsklauseln geregelt. Weitere Informationen finden Sie in der <a href="https://www.retellai.com/legal/privacy-policy" style="color:var(--gold-lt);" target="_blank" rel="noopener">Datenschutzerklärung von Retell</a> und den <a href="https://docs.retellai.com/general/compliance" style="color:var(--gold-lt);" target="_blank" rel="noopener">Informationen zu Sicherheit und Compliance</a>.</p>
+        </div>
+
+        <h2>7. Datenweitergabe</h2>
         <p>Wir verkaufen keine personenbezogenen Daten. Eine Datenweitergabe erfolgt ausschließlich an:</p>
         <ul>
-          <li>Vertrauenswürdige technische Auftragsverarbeiter, die für den Betrieb des Dienstes erforderlich sind (z. B. Cloud-Infrastruktur, WhatsApp Business API-Anbieter), alle gebunden durch strikte Auftragsverarbeitungsverträge</li>
+          <li>Vertrauenswürdige technische Auftragsverarbeiter, die für den Betrieb des Dienstes erforderlich sind (z. B. Cloud-Infrastruktur, WhatsApp Business API-Anbieter, Retell AI sowie dessen Unterauftragsverarbeiter für Telefonie, Sprachverarbeitung und KI), alle gebunden durch strikte Auftragsverarbeitungsverträge</li>
           <li>Behörden, sofern dies gesetzlich vorgeschrieben ist</li>
         </ul>
         <p>Wir geben Kunden- oder Interessentendaten niemals an andere Agenturen oder Marketingpartner weiter.</p>
 
-        <h2>7. Datenspeicherung</h2>
+        <h2>8. Datenspeicherung</h2>
         <p>Personenbezogene Daten werden so lange gespeichert, wie es zur Erfüllung der Zwecke, für die sie erhoben wurden, oder gesetzlich erforderlich ist. Kundenkontodaten werden für die Dauer des Servicevertrags zuzüglich 90 Tage gespeichert. Nach Kontoauflösung werden die Daten innerhalb von 30 Tagen nach Ende des Exportfensters sicher gelöscht.</p>
+        <p>Bei KI-gestützten Telefonaten wird keine Aufnahme und kein Transkript gespeichert. Erforderliche Anrufmetadaten werden nach spätestens 30 Tagen automatisch gelöscht.</p>
 
-        <h2>8. Ihre Rechte</h2>
+        <h2>9. Ihre Rechte</h2>
         <p>Je nach Ihrem Wohnsitz haben Sie möglicherweise das Recht auf:</p>
         <ul>
           <li>Auskunft über die von uns gespeicherten personenbezogenen Daten</li>
@@ -282,19 +318,19 @@
         </ul>
         <p>Zur Ausübung dieser Rechte wenden Sie sich bitte an: <a href="mailto:Contact@hybote.ai" style="color:var(--gold-lt);">Contact@hybote.ai</a></p>
 
-        <h2>9. Sicherheit</h2>
+        <h2>10. Sicherheit</h2>
         <p>Wir implementieren branchenübliche Sicherheitsmaßnahmen, einschließlich Ende-zu-Ende-Verschlüsselung für WhatsApp-Kommunikation, strenger Datenisolierung pro Kundenkonto und Zugriffskontrollen, die den Datenzugriff auf autorisiertes Personal beschränken.</p>
 
-        <h2>10. Terminbuchung mit Calendly, Cookies und Reichweitenmessung</h2>
+        <h2>11. Terminbuchung mit Calendly, Cookies und Reichweitenmessung</h2>
         <p>Wir binden Calendly, einen Dienst der Calendly LLC, ein, damit Besucher direkt auf unserer Website ein kostenloses Kennenlerngespräch auswählen und buchen können. Calendly wird unmittelbar beim Aufruf einer Seite mit Buchungskalender geladen. Der eingebettete Calendly-Cookie-Banner ist ausgeblendet, weil wir die Information selbst bereitstellen. Beim Laden kann Calendly Verbindungen zu seinen Systemen herstellen und technische Daten verarbeiten oder Cookies und ähnliche Technologien einsetzen, die zur Bereitstellung und Absicherung des Terminplanungsdienstes erforderlich sind.</p>
         <p>Wenn Sie einen Termin buchen, verarbeitet Calendly Ihren Namen, Ihre E-Mail-Adresse, Unternehmensname und Website, Ihre optionale Antwort zum gewünschten Verbesserungs- oder Automatisierungsbereich, den gewählten Termin, Ihre Zeitzone sowie zugehörige technische Buchungsdaten. Calendly verarbeitet die Buchungsdaten in unserem Auftrag als Auftragsverarbeiter. Zweck ist die Organisation und Durchführung des angefragten Kennenlerngesprächs. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO für vorvertragliche Maßnahmen auf Ihre Anfrage und für den sicheren Betrieb der Einbindung Art. 6 Abs. 1 lit. f DSGVO.</p>
         <p>Der Besprechungsort ist Microsoft Teams. Zur Erstellung und Verwaltung der Online-Besprechung werden die hierfür erforderlichen Termin- und Teilnehmerdaten an unser verbundenes Microsoft-Teams-Konto übergeben. Calendly und seine Unterauftragsverarbeiter können Daten in den USA verarbeiten. Die vertraglichen Garantien hierfür sind im Auftragsverarbeitungszusatz von Calendly geregelt. Weitere Informationen finden Sie im <a href="https://calendly.com/legal/privacy-notice" style="color:var(--gold-lt);" target="_blank" rel="noopener">Datenschutzhinweis von Calendly</a> und im <a href="https://calendly.com/legal/data-processing-addendum" style="color:var(--gold-lt);" target="_blank" rel="noopener">Calendly Data Processing Addendum</a>. Alternativ können Sie uns per E-Mail kontaktieren, ohne den Kalender zu nutzen.</p>
-        <p>Um zu verstehen, wie unsere Website genutzt wird, setzen wir Vercel Web Analytics ein, einen Dienst der Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA. Der Dienst arbeitet ohne Cookies und ohne eine auf Ihrem Gerät gespeicherte Kennung. Es werden keine IP-Adressen gespeichert, keine seitenübergreifenden Profile gebildet und die Daten lassen keinen Rückschluss auf Ihre Person zu. Erfasst werden die aufgerufene Seite, die verweisende Seite sowie grobe Angaben wie Land, Browsertyp und Gerätekategorie. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO, unser berechtigtes Interesse an einer bedarfsgerechten und technisch einwandfreien Gestaltung unserer Website. Sie können dieser Verarbeitung jederzeit über die in Abschnitt 12 genannten Kontaktdaten widersprechen.</p>
+        <p>Um zu verstehen, wie unsere Website genutzt wird, setzen wir Vercel Web Analytics ein, einen Dienst der Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA. Der Dienst arbeitet ohne Cookies und ohne eine auf Ihrem Gerät gespeicherte Kennung. Es werden keine IP-Adressen gespeichert, keine seitenübergreifenden Profile gebildet und die Daten lassen keinen Rückschluss auf Ihre Person zu. Erfasst werden die aufgerufene Seite, die verweisende Seite sowie grobe Angaben wie Land, Browsertyp und Gerätekategorie. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO, unser berechtigtes Interesse an einer bedarfsgerechten und technisch einwandfreien Gestaltung unserer Website. Sie können dieser Verarbeitung jederzeit über die in Abschnitt 13 genannten Kontaktdaten widersprechen.</p>
 
-        <h2>11. Änderungen dieser Erklärung</h2>
+        <h2>12. Änderungen dieser Erklärung</h2>
         <p>Diese Datenschutzerklärung kann von Zeit zu Zeit aktualisiert werden. Wesentliche Änderungen werden bestehenden Kunden per E-Mail mitgeteilt. Die weitere Nutzung unserer Leistungen nach einer solchen Mitteilung gilt als Zustimmung zur aktualisierten Erklärung.</p>
 
-        <h2>12. Kontakt</h2>
+        <h2>13. Kontakt</h2>
         <p>Für datenschutzbezogene Fragen oder zur Ausübung Ihrer Rechte wenden Sie sich bitte an:<br/>
         <strong>Hybote AI Systems LLC</strong><br/>
         30 N Gould St, Ste R<br/>
@@ -306,7 +342,7 @@
     ar: {
       lang: 'ar', dir: 'rtl',
       back: 'رجوع', label: 'قانوني', title: 'سياسة الخصوصية',
-      date: 'آخر تحديث: أغسطس 2026',
+      date: 'آخر تحديث: 4 أغسطس 2026',
       html: `
         <h2>1. المسؤول عن البيانات</h2>
         <p>المسؤول عن معالجة البيانات الشخصية المتعلقة بخدمات HYBOTE هو:<br/>
@@ -320,7 +356,8 @@
         <p>نجمع ونعالج الفئات التالية من البيانات الشخصية:</p>
         <ul>
           <li><strong>بيانات الاتصال:</strong> الاسم، البريد الإلكتروني، رقم الهاتف، اسم الشركة</li>
-          <li><strong>بيانات التواصل:</strong> محتوى الرسائل المرسلة عبر واتساب أو البريد الإلكتروني أو نماذج التواصل</li>
+          <li><strong>بيانات التواصل:</strong> محتوى الرسائل المرسلة عبر واتساب أو البريد الإلكتروني أو نماذج التواصل، والمحتوى المنطوق أثناء المكالمات الهاتفية</li>
+          <li><strong>بيانات المكالمات:</strong> رقم الهاتف وتاريخ المكالمة ووقت بدئها ومدتها وبيانات التوجيه والاتصال التقنية ومعلومات الموعد أو التأهيل المقدمة أثناء المكالمة</li>
           <li><strong>بيانات الاستخدام:</strong> سجلات التفاعل، تقييمات العملاء المحتملين، طوابع وقت الاستجابة</li>
           <li><strong>البيانات التقنية:</strong> عنوان IP، نوع المتصفح، معلومات الجهاز (للموقع الإلكتروني)</li>
         </ul>
@@ -340,12 +377,13 @@
           <li>توفير وتشغيل منصة HYBOTE وميزاتها</li>
           <li>الرد على العملاء المحتملين والاستفسارات نيابةً عن عملائنا</li>
           <li>تأهيل العملاء المحتملين الواردين وتقييمهم باستخدام التحليل بالذكاء الاصطناعي</li>
+          <li>الرد على الاستفسارات الهاتفية بواسطة مساعد صوتي بالذكاء الاصطناعي، وترتيب المواعيد، وتحويل المحادثة إلى شخص عند الطلب</li>
           <li>مزامنة بيانات العملاء المحتملين مع أنظمة CRM للعملاء</li>
           <li>التواصل مع العملاء بشأن حساباتهم والخدمة</li>
           <li>الامتثال للالتزامات القانونية</li>
         </ul>
 
-        <h2>5. التواصل عبر واتساب</h2>
+        <h2>5. التواصل عبر واتساب والتواصل المدعوم بالذكاء الاصطناعي</h2>
         <div class="wa-box">
           <p>تستخدم HYBOTE <strong>منصة WhatsApp Business</strong>، التي تديرها شركة Meta Platforms Ireland Ltd. (Merrion Road, Dublin 4, D04 X2K5, Ireland)، للتواصل مع عملائنا والعملاء المحتملين لديهم.</p>
           <p style="margin-top:16px;"><strong>كيفية استخدامنا لواتساب:</strong></p>
@@ -367,20 +405,36 @@
           بوصفها جزءاً من تشغيل WhatsApp Business API، تعالج Meta بعض البيانات التقنية وبيانات الاتصال (بما يشمل بيانات تعريف تسليم الرسائل) وفقاً لسياسة خصوصيتها الخاصة: <a href="https://www.whatsapp.com/legal/privacy-policy" style="color:var(--gold-lt);" target="_blank" rel="noopener">whatsapp.com/legal/privacy-policy</a></p>
           <p style="margin-top:16px;"><strong>إلغاء الاشتراك:</strong><br/>
           للتوقف عن استقبال رسائل واتساب من HYBOTE، أرسل <strong>«إيقاف»</strong> رداً على أي رسالة منا أو تواصل معنا على <a href="mailto:Contact@hybote.ai" style="color:var(--gold-lt);">Contact@hybote.ai</a>.</p>
+          <p style="margin-top:16px;"><strong>استخدام الذكاء الاصطناعي:</strong><br/>
+          يستخدم مساعد واتساب لدينا الذكاء الاصطناعي للرد على الاستفسارات وتأهيل الطلبات وترتيب المواعيد والتحضير لتحويل المحادثة إلى فريقنا. يوضح المساعد في بداية التفاعل أنه نظام ذكاء اصطناعي. ويمكنك طلب التواصل مع شخص في أي وقت. ولا يتخذ المساعد قرارات آلية بحتة تترتب عليها آثار قانونية أو آثار مماثلة ذات أهمية كبيرة.</p>
         </div>
 
-        <h2>6. مشاركة البيانات</h2>
+        <h2>6. التواصل الهاتفي المدعوم بالذكاء الاصطناعي عبر Retell AI</h2>
+        <div class="wa-box">
+          <p>قد يجيب عن المكالمات الواردة إلى HYBOTE مساعد صوتي يعمل بالذكاء الاصطناعي. يوضح المساعد في بداية المكالمة أن المتصل يتفاعل مع نظام ذكاء اصطناعي. ويمكنه الرد على الاستفسارات العامة وجمع بيانات الاتصال والطلب وتأهيل الاستفسار وترتيب المواعيد وتحويل المتصل أو إحالته إلى شخص عند الطلب. ولا يتخذ قرارات آلية بحتة تترتب عليها آثار قانونية أو آثار مماثلة ذات أهمية كبيرة.</p>
+          <p style="margin-top:16px;"><strong>مقدم الخدمة التقنية:</strong><br/>
+          نستخدم شركة Retell AI, Inc.، وعنوانها 540 Price Ave, Redwood City, CA 94063, USA («Retell»)، بصفتها معالج بيانات لمعالجة الصوت المباشر وخدمات الهاتف والذكاء الاصطناعي. تعالج Retell ومعالجوها الفرعيون المعتمدون رقم هاتف المتصل ووقت المكالمة ومدتها وبيانات التوجيه والاتصال التقنية والمحتوى المنطوق اللازم أثناء التفاعل المباشر وأي معلومات مقدمة بشأن الموعد أو التأهيل.</p>
+          <p style="margin-top:16px;"><strong>الغرض والأساس القانوني:</strong><br/>
+          تلزم المعالجة للرد على المكالمة والاستجابة لطلب المتصل وترتيب المواعيد واتخاذ خطوات ما قبل التعاقد بناءً على طلبه، وفقاً للمادة 6 (1) (ب) من اللائحة العامة لحماية البيانات. وتُعالج بيانات تقنية محدودة لضمان تشغيل خدمة الهاتف بصورة آمنة وموثوقة ومقاومة لإساءة الاستخدام، استناداً إلى مصالحنا المشروعة وفقاً للمادة 6 (1) (و) من اللائحة.</p>
+          <p style="margin-top:16px;"><strong>لا تسجيل ولا نص دائم للمكالمة:</strong><br/>
+          تم إعداد Retell بحيث لا تخزن سوى السمات الأساسية للمكالمة. ولا نحتفظ بتسجيلات المكالمات أو نصوصها أو سجلات المحادثة، ولا نصدرها عبر Webhooks ولا نخزنها في نظام CRM. وتُحفظ بيانات المكالمة الوصفية اللازمة لمدة لا تتجاوز 30 يوماً ثم تُحذف تلقائياً. وإذا تقرر مستقبلاً تسجيل المكالمات، فلن يبدأ التسجيل إلا بعد الحصول مسبقاً على موافقة صريحة وقابلة للإثبات من المتصل.</p>
+          <p style="margin-top:16px;"><strong>المعالجة في الولايات المتحدة:</strong><br/>
+          تقدم Retell خدماتها حالياً من خارج الاتحاد الأوروبي. وتخضع عمليات النقل الدولي لاتفاقية معالجة بيانات تتضمن البنود التعاقدية القياسية للاتحاد الأوروبي. تتوفر معلومات إضافية في <a href="https://www.retellai.com/legal/privacy-policy" style="color:var(--gold-lt);" target="_blank" rel="noopener">سياسة الخصوصية لدى Retell</a> و<a href="https://docs.retellai.com/general/compliance" style="color:var(--gold-lt);" target="_blank" rel="noopener">معلومات الأمان والامتثال</a>.</p>
+        </div>
+
+        <h2>7. مشاركة البيانات</h2>
         <p>لا نبيع البيانات الشخصية. قد نشارك البيانات مع:</p>
         <ul>
-          <li>معالجي التقنية الفرعيين الموثوقين اللازمين لتشغيل الخدمة (مثل البنية التحتية السحابية ومزودي WhatsApp Business API)، مرتبطين جميعاً باتفاقيات معالجة بيانات صارمة</li>
+          <li>معالجي التقنية الفرعيين الموثوقين اللازمين لتشغيل الخدمة (مثل البنية التحتية السحابية ومزودي WhatsApp Business API وRetell AI ومعالجيها الفرعيين لخدمات الهاتف ومعالجة الصوت والذكاء الاصطناعي)، مرتبطين جميعاً باتفاقيات معالجة بيانات صارمة</li>
           <li>الجهات التنظيمية إذا اقتضى القانون المعمول به ذلك</li>
         </ul>
         <p>لا نشارك بيانات العملاء أو المحتملين مع وكالات أخرى أو شركاء تسويقيين أبداً.</p>
 
-        <h2>7. الاحتفاظ بالبيانات</h2>
+        <h2>8. الاحتفاظ بالبيانات</h2>
         <p>نحتفظ بالبيانات الشخصية طالما كان ذلك ضرورياً لتحقيق الأغراض التي جُمعت من أجلها، أو وفقاً لما يقتضيه القانون. تُحتفظ ببيانات حساب العميل طوال مدة اتفاقية الخدمة مضافاً إليها 90 يوماً. عند إنهاء الحساب، تُحذف البيانات بشكل آمن خلال 30 يوماً من إغلاق نافذة التصدير.</p>
+        <p>لا نحتفظ بتسجيل أو نص للمكالمات الهاتفية المدعومة بالذكاء الاصطناعي. وتُحذف بيانات المكالمة الوصفية اللازمة تلقائياً بعد مدة لا تتجاوز 30 يوماً.</p>
 
-        <h2>8. حقوقك</h2>
+        <h2>9. حقوقك</h2>
         <p>بحسب ولايتك القضائية، قد يحق لك:</p>
         <ul>
           <li>الاطلاع على البيانات الشخصية التي نحتفظ بها عنك</li>
@@ -392,19 +446,19 @@
         </ul>
         <p>لممارسة أي من هذه الحقوق، يُرجى التواصل معنا على: <a href="mailto:Contact@hybote.ai" style="color:var(--gold-lt);">Contact@hybote.ai</a></p>
 
-        <h2>9. الأمان</h2>
+        <h2>10. الأمان</h2>
         <p>نطبق معايير أمان متوافقة مع المعايير الصناعية لحماية البيانات الشخصية، بما يشمل التشفير الشامل لاتصالات واتساب، وعزلاً صارماً للبيانات لكل حساب عميل، وضوابط وصول تقصر الاطلاع على البيانات على الموظفين المصرح لهم فقط.</p>
 
-        <h2>10. حجز المواعيد عبر Calendly وملفات تعريف الارتباط وقياس الاستخدام</h2>
+        <h2>11. حجز المواعيد عبر Calendly وملفات تعريف الارتباط وقياس الاستخدام</h2>
         <p>ندمج خدمة Calendly، المقدمة من Calendly LLC، لتمكين الزوار من اختيار مكالمة تعارف مجانية وحجزها مباشرة عبر موقعنا. يتم تحميل Calendly فور فتح صفحة تحتوي على تقويم الحجز. وقد أخفينا إشعار ملفات تعريف الارتباط المدمج من Calendly لأننا نوفر هذه المعلومات بأنفسنا. عند التحميل، قد تنشئ Calendly اتصالاً بأنظمتها وتعالج بيانات تقنية أو تستخدم ملفات تعريف الارتباط وتقنيات مشابهة لازمة لتقديم خدمة جدولة المواعيد وتأمينها.</p>
         <p>عند حجز موعد، تعالج Calendly اسمك وعنوان بريدك الإلكتروني واسم الشركة وموقعها الإلكتروني وإجابتك الاختيارية عن المجال الذي ترغب في تحسينه أو أتمتته، إضافة إلى التاريخ والوقت المحددين ومنطقتك الزمنية والبيانات التقنية المرتبطة بالحجز. تعالج Calendly بيانات الحجز نيابةً عنا بصفتها معالج بيانات. والغرض هو تنظيم مكالمة التعارف المطلوبة وإدارتها. يستند ذلك إلى اتخاذ خطوات ما قبل التعاقد بناءً على طلبك، وإلى مصلحتنا المشروعة في تشغيل أداة الحجز بصورة آمنة.</p>
         <p>يُعقد الاجتماع عبر Microsoft Teams. ولإنشاء الاجتماع عبر الإنترنت وإدارته، تُنقل بيانات الموعد والمشارك اللازمة إلى حساب Microsoft Teams المرتبط بنا. قد تعالج Calendly ومعالجوها الفرعيون البيانات في الولايات المتحدة، وتُنظم الضمانات التعاقدية لهذه المعالجة في ملحق معالجة البيانات الخاص بها. تتوفر معلومات إضافية في <a href="https://calendly.com/legal/privacy-notice" style="color:var(--gold-lt);" target="_blank" rel="noopener">إشعار خصوصية Calendly</a> و<a href="https://calendly.com/legal/data-processing-addendum" style="color:var(--gold-lt);" target="_blank" rel="noopener">ملحق معالجة البيانات لدى Calendly</a>. ويمكنك بدلاً من ذلك التواصل معنا عبر البريد الإلكتروني دون استخدام التقويم.</p>
-        <p>لفهم كيفية استخدام موقعنا، نستعين بخدمة Vercel Web Analytics التابعة لشركة Vercel Inc.، العنوان: 340 S Lemon Ave #4133, Walnut, CA 91789, USA. تعمل هذه الخدمة دون ملفات تعريف ارتباط ودون أي معرِّف يُخزَّن على جهازك. ولا تُحفظ عناوين IP، ولا تُنشأ ملفات تعريف عبر المواقع، ولا تسمح البيانات بالتعرف على هويتك. ويُسجَّل فقط: الصفحة التي زرتها، والصفحة المُحيلة، وبيانات عامة مثل الدولة ونوع المتصفح وفئة الجهاز. والأساس القانوني هو المادة 6 (1) (و) من اللائحة العامة لحماية البيانات، أي مصلحتنا المشروعة في تصميم موقعنا بما يلائم الاحتياجات ويعمل بصورة سليمة تقنياً. ويمكنك الاعتراض على هذه المعالجة في أي وقت عبر بيانات التواصل الواردة في القسم 12.</p>
+        <p>لفهم كيفية استخدام موقعنا، نستعين بخدمة Vercel Web Analytics التابعة لشركة Vercel Inc.، العنوان: 340 S Lemon Ave #4133, Walnut, CA 91789, USA. تعمل هذه الخدمة دون ملفات تعريف ارتباط ودون أي معرِّف يُخزَّن على جهازك. ولا تُحفظ عناوين IP، ولا تُنشأ ملفات تعريف عبر المواقع، ولا تسمح البيانات بالتعرف على هويتك. ويُسجَّل فقط: الصفحة التي زرتها، والصفحة المُحيلة، وبيانات عامة مثل الدولة ونوع المتصفح وفئة الجهاز. والأساس القانوني هو المادة 6 (1) (و) من اللائحة العامة لحماية البيانات، أي مصلحتنا المشروعة في تصميم موقعنا بما يلائم الاحتياجات ويعمل بصورة سليمة تقنياً. ويمكنك الاعتراض على هذه المعالجة في أي وقت عبر بيانات التواصل الواردة في القسم 13.</p>
 
-        <h2>11. التغييرات على هذه السياسة</h2>
+        <h2>12. التغييرات على هذه السياسة</h2>
         <p>قد نُحدّث سياسة الخصوصية هذه من وقت لآخر. سيتم إخطار العملاء الحاليين بأي تغييرات جوهرية عبر البريد الإلكتروني. يُعدّ الاستمرار في استخدام خدماتنا بعد هذا الإشعار قبولاً للسياسة المُحدَّثة.</p>
 
-        <h2>12. التواصل</h2>
+        <h2>13. التواصل</h2>
         <p>لأي استفسارات تتعلق بالخصوصية أو لممارسة حقوقك، يُرجى التواصل مع:<br/>
         <strong>Hybote AI Systems LLC</strong><br/>
         30 N Gould St, Ste R<br/>
