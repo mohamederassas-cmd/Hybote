@@ -93,6 +93,9 @@ for (const slug of SLUGS) {
       /name="subject" value="New HYBOTE Demo Request · /.test(h),
     'Header-CTA bleibt auf der Seite': h.includes('href="#kontakt" class="btn-dark"'),
     'Header-Nav führt zur Startseite': h.includes('href="/#problem"'),
+    'mobiles weißes Logo vorhanden': h.includes('srcset="/logo-mobile-white.png"'),
+    'mobiler Header auf 112 px begrenzt':
+      h.includes('@media (max-width: 767px)') && h.includes('height: 112px !important;'),
   });
 }
 
@@ -118,6 +121,9 @@ console.log('\nStartseite');
     'drei Verweise aus den Beispielrechnungen':
       SLUGS.every((s) => h.includes(`href="/${s}" class="case-link"`)),
     'drei Footer-Verweise': SLUGS.every((s) => h.includes(`href="/${s}" style=`)),
+    'mobiles weißes Logo vorhanden': h.includes('srcset="/logo-mobile-white.png"'),
+    'mobiler Header auf 112 px begrenzt':
+      h.includes('@media (max-width: 767px)') && h.includes('height: 112px !important;'),
   });
   console.log(`     i18n-Keys je Sprache: ${enKeys.length}`);
 }

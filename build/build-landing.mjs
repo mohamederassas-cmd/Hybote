@@ -173,7 +173,7 @@ function verify(html, shell, cfg) {
     ['FAQ-Optik + toggleFaq', absolutise(shell.parts.faq)],
     ['Scroll-Reveal', absolutise(shell.parts.reveal)],
     ['Cookie-Banner', absolutise(shell.parts.cookie)],
-    ['WhatsApp-Button', absolutise(shell.parts.whatsapp)],
+    ['Telefon- und WhatsApp-Buttons', absolutise(shell.parts.contactButtons)],
   ];
 
   for (const [label, block] of musts) {
@@ -219,7 +219,7 @@ function buildPage(shell, cfg, siblings) {
     '',
     absolutise(shell.parts.cookie),
     '',
-    absolutise(shell.parts.whatsapp),
+    absolutise(shell.parts.contactButtons),
     '',
     '</body>',
     '</html>',

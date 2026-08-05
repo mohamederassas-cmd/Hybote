@@ -1,7 +1,7 @@
 // Schneidet die gemeinsame Hülle aus index.html heraus.
 //
 // index.html ist die einzige Quelle für CI, Hintergrund-Animation, Header, Footer,
-// Cookie-Banner, WhatsApp-Button und das komplette i18n-Dictionary. Hier wird nichts
+// Cookie-Banner, Kontakt-Buttons und das komplette i18n-Dictionary. Hier wird nichts
 // nachgebaut, sondern zeichengenau kopiert. Findet ein Marker nicht oder nicht
 // eindeutig, bricht der Build ab, statt stillschweigend kaputte Seiten zu schreiben.
 
@@ -81,10 +81,10 @@ export function readShell(indexPath) {
     // Logo-Höhe je Viewport
     logoResize: between(src, '<!-- Mobile logo responsive size -->', sec('COOKIE CONSENT BANNER'), 'logo-resize'),
 
-    cookie: between(src, sec('COOKIE CONSENT BANNER'), sec('WHATSAPP FLOATING BUTTON'), 'cookie-banner'),
+    cookie: between(src, sec('COOKIE CONSENT BANNER'), sec('FLOATING CONTACT BUTTONS'), 'cookie-banner'),
 
-    // WhatsApp-Button inkl. Style, RTL-Regeln und setLang-Wrapper
-    whatsapp: between(src, sec('WHATSAPP FLOATING BUTTON'), '\n</body>', 'whatsapp'),
+    // Telefon- und WhatsApp-Buttons inkl. Style, RTL-Regeln und setLang-Wrapper
+    contactButtons: between(src, sec('FLOATING CONTACT BUTTONS'), '\n</body>', 'contact-buttons'),
   };
 
   // Prüfsummen der optik-tragenden Teile. Der Build vergleicht sie später gegen

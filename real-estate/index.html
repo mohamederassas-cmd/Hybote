@@ -1086,11 +1086,14 @@
 </script>
 
 <header id="nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,12,24,0.72);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.07);transition:box-shadow 300ms ease, border-color 300ms ease;">
-  <div style="max-width:1200px;margin:0 auto;padding:0 32px;height:180px;display:flex;align-items:center;justify-content:space-between;">
+  <div class="nav-inner" style="max-width:1200px;margin:0 auto;padding:0 32px;height:180px;display:flex;align-items:center;justify-content:space-between;">
 
     <!-- Logo -->
     <a href="/" style="display:flex;align-items:center;text-decoration:none;flex-shrink:0;">
-      <img src="/logo.png" alt="HYBOTE" style="height:160px;width:auto;display:block;filter:invert(1);" id="nav-logo" />
+      <picture style="display:flex;align-items:center;">
+        <source media="(max-width: 767px)" srcset="/logo-mobile-white.png" />
+        <img src="/logo.png" alt="HYBOTE" style="height:160px;width:auto;display:block;filter:invert(1);" id="nav-logo" />
+      </picture>
     </a>
 
     <!-- Desktop nav -->
@@ -3087,14 +3090,19 @@ function setLang(lang) {
 </script>
 
 <!-- Mobile logo responsive size -->
-<script>
-  function resizeLogo() {
-    const logo = document.getElementById('nav-logo');
-    if (logo) logo.style.height = window.innerWidth < 480 ? '100px' : '160px';
+<style>
+  @media (max-width: 767px) {
+    #nav .nav-inner {
+      height: 112px !important;
+      padding-inline: 20px !important;
+    }
+    #nav-logo {
+      width: clamp(96px, 29vw, 112px) !important;
+      height: auto !important;
+      filter: none !important;
+    }
   }
-  resizeLogo();
-  window.addEventListener('resize', resizeLogo);
-</script>
+</style>
 
 <!-- ══════════════════════════════════════════════════════════
      COOKIE CONSENT BANNER
