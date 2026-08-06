@@ -128,6 +128,47 @@ console.log('\nStartseite');
   console.log(`     i18n-Keys je Sprache: ${enKeys.length}`);
 }
 
+/* ── Rechtstextseiten und gemeinsame CI ────────────────────────────────── */
+console.log('\nRechtstextseiten');
+{
+  const terms = readFileSync(join(ROOT, 'agb.html'), 'utf8');
+  const privacy = readFileSync(join(ROOT, 'datenschutz.html'), 'utf8');
+  const css = readFileSync(join(ROOT, 'legal.css'), 'utf8');
+  const legalPages = [terms, privacy];
+  const combined = legalPages.join('\n') + css;
+
+  report('AGB + Datenschutz + legal.css', {
+    'beide Seiten verwenden die gemeinsame CI-Datei':
+      legalPages.every((h) => h.includes('<link rel="stylesheet" href="legal.css" />')),
+    'Mitternachtsblau und Flächenhierarchie vollständig':
+      ['#070b16', '#0c1222', '#131b30', '#1c2740'].every((token) => css.includes(token)),
+    'Cyan ist der einzige Akzent':
+      ['#38bdf8', '#7dd3fc', '#0ea5e9'].every((token) => css.includes(token)) &&
+      !/gold|#c9a053|#e8c47a|#fff6e2|201\s*,\s*160\s*,\s*83/i.test(combined),
+    'aktuelle Typografie geladen':
+      legalPages.every((h) => h.includes('family=Cormorant+Garamond')) &&
+      css.includes("'Cormorant Garamond', serif") &&
+      css.includes("'Montserrat', sans-serif") &&
+      css.includes("'Cairo', sans-serif"),
+    'mobile Headerhöhe und Logo entsprechen der Hauptseite':
+      css.includes('height: 112px;') &&
+      legalPages.every((h) => h.includes('srcset="logo-mobile-white.png"')),
+    'EN, AR und DE auf beiden Seiten schaltbar':
+      legalPages.every((h) =>
+        ['en', 'ar', 'de'].every((lang) =>
+          h.includes(`data-lang="${lang}"`) && h.includes(`${lang}: {`)
+        )
+      ),
+    'RTL-Layout und arabischer Font vorhanden':
+      css.includes("html[dir='rtl']") && legalPages.every((h) => h.includes("dir: 'rtl'")),
+    'Sprachwahl meldet aktiven Zustand barrierearm':
+      legalPages.every((h) => h.includes("setAttribute('aria-pressed'")),
+    'AGB in allen drei Sprachen vollständig': (terms.match(/<h2>/g) || []).length === 30,
+    'Datenschutz in allen drei Sprachen vollständig':
+      (privacy.match(/<h2>/g) || []).length === 39,
+  });
+}
+
 /* ── Sitemap und Datenschutz ────────────────────────────────────────────── */
 console.log('\nWeitere Dateien');
 {
