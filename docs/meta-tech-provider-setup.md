@@ -29,17 +29,17 @@ Diese Kennungen sind für den Browser bestimmt und keine Geheimnisse.
 Der API-Schlüssel ist ausschließlich für das Embedded Signup bestimmt und erhält nur:
 
 - `credential:create`
-- `credential:read`
 - `credential:update`
 - `credential:list`
-- `dataTable:read`
-- `dataTable:list`
-- `dataTableRow:read`
 - `dataTableRow:upsert`
+
+Der Produktionsschlüssel `HYBOTE Embedded Signup` wurde am 30. August 2026 mit einer Laufzeit von 90 Tagen erstellt und muss vorsorglich spätestens am 27. November 2026 gemeinsam in n8n und Vercel erneuert werden.
 
 Vercel legt den Kundentoken direkt als verschlüsseltes n8n-Credential vom Typ `whatsAppApi` ab. Der Token wird nicht in einer Workflow-Ausführung und nicht in der Datentabelle gespeichert. Das Register `wa_tenants` enthält ausschließlich Kundenzuordnung, Meta-IDs, Credential-ID, Workflow-ID, Status und Ablaufdatum.
 
 Bei einer erneuten Autorisierung derselben Telefonnummer aktualisiert der Endpunkt das vorhandene Credential mit dem neuen Token. Dadurch entstehen keine parallelen veralteten Zugangsdaten.
+
+Die neun Produktionsvariablen wurden am 30. August 2026 in Vercel gespeichert und durch eine erfolgreiche Produktions-Neubereitstellung aktiviert. Der Sicherheitscheck ergab `200` für die Sitzungserstellung und erwartungsgemäß `400 INVALID_ONBOARDING_DATA` für eine leere Abschlussanfrage. Damit ist bestätigt, dass die Serverfunktion vollständig konfiguriert ist, ohne ein Kundenkonto zu verändern.
 
 ## Mandantenmodell
 
@@ -53,6 +53,8 @@ Jeder Kunde behält sein eigenes Meta Business Portfolio, seine WABA und seine T
 - Workflow-/Agent-ID in n8n
 
 Keine Konversation, kein Token und keine CRM-Verbindung darf zwischen Mandanten geteilt werden.
+
+Die n8n-Datentabelle `wa_tenants` enthält die geprüften Spalten `tenant_key`, `company_name`, `work_email`, `customer_reference`, `meta_business_id`, `waba_id`, `phone_number_id`, `credential_id`, `workflow_id`, `status` und `token_expires_at`. Der bestehende aktive Workflow `WhatsApp Gateway (HYBOTE)` bleibt bis zu einem erfolgreichen Pilot-Test unverändert.
 
 ## Token-Betrieb
 
@@ -77,3 +79,19 @@ Reviewer-Nachweise:
 - Eigenes Video für `whatsapp_business_messaging`: Versand aus HYBOTE/n8n und Empfang derselben Nachricht in WhatsApp.
 - Eigenes Video für `whatsapp_business_management`: API- oder UI-Ablauf zur Erstellung und Anzeige einer Nachrichtenvorlage.
 - Testanleitung mit URL zur Kundenseite, Testzugang und nummerierten Schritten.
+
+Bereits im Review-Entwurf gespeichert:
+
+- Unternehmensbeschreibung und Nutzungsbeschreibungen für `whatsapp_business_messaging`, `business_management` und `whatsapp_business_management`
+- Zustimmung zur zulässigen Nutzung für alle vier Berechtigungen
+- Website-Plattform `https://hybote.ai/`
+- Reviewer-Testanleitung für `https://hybote.ai/meta-connect.html`
+- Verantwortliche Stelle `Hybote AI Systems LLC`, USA
+- technische Dienstleister Vercel Inc. (USA), Hetzner Online GmbH (Deutschland) und OpenAI, L.L.C. (USA)
+
+Noch offen:
+
+- Abschluss der Meta-Zugriffsverifizierung; Status derzeit `Eingereicht – Wird geprüft`
+- bestätigte Angaben zu nationalen Sicherheitsanfragen und den internen Verfahren für behördliche Auskunftsersuchen
+- realer Embedded-Signup-Test und Upload der daraus erstellten Screen-Recordings
+- endgültige App-Review-Einreichung und anschließende Veröffentlichung
