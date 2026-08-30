@@ -80,29 +80,73 @@ async function exchangeCode(code, appSecret) {
   return payload;
 }
 
-async function sendToN8n(url, secret, payload) {
-  const body = JSON.stringify(payload);
-  const signature = crypto.createHmac('sha256', secret).update(body).digest('hex');
-  let lastError;
-
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
-    try {
-      const webhookResponse = await fetchWithTimeout(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-HYBOTE-Signature': `sha256=${signature}`,
-          'X-HYBOTE-Event': 'meta.whatsapp.embedded_signup.completed'
-        },
-        body
-      });
-      if (webhookResponse.ok) return;
-      lastError = new Error(`N8N_STATUS_${webhookResponse.status}`);
-    } catch (error) {
-      lastError = error;
+async function n8nJson(baseUrl, apiKey, path, options = {}) {
+  const apiResponse = await fetchWithTimeout(`${baseUrl.replace(/\/$/, '')}/api/v1/${path}`, {
+    ...options,
+    headers: {
+      'X-N8N-API-KEY': apiKey,
+      Accept: 'application/json',
+      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(options.headers || {})
     }
+  });
+  const payload = await apiResponse.json().catch(() => ({}));
+  if (!apiResponse.ok) {
+    const error = new Error('N8N_API_ERROR');
+    error.status = apiResponse.status;
+    throw error;
   }
-  throw lastError || new Error('N8N_DELIVERY_FAILED');
+  return payload;
+}
+
+function credentialList(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload.data)) return payload.data;
+  return [];
+}
+
+async function ensureWhatsAppCredential({ baseUrl, apiKey, projectId, credentialType, credentialName, accessToken, wabaId }) {
+  const existingPayload = await n8nJson(baseUrl, apiKey, 'credentials?limit=250');
+  const existing = credentialList(existingPayload).find((credential) => credential.name === credentialName && credential.type === credentialType);
+  const credentialData = {
+    name: credentialName,
+    type: credentialType,
+    data: {
+      accessToken,
+      businessAccountId: wabaId
+    },
+    isResolvable: false
+  };
+
+  if (existing && existing.id) {
+    return n8nJson(baseUrl, apiKey, `credentials/${existing.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(credentialData)
+    });
+  }
+
+  return n8nJson(baseUrl, apiKey, 'credentials', {
+    method: 'POST',
+    body: JSON.stringify({
+      ...credentialData,
+      projectId
+    })
+  });
+}
+
+async function upsertTenant({ baseUrl, apiKey, tableId, tenant }) {
+  return n8nJson(baseUrl, apiKey, `data-tables/${tableId}/rows/upsert`, {
+    method: 'POST',
+    body: JSON.stringify({
+      filter: {
+        type: 'and',
+        filters: [{ columnName: 'waba_id', condition: 'eq', value: tenant.waba_id }]
+      },
+      data: tenant,
+      returnData: true,
+      dryRun: false
+    })
+  });
 }
 
 module.exports = async function handler(request, response) {
@@ -125,9 +169,12 @@ module.exports = async function handler(request, response) {
   }
 
   const appSecret = process.env.META_APP_SECRET || '';
-  const webhookUrl = process.env.N8N_META_ONBOARDING_WEBHOOK_URL || '';
-  const webhookSecret = process.env.N8N_META_ONBOARDING_WEBHOOK_SECRET || '';
-  if (!appSecret || !webhookUrl || !webhookSecret) {
+  const n8nBaseUrl = process.env.N8N_BASE_URL || '';
+  const n8nApiKey = process.env.N8N_API_KEY || '';
+  const n8nProjectId = process.env.N8N_PROJECT_ID || '';
+  const n8nTenantTableId = process.env.N8N_TENANT_TABLE_ID || '';
+  const n8nCredentialType = process.env.N8N_WHATSAPP_CREDENTIAL_TYPE || 'whatsAppApi';
+  if (!appSecret || !n8nBaseUrl || !n8nApiKey || !n8nProjectId || !n8nTenantTableId) {
     return response.status(503).json({ ok: false, code: 'ONBOARDING_NOT_CONFIGURED' });
   }
 
@@ -170,30 +217,34 @@ module.exports = async function handler(request, response) {
       body: '{}'
     });
 
-    await sendToN8n(webhookUrl, webhookSecret, {
-      event: 'meta.whatsapp.embedded_signup.completed',
-      version: 1,
-      occurredAt: obtainedAt.toISOString(),
-      customer: {
-        companyName,
-        workEmail,
-        customerReference: customerReference || null,
-        authorityAccepted: true,
-        privacyAccepted: true
-      },
-      meta: {
-        appId: APP_ID,
-        businessId: businessId || null,
-        wabaId,
-        phoneNumberId,
-        waba,
-        phone,
-        accessToken,
-        tokenType: token.token_type || 'bearer',
-        expiresIn: token.expires_in || null,
-        obtainedAt: obtainedAt.toISOString(),
-        expiresAt: expiresAt ? expiresAt.toISOString() : null,
-        subscribedApps: true
+    const credentialName = `WA · ${companyName.slice(0, 54)} · ${phoneNumberId}`;
+    const credential = await ensureWhatsAppCredential({
+      baseUrl: n8nBaseUrl,
+      apiKey: n8nApiKey,
+      projectId: n8nProjectId,
+      credentialType: n8nCredentialType,
+      credentialName,
+      accessToken,
+      wabaId
+    });
+
+    const tenantKey = customerReference || `waba_${wabaId}`;
+    await upsertTenant({
+      baseUrl: n8nBaseUrl,
+      apiKey: n8nApiKey,
+      tableId: n8nTenantTableId,
+      tenant: {
+        tenant_key: tenantKey,
+        company_name: companyName,
+        work_email: workEmail,
+        customer_reference: customerReference,
+        meta_business_id: businessId,
+        waba_id: wabaId,
+        phone_number_id: phoneNumberId,
+        credential_id: credential.id,
+        workflow_id: '',
+        status: 'connected_pending_provisioning',
+        token_expires_at: expiresAt ? expiresAt.toISOString() : ''
       }
     });
 

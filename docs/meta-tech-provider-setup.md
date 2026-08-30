@@ -16,22 +16,30 @@ Diese Kennungen sind für den Browser bestimmt und keine Geheimnisse.
 - `META_APP_SECRET=<Meta App Secret>`
 - `META_GRAPH_VERSION=v26.0`
 - `META_ALLOWED_ORIGINS=https://hybote.ai,https://www.hybote.ai`
-- `N8N_META_ONBOARDING_WEBHOOK_URL=<Production webhook URL>`
-- `N8N_META_ONBOARDING_WEBHOOK_SECRET=<mindestens 32 zufällige Bytes>`
+- `N8N_BASE_URL=https://flow.hybote.ai`
+- `N8N_API_KEY=<eingeschränkter n8n Public API Key>`
+- `N8N_PROJECT_ID=jsIyw3Baf0VCkxWB`
+- `N8N_TENANT_TABLE_ID=VhpHGERnVgpRWRbs`
+- `N8N_WHATSAPP_CREDENTIAL_TYPE=whatsAppApi`
 
-`META_APP_SECRET`, die n8n-Webhook-URL und das Webhook-Geheimnis dürfen niemals in HTML, Browser-JavaScript, Git, Screenshots oder Chat-Nachrichten gespeichert werden.
+`META_APP_SECRET` und `N8N_API_KEY` dürfen niemals in HTML, Browser-JavaScript, Git, Screenshots oder Chat-Nachrichten gespeichert werden.
 
-## Erwarteter n8n-Endpunkt
+## Eingeschränkter n8n-API-Schlüssel
 
-Der Endpunkt empfängt `POST`-Anfragen mit:
+Der API-Schlüssel ist ausschließlich für das Embedded Signup bestimmt und erhält nur:
 
-- `X-HYBOTE-Event: meta.whatsapp.embedded_signup.completed`
-- `X-HYBOTE-Signature: sha256=<hex hmac>`
-- JSON-Nutzlast mit Kunde, WABA, Telefonnummer, Zugriffstoken und Ablaufzeit
+- `credential:create`
+- `credential:read`
+- `credential:update`
+- `credential:list`
+- `dataTable:read`
+- `dataTable:list`
+- `dataTableRow:read`
+- `dataTableRow:upsert`
 
-Vor jeder weiteren Verarbeitung muss n8n die HMAC-SHA-256-Signatur über den unveränderten Raw Body mit `N8N_META_ONBOARDING_WEBHOOK_SECRET` prüfen. Nur bei gültiger Signatur darf der Token verschlüsselt gespeichert oder als n8n-Credential verwendet werden.
+Vercel legt den Kundentoken direkt als verschlüsseltes n8n-Credential vom Typ `whatsAppApi` ab. Der Token wird nicht in einer Workflow-Ausführung und nicht in der Datentabelle gespeichert. Das Register `wa_tenants` enthält ausschließlich Kundenzuordnung, Meta-IDs, Credential-ID, Workflow-ID, Status und Ablaufdatum.
 
-Der Workflow darf erfolgreiche oder fehlgeschlagene Ausführungsdaten mit Zugriffstoken nicht dauerhaft im n8n-Verlauf speichern. Nach dem Schreiben in den verschlüsselten Credential-Speicher muss das Token-Feld aus allen weiteren Workflow-Daten entfernt werden.
+Bei einer erneuten Autorisierung derselben Telefonnummer aktualisiert der Endpunkt das vorhandene Credential mit dem neuen Token. Dadurch entstehen keine parallelen veralteten Zugangsdaten.
 
 ## Mandantenmodell
 

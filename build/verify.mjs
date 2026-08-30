@@ -196,8 +196,13 @@ console.log('\nWeitere Dateien');
     'Session Info Version 3 gesetzt': connectJs.includes("const SESSION_INFO_VERSION = '3'"),
     'Code-Austausch findet ausschließlich serverseitig statt':
       completeApi.includes('META_APP_SECRET') && !connectJs.includes('META_APP_SECRET'),
-    'n8n-Übergabe ist signiert':
-      completeApi.includes("createHmac('sha256'") && completeApi.includes('X-HYBOTE-Signature'),
+    'n8n-Anbindung nutzt einen eingeschränkten API-Schlüssel':
+      completeApi.includes("'X-N8N-API-KEY'") && completeApi.includes('ensureWhatsAppCredential'),
+    'Erneute Autorisierung aktualisiert das verschlüsselte Credential':
+      completeApi.includes("method: 'PATCH'") && completeApi.includes('credentials/${existing.id}'),
+    'Tokens werden nicht in der Mandantentabelle gespeichert':
+      completeApi.includes("status: 'connected_pending_provisioning'") &&
+      !completeApi.slice(completeApi.indexOf('tenant: {'), completeApi.indexOf('});', completeApi.indexOf('tenant: {'))).includes('accessToken'),
     'Mandanten-IDs werden gemeinsam übergeben':
       ['businessId', 'wabaId', 'phoneNumberId', 'customerReference'].every((key) => completeApi.includes(key)),
   });
