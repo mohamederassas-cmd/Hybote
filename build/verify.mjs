@@ -174,6 +174,9 @@ console.log('\nWeitere Dateien');
 {
   const sm = readFileSync(join(ROOT, 'sitemap.xml'), 'utf8');
   const ds = readFileSync(join(ROOT, 'datenschutz.html'), 'utf8');
+  const connect = readFileSync(join(ROOT, 'meta-connect.html'), 'utf8');
+  const connectJs = readFileSync(join(ROOT, 'meta-connect.js'), 'utf8');
+  const completeApi = readFileSync(join(ROOT, 'api/meta/complete.js'), 'utf8');
   report('sitemap.xml + datenschutz.html', {
     'alle drei Seiten in der Sitemap':
       SLUGS.every((s) => sm.includes(`<loc>https://hybote.ai/${s}</loc>`)),
@@ -185,6 +188,18 @@ console.log('\nWeitere Dateien');
       (ds.match(/calendly\.com\/legal\/data-processing-addendum/g) || []).length === 3,
     'Teams-Übergabe in allen drei Sprachblöcken':
       (ds.match(/Microsoft(?:-| )Teams/g) || []).length >= 3,
+  });
+  report('Meta Embedded Signup', {
+    'Onboarding-Seite ist nicht indexierbar': connect.includes('content="noindex, nofollow"'),
+    'offizielle Meta App-ID gesetzt': connectJs.includes("const META_APP_ID = '1580264870470342'"),
+    'erstellte Konfigurations-ID gesetzt': connectJs.includes("const META_CONFIG_ID = '1048835977913160'"),
+    'Session Info Version 3 gesetzt': connectJs.includes("const SESSION_INFO_VERSION = '3'"),
+    'Code-Austausch findet ausschließlich serverseitig statt':
+      completeApi.includes('META_APP_SECRET') && !connectJs.includes('META_APP_SECRET'),
+    'n8n-Übergabe ist signiert':
+      completeApi.includes("createHmac('sha256'") && completeApi.includes('X-HYBOTE-Signature'),
+    'Mandanten-IDs werden gemeinsam übergeben':
+      ['businessId', 'wabaId', 'phoneNumberId', 'customerReference'].every((key) => completeApi.includes(key)),
   });
 }
 
