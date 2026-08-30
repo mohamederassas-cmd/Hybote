@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HYBOTE – User Data Deletion</title>
+  <meta name="description" content="Instructions for requesting deletion of data processed through HYBOTE and its Meta and WhatsApp integrations." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#070b16" />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=Cairo:wght@200;300;400;500&family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="legal.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand-link" aria-label="HYBOTE home">
+      <picture class="brand-picture">
+        <source media="(max-width: 767px)" srcset="logo-mobile-white.png" />
+        <img src="logo.png" class="brand-logo" alt="HYBOTE" />
+      </picture>
+    </a>
+    <div class="lang-row" role="group" aria-label="Language selection">
+      <button type="button" class="lang-pill" onclick="setLang('en')" data-lang="en">EN</button>
+      <span class="lang-sep" aria-hidden="true">·</span>
+      <button type="button" class="lang-pill" onclick="setLang('ar')" data-lang="ar">AR</button>
+      <span class="lang-sep" aria-hidden="true">·</span>
+      <button type="button" class="lang-pill" onclick="setLang('de')" data-lang="de">DE</button>
+    </div>
+  </div>
+</header>
+
+<main class="legal-main">
+  <section class="doc-hero" aria-labelledby="title">
+    <a href="index.html" class="back-link" id="back-link">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <span id="back-label">Back</span>
+    </a>
+    <div class="doc-label" id="doc-label">Legal</div>
+    <h1 id="title">User Data Deletion</h1>
+    <p class="doc-date" id="doc-date">Last updated: 30 August 2026</p>
+  </section>
+
+  <article class="legal-card" aria-labelledby="title">
+    <div class="legal-content" id="content"></div>
+  </article>
+</main>
+
+<footer class="legal-footer">
+  <div class="footer-inner">
+    <p class="footer-note">© 2026 Hybote AI Systems LLC · <a href="mailto:Contact@hybote.ai">Contact@hybote.ai</a></p>
+  </div>
+</footer>
+
+<script>
+  const C = {
+    en: {
+      lang: 'en', dir: 'ltr', back: 'Back', label: 'Legal', title: 'User Data Deletion',
+      date: 'Last updated: 30 August 2026',
+      html: `
+        <h2>1. Your right to deletion</h2>
+        <p>You may request deletion of personal data processed by HYBOTE in connection with our services, including data received through Meta technologies and the WhatsApp Business Platform. Business customers may also request deletion of their HYBOTE integration and associated configuration data.</p>
+        <h2>2. How to submit a request</h2>
+        <p>Send an email to <a href="mailto:Contact@hybote.ai?subject=Data%20Deletion%20Request" style="color:var(--accent-lt);">Contact@hybote.ai</a> with the subject <strong>Data Deletion Request</strong>. Include:</p>
+        <ul>
+          <li>Your full name and the company you represent</li>
+          <li>The email address or phone number associated with the HYBOTE service</li>
+          <li>A short description of the account, integration or data you want deleted</li>
+        </ul>
+        <p>Do not send passwords, one-time codes, access tokens or other secret credentials.</p>
+        <h2>3. Verification and processing</h2>
+        <p>We may ask for limited additional information to confirm your identity and authority to make the request. Once verified, we will delete or irreversibly anonymise the relevant data from active HYBOTE systems within 30 days, unless a longer retention period is required by law or is necessary to establish, exercise or defend legal claims. Where applicable, we will also disconnect the associated Meta or WhatsApp integration and revoke the access under our control.</p>
+        <h2>4. Disconnecting Meta access</h2>
+        <p>You can also remove HYBOTE's access from your Meta Business settings or Facebook Business Integrations. Revoking access prevents future access by the integration. To ensure deletion of data already processed by HYBOTE, also submit the deletion request described above.</p>
+        <h2>5. Data processed for a HYBOTE customer</h2>
+        <p>If you communicated with a company that uses HYBOTE, that company is generally responsible for deciding how your data is handled. You may contact that company directly or send your request to HYBOTE. We will route the request to the responsible customer where required and support its completion.</p>
+        <h2>6. Contact</h2>
+        <p><strong>Hybote AI Systems LLC</strong><br/>30 N Gould St, Ste R<br/>Sheridan, Wyoming 82801<br/>USA<br/>Email: <a href="mailto:Contact@hybote.ai" style="color:var(--accent-lt);">Contact@hybote.ai</a></p>
+        <p>For more information about how we process personal data, see our <a href="datenschutz.html?lang=en" style="color:var(--accent-lt);">Privacy Policy</a>.</p>
+      `
+    },
+    de: {
+      lang: 'de', dir: 'ltr', back: 'Zurück', label: 'Rechtliches', title: 'Löschung von Nutzerdaten',
+      date: 'Stand: 30. August 2026',
+      html: `
+        <h2>1. Ihr Recht auf Löschung</h2>
+        <p>Sie können die Löschung personenbezogener Daten verlangen, die HYBOTE im Zusammenhang mit unseren Dienstleistungen verarbeitet. Dies umfasst Daten, die über Meta-Technologien und die WhatsApp Business Platform empfangen wurden. Geschäftskunden können außerdem die Löschung ihrer HYBOTE-Integration und der zugehörigen Konfigurationsdaten verlangen.</p>
+        <h2>2. So stellen Sie einen Antrag</h2>
+        <p>Senden Sie eine E-Mail mit dem Betreff <strong>Antrag auf Datenlöschung</strong> an <a href="mailto:Contact@hybote.ai?subject=Antrag%20auf%20Datenloeschung" style="color:var(--accent-lt);">Contact@hybote.ai</a>. Geben Sie darin Folgendes an:</p>
+        <ul>
+          <li>Ihren vollständigen Namen und das Unternehmen, das Sie vertreten</li>
+          <li>Die mit dem HYBOTE-Service verbundene E-Mail-Adresse oder Telefonnummer</li>
+          <li>Eine kurze Beschreibung des Kontos, der Integration oder der zu löschenden Daten</li>
+        </ul>
+        <p>Senden Sie keine Passwörter, Einmalcodes, Zugriffstoken oder andere geheime Zugangsdaten.</p>
+        <h2>3. Prüfung und Bearbeitung</h2>
+        <p>Wir können begrenzte zusätzliche Informationen anfordern, um Ihre Identität und Berechtigung zu prüfen. Nach erfolgreicher Prüfung löschen oder anonymisieren wir die betreffenden Daten innerhalb von 30 Tagen unwiderruflich aus den aktiven HYBOTE-Systemen, sofern keine gesetzliche Aufbewahrungspflicht oder die Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen entgegensteht. Soweit anwendbar, trennen wir außerdem die zugehörige Meta- oder WhatsApp-Integration und widerrufen die von uns kontrollierten Zugriffe.</p>
+        <h2>4. Meta-Zugriff trennen</h2>
+        <p>Sie können den Zugriff von HYBOTE zusätzlich in Ihren Meta-Unternehmenseinstellungen oder unter Facebook Business-Integrationen entfernen. Dadurch wird ein zukünftiger Zugriff durch die Integration verhindert. Um auch bereits von HYBOTE verarbeitete Daten löschen zu lassen, stellen Sie zusätzlich den oben beschriebenen Löschantrag.</p>
+        <h2>5. Verarbeitung für einen HYBOTE-Kunden</h2>
+        <p>Wenn Sie mit einem Unternehmen kommuniziert haben, das HYBOTE nutzt, entscheidet grundsätzlich dieses Unternehmen über die Verarbeitung Ihrer Daten. Sie können das Unternehmen direkt kontaktieren oder Ihren Antrag an HYBOTE senden. Soweit erforderlich, leiten wir den Antrag an den verantwortlichen Kunden weiter und unterstützen die Bearbeitung.</p>
+        <h2>6. Kontakt</h2>
+        <p><strong>Hybote AI Systems LLC</strong><br/>30 N Gould St, Ste R<br/>Sheridan, Wyoming 82801<br/>USA<br/>E-Mail: <a href="mailto:Contact@hybote.ai" style="color:var(--accent-lt);">Contact@hybote.ai</a></p>
+        <p>Weitere Informationen zur Verarbeitung personenbezogener Daten finden Sie in unserer <a href="datenschutz.html?lang=de" style="color:var(--accent-lt);">Datenschutzerklärung</a>.</p>
+      `
+    },
+    ar: {
+      lang: 'ar', dir: 'rtl', back: 'رجوع', label: 'قانوني', title: 'حذف بيانات المستخدم',
+      date: 'آخر تحديث: 30 أغسطس 2026',
+      html: `
+        <h2>1. حقك في الحذف</h2>
+        <p>يمكنك طلب حذف البيانات الشخصية التي تعالجها HYBOTE فيما يتعلق بخدماتنا، بما في ذلك البيانات المستلمة عبر تقنيات Meta ومنصة WhatsApp Business. كما يمكن لعملاء الأعمال طلب حذف تكامل HYBOTE وبيانات الإعداد المرتبطة به.</p>
+        <h2>2. كيفية تقديم الطلب</h2>
+        <p>أرسل بريداً إلكترونياً إلى <a href="mailto:Contact@hybote.ai?subject=Data%20Deletion%20Request" style="color:var(--accent-lt);">Contact@hybote.ai</a> بعنوان <strong>طلب حذف البيانات</strong>، واذكر:</p>
+        <ul>
+          <li>اسمك الكامل والشركة التي تمثلها</li>
+          <li>عنوان البريد الإلكتروني أو رقم الهاتف المرتبط بخدمة HYBOTE</li>
+          <li>وصفاً موجزاً للحساب أو التكامل أو البيانات التي تريد حذفها</li>
+        </ul>
+        <p>لا ترسل كلمات المرور أو رموز الاستخدام لمرة واحدة أو رموز الوصول أو أي بيانات دخول سرية.</p>
+        <h2>3. التحقق والمعالجة</h2>
+        <p>قد نطلب معلومات إضافية محدودة للتحقق من هويتك وصلاحيتك لتقديم الطلب. بعد التحقق، سنحذف البيانات المعنية أو نجعلها مجهولة الهوية بشكل غير قابل للعكس من أنظمة HYBOTE النشطة خلال 30 يوماً، ما لم يتطلب القانون الاحتفاظ بها مدة أطول أو كانت ضرورية لإقامة الدعاوى القانونية أو ممارستها أو الدفاع عنها. وعند الاقتضاء، سنفصل أيضاً تكامل Meta أو WhatsApp المرتبط ونلغي الوصول الخاضع لسيطرتنا.</p>
+        <h2>4. فصل الوصول إلى Meta</h2>
+        <p>يمكنك أيضاً إزالة وصول HYBOTE من إعدادات أعمال Meta أو تكاملات الأعمال في Facebook. يمنع إلغاء الوصول أي وصول مستقبلي بواسطة التكامل. ولضمان حذف البيانات التي عالجتها HYBOTE سابقاً، قدّم أيضاً طلب الحذف الموضح أعلاه.</p>
+        <h2>5. البيانات المعالجة لصالح عميل HYBOTE</h2>
+        <p>إذا تواصلت مع شركة تستخدم HYBOTE، تكون تلك الشركة عادةً مسؤولة عن تحديد كيفية معالجة بياناتك. يمكنك التواصل معها مباشرة أو إرسال طلبك إلى HYBOTE، وسنحيل الطلب إلى العميل المسؤول عند الحاجة وندعم إتمامه.</p>
+        <h2>6. التواصل</h2>
+        <p><strong>Hybote AI Systems LLC</strong><br/>30 N Gould St, Ste R<br/>Sheridan, Wyoming 82801<br/>USA<br/>البريد الإلكتروني: <a href="mailto:Contact@hybote.ai" style="color:var(--accent-lt);">Contact@hybote.ai</a></p>
+        <p>لمزيد من المعلومات حول كيفية معالجة البيانات الشخصية، راجع <a href="datenschutz.html?lang=ar" style="color:var(--accent-lt);">سياسة الخصوصية</a>.</p>
+      `
+    }
+  };
+
+  function setLang(lang) {
+    const c = C[lang] || C.en;
+    document.documentElement.setAttribute('lang', c.lang);
+    document.documentElement.setAttribute('dir', c.dir);
+    document.body.setAttribute('dir', c.dir);
+    document.getElementById('back-label').textContent = c.back;
+    document.getElementById('doc-label').textContent = c.label;
+    document.getElementById('title').textContent = c.title;
+    document.getElementById('doc-date').textContent = c.date;
+    document.getElementById('content').innerHTML = c.html;
+    document.getElementById('back-link').href = 'index.html?lang=' + c.lang;
+    document.querySelectorAll('.lang-pill').forEach(btn => {
+      const active = btn.dataset.lang === lang;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    document.title = 'HYBOTE – ' + c.title;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const initLang = C[params.get('lang')] ? params.get('lang') : 'en';
+  setLang(initLang);
+</script>
+</body>
+</html>
