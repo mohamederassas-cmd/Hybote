@@ -21,8 +21,63 @@ Diese Kennungen sind für den Browser bestimmt und keine Geheimnisse.
 - `N8N_PROJECT_ID=jsIyw3Baf0VCkxWB`
 - `N8N_TENANT_TABLE_ID=VhpHGERnVgpRWRbs`
 - `N8N_WHATSAPP_CREDENTIAL_TYPE=whatsAppApi`
+- `N8N_ONBOARDING_LOG_TABLE_ID=EgTH6F84tJ82WNhc`
+- `META_PIN_SECRET=<64 Hex-Zeichen>` – leitet die Registrierungs-PIN je Nummer ab
+- `META_INVITE_SECRET=<64 Hex-Zeichen>` – signiert die Einladungslinks; identisch im Sales Pilot
 
-`META_APP_SECRET` und `N8N_API_KEY` dürfen niemals in HTML, Browser-JavaScript, Git, Screenshots oder Chat-Nachrichten gespeichert werden.
+`META_APP_SECRET`, `N8N_API_KEY`, `META_PIN_SECRET` und `META_INVITE_SECRET` dürfen niemals in HTML, Browser-JavaScript, Git, Screenshots oder Chat-Nachrichten gespeichert werden.
+
+## Zugang zur Verbindungsseite
+
+Die Seite ist ohne signierten Einladungslink nicht benutzbar. Ohne gültiges Token zeigt sie
+einen Hinweis statt des Formulars und lädt das Meta-SDK gar nicht erst.
+
+Firma, E-Mail und Kundennummer stammen ausschließlich aus dem Token, nicht aus dem Formular –
+die Felder sind reine Anzeige. Der Link läuft standardmäßig nach 14 Tagen ab.
+
+Signatur: `base64url(JSON) + "." + base64url(HMAC-SHA256)`, identisch zu `signSessionToken()` im
+Sales Pilot. Der Sales Pilot signiert, Vercel prüft. Bewusst ohne Netzwerkaufruf zwischen beiden
+Systemen: zum Signup-Zeitpunkt darf nichts von der Erreichbarkeit des Macs abhängen.
+
+`api/meta/_invite.js` beginnt mit einem Unterstrich und wird von Vercel deshalb nicht als eigene
+Serverless-Function veröffentlicht, sondern nur als Modul eingebunden.
+
+## Registrierung der Telefonnummer
+
+Ohne `POST /{phone_number_id}/register` geht bei einer klassisch migrierten Nummer keine einzige
+Nachricht raus (Fehler 133010). Coexistence-Nummern kommen dagegen bereits verbunden aus dem
+Meta-Dialog und dürfen nicht erneut registriert werden. Der Endpunkt entscheidet deshalb anhand
+von `status`: nur wenn die Nummer nicht `CONNECTED` ist, wird registriert.
+
+Die 6-stellige PIN wird deterministisch aus `HMAC-SHA256(META_PIN_SECRET, phone_number_id)`
+abgeleitet. Sie steht damit in keiner Tabelle und ist trotzdem jederzeit reproduzierbar, wenn
+eine Nummer neu registriert werden muss. **Geht `META_PIN_SECRET` verloren, lässt sich keine
+bestehende Nummer mehr neu registrieren** – das Geheimnis gehört in den Passwortmanager.
+
+Behandelte Fehlerfälle: `133005` (Kunde hat eigene 2FA-PIN gesetzt) → `PIN_CONFLICT`,
+`133016` (10 Registrierungen je Nummer in 72 Stunden) → `REGISTRATION_RATE_LIMITED`,
+`133006` (Nummer nicht verifiziert) → `NUMBER_NOT_VERIFIED`.
+
+## Coexistence
+
+Standardweg für Neukunden. Der Kunde behält Nummer, WhatsApp Business App und Chatverlauf.
+
+Voraussetzungen beim Kunden: App ab Version 2.24.17, Nummer seit mindestens 7 Tagen in Benutzung,
+Handy mit Kamera für den QR-Code.
+
+Nach erfolgreichem Signup stößt der Endpunkt `POST /{phone_number_id}/smb_app_data` an, um
+Kontakte und Verlauf zu übernehmen. **Das Zeitfenster beträgt 24 Stunden ab Abschluss des
+Signups** – danach müsste der Kunde das gesamte Onboarding wiederholen. Deshalb passiert das im
+selben Request und nicht in einem späteren Cron.
+
+Der Aufruf ist bewusst nicht fatal: Schlägt er fehl, ist die Nummer höchstwahrscheinlich keine
+Coexistence-Nummer. Ergebnis und Fehlercode landen im Audit-Log, damit der erste echte Durchlauf
+die exakte Signatur dieses Endpunkts belegt, statt sie zu vermuten.
+
+Grenzen, die vor jeder Kundenzusage gelten: keine Marketing-Templates auf Coexistence-Nummern,
+Durchsatz 20 Nachrichten/Sekunde, Trennung nur manuell durch den Kunden über die App.
+**Ob Utility-Templates (Terminerinnerungen) erlaubt sind, ist noch nicht verifiziert** – vor der
+ersten Zusage an der eigenen Nummer prüfen.
 
 ## Eingeschränkter n8n-API-Schlüssel
 
@@ -54,11 +109,25 @@ Jeder Kunde behält sein eigenes Meta Business Portfolio, seine WABA und seine T
 
 Keine Konversation, kein Token und keine CRM-Verbindung darf zwischen Mandanten geteilt werden.
 
-Die n8n-Datentabelle `wa_tenants` enthält die geprüften Spalten `tenant_key`, `company_name`, `work_email`, `customer_reference`, `meta_business_id`, `waba_id`, `phone_number_id`, `credential_id`, `workflow_id`, `status` und `token_expires_at`. Der bestehende aktive Workflow `WhatsApp Gateway (HYBOTE)` bleibt bis zu einem erfolgreichen Pilot-Test unverändert.
+Die n8n-Datentabelle `wa_tenants` enthält `tenant_key`, `company_name`, `work_email`,
+`customer_reference`, `meta_business_id`, `waba_id`, `phone_number_id`, `credential_id`,
+`workflow_id`, `status`, `token_expires_at`, `platform_type`, `display_phone_number`,
+`coexistence`, `registered_at` und `provisioned_at`.
+
+Der Upsert-Schlüssel ist die `phone_number_id`, nicht die `waba_id`: Eine WABA kann mehrere
+Nummern tragen, und mit `waba_id` als Filter überschreibt die zweite Nummer die Zeile der ersten.
+
+Jeder Onboarding-Versuch – Erfolg wie Fehlschlag – hinterlässt eine Zeile in `wa_onboarding_log`.
+Das Schreiben ist bewusst nicht fatal: ein fehlendes Log darf ein funktionierendes Onboarding
+nicht verhindern. Der bestehende aktive Workflow `WhatsApp Gateway (HYBOTE)` bleibt bis zu einem erfolgreichen Pilot-Test unverändert.
 
 ## Token-Betrieb
 
-Die aktuelle Meta-Vorlage erzeugt einen Systemnutzer-Token mit 60 Tagen Laufzeit. n8n muss:
+Die Konfigurationsvorlage sieht 60 Tage vor. **Ob der Token tatsächlich abläuft, ist noch nicht
+belegt** – Business-Integration-System-User-Token laufen je nach Konfiguration gar nicht ab.
+Der Endpunkt schreibt deshalb nur ein Ablaufdatum, wenn Meta eines liefert (`expires_in` aus dem
+Code-Tausch oder `expires_at` aus `debug_token`), statt den Vorlagenwert abzuschreiben. Der erste
+echte Signup entscheidet, ob die folgende Weckerkette überhaupt gebraucht wird:
 
 1. `expiresAt` speichern.
 2. Spätestens 15 Tage vor Ablauf intern warnen.
@@ -88,10 +157,24 @@ Bereits im Review-Entwurf gespeichert:
 - Reviewer-Testanleitung für `https://hybote.ai/meta-connect.html`
 - Verantwortliche Stelle `Hybote AI Systems LLC`, USA
 - technische Dienstleister Vercel Inc. (USA), Hetzner Online GmbH (Deutschland) und OpenAI, L.L.C. (USA)
+- keine Weitergabe personenbezogener Meta-Nutzerdaten aufgrund nationaler Sicherheitsanfragen in den vorangegangenen zwölf Monaten
+- alle vier Verfahren für behördliche Auskunftsersuchen; dokumentiert in `docs/government-data-request-policy.md`
+
+Die Tech-Provider-Zugriffsverifizierung wurde am 31. August 2026 genehmigt.
 
 Noch offen:
 
-- Abschluss der Meta-Zugriffsverifizierung; Status derzeit `Eingereicht – Wird geprüft`
-- bestätigte Angaben zu nationalen Sicherheitsanfragen und den internen Verfahren für behördliche Auskunftsersuchen
 - realer Embedded-Signup-Test und Upload der daraus erstellten Screen-Recordings
 - endgültige App-Review-Einreichung und anschließende Veröffentlichung
+- Reviewer-Anleitung um den Einladungslink ergänzen: Die Seite ist ohne Token nicht mehr frei
+  erreichbar. Ohne diesen Hinweis lehnt der Prüfer aus reinem Missverständnis ab.
+
+## Frist: Embedded Signup v4 bis 15. Oktober 2026
+
+Embedded Signup v2 **und v3** werden am 15. Oktober 2026 abgeschaltet. Die aktuelle
+Implementierung nutzt `sessionInfoVersion: '3'`.
+
+v4 verlangt eine **neue** Facebook-Login-for-Business-Konfiguration, also eine neue Config-ID in
+`meta-connect.js`. Die drei Feature-Typen `only_waba_sharing`, `marketing_messages_lite` und
+`coex` werden **nicht** automatisch migriert – da HYBOTE auf Coexistence setzt, ist die Migration
+Pflicht und keine Option.

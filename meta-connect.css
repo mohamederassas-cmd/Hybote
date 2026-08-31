@@ -144,3 +144,24 @@ input[type="text"]:focus, input[type="email"]:focus { border-color: rgba(56, 189
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; }
 }
+
+/* ---- Coexistence-Voraussetzungen, Folgeschritt und Einladungs-Gate ---- */
+
+.prereq-box { margin-top: 26px; padding: 16px 18px; border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 12px; background: rgba(7, 11, 22, 0.45); }
+.prereq-box strong { display: block; margin-bottom: 10px; color: var(--text); font-size: 12px; font-weight: 500; }
+.prereq-box ul { margin: 0; padding-inline-start: 18px; color: var(--muted); font-size: 11px; line-height: 1.85; }
+
+/* Der Zahlungsschritt ist kein Hinweis am Rand: ohne ihn stoppt der Versand,
+   sobald das Freikontingent aufgebraucht ist. Deshalb bewusst hervorgehoben. */
+.next-step-box { width: min(100%, 470px); margin-bottom: 22px; padding: 18px; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; text-align: start; background: rgba(56, 189, 248, 0.07); }
+.next-step-box strong { display: block; margin-bottom: 8px; color: var(--accent-light); font-size: 12px; font-weight: 500; }
+.next-step-box p { margin: 0 0 14px; color: var(--muted); font-size: 12px; line-height: 1.75; }
+.next-step-box .secondary-button { width: 100%; }
+
+.text-link { color: var(--muted); font-size: 11px; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Technische Werte bleiben LTR, auch im arabischen Layout: eine Telefonnummer
+   oder E-Mail-Adresse darf nicht umsortiert werden. */
+.connection-summary dd[dir="ltr"] { unicode-bidi: isolate; }
+#work-email, #customer-reference { direction: ltr; text-align: start; }
+html[dir="rtl"] #work-email, html[dir="rtl"] #customer-reference { text-align: end; }
