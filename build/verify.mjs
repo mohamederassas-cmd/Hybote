@@ -177,6 +177,12 @@ console.log('\nWeitere Dateien');
   const connect = readFileSync(join(ROOT, 'meta-connect.html'), 'utf8');
   const connectJs = readFileSync(join(ROOT, 'meta-connect.js'), 'utf8');
   const completeApi = readFileSync(join(ROOT, 'api/meta/complete.js'), 'utf8');
+  const webhookApi = readFileSync(join(ROOT, 'api/meta/webhook.js'), 'utf8');
+  // Nur der Code, ohne Kommentare: sonst schlägt die Prüfung auf genau der
+  // Zeile an, die erklärt, warum es diese Prüfung gibt.
+  const webhookCode = webhookApi.split('\n')
+    .filter((line) => !/^\s*(\/\/|\*|\/\*)/.test(line))
+    .join('\n');
   report('sitemap.xml + datenschutz.html', {
     'alle drei Seiten in der Sitemap':
       SLUGS.every((s) => sm.includes(`<loc>https://hybote.ai/${s}</loc>`)),
@@ -205,6 +211,24 @@ console.log('\nWeitere Dateien');
       !completeApi.slice(completeApi.indexOf('tenant: {'), completeApi.indexOf('});', completeApi.indexOf('tenant: {'))).includes('accessToken'),
     'Mandanten-IDs werden gemeinsam übergeben':
       ['businessId', 'wabaId', 'phoneNumberId', 'customerReference'].every((key) => completeApi.includes(key)),
+  });
+  report('Meta Webhook', {
+    'Signatur wird zeitkonstant über HMAC-SHA256 geprüft':
+      webhookApi.includes("createHmac('sha256'") && webhookApi.includes('timingSafeEqual'),
+    'Rohbody wird als Stream gelesen':
+      webhookApi.includes("request.on('data'") && webhookApi.includes("request.on('end'"),
+    // Der eigentliche Regressionsschutz: eine neu serialisierte Nutzlast
+    // reproduziert Metas Bytes nicht, die Signaturprüfung würde sporadisch scheitern.
+    'die geparste Nutzlast wird nirgends neu serialisiert':
+      !webhookCode.includes('request.body') && !webhookCode.includes('JSON.stringify(body)'),
+    'kein for-await auf dem Request':
+      !/for\s+await\s*\([^)]*\bof\s+request\b/.test(webhookApi),
+    'Weiterleitung nutzt einen eigenen Header, nicht den Public-API-Schlüssel':
+      webhookApi.includes('N8N_WEBHOOK_AUTH_VALUE') && webhookApi.includes('N8N_WHATSAPP_WEBHOOK_URL'),
+    'ungültige Signatur wird nicht weitergeleitet':
+      webhookCode.indexOf("'SIGNATURE_INVALID'") < webhookCode.indexOf('await forwardToN8n('),
+    'Verify-Token wird zeitkonstant verglichen':
+      webhookApi.includes('safeEqual(token, config.verifyToken)'),
   });
 }
 
