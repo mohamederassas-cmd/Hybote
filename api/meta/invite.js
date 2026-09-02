@@ -26,6 +26,8 @@ module.exports = async function handler(request, response) {
       company: invite.company,
       email: invite.email,
       customerReference: invite.customerReference,
+      tenantKey: invite.tenantKey,
+      language: invite.language,
       expiresAt: invite.expiresAt
     }
   });

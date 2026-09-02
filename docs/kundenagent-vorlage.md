@@ -76,3 +76,36 @@ der Import prüft je Thread, ob für die `wa_id` schon Zeilen existieren, und im
 - `smb_app_state_sync` (Kontakte) wird nicht gespeichert.
 - Feldnamen der Coexistence-Payloads sind nach Metas Doku modelliert und beim ersten echten Chunk
   gegen die Execution zu prüfen (Node `Verlauf aufbereiten`).
+
+## Automatische Bereitstellung über den Sales Pilot (Operations Pilot, seit 02.09.2026)
+
+Die sechs Stellen oben führt der Operations Pilot (`server/src/services/ops/provisioning.ts`)
+selbst aus, sobald der Kunde verbunden ist und die Agent-Konfiguration vollständig ist:
+
+1. `POST /data-tables` für `wa_chat_history_<tenant_key>` (wa_id, role, text, created_at) und
+   `wa_message_buffer_<tenant_key>` (wa_id, message_id, text, received_at, kind); vorhandene
+   Tabellen gleichen Namens werden wiederverwendet.
+2. Upsert der Zeile in `wa_tenant_config` (Schlüssel `tenant_key`).
+3. `GET /workflows/<Vorlage>` → Read-only-Felder strippen, Sticky Note entfernen, Credential
+   `{ id: credential_id }` an die Nodes **WhatsApp Antwort senden**, **Audio-URL holen**,
+   **Audio herunterladen** und **Testnachricht senden** → `POST /workflows`
+   (Name `Kundenagent · <Firma> · <tenant_key>`), danach `POST /workflows/<id>/activate`
+   (nicht fatal).
+4. `PATCH wa_tenants` (Filter `phone_number_id`): `workflow_id`, `history_table_id`,
+   `buffer_table_id`, `provisioned_at`. **Der Status bleibt** – Go-live ist ein eigener Klick im
+   Operations Pilot (`status=live`), weil das Gateway nur `live` routet.
+
+Termin-Tools bleiben manuell (Platzhalter `KALENDER-ID-DES-KUNDEN`); die Checkliste im Operations
+Pilot hält das als offenen Schritt fest.
+
+Dafür braucht der Sales Pilot einen eigenen n8n-API-Schlüssel („HYBOTE Sales Pilot Ops") mit
+`workflow:read/list/create/update/activate`, `dataTable:create/read/list`,
+`dataTableRow:read/create/update/upsert`, `credential:list`. Keine Credential-Schreib- oder
+Leserechte: der Kunden-Token bleibt in n8n.
+
+**Testnachricht:** Die Vorlage hat einen vierten Ausgang im Switch „Ereignisart"
+(`hybote_event = test_send` → Node „Testnachricht senden"). Der aktive Werkzeug-Workflow
+„Werkzeug – Mandanten-Testnachricht" (Webhook mit Header-Auth `X-Hybote-Ops-Token`) sucht die
+Zeile in `wa_tenants` per `tenant_key` und ruft den Klon mit `{ hybote_event: 'test_send', tenant,
+to, mode, template, language, text }` auf. Der Sales Pilot spricht ihn über
+`N8N_OPS_WEBHOOK_URL` + `N8N_OPS_WEBHOOK_TOKEN` an.

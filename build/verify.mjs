@@ -195,13 +195,39 @@ console.log('\nWeitere Dateien');
     'Teams-Übergabe in allen drei Sprachblöcken':
       (ds.match(/Microsoft(?:-| )Teams/g) || []).length >= 3,
   });
+  // Der translations-Block ist ein Objektliteral ohne Code – auswertbar wie das
+  // Sprachobjekt der Hauptseite.
+  const translationsMatch = connectJs.match(/const translations = (\{[\s\S]*?\n  \});\n\n  const ERROR_KEYS/);
+  let connectLanguages = {};
+  try { connectLanguages = translationsMatch ? eval(`(${translationsMatch[1]})`) : {}; } catch (_error) { connectLanguages = {}; }
+  const connectLanguageKeys = Object.keys(connectLanguages.en || {});
+  const inviteApi = readFileSync(join(ROOT, 'api/meta/_invite.js'), 'utf8');
   report('Meta Embedded Signup', {
     'Onboarding-Seite ist nicht indexierbar': connect.includes('content="noindex, nofollow"'),
     'offizielle Meta App-ID gesetzt': connectJs.includes("const META_APP_ID = '1580264870470342'"),
-    'erstellte Konfigurations-ID gesetzt': connectJs.includes("const META_CONFIG_ID = '1048835977913160'"),
-    'Session Info Version 3 gesetzt': connectJs.includes("const SESSION_INFO_VERSION = '3'"),
+    'Konfigurations-ID ist eine numerische Meta-ID': /const META_CONFIG_ID = '\d{10,20}'/.test(connectJs),
+    // v4: Version und Session-Info kommen aus der Konfiguration, ein Parameter
+    // dafuer darf nicht mehr auftauchen.
+    'kein sessionInfoVersion mehr (Embedded Signup v4)': !connectJs.includes('sessionInfoVersion'),
+    'Coexistence-Feature-Typ an genau einer Stelle definiert':
+      connectJs.includes("const COEXISTENCE_FEATURE_TYPE = 'whatsapp_business_app_onboarding'") &&
+      connectJs.includes('featureType: COEXISTENCE_FEATURE_TYPE'),
+    'Coexistence-Abschlussevent wird verarbeitet': connectJs.includes("'FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING'"),
+    'Vorbefuellung aus dem Einladungs-Token': connectJs.includes('setup: {') && connectJs.includes('business: {'),
+    'fuenf Sprachen mit identischem Schluesselumfang':
+      ['en', 'ar', 'de', 'ru', 'fr'].every((lang) =>
+        connectLanguages[lang] && connectLanguageKeys.length >= 40 &&
+        connectLanguageKeys.every((key) => typeof connectLanguages[lang][key] === 'string') &&
+        connect.includes(`data-set-lang="${lang}"`) && connectJs.includes(`${lang}: '${lang}_`)
+      ),
+    'Sprache aus dem Token ist der Standard der Seite':
+      connectJs.includes('invite.language') && inviteApi.includes("INVITE_LANGUAGES = ['en', 'de', 'ar', 'ru', 'fr']"),
     'Code-Austausch findet ausschließlich serverseitig statt':
       completeApi.includes('META_APP_SECRET') && !connectJs.includes('META_APP_SECRET'),
+    'Coexistence-Sync fordert Kontakte und Verlauf getrennt an':
+      completeApi.includes("'smb_app_state_sync', 'history'") && completeApi.includes('sync_type: syncType'),
+    'Nummer wird bei Coexistence aus der WABA aufgeloest': completeApi.includes('resolvePhoneNumberId('),
+    'Mandantenschluessel kommt aus dem Token': completeApi.includes('invite.tenantKey'),
     'n8n-Anbindung nutzt einen eingeschränkten API-Schlüssel':
       completeApi.includes("'X-N8N-API-KEY'") && completeApi.includes('ensureWhatsAppCredential'),
     'Erneute Autorisierung aktualisiert das verschlüsselte Credential':

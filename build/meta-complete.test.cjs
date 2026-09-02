@@ -33,7 +33,9 @@ function requestBody() {
       company: 'Example GmbH',
       email: 'owner@example.test',
       customerReference: 'K-1000',
-      inviteId: 'invite-1'
+      inviteId: 'invite-1',
+      tenantKey: 'example-42',
+      language: 'ru'
     }),
     code: 'test-code-that-is-long-enough',
     businessId: '1164771143385164',
@@ -117,6 +119,9 @@ function installFetchMock(existingCredential, phoneStatus = 'PENDING') {
     if (String(url).includes(`/${PHONE_NUMBER_ID}/smb_app_data`)) {
       return jsonResponse({ success: true });
     }
+    if (String(url).includes(`/${WABA_ID}/phone_numbers?`)) {
+      return jsonResponse({ data: [{ id: PHONE_NUMBER_ID, display_phone_number: '+49 30 123456', status: 'CONNECTED', platform_type: 'SMB_APP', is_on_biz_app: true }] });
+    }
     if (String(url).includes(`/${WABA_ID}/subscribed_apps`)) {
       return jsonResponse({ success: true });
     }
@@ -162,6 +167,8 @@ test('creates an encrypted n8n credential and stores only non-secret tenant meta
 
   const upsertBody = JSON.parse(tenantUpsert(calls).options.body);
   assert.equal(upsertBody.data.credential_id, 'credential-new');
+  assert.equal(upsertBody.data.tenant_key, 'example-42', 'tenant_key kommt aus dem Token des Sales Pilot');
+  assert.equal(upsertBody.data.customer_reference, 'K-1000');
   assert.equal(JSON.stringify(upsertBody).includes('customer-access-token'), false);
   assert.equal(JSON.stringify(upsertBody).includes('accessToken'), false);
 });
@@ -210,6 +217,23 @@ test('never re-registers a coexistence number that already comes back connected'
 
   const upsertBody = JSON.parse(tenantUpsert(calls).options.body);
   assert.equal(upsertBody.data.registered_at, '');
+
+  // Metas Doku verlangt zwei getrennte Sync-Aufrufe: Kontakte und Verlauf.
+  const syncCalls = calls.filter((call) => call.url.includes(`/${PHONE_NUMBER_ID}/smb_app_data`));
+  assert.deepEqual(syncCalls.map((call) => JSON.parse(call.options.body).sync_type), ['smb_app_state_sync', 'history']);
+  assert.equal(upsertBody.data.coexistence, 'true');
+});
+
+test('resolves the phone number from the WABA when the coexistence dialog reports none', async () => {
+  const calls = installFetchMock(null, 'CONNECTED');
+  const response = createResponse();
+  await handler(createRequest({ phoneNumberId: '' }), response);
+
+  assert.equal(response.statusCode, 200, JSON.stringify(response.body));
+  assert.ok(calls.some((call) => call.url.includes(`/${WABA_ID}/phone_numbers?`)), 'die Nummer muss aus der WABA gelesen werden');
+  const upsertBody = JSON.parse(tenantUpsert(calls).options.body);
+  assert.equal(upsertBody.data.phone_number_id, PHONE_NUMBER_ID);
+  assert.equal(response.body.connection.phoneNumberId, PHONE_NUMBER_ID);
 });
 
 test('rejects a request without a valid invite token', async () => {

@@ -3,10 +3,11 @@
 ## Öffentliche Meta-Kennungen
 
 - Meta App ID: `1580264870470342`
-- Embedded Signup Configuration ID: `1048835977913160`
+- Embedded Signup Configuration ID: `1048835977913160` (v3; wird durch die v4-Konfiguration ersetzt, siehe unten)
 - Graph API: `v26.0`
-- Session Info Version: `3`
-- Kundenseite: `https://hybote.ai/meta-connect.html`
+- Embedded Signup: **v4** (konfigurationsgetrieben, kein `sessionInfoVersion` mehr im Code)
+- Coexistence-Feature-Typ: `whatsapp_business_app_onboarding` (Konstante `COEXISTENCE_FEATURE_TYPE` in `meta-connect.js`)
+- Kundenseite: `https://hybote.ai/meta-connect.html` – Sprachen en, de, ar, ru, fr
 
 Diese Kennungen sind für den Browser bestimmt und keine Geheimnisse.
 
@@ -23,7 +24,7 @@ Diese Kennungen sind für den Browser bestimmt und keine Geheimnisse.
 - `N8N_WHATSAPP_CREDENTIAL_TYPE=whatsAppApi`
 - `N8N_ONBOARDING_LOG_TABLE_ID=EgTH6F84tJ82WNhc`
 - `META_PIN_SECRET=<64 Hex-Zeichen>` – leitet die Registrierungs-PIN je Nummer ab
-- `META_INVITE_SECRET=<64 Hex-Zeichen>` – signiert die Einladungslinks; identisch im Sales Pilot
+- `META_INVITE_SECRET=<64 Hex-Zeichen>` – signiert die Einladungslinks; identisch in der Root-`.env` des Sales Pilot (der signiert, Vercel prüft)
 - `META_WEBHOOK_VERIFY_TOKEN=<64 Hex-Zeichen>` – Vergleichswert für Metas `hub.verify_token`
 - `N8N_WHATSAPP_WEBHOOK_URL=<Production-URL des n8n-Webhook-Node>` – vollständige URL, **nicht** aus `N8N_BASE_URL` zusammengebaut
 - `N8N_WEBHOOK_AUTH_HEADER=X-Hybote-Webhook-Token` – Headername der n8n-Header-Auth-Credential
@@ -38,7 +39,14 @@ Die Seite ist ohne signierten Einladungslink nicht benutzbar. Ohne gültiges Tok
 einen Hinweis statt des Formulars und lädt das Meta-SDK gar nicht erst.
 
 Firma, E-Mail und Kundennummer stammen ausschließlich aus dem Token, nicht aus dem Formular –
-die Felder sind reine Anzeige. Der Link läuft standardmäßig nach 14 Tagen ab.
+die Felder sind reine Anzeige. Der Link läuft standardmäßig nach 14 Tagen ab; der Sales Pilot erzeugt
+mit einem Klick einen neuen (Operations Pilot → Kunde → Onboarding).
+
+Das Token trägt zusätzlich `tenant_key` (Schlüssel der Zeile in `wa_tenants`, vom Sales Pilot vergeben)
+und `lang` (en|de|ar|ru|fr). Die Seite wählt ihre Sprache in dieser Reihenfolge: `?lang` (Sprachpille)
+→ `lang` aus dem Token → Browsersprache → Englisch. Das Meta-SDK wird erst danach in dieser Sprache
+geladen; der Meta-Dialog selbst folgt der Facebook-Sprache des Kunden. Firma und E-Mail werden über
+`extras.setup.business` in den Dialog vorbefüllt – mehr Branding erlaubt Meta nicht.
 
 Signatur: `base64url(JSON) + "." + base64url(HMAC-SHA256)`, identisch zu `signSessionToken()` im
 Sales Pilot. Der Sales Pilot signiert, Vercel prüft. Bewusst ohne Netzwerkaufruf zwischen beiden
@@ -70,14 +78,24 @@ Standardweg für Neukunden. Der Kunde behält Nummer, WhatsApp Business App und 
 Voraussetzungen beim Kunden: App ab Version 2.24.17, Nummer seit mindestens 7 Tagen in Benutzung,
 Handy mit Kamera für den QR-Code.
 
-Nach erfolgreichem Signup stößt der Endpunkt `POST /{phone_number_id}/smb_app_data` an, um
-Kontakte und Verlauf zu übernehmen. **Das Zeitfenster beträgt 24 Stunden ab Abschluss des
-Signups** – danach müsste der Kunde das gesamte Onboarding wiederholen. Deshalb passiert das im
-selben Request und nicht in einem späteren Cron.
+Nach erfolgreichem Signup stößt der Endpunkt zwei Aufrufe auf `POST /{phone_number_id}/smb_app_data`
+an: `sync_type: smb_app_state_sync` (Kontakte) und `sync_type: history` (Verlauf, 180 Tage in drei
+Phasen). **Das Zeitfenster beträgt 24 Stunden ab Abschluss des Signups** – danach müsste der Kunde
+das gesamte Onboarding wiederholen. Deshalb passiert das im selben Request und nicht in einem
+späteren Cron.
 
-Der Aufruf ist bewusst nicht fatal: Schlägt er fehl, ist die Nummer höchstwahrscheinlich keine
-Coexistence-Nummer. Ergebnis und Fehlercode landen im Audit-Log, damit der erste echte Durchlauf
-die exakte Signatur dieses Endpunkts belegt, statt sie zu vermuten.
+Die Aufrufe sind bewusst nicht fatal: Schlägt der Kontakte-Sync fehl, ist die Nummer keine
+Coexistence-Nummer und der Verlaufs-Sync wird gar nicht erst versucht. Beide Ergebnisse landen im
+Audit-Log (`state:ok;history:ok`).
+
+Der Coexistence-Dialog meldet im Abschluss-Event (`FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING`) nur die
+WABA, keine Nummer. `complete.js` liest die Nummer dann aus `GET /{waba_id}/phone_numbers`: bei genau
+einer Nummer diese, sonst die mit `is_on_biz_app`. Gibt es keine eindeutige Nummer, antwortet der
+Endpunkt `409 PHONE_NUMBER_UNRESOLVED`.
+
+Die Coexistence-Webhook-Felder (`smb_message_echoes`, `smb_app_state_sync`, `history`) werden per
+Terminal gesetzt: `node scripts/meta/subscriptions.mjs set` im Sales Pilot (ein POST ersetzt die
+komplette Feldliste, das Skript zeigt vorher den Diff).
 
 Grenzen, die vor jeder Kundenzusage gelten: keine Marketing-Templates auf Coexistence-Nummern,
 Durchsatz 20 Nachrichten/Sekunde, Trennung nur manuell durch den Kunden über die App.
@@ -251,12 +269,18 @@ Noch offen:
 - Reviewer-Anleitung um den Einladungslink ergänzen: Die Seite ist ohne Token nicht mehr frei
   erreichbar. Ohne diesen Hinweis lehnt der Prüfer aus reinem Missverständnis ab.
 
-## Frist: Embedded Signup v4 bis 15. Oktober 2026
+## Embedded Signup v4 (Frist 15. Oktober 2026 für v2/v3)
 
-Embedded Signup v2 **und v3** werden am 15. Oktober 2026 abgeschaltet. Die aktuelle
-Implementierung nutzt `sessionInfoVersion: '3'`.
+Embedded Signup v2 **und v3** werden am 15. Oktober 2026 abgeschaltet. Der Code ist seit dem
+02.09.2026 v4-fähig: kein `sessionInfoVersion`, `extras` enthält nur `setup` (Vorbefüllung) und den
+Coexistence-Feature-Typ. Danach gibt es keine Frist mehr – der Flow selbst hat kein Ablaufdatum.
 
-v4 verlangt eine **neue** Facebook-Login-for-Business-Konfiguration, also eine neue Config-ID in
-`meta-connect.js`. Die drei Feature-Typen `only_waba_sharing`, `marketing_messages_lite` und
-`coex` werden **nicht** automatisch migriert – da HYBOTE auf Coexistence setzt, ist die Migration
-Pflicht und keine Option.
+Noch zu tun (nur im App Dashboard, nicht im Code): Facebook Login for Business → Configurations →
+neue Konfiguration „HYBOTE Embedded Signup v4", Login-Variante WhatsApp Embedded Signup, Produkte
+auswählen (setzt v4), Coexistence aktivieren, Token **ohne** Ablauf (nicht die 60-Tage-Vorlage). Die
+neue ID in `META_CONFIG_ID` (`meta-connect.js`) eintragen. `build/verify.mjs` prüft nur noch, dass
+dort eine numerische Meta-ID steht. Die drei Feature-Typen werden **nicht** automatisch migriert.
+
+Metas Doku nennt den Coexistence-Feature-Typ uneinheitlich (`whatsapp_business_app_onboarding` auf
+der Coexistence-Seite, `coex` in der Versionsübersicht). Deshalb steht er genau einmal in
+`COEXISTENCE_FEATURE_TYPE`; beim ersten Test mit der v4-Konfiguration am echten Dialog prüfen.

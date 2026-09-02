@@ -4,11 +4,15 @@
   const META_APP_ID = '1580264870470342';
   const META_CONFIG_ID = '1048835977913160';
   const META_GRAPH_VERSION = 'v26.0';
-  const SESSION_INFO_VERSION = '3';
+  // Embedded Signup v4: Version und Session-Info-Format kommen aus der
+  // Facebook-Login-for-Business-Konfiguration (config_id), nicht mehr aus
+  // Parametern. Bleibt nur der Feature-Typ fuer Coexistence – Metas Doku nennt
+  // ihn uneinheitlich, deshalb genau eine Stelle zum Aendern.
+  const COEXISTENCE_FEATURE_TYPE = 'whatsapp_business_app_onboarding';
   const TRUSTED_META_ORIGINS = new Set(['https://www.facebook.com', 'https://web.facebook.com']);
   // Metas Dialog folgt der Sprache des geladenen SDK, nicht der Seite. Ein fest
   // eingebundenes de_DE-SDK zeigt einem arabischen Kunden einen deutschen Dialog.
-  const SDK_LOCALES = { en: 'en_US', ar: 'ar_AR', de: 'de_DE' };
+  const SDK_LOCALES = { en: 'en_US', ar: 'ar_AR', de: 'de_DE', ru: 'ru_RU', fr: 'fr_FR' };
 
   const translations = {
     en: {
@@ -130,6 +134,86 @@
       wabaNotAuthorized: 'Die Autorisierung umfasste das gewählte WhatsApp-Konto nicht. Bitte starten Sie erneut und wählen Sie das richtige Unternehmen.',
       tooManyAttempts: 'Zu viele Versuche. Bitte warten Sie einige Minuten.',
       inviteInvalid: 'Ihr Einladungslink ist nicht mehr gültig. Bitte fordern Sie bei HYBOTE einen neuen an.'
+    },
+    ru: {
+      dir: 'ltr', titlePage: 'HYBOTE – Подключить WhatsApp', eyebrow: 'Безопасное подключение аккаунта',
+      title: 'Подключите WhatsApp Business к HYBOTE',
+      intro: 'Авторизуйте HYBOTE через официальный диалог Meta. Ваша компания сохраняет контроль над своим аккаунтом WhatsApp Business и номером телефона.',
+      trustMeta: 'Официальный диалог Meta', trustOwner: 'Аккаунт остаётся вашим', trustRevoke: 'Доступ можно отозвать в любой момент',
+      stepsTitle: 'Как это работает', step1Title: 'Подтвердите компанию', step1Body: 'Войдите в Meta и выберите свой бизнес-портфель.',
+      step2Title: 'Сохраните свой номер', step2Body: 'Отсканируйте QR-код, который покажет Meta. Ваш номер, приложение WhatsApp Business и история чатов остаются у вас.',
+      step3Title: 'Подтвердите подключение', step3Body: 'Подтвердите номер телефона, который HYBOTE может использовать для вашего сервиса.',
+      prereqTitle: 'Перед началом',
+      prereq1: 'Приложение WhatsApp Business версии 2.24.17 или новее',
+      prereq2: 'Номер используется в этом приложении не менее 7 дней',
+      prereq3: 'Телефон с камерой для сканирования QR-кода',
+      gateTitle: 'Пожалуйста, используйте персональную ссылку-приглашение',
+      gateBody: 'Эту страницу можно открыть только по персональной ссылке, которую вам отправила HYBOTE. Если срок ссылки истёк, мы с радостью отправим новую.',
+      gateAction: 'Запросить новую ссылку',
+      formTitle: 'Подготовка подключения', formIntro: 'Эти данные связывают аккаунт WhatsApp с правильным клиентом HYBOTE.',
+      companyLabel: 'Компания', emailLabel: 'Рабочий адрес электронной почты', referenceLabel: 'Номер клиента HYBOTE',
+      authority: 'Я уполномочен(а) подключить этот аккаунт WhatsApp Business от имени указанной выше компании.',
+      privacyPrefix: 'Я принимаю', privacyLink: 'Политику конфиденциальности', privacySuffix: 'и обработку данных подключения.',
+      connectButton: 'Подключить WhatsApp', connecting: 'Подключение …',
+      finePrint: 'Вы продолжите в защищённом диалоге Meta. HYBOTE никогда не получает ваш пароль Facebook.',
+      successTitle: 'WhatsApp подключён', successBody: 'Подключение аккаунта безопасно передано в HYBOTE. Теперь мы завершим техническую активацию.',
+      nextStepTitle: 'Остался один шаг: добавьте способ оплаты',
+      nextStepBody: 'WhatsApp списывает плату за сообщения напрямую с вашего бизнес-аккаунта. Добавьте способ оплаты для аккаунта WhatsApp Business в Meta Business Suite — без него отправка сообщений остановится после исчерпания бесплатного лимита.',
+      nextStepAction: 'Открыть настройки оплаты в Meta',
+      backHome: 'Вернуться на HYBOTE', support: 'Нужна помощь?', terms: 'Условия', deletion: 'Удаление данных',
+      waba: 'Аккаунт WhatsApp', phone: 'Номер телефона', expires: 'Продлить до', mode: 'Режим',
+      modeCoexistence: 'Coexistence — приложение и API на одном номере', modeDedicated: 'Отдельный номер для API',
+      invalidForm: 'Пожалуйста, подтвердите оба пункта.',
+      sdkUnavailable: 'Не удалось загрузить диалог Meta. Отключите блокировщики контента для этой страницы и попробуйте снова.',
+      cancelled: 'Подключение отменено. Изменения не внесены.',
+      metaError: 'Meta не смогла завершить подключение. Попробуйте снова или свяжитесь с HYBOTE.',
+      serverError: 'Не удалось безопасно сохранить подключение. Попробуйте снова или свяжитесь с HYBOTE.',
+      pinConflict: 'Для этого номера уже задан собственный PIN двухэтапной проверки. Свяжитесь с HYBOTE — мы завершим активацию вместе с вами.',
+      registrationLimited: 'Meta временно блокирует регистрацию этого номера. Попробуйте через 72 часа или свяжитесь с HYBOTE.',
+      numberNotVerified: 'Этот номер телефона ещё не подтверждён в Meta. Завершите подтверждение и попробуйте снова.',
+      wabaNotAuthorized: 'Авторизация не охватила выбранный аккаунт WhatsApp. Начните заново и выберите правильную компанию.',
+      tooManyAttempts: 'Слишком много попыток. Подождите несколько минут.',
+      inviteInvalid: 'Ваша ссылка-приглашение больше не действительна. Запросите новую у HYBOTE.'
+    },
+    fr: {
+      dir: 'ltr', titlePage: 'HYBOTE – Connecter WhatsApp', eyebrow: 'Connexion sécurisée du compte',
+      title: 'Connectez WhatsApp Business à HYBOTE',
+      intro: "Autorisez HYBOTE via la boîte de dialogue officielle de Meta. Votre entreprise garde le contrôle de son compte WhatsApp Business et de son numéro de téléphone.",
+      trustMeta: 'Dialogue Meta officiel', trustOwner: 'Le compte reste votre propriété', trustRevoke: "L'accès peut être révoqué à tout moment",
+      stepsTitle: 'Comment ça marche', step1Title: 'Confirmez votre entreprise', step1Body: 'Connectez-vous à Meta et sélectionnez votre portefeuille professionnel.',
+      step2Title: 'Conservez votre numéro actuel', step2Body: "Scannez le code QR affiché par Meta. Votre numéro, l'application WhatsApp Business et votre historique de conversations restent chez vous.",
+      step3Title: 'Confirmez la connexion', step3Body: 'Confirmez le numéro de téléphone que HYBOTE peut utiliser pour votre service.',
+      prereqTitle: 'Avant de commencer',
+      prereq1: 'Application WhatsApp Business version 2.24.17 ou plus récente',
+      prereq2: 'Le numéro est utilisé dans cette application depuis au moins 7 jours',
+      prereq3: 'Un téléphone avec caméra pour scanner le code QR',
+      gateTitle: "Veuillez utiliser votre lien d'invitation personnel",
+      gateBody: "Cette page ne peut être ouverte que via le lien personnel que HYBOTE vous a envoyé. Si votre lien a expiré, nous vous en enverrons volontiers un nouveau.",
+      gateAction: 'Demander un nouveau lien',
+      formTitle: 'Préparer la connexion', formIntro: 'Ces informations associent le compte WhatsApp au bon client HYBOTE.',
+      companyLabel: 'Entreprise', emailLabel: 'Adresse e-mail professionnelle', referenceLabel: 'Numéro de client HYBOTE',
+      authority: "Je suis habilité(e) à connecter ce compte WhatsApp Business pour l'entreprise indiquée ci-dessus.",
+      privacyPrefix: "J'accepte la", privacyLink: 'Politique de confidentialité', privacySuffix: 'et le traitement des données de connexion.',
+      connectButton: 'Connecter avec WhatsApp', connecting: 'Connexion en cours …',
+      finePrint: 'Vous continuerez dans une boîte de dialogue sécurisée de Meta. HYBOTE ne reçoit jamais votre mot de passe Facebook.',
+      successTitle: 'WhatsApp est connecté', successBody: "La connexion du compte a été transmise en toute sécurité à HYBOTE. Nous finalisons maintenant l'activation technique.",
+      nextStepTitle: 'Dernière étape : ajoutez un moyen de paiement',
+      nextStepBody: "WhatsApp facture ses frais de messagerie directement sur votre propre compte professionnel. Ajoutez un moyen de paiement à votre compte WhatsApp Business dans Meta Business Suite — sans cela, l'envoi de messages s'arrête une fois le quota gratuit épuisé.",
+      nextStepAction: 'Ouvrir les paramètres de facturation chez Meta',
+      backHome: 'Retour à HYBOTE', support: "Besoin d'aide ?", terms: 'Conditions', deletion: 'Suppression des données',
+      waba: 'Compte WhatsApp', phone: 'Numéro de téléphone', expires: 'Renouveler avant le', mode: 'Mode',
+      modeCoexistence: "Coexistence — application et API sur le même numéro", modeDedicated: 'Numéro API dédié',
+      invalidForm: 'Veuillez accepter les deux confirmations.',
+      sdkUnavailable: 'La boîte de dialogue Meta n\'a pas pu être chargée. Désactivez les bloqueurs de contenu pour cette page et réessayez.',
+      cancelled: "La connexion a été annulée. Aucune modification n'a été effectuée.",
+      metaError: "Meta n'a pas pu finaliser la connexion. Réessayez ou contactez HYBOTE.",
+      serverError: "La connexion n'a pas pu être enregistrée en toute sécurité. Réessayez ou contactez HYBOTE.",
+      pinConflict: "Ce numéro possède déjà son propre code PIN de vérification en deux étapes. Veuillez contacter HYBOTE — nous finaliserons l'activation avec vous.",
+      registrationLimited: "Meta bloque temporairement l'enregistrement de ce numéro. Réessayez dans 72 heures ou contactez HYBOTE.",
+      numberNotVerified: "Ce numéro de téléphone n'est pas encore vérifié chez Meta. Terminez la vérification puis réessayez.",
+      wabaNotAuthorized: "L'autorisation ne couvrait pas le compte WhatsApp sélectionné. Recommencez et sélectionnez la bonne entreprise.",
+      tooManyAttempts: 'Trop de tentatives. Veuillez patienter quelques minutes.',
+      inviteInvalid: "Votre lien d'invitation n'est plus valide. Veuillez demander un nouveau lien à HYBOTE."
     }
   };
 
@@ -140,6 +224,7 @@
     WABA_NOT_AUTHORIZED: 'wabaNotAuthorized',
     TOKEN_NOT_VALID: 'wabaNotAuthorized',
     TOO_MANY_ATTEMPTS: 'tooManyAttempts',
+    PHONE_NUMBER_UNRESOLVED: 'wabaNotAuthorized',
     INVITE_INVALID: 'inviteInvalid'
   };
 
@@ -148,6 +233,7 @@
 
   const state = {
     language: 'en',
+    invite: null,
     csrfToken: '',
     authCode: '',
     sessionInfo: null,
@@ -254,7 +340,10 @@
     const message = parseMetaMessage(event.data);
     if (!message || message.type !== 'WA_EMBEDDED_SIGNUP') return;
 
-    if (message.event === 'FINISH' && message.data) {
+    // v4 meldet FINISH; der Coexistence-Dialog meldet
+    // FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING und liefert dabei nur die WABA –
+    // die Nummer ermittelt der Server aus der WABA.
+    if ((message.event === 'FINISH' || message.event === 'FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING') && message.data) {
       state.sessionInfo = {
         businessId: message.data.business_id || '',
         wabaId: message.data.waba_id || '',
@@ -272,7 +361,7 @@
 
   async function completeConnection() {
     if (state.submitting !== true || !state.authCode || !state.sessionInfo || !state.csrfToken) return;
-    if (!state.sessionInfo.wabaId || !state.sessionInfo.phoneNumberId) return;
+    if (!state.sessionInfo.wabaId) return;
 
     try {
       const response = await fetch('/api/meta/complete', {
@@ -360,9 +449,15 @@
         response_type: 'code',
         override_default_response_type: true,
         extras: {
-          setup: {},
-          featureType: '',
-          sessionInfoVersion: SESSION_INFO_VERSION
+          // Vorbefuellung aus dem signierten Einladungs-Token – mehr Branding
+          // erlaubt Metas Dialog nicht.
+          setup: {
+            business: {
+              name: (state.invite && state.invite.company) || '',
+              email: (state.invite && state.invite.email) || ''
+            }
+          },
+          featureType: COEXISTENCE_FEATURE_TYPE
         }
       });
     } catch (_error) {
@@ -390,13 +485,26 @@
 
   const requestedLanguage = params.get('lang');
   const browserLanguage = (navigator.language || '').slice(0, 2);
-  applyLanguage(translations[requestedLanguage] ? requestedLanguage : (translations[browserLanguage] ? browserLanguage : 'en'));
+
+  /** Reihenfolge: ?lang (Sprachpille) → Sprache aus dem Einladungs-Token (im
+   *  Sales Pilot gewaehlt) → Browsersprache → Englisch. Deshalb wird die
+   *  Einladung VOR der Sprache aufgeloest und das SDK erst danach geladen. */
+  function resolveLanguage(invite) {
+    if (translations[requestedLanguage]) return requestedLanguage;
+    if (invite && translations[invite.language]) return invite.language;
+    if (translations[browserLanguage]) return browserLanguage;
+    return 'en';
+  }
+
+  applyLanguage(translations[requestedLanguage] ? requestedLanguage : 'en');
 
   loadInvite().then((invite) => {
+    applyLanguage(resolveLanguage(invite));
     if (!invite) {
       document.getElementById('gate-view').hidden = false;
       return;
     }
+    state.invite = invite;
     document.getElementById('company-name').value = invite.company;
     document.getElementById('work-email').value = invite.email;
     if (invite.customerReference) {

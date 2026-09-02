@@ -160,22 +160,46 @@ async function registerIfNeeded(accessToken, phoneNumberId, phone) {
 }
 
 /** Stoesst bei Coexistence die Uebernahme von Kontakten und Verlauf an.
- *  Das Zeitfenster betraegt 24 Stunden ab Abschluss des Signups, deshalb hier
- *  und nicht in einem spaeteren Cron. Bewusst nicht fatal: schlaegt der Aufruf
- *  fehl, ist die Nummer hoechstwahrscheinlich keine Coexistence-Nummer. Das
- *  Ergebnis landet im Audit-Log, damit der erste echte Durchlauf die exakte
- *  Signatur dieses Endpunkts belegt statt sie zu vermuten. */
+ *  Metas Doku verlangt zwei getrennte Aufrufe mit sync_type, beide im
+ *  24-Stunden-Fenster ab Abschluss des Signups – deshalb hier und nicht in
+ *  einem spaeteren Cron. Bewusst nicht fatal: schlaegt der erste Aufruf fehl,
+ *  ist die Nummer hoechstwahrscheinlich keine Coexistence-Nummer. Das
+ *  Ergebnis beider Aufrufe landet im Audit-Log. */
 async function syncCoexistenceData(accessToken, phoneNumberId) {
-  try {
-    await graphJson(`${phoneNumberId}/smb_app_data`, accessToken, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messaging_product: 'whatsapp' })
-    });
-    return { coexistence: true, detail: 'SYNC_STARTED' };
-  } catch (error) {
-    return { coexistence: false, detail: `SYNC_SKIPPED:${error.metaCode ?? error.status ?? 'unknown'}` };
+  const results = [];
+  let anyOk = false;
+  for (const syncType of ['smb_app_state_sync', 'history']) {
+    try {
+      await graphJson(`${phoneNumberId}/smb_app_data`, accessToken, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messaging_product: 'whatsapp', sync_type: syncType })
+      });
+      results.push(`${syncType}:ok`);
+      anyOk = true;
+    } catch (error) {
+      results.push(`${syncType}:${error.metaCode ?? error.status ?? 'unknown'}`);
+      // Ohne Kontakte-Sync ist die Nummer keine Coexistence-Nummer; der
+      // Verlaufs-Sync braucht dann gar nicht erst versucht zu werden.
+      if (syncType === 'smb_app_state_sync') break;
+    }
   }
+  return { coexistence: anyOk, detail: anyOk ? `SYNC_STARTED;${results.join(';')}` : `SYNC_SKIPPED;${results.join(';')}` };
+}
+
+/** Der Coexistence-Dialog meldet im Abschluss-Event nur die WABA, nicht die
+ *  Nummer. Dann wird die Nummer aus der WABA gelesen: bei genau einer Nummer
+ *  diese, sonst die, die in der Business App laeuft. */
+async function resolvePhoneNumberId(accessToken, wabaId, phoneNumberId) {
+  if (phoneNumberId) return phoneNumberId;
+  const payload = await graphJson(`${wabaId}/phone_numbers?fields=id,display_phone_number,status,platform_type,is_on_biz_app`, accessToken);
+  const numbers = Array.isArray(payload.data) ? payload.data.filter((entry) => validId(String(entry.id || ''))) : [];
+  if (numbers.length === 1) return String(numbers[0].id);
+  const onBizApp = numbers.find((entry) => entry.is_on_biz_app === true || String(entry.platform_type || '').toUpperCase() === 'SMB_APP');
+  if (onBizApp) return String(onBizApp.id);
+  const error = new Error('META_PHONE_NUMBER_UNRESOLVED');
+  error.code = 'PHONE_NUMBER_UNRESOLVED';
+  throw error;
 }
 
 async function n8nJson(baseUrl, apiKey, path, options = {}) {
@@ -328,9 +352,9 @@ module.exports = async function handler(request, response) {
   const code = cleanText(body.code, 4096);
   const businessId = cleanText(body.businessId, 30);
   const wabaId = cleanText(body.wabaId, 30);
-  const phoneNumberId = cleanText(body.phoneNumberId, 30);
+  const requestedPhoneNumberId = cleanText(body.phoneNumberId, 30);
 
-  if (code.length < 20 || !validId(wabaId) || !validId(phoneNumberId) || (businessId && !validId(businessId))
+  if (code.length < 20 || !validId(wabaId) || (requestedPhoneNumberId && !validId(requestedPhoneNumberId)) || (businessId && !validId(businessId))
       || body.authorityAccepted !== true || body.privacyAccepted !== true) {
     return response.status(400).json({ ok: false, code: 'INVALID_ONBOARDING_DATA' });
   }
@@ -343,7 +367,7 @@ module.exports = async function handler(request, response) {
     invite_id: invite.inviteId,
     company_name: invite.company,
     waba_id: wabaId,
-    phone_number_id: phoneNumberId
+    phone_number_id: requestedPhoneNumberId
   };
   const audit = (outcome, detail) => writeAuditRow({
     baseUrl: n8nBaseUrl, apiKey: n8nApiKey, tableId: n8nLogTableId,
@@ -356,6 +380,8 @@ module.exports = async function handler(request, response) {
     const obtainedAt = new Date();
 
     const tokenInfo = await assertTokenCoversWaba(accessToken, appSecret, wabaId);
+    const phoneNumberId = await resolvePhoneNumberId(accessToken, wabaId, requestedPhoneNumberId);
+    auditBase.phone_number_id = phoneNumberId;
     // Metas Business-Integration-Token laufen je nach Konfiguration gar nicht ab.
     // expires_in aus dem Code-Tausch und expires_at aus debug_token koennen
     // beide 0 bzw. leer sein – dann wird bewusst kein Ablaufdatum geschrieben,
@@ -398,7 +424,9 @@ module.exports = async function handler(request, response) {
       wabaId
     });
 
-    const tenantKey = invite.customerReference || `waba_${wabaId}`;
+    // tenant_key kommt aus dem Sales Pilot (im Token). Aeltere Links tragen ihn
+    // als ref; ganz ohne beides bleibt die WABA-ID der Schluessel.
+    const tenantKey = invite.tenantKey || invite.customerReference || `waba_${wabaId}`;
     await upsertTenant({
       baseUrl: n8nBaseUrl,
       apiKey: n8nApiKey,
@@ -442,6 +470,9 @@ module.exports = async function handler(request, response) {
     await audit('FAILED', `${error.code || error.message}:${error.metaCode ?? error.status ?? ''}`);
     if (error.code === 'WABA_NOT_AUTHORIZED' || error.code === 'TOKEN_NOT_VALID') {
       return response.status(403).json({ ok: false, code: error.code });
+    }
+    if (error.code === 'PHONE_NUMBER_UNRESOLVED') {
+      return response.status(409).json({ ok: false, code: error.code });
     }
     return response.status(502).json({ ok: false, code: 'ONBOARDING_COMPLETION_FAILED' });
   }
