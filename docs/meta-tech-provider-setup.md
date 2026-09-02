@@ -175,28 +175,33 @@ Der Test aus Schritt 3 gehört nach jedem größeren Wechsel der Vercel-Node-Run
 
 ## Mandantenmodell
 
-Jeder Kunde behält sein eigenes Meta Business Portfolio, seine WABA und seine Telefonnummer. Die eindeutige Zuordnung erfolgt mindestens über:
+Jeder Kunde behält sein eigenes Meta Business Portfolio, seine WABA und seine Telefonnummer.
+Auf der gemeinsamen n8n-Instanz bekommt jeder Kunde **einen Workflow-Klon der Vorlage, ein eigenes
+Tabellenpaar (Verlauf + Puffer) und eine eigene Konfigurationszeile** – Trennung durch
+Systemgrenze, nicht durch Filterdisziplin. Details und die sechs Stellen einer Bereitstellung:
+`docs/kundenagent-vorlage.md`.
 
-- HYBOTE-Kunden-ID
-- Meta Business ID
-- WABA ID
-- Phone Number ID
-- Token-Ablaufzeit
-- Workflow-/Agent-ID in n8n
+Verteilung seit Stufe C (02.09.2026): `WhatsApp Gateway v2 (HYBOTE)` dedupliziert, bestimmt die
+Ereignisart (`message`, `echo`, `history_import`, `status`, `account`), sucht den Mandanten in
+`wa_tenants` über `metadata.phone_number_id`, heftet die Zeile als `tenant` an die Nutzlast und
+ruft den Workflow aus `workflow_id` auf – **nur** bei `status = live`. Kein oder nicht-liver
+Mandant ⇒ Telegram-Alarm, nie stiller Verlust. Status-Updates außer `failed` werden verworfen.
 
-Keine Konversation, kein Token und keine CRM-Verbindung darf zwischen Mandanten geteilt werden.
+Der Kundenagent (Vorlage: `Layla v2 – WhatsApp Agent (HYBOTE)`) liest Tabellen-IDs und
+`tenant_key` aus `tenant`, Persona, Leistungswissen und Termin-Playbook aus `wa_tenant_config`.
+Inhaber-Echos (`smb_message_echoes`) werden als Rolle `owner` gespeichert, ohne Antwort; der
+Coexistence-Verlauf (`history`) wird je Thread einmalig importiert.
 
-Die n8n-Datentabelle `wa_tenants` enthält `tenant_key`, `company_name`, `work_email`,
-`customer_reference`, `meta_business_id`, `waba_id`, `phone_number_id`, `credential_id`,
-`workflow_id`, `status`, `token_expires_at`, `platform_type`, `display_phone_number`,
-`coexistence`, `registered_at` und `provisioned_at`.
-
-Der Upsert-Schlüssel ist die `phone_number_id`, nicht die `waba_id`: Eine WABA kann mehrere
-Nummern tragen, und mit `waba_id` als Filter überschreibt die zweite Nummer die Zeile der ersten.
+`wa_tenants` enthält `tenant_key`, `company_name`, `work_email`, `customer_reference`,
+`meta_business_id`, `waba_id`, `phone_number_id`, `credential_id`, `workflow_id`, `status`,
+`token_expires_at`, `platform_type`, `display_phone_number`, `coexistence`, `registered_at`,
+`provisioned_at`, `history_table_id` und `buffer_table_id`. Der Upsert-Schlüssel ist die
+`phone_number_id`, nicht die `waba_id`: Eine WABA kann mehrere Nummern tragen.
 
 Jeder Onboarding-Versuch – Erfolg wie Fehlschlag – hinterlässt eine Zeile in `wa_onboarding_log`.
-Das Schreiben ist bewusst nicht fatal: ein fehlendes Log darf ein funktionierendes Onboarding
-nicht verhindern. Der bestehende aktive Workflow `WhatsApp Gateway (HYBOTE)` bleibt bis zu einem erfolgreichen Pilot-Test unverändert.
+Das Schreiben ist bewusst nicht fatal. Das alte Gateway `WhatsApp Gateway (HYBOTE)` bleibt bis zum
+Abschluss der Umschaltung deaktivierbar als Rückweg erhalten und wird erst nach sieben stabilen
+Tagen archiviert.
 
 ## Token-Betrieb
 
