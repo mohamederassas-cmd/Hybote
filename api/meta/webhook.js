@@ -160,12 +160,17 @@ function webhookConfig() {
   };
 }
 
-function configured(config) {
-  return Boolean(config.appSecret)
-    && config.verifyToken.length >= 32
-    && config.webhookUrl.startsWith('https://')
-    && /^[A-Za-z0-9-]{3,64}$/.test(config.authHeader)
-    && config.authValue.length >= 32;
+// Liefert die Namen der Variablen, die den Endpunkt blockieren – niemals deren
+// Werte. Eine Fehlkonfiguration kostet jede eingehende Nachricht, also muss aus
+// dem Log ohne Raten hervorgehen, welche der fuenf Variablen fehlt.
+function misconfigured(config) {
+  const missing = [];
+  if (!config.appSecret) missing.push('META_APP_SECRET');
+  if (config.verifyToken.length < 32) missing.push('META_WEBHOOK_VERIFY_TOKEN');
+  if (!config.webhookUrl.startsWith('https://')) missing.push('N8N_WHATSAPP_WEBHOOK_URL');
+  if (!/^[A-Za-z0-9-]{3,64}$/.test(config.authHeader)) missing.push('N8N_WEBHOOK_AUTH_HEADER');
+  if (config.authValue.length < 32) missing.push('N8N_WEBHOOK_AUTH_VALUE');
+  return missing;
 }
 
 async function forwardToN8n(rawBody, signatureHeader, deliveryId, config) {
@@ -215,9 +220,11 @@ function handleVerification(request, response) {
 
 async function handleDelivery(request, response) {
   const config = webhookConfig();
-  if (!configured(config)) {
+  const missing = misconfigured(config);
+  if (missing.length > 0) {
     // 503 statt 200: eine Fehlkonfiguration darf keine Nachrichten
     // stillschweigend verschlucken, Meta soll wiederholen.
+    console.error('meta_webhook not_configured missing=%s', missing.join(','));
     return response.status(503).json({ ok: false, code: 'WEBHOOK_NOT_CONFIGURED' });
   }
 
