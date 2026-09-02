@@ -2,7 +2,7 @@
   'use strict';
 
   const META_APP_ID = '1580264870470342';
-  const META_CONFIG_ID = '1048835977913160';
+  const META_CONFIG_ID = '2471938683272654';
   const META_GRAPH_VERSION = 'v26.0';
   // Embedded Signup v4: Version und Session-Info-Format kommen aus der
   // Facebook-Login-for-Business-Konfiguration (config_id), nicht mehr aus
