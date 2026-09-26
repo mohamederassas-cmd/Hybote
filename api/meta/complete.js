@@ -348,6 +348,10 @@ module.exports = async function handler(request, response) {
   if (!invite) {
     return response.status(401).json({ ok: false, code: 'INVITE_INVALID' });
   }
+  // Ein E-Mail- oder Instagram-Link darf nie einen WhatsApp-Signup abschliessen (Kanal steckt signiert im Token).
+  if (invite.channel && invite.channel !== 'whatsapp') {
+    return response.status(400).json({ ok: false, code: 'INVITE_CHANNEL_MISMATCH' });
+  }
 
   const code = cleanText(body.code, 4096);
   const businessId = cleanText(body.businessId, 30);

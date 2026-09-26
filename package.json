@@ -1,0 +1,9 @@
+{
+  "name": "hybote-webseite",
+  "private": true,
+  "description": "hybote.ai – statische Seiten + Vercel Functions (Meta Embedded Signup, Kunden-Postfach-Anbindung). Deploy per git push origin main.",
+  "dependencies": {
+    "imapflow": "^1.0.164",
+    "nodemailer": "^6.9.16"
+  }
+}

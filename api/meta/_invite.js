@@ -17,6 +17,20 @@
 const crypto = require('node:crypto');
 
 const INVITE_LANGUAGES = ['en', 'de', 'ar', 'ru', 'fr'];
+// Kanal (26.09.2026): whatsapp = meta-connect.html, instagram + email = connect.html. Alte Tokens ohne Kanal = whatsapp.
+const INVITE_CHANNELS = ['whatsapp', 'instagram', 'email'];
+const MAIL_PROVIDERS = ['microsoft', 'google', 'imap'];
+
+function normalizeChannel(value) {
+  const channel = String(value || '').toLowerCase();
+  return INVITE_CHANNELS.includes(channel) ? channel : 'whatsapp';
+}
+
+function normalizeProviders(value) {
+  const list = Array.isArray(value) ? value.map((v) => String(v).toLowerCase()) : [];
+  const valid = MAIL_PROVIDERS.filter((p) => list.includes(p));
+  return valid.length ? valid : MAIL_PROVIDERS.slice();
+}
 
 function b64url(buffer) {
   return buffer.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -54,7 +68,10 @@ function verifyInviteToken(token) {
     if (typeof data.exp !== 'number' || data.exp * 1000 < Date.now()) return null;
     const customerReference = typeof data.ref === 'string' ? data.ref.slice(0, 120) : '';
     const tenantKey = typeof data.tenant_key === 'string' && data.tenant_key ? data.tenant_key.slice(0, 120) : customerReference;
+    const channel = normalizeChannel(data.channel);
     return {
+      channel,
+      providers: channel === 'email' ? normalizeProviders(data.providers) : [],
       inviteId: typeof data.jti === 'string' ? data.jti : '',
       company: data.company.slice(0, 120),
       email: data.email.toLowerCase().slice(0, 254),
@@ -70,16 +87,17 @@ function verifyInviteToken(token) {
 
 /** Nur fuer Tests und das Erzeugen von Reviewer-Links per Skript. Im Regelbetrieb
  *  signiert der Sales Pilot, nicht Vercel. */
-function signInviteToken({ company, email, customerReference = '', tenantKey = '', language = 'en', inviteId = '', ttlSeconds = 14 * 24 * 3600 }) {
+function signInviteToken({ company, email, customerReference = '', tenantKey = '', language = 'en', inviteId = '', ttlSeconds = 14 * 24 * 3600, channel = 'whatsapp', providers }) {
   const secret = process.env.META_INVITE_SECRET || '';
   if (secret.length < 32) throw new Error('META_INVITE_SECRET fehlt oder ist zu kurz');
   const now = Math.floor(Date.now() / 1000);
   const payload = b64url(Buffer.from(JSON.stringify({
     company, email, ref: customerReference, tenant_key: tenantKey || customerReference,
-    lang: normalizeLanguage(language), jti: inviteId, iat: now, exp: now + ttlSeconds
+    lang: normalizeLanguage(language), jti: inviteId, iat: now, exp: now + ttlSeconds,
+    channel: normalizeChannel(channel), ...(normalizeChannel(channel) === 'email' ? { providers: normalizeProviders(providers) } : {})
   })));
   const signature = b64url(crypto.createHmac('sha256', secret).update(payload).digest());
   return `${payload}.${signature}`;
 }
 
-module.exports = { verifyInviteToken, signInviteToken, normalizeLanguage, b64url, INVITE_LANGUAGES };
+module.exports = { verifyInviteToken, signInviteToken, normalizeLanguage, normalizeChannel, normalizeProviders, b64url, INVITE_LANGUAGES, INVITE_CHANNELS, MAIL_PROVIDERS };

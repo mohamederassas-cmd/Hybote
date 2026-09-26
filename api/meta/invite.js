@@ -28,6 +28,8 @@ module.exports = async function handler(request, response) {
       customerReference: invite.customerReference,
       tenantKey: invite.tenantKey,
       language: invite.language,
+      channel: invite.channel,
+      providers: invite.providers,
       expiresAt: invite.expiresAt
     }
   });

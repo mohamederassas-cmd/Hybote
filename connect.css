@@ -1,0 +1,18 @@
+/* connect.html (26.09.2026): Ergaenzungen zu meta-connect.css fuer Anbieterwahl und IMAP-Formular. */
+.provider-list { display: grid; gap: 12px; margin: 6px 0 18px; }
+.provider-button { display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: center; width: 100%; padding: 16px 18px; border: 1px solid rgba(148, 163, 184, 0.22); border-radius: 12px; color: var(--text); background: rgba(7, 11, 22, 0.58); text-align: start; cursor: pointer; transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+.provider-button:hover, .provider-button:focus-visible { border-color: rgba(56, 189, 248, 0.75); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.09); outline: none; }
+.provider-button:disabled { opacity: 0.45; cursor: not-allowed; }
+.provider-icon { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; background: rgba(56, 189, 248, 0.07); }
+.provider-icon svg { width: 22px; height: 22px; fill: var(--accent-light); }
+.provider-text { display: grid; gap: 3px; }
+.provider-text strong { font-size: 13px; font-weight: 500; }
+.provider-text small { color: var(--muted); font-size: 11px; line-height: 1.5; }
+.field-grid { display: grid; grid-template-columns: 1fr 110px; gap: 12px 14px; }
+.field-grid label { display: grid; gap: 9px; color: #dbe5f3; font-size: 11px; font-weight: 500; letter-spacing: 0.04em; }
+input[type="password"] { width: 100%; height: 48px; border: 1px solid rgba(148, 163, 184, 0.22); border-radius: 10px; outline: none; padding: 0 14px; color: var(--text); background: rgba(7, 11, 22, 0.58); direction: ltr; }
+input[type="password"]:focus { border-color: rgba(56, 189, 248, 0.75); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.09); }
+#imap-address, #imap-user, #imap-host, #smtp-host, #imap-port, #smtp-port { direction: ltr; text-align: start; }
+.back-link { justify-self: center; border: 0; background: none; cursor: pointer; }
+.provider-badge { display: inline-block; margin-top: 8px; padding: 4px 9px; border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 99px; color: var(--muted); font-size: 10px; letter-spacing: 0.04em; }
+@media (max-width: 480px) { .field-grid { grid-template-columns: 1fr; } }
