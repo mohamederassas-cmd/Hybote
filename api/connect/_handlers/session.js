@@ -1,7 +1,7 @@
 // CSRF-Cookie fuer den IMAP-Weg (POST aus dem Browser). Die OAuth-Wege brauchen es nicht,
 // sie sind ueber State + Nonce-Cookie gebunden.
 const crypto = require('node:crypto');
-const { allowedOrigins, cookie, COOKIE_CSRF } = require('./_state.js');
+const { allowedOrigins, cookie, COOKIE_CSRF } = require('../_state.js');
 
 module.exports = async function handler(request, response) {
   response.setHeader('Cache-Control', 'no-store, max-age=0');

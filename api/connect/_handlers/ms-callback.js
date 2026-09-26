@@ -4,7 +4,7 @@
 const { resumeOAuth, redirectToPage, clientFingerprint, baseUrl } = require('../_state.js');
 const { configured, ensureCredential } = require('../_n8n.js');
 const { connectMailbox, failMailbox, credentialName } = require('../_mailTenant.js');
-const { SCOPE } = require('./start.js');
+const { SCOPE } = require('./ms-start.js');
 
 async function postForm(url, params) {
   const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json' }, body: new URLSearchParams(params).toString() });

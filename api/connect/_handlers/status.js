@@ -1,6 +1,6 @@
 // Verbindungsstand eines Mandanten fuer die Kundenseite (nach dem OAuth-Redirect und beim Wiederbesuch).
-const { verifyInviteToken } = require('../meta/_invite.js');
-const { configured, getMailTenant } = require('./_n8n.js');
+const { verifyInviteToken } = require('../../meta/_invite.js');
+const { configured, getMailTenant } = require('../_n8n.js');
 
 module.exports = async function handler(request, response) {
   response.setHeader('Cache-Control', 'no-store, max-age=0');

@@ -19,13 +19,14 @@ tragen nur Zuordnung und Status.
 
 - `connect.html`, `connect.js`, `connect.css` – Kundenseite für Instagram + E-Mail (liest den Kanal aus dem Token,
   WhatsApp-Links werden auf `meta-connect.html` umgeleitet).
-- `api/connect/invite.js` – Token auflösen + Feature-Flags (`instagramEnabled`, `mailConfigured`, `microsoft`, `google`).
-- `api/connect/status.js` – Verbindungsstand aus `mail_tenants` (Erfolgsseite nach Redirect, „bereits verbunden“).
-- `api/connect/ms/start.js`, `api/connect/ms/callback.js` – Microsoft Entra, Authorization Code, Authority `common`.
-- `api/connect/google/start.js`, `api/connect/google/callback.js` – Google OAuth 2.0 mit `access_type=offline`.
-- `api/connect/imap/verify.js` – IMAP/SMTP prüfen (imapflow, nodemailer), zwei Credentials anlegen.
-- `api/connect/session.js` – CSRF-Cookie nur für den IMAP-POST.
-- `api/connect/ig/complete.js` – Stub (503 `INSTAGRAM_NOT_ENABLED`).
+- `api/connect/[...path].js` – eine Function für alle Pfade (Vercel-Hobby-Limit 12 Functions), verteilt an `api/connect/_handlers/*`.
+- `api/connect/_handlers/invite.js` – Token auflösen + Feature-Flags (`instagramEnabled`, `mailConfigured`, `microsoft`, `google`).
+- `api/connect/_handlers/status.js` – Verbindungsstand aus `mail_tenants` (Erfolgsseite nach Redirect, „bereits verbunden“).
+- `api/connect/_handlers/ms-start.js`, `ms-callback.js` – Microsoft Entra, Authorization Code, Authority `common`.
+- `api/connect/_handlers/google-start.js`, `google-callback.js` – Google OAuth 2.0 mit `access_type=offline`.
+- `api/connect/_handlers/imap-verify.js` – IMAP/SMTP prüfen (imapflow, nodemailer), zwei Credentials anlegen.
+- `api/connect/_handlers/session.js` – CSRF-Cookie nur für den IMAP-POST.
+- `api/connect/_handlers/ig-complete.js` – Stub (503 `INSTAGRAM_NOT_ENABLED`).
 - `api/connect/_state.js` – OAuth-State (HMAC), Cookies `hybote_connect_nonce` / `hybote_connect_invite`
   (**SameSite=Lax**, weil der Callback ein Cross-Site-Redirect ist), Rate-Limit, Redirect zurück zur Seite.
 - `api/connect/_n8n.js`, `api/connect/_mailTenant.js` – n8n Public API (Credential anlegen/aktualisieren,
@@ -79,4 +80,4 @@ Fehlercodes in der URL (`?error=`): `INVITE_INVALID`, `INVITE_CHANNEL_MISMATCH`,
 
 - Kunden-E-Mail-Agent in n8n (Vorlage klonen wie bei WhatsApp) – Folgevorhaben.
 - `mail_status = error` aus n8n-Fehlern (der Sync liest nur).
-- Instagram-Login (Code-Tausch, Scopes, `ig_tenants`) – nach Meta-Freigabe in `api/connect/ig/complete.js`.
+- Instagram-Login (Code-Tausch, Scopes, `ig_tenants`) – nach Meta-Freigabe in `api/connect/_handlers/ig-complete.js`.

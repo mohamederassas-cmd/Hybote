@@ -1,7 +1,7 @@
 // Loest einen Einladungslink fuer connect.html auf (Instagram + E-Mail). Read-only, same-origin GET,
 // gibt nur zurueck, was signiert im Link steht, plus Feature-Flags fuer die Seite.
-const { verifyInviteToken } = require('../meta/_invite.js');
-const { configured } = require('./_n8n.js');
+const { verifyInviteToken } = require('../../meta/_invite.js');
+const { configured } = require('../_n8n.js');
 
 module.exports = async function handler(request, response) {
   response.setHeader('Cache-Control', 'no-store, max-age=0');

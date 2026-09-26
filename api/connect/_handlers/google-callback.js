@@ -2,7 +2,7 @@
 const { resumeOAuth, redirectToPage, clientFingerprint, baseUrl } = require('../_state.js');
 const { configured, ensureCredential } = require('../_n8n.js');
 const { connectMailbox, failMailbox, credentialName } = require('../_mailTenant.js');
-const { SCOPE } = require('./start.js');
+const { SCOPE } = require('./google-start.js');
 
 module.exports = async function handler(request, response) {
   const ctx = resumeOAuth(request, response, 'google');
