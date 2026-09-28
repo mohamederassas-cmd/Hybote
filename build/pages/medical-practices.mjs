@@ -214,7 +214,7 @@ export default {
       h2: { en: 'How we work.', de: 'Wie wir arbeiten.', ar: 'كيف نعمل.' },
       steps: [
         {
-          t: { en: 'Analysis', de: 'Analyse', ar: 'التحليل' },
+          t: { en: 'Understand', de: 'Verstehen', ar: 'الفهم' },
           d: {
             en: 'We look at your call volume, when the peaks occur, which enquiries recur and how many calls currently go unanswered.',
             de: 'Wir sehen uns Ihr Anrufaufkommen an, wann die Spitzen liegen, welche Anliegen sich wiederholen und wie viele Anrufe heute unbeantwortet bleiben.',
@@ -222,7 +222,7 @@ export default {
           },
         },
         {
-          t: { en: 'Design', de: 'Konzeption', ar: 'التصميم' },
+          t: { en: 'Design', de: 'Entwerfen', ar: 'التصميم' },
           d: {
             en: 'We define together what HYBOTE may handle, what it must never say and exactly when a call is escalated to your team.',
             de: 'Wir legen gemeinsam fest, was HYBOTE übernehmen darf, was es niemals sagen darf und wann genau ein Anruf an Ihr Team eskaliert wird.',
@@ -230,7 +230,7 @@ export default {
           },
         },
         {
-          t: { en: 'Build', de: 'Umsetzung', ar: 'التنفيذ' },
+          t: { en: 'Build', de: 'Bauen', ar: 'البناء' },
           d: {
             en: 'We build the assistant on your practice information, in a calm and professional tone, in the languages your patients speak.',
             de: 'Wir bauen den Assistenten auf Ihren Praxisinformationen auf, in ruhigem, professionellem Ton und in den Sprachen Ihrer Patienten.',
@@ -238,7 +238,7 @@ export default {
           },
         },
         {
-          t: { en: 'Integration', de: 'Integration', ar: 'التكامل' },
+          t: { en: 'Integrate', de: 'Anbinden', ar: 'الربط' },
           d: {
             en: 'Practice calendar and phone system are connected, so appointments and messages appear where your team already works.',
             de: 'Praxiskalender und Telefonanlage werden angebunden, damit Termine und Nachrichten dort erscheinen, wo Ihr Team ohnehin arbeitet.',
@@ -299,9 +299,9 @@ export default {
             ar: 'هل يعمل مع برنامج إدارة العيادة لدينا؟',
           },
           a: {
-            en: 'In most cases yes. Where a direct connection is not possible, HYBOTE works against a separate booking calendar that your team keeps in view. We clarify this in the analysis, before anything is promised.',
-            de: 'In den meisten Fällen ja. Wo eine direkte Anbindung nicht möglich ist, arbeitet HYBOTE gegen einen separaten Buchungskalender, den Ihr Team im Blick behält. Das klären wir in der Analyse, bevor etwas zugesagt wird.',
-            ar: 'في معظم الحالات نعم. وحيث يتعذّر الربط المباشر، يعمل HYBOTE على تقويم حجز منفصل يبقى تحت نظر فريقك. ونوضّح ذلك في مرحلة التحليل قبل أي وعد.',
+            en: 'In most cases yes. Where a direct connection is not possible, HYBOTE works against a separate booking calendar that your team keeps in view. We clarify this at the start, before anything is promised.',
+            de: 'In den meisten Fällen ja. Wo eine direkte Anbindung nicht möglich ist, arbeitet HYBOTE gegen einen separaten Buchungskalender, den Ihr Team im Blick behält. Das klären wir zu Beginn, bevor etwas zugesagt wird.',
+            ar: 'في معظم الحالات نعم. وحيث يتعذّر الربط المباشر، يعمل HYBOTE على تقويم حجز منفصل يبقى تحت نظر فريقك. ونوضّح ذلك في البداية قبل أي وعد.',
           },
         },
         {

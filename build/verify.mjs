@@ -174,6 +174,13 @@ for (const [name, path] of BOOKING_PAGES) {
     'keine verbotenen Meta-Formulierungen':
       hits(/meta[- ]partner|official partner|offizieller partner|meta verified|powered by meta/i).length === 0,
     'alter Slogan "Hospitality Meets AI" nirgends': !/Hospitality Meets AI/i.test(h),
+    // Formsprache (Guide Kapitel 05): keine Schlagschatten, Gold nur im Hero, Blur nur auf Overlays
+    'keine Schlagschatten': !/box-shadow|drop-shadow/.test(h),
+    'Gold nur in der Hero-Headline und ihrem Unterstrich':
+      h.split('\n').filter((l) => /c9a053|e8c47a|fff6e2/i.test(l)).every((l) => l.includes('hero headline stays gold') || l.includes('hero-line')),
+    'Blur nur auf Header und Cookie-Banner':
+      h.split('\n').filter((l) => /backdrop-filter/.test(l)).every((l) => l.includes('id="nav"') || l.includes('id="cookie-banner"')),
+    'kein Gold-Token mehr im CSS': !/var\(--gold|var\(--teal/.test(h),
   });
 }
 

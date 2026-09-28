@@ -212,7 +212,7 @@ export default {
       h2: { en: 'How we work.', de: 'Wie wir arbeiten.', ar: 'كيف نعمل.' },
       steps: [
         {
-          t: { en: 'Analysis', de: 'Analyse', ar: 'التحليل' },
+          t: { en: 'Understand', de: 'Verstehen', ar: 'الفهم' },
           d: {
             en: 'We look at where your enquiries come from, how fast they are answered today and how many test drive appointments actually take place.',
             de: 'Wir sehen uns an, woher Ihre Anfragen kommen, wie schnell sie heute beantwortet werden und wie viele Probefahrttermine tatsächlich stattfinden.',
@@ -220,7 +220,7 @@ export default {
           },
         },
         {
-          t: { en: 'Design', de: 'Konzeption', ar: 'التصميم' },
+          t: { en: 'Design', de: 'Entwerfen', ar: 'التصميم' },
           d: {
             en: 'We define the conversation flow, which vehicle data may be shared and when a salesperson takes over.',
             de: 'Wir legen den Gesprächsverlauf fest, welche Fahrzeugdaten herausgegeben werden dürfen und wann ein Verkäufer übernimmt.',
@@ -228,7 +228,7 @@ export default {
           },
         },
         {
-          t: { en: 'Build', de: 'Umsetzung', ar: 'التنفيذ' },
+          t: { en: 'Build', de: 'Bauen', ar: 'البناء' },
           d: {
             en: 'We build the assistant on your inventory data, in your tone of voice, in the languages your customers speak.',
             de: 'Wir bauen den Assistenten auf Ihren Bestandsdaten auf, in Ihrer Tonalität und in den Sprachen Ihrer Kunden.',
@@ -236,7 +236,7 @@ export default {
           },
         },
         {
-          t: { en: 'Integration', de: 'Integration', ar: 'التكامل' },
+          t: { en: 'Integrate', de: 'Anbinden', ar: 'الربط' },
           d: {
             en: 'Inventory system, CRM and appointment calendar are connected, so every enquiry lands where your team already works.',
             de: 'Bestandssystem, CRM und Terminkalender werden angebunden, damit jede Anfrage dort landet, wo Ihr Team ohnehin arbeitet.',
@@ -309,9 +309,9 @@ export default {
             ar: 'كم يستغرق الأمر حتى يبدأ العمل؟',
           },
           a: {
-            en: 'First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it after the analysis.',
-            de: 'Erste Automatisierungen gehen meist innerhalb weniger Tage live. Der genaue Zeitplan hängt davon ab, wie Ihr Bestandssystem angebunden wird, und wir legen ihn nach der Analyse fest.',
-            ar: 'تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. ويعتمد الجدول الدقيق على طريقة ربط نظام المخزون، ونحدده بعد التحليل.',
+            en: 'First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it once we have mapped your processes.',
+            de: 'Erste Automatisierungen gehen meist innerhalb weniger Tage live. Der genaue Zeitplan hängt davon ab, wie Ihr Bestandssystem angebunden wird, und wir legen ihn fest, sobald wir Ihre Prozesse erfasst haben.',
+            ar: 'تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. ويعتمد الجدول الدقيق على طريقة ربط نظام المخزون، ونحدده بعد رصد عملياتك.',
           },
         },
         {

@@ -28,8 +28,8 @@
   <link rel="alternate" hreflang="x-default" href="https://hybote.ai/car-dealerships" />
   <link rel="canonical" href="https://hybote.ai/car-dealerships" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preload" href="/fonts/montserrat-var.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="/fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link href="/fonts/fonts.css" rel="stylesheet" />
   <link rel="preconnect" href="https://assets.calendly.com" />
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
@@ -67,7 +67,7 @@
       text-transform: uppercase;
     }
     .lang-btn:hover { color: var(--fg); }
-    .lang-btn.active { color: var(--fg); border-bottom: 1px solid var(--gold); }
+    .lang-btn.active { color: var(--fg); border-bottom: 1px solid var(--accent); }
     .lang-sep { color: var(--a5); font-size: 0.6rem; }
   </style>
 
@@ -86,12 +86,8 @@
       --accent:      #38BDF8;   /* electric cyan-blue (AI / IT / Tech) */
       --accent-lt:   #7DD3FC;   /* light cyan */
       --accent-deep: #0EA5E9;   /* deep cyan for gradients / glows */
-      /* Legacy gold tokens repointed to the cyan accent. Brand gold is kept
-         deliberately only on the hero headline + hero underline (hardcoded). */
-      --gold:     var(--accent);
-      --gold-lt:  var(--accent-lt);
-      --teal:     var(--accent);
-      --teal-dim: #0e7490;
+      /* Gold is not a token: the brand gold lives only on the hero headline
+         (.grad-text) and the hero underline (.hero-line), both hardcoded. */
 
       /* ── Text palette ─────────────────────────────── */
       --fg:       #f5f1eb;
@@ -137,20 +133,31 @@
       letter-spacing: -0.02em;
       color: var(--fg);
     }
+    /* H2: Cormorant Garamond 400, italic emphasis, 2px cyan rule beneath (CI v2) */
     .t-h2 {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 200;
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      line-height: 1.1;
-      letter-spacing: -0.025em;
+      font-family: 'Cormorant Garamond', 'Montserrat', serif;
+      font-weight: 400;
+      font-size: clamp(2.2rem, 4.4vw, 3.6rem);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
       color: var(--fg);
     }
+    .t-h2 em { font-style: italic; }
+    .t-h2::after {
+      content: '';
+      display: block;
+      width: 56px;
+      height: 2px;
+      background: var(--accent);
+      margin-top: 22px;
+    }
+    /* H3: Montserrat 500 */
     .t-h3 {
       font-family: 'Montserrat', sans-serif;
-      font-weight: 300;
-      font-size: clamp(1rem, 1.8vw, 1.25rem);
+      font-weight: 500;
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
       line-height: 1.35;
-      letter-spacing: -0.01em;
+      letter-spacing: 0;
       color: var(--fg);
     }
     .t-body {
@@ -176,15 +183,14 @@
       color: var(--a3);
     }
 
-    /* ── Buttons ─────────────────────────────────────────────────── */
+    /* ── Buttons: flat, no gradient, no shadow, no lift ──────────── */
     .btn-dark {
       display: inline-flex;
       align-items: center;
       gap: 10px;
       padding: 13px 28px;
-      background: linear-gradient(135deg, var(--gold) 0%, #0ea5e9 50%, var(--gold-lt) 100%);
-      background-size: 200% 100%;
-      color: #080d1a;
+      background: var(--accent);
+      color: #070b16;
       font-family: 'Montserrat', sans-serif;
       font-weight: 500;
       font-size: 0.72rem;
@@ -193,29 +199,17 @@
       text-decoration: none;
       border: none;
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: background-position 400ms ease, transform 200ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 200ms ease;
+      transition: background 200ms ease;
     }
-    .btn-dark::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
-      transform: translateX(-100%);
-      transition: transform 600ms ease;
-    }
-    .btn-dark:hover { background-position: 100% 0; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(56,189,248,0.35), 0 2px 8px rgba(56,189,248,0.2); }
-    .btn-dark:hover::after { transform: translateX(100%); }
-    .btn-dark:active { transform: translateY(0); }
-    .btn-dark:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .btn-dark:hover { background: var(--accent-lt); }
+    .btn-dark:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
     .btn-outline {
       display: inline-flex;
       align-items: center;
       gap: 10px;
       padding: 13px 28px;
-      background: var(--glass);
+      background: transparent;
       color: var(--fg);
       font-family: 'Montserrat', sans-serif;
       font-weight: 400;
@@ -225,13 +219,10 @@
       text-decoration: none;
       border: 1px solid var(--line-med);
       cursor: pointer;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      transition: border-color 200ms ease, background 200ms ease, transform 200ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 200ms ease;
+      transition: border-color 200ms ease, background 200ms ease;
     }
-    .btn-outline:hover { border-color: var(--gold); background: rgba(56,189,248,0.08); transform: translateY(-2px); box-shadow: 0 4px 24px rgba(56,189,248,0.12); }
-    .btn-outline:active { transform: translateY(0); }
-    .btn-outline:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .btn-outline:hover { border-color: var(--accent); background: rgba(56,189,248,0.06); }
+    .btn-outline:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
     /* ── Nav link ────────────────────────────────────────────────── */
     .nav-link {
@@ -250,12 +241,12 @@
       position: absolute;
       bottom: 0; left: 0;
       width: 0; height: 1px;
-      background: var(--gold);
+      background: var(--accent);
       transition: width 220ms ease;
     }
     .nav-link:hover { color: var(--fg); }
     .nav-link:hover::after { width: 100%; }
-    .nav-link:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; }
+    .nav-link:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
 
     /* ── Verweis von einer Beispielrechnung auf die Branchenseite ─── */
     .case-link {
@@ -267,12 +258,12 @@
       font-weight: 400;
       font-size: 0.72rem;
       letter-spacing: 0.06em;
-      color: var(--gold-lt);
+      color: var(--accent-lt);
       text-decoration: none;
       transition: gap 200ms ease, color 180ms ease;
     }
     .case-link:hover { color: var(--fg); gap: 13px; }
-    .case-link:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; }
+    .case-link:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
     html[dir="rtl"] .case-link svg { transform: scaleX(-1); }
 
     /* ── Divider ─────────────────────────────────────────────────── */
@@ -292,7 +283,7 @@
       font-size: 0.65rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--accent);
       margin-bottom: 24px;
     }
     .sec-label::before {
@@ -300,21 +291,13 @@
       display: block;
       width: 24px;
       height: 1px;
-      background: var(--gold);
+      background: var(--accent);
     }
 
-    /* ── Cards ───────────────────────────────────────────────────── */
+    /* ── Card: flat panel (demo card, contact form) ─────────────── */
     .card {
-      border: 1px solid rgba(56,189,248,0.14);
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      transition: border-color 250ms ease, box-shadow 250ms ease, transform 250ms cubic-bezier(0.34,1.56,0.64,1);
-    }
-    .card:hover {
-      border-color: rgba(56,189,248,0.4);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(56,189,248,0.14);
-      transform: translateY(-3px);
+      border: 1px solid var(--line-med);
+      background: var(--s2);
     }
 
     /* ── Calendly booking card ───────────────────────────────────── */
@@ -326,9 +309,6 @@
       background:
         radial-gradient(80% 45% at 100% 0%, rgba(56,189,248,0.12), transparent 72%),
         rgba(9,15,30,0.88);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.36), 0 0 48px rgba(56,189,248,0.08);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
     }
     .calendly-card::before {
       content: '';
@@ -358,7 +338,6 @@
       height: 5px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 10px rgba(56,189,248,0.8);
       flex-shrink: 0;
     }
     .calendly-surface {
@@ -430,7 +409,6 @@
         width: 100vw;
         margin-inline: calc(50% - 50vw);
         border-inline: 0;
-        box-shadow: 0 18px 56px rgba(0,0,0,0.34), 0 0 32px rgba(56,189,248,0.07);
       }
       .calendly-card-head { padding: 28px 24px 22px; }
       .calendly-fallback { align-items: flex-start; padding: 18px 24px 22px; }
@@ -440,49 +418,149 @@
     @media (max-width: 360px) {
       #kontakt { padding-inline: 20px !important; }
       .calendly-fallback { flex-direction: column; gap: 8px; }
-      .service-grid { grid-template-columns: minmax(0, 1fr) !important; }
-      .service-grid .card-filled { padding: 28px !important; }
+      .tile, .tile--panel, .tile--band { padding: 28px; }
     }
 
     @media (max-width: 480px) {
       #nav-cta { display: none; }
     }
 
-    .card-filled {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(56,189,248,0.12);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      transition: background 250ms ease, border-color 250ms ease, box-shadow 250ms ease, transform 250ms cubic-bezier(0.34,1.56,0.64,1);
+    /* Header on tablets: keep nav labels on one line and drop the status text so nothing wraps.
+       !important is needed because setNav() writes inline display/gap values. */
+    .nav-link { white-space: nowrap; }
+    @media (max-width: 1023px) {
+      #d-nav { gap: 24px !important; }
+      #nav-live { display: none !important; }
     }
-    .card-filled:hover {
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(56,189,248,0.35);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(56,189,248,0.12);
-      transform: translateY(-3px);
+
+    /* ── Tiles: one component for every grid ───────────────────────
+       Hairline gaps (1px) on a --line-med ground, opaque --s2 surfaces, hover to --s3.
+       Grid stretch keeps every tile in a row the same height. Column counts divide
+       the tile count evenly at every breakpoint, so no tile is ever left alone. */
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+      gap: 1px;
+      background: var(--line-med);
+      border: 1px solid var(--line-med);
     }
+    .tile-grid.g-2 { --cols: 2; }
+    .tile-grid.g-3 { --cols: 3; }
+    .tile-grid.g-6 { --cols: 3; }
+    @media (max-width: 1023px) { .tile-grid.g-6 { --cols: 2; } }
+    @media (max-width: 899px)  { .tile-grid.g-3 { --cols: 1; } }
+    @media (max-width: 767px)  { .tile-grid.g-2 { --cols: 1; } }
+    @media (max-width: 639px)  { .tile-grid.g-6 { --cols: 1; } }
+    .tile {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: 40px;
+      background: var(--s2);
+    }
+    .tile:hover { background: var(--s3); }
+    .tile.reveal { transition: opacity 800ms cubic-bezier(0.16,1,0.3,1), transform 800ms cubic-bezier(0.16,1,0.3,1), background 200ms ease; }
+    .tile--feature::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
+      background: var(--accent);
+    }
+    .tile--panel { padding: 56px; }
+    .tile--band {
+      grid-column: 1 / -1;
+      gap: 28px;
+      padding: 32px 40px;
+      background: var(--s1);
+    }
+    .tile--band:hover { background: var(--s1); }
+    .tile-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      margin-bottom: 24px;
+      border: 1px solid rgba(56,189,248,0.25);
+      background: rgba(56,189,248,0.06);
+    }
+    .tile-num {
+      font-family: 'Cormorant Garamond', 'Montserrat', serif;
+      font-weight: 300;
+      font-size: 2.6rem;
+      line-height: 1;
+      color: var(--accent);
+      font-variant-numeric: lining-nums;
+      margin-bottom: 20px;
+    }
+    .tile-figure {
+      font-family: 'Cormorant Garamond', 'Montserrat', serif;
+      font-weight: 300;
+      font-size: clamp(2.4rem, 4vw, 3.2rem);
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--accent);
+      font-variant-numeric: lining-nums;
+    }
+    .tile-badge {
+      position: absolute;
+      top: 18px;
+      inset-inline-end: 18px;
+      padding: 3px 9px;
+      border-radius: 2px;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 0.55rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .tile .t-h3 { margin-bottom: 12px; }
+    .tile .t-body { font-size: 0.86rem; margin: 0; }
+    @media (max-width: 639px) {
+      .tile { padding: 32px 26px; }
+      .tile--panel { padding: 36px 26px; }
+      .tile--band { padding: 28px 26px; }
+    }
+
+    /* ── Equal-width columns without orphans ─────────────────────── */
+    .cols-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; }
+    @media (max-width: 899px) { .cols-3 { grid-template-columns: 1fr; gap: 28px; } }
+    .stats-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 40px 24px; align-items: center; }
+    @media (max-width: 1023px) { .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (max-width: 599px)  { .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .process-grid { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .process-step { padding: 28px 28px 8px 0; border-top: 1px solid var(--line-med); }
+    html[dir="rtl"] .process-step { padding: 28px 0 8px 28px; }
+    .process-step .t-h3 { margin-bottom: 10px; }
+    .process-step .t-body { font-size: 0.86rem; margin: 0; }
+    @media (max-width: 1023px) { .process-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 639px)  { .process-grid { grid-template-columns: 1fr; } }
 
     /* ── Stat number ─────────────────────────────────────────────── */
     .stat-num {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 200;
-      font-size: clamp(2.4rem, 4.5vw, 3.8rem);
-      letter-spacing: -0.04em;
+      font-family: 'Cormorant Garamond', 'Montserrat', serif;
+      font-weight: 300;
+      font-size: clamp(2.6rem, 4.8vw, 4rem);
+      letter-spacing: -0.01em;
       line-height: 1;
       color: var(--fg);
+      font-variant-numeric: lining-nums;
     }
 
     /* ── Reveal ──────────────────────────────────────────────────── */
     .reveal {
       opacity: 0;
       transform: translateY(32px);
-      filter: blur(4px);
-      transition: opacity 800ms cubic-bezier(0.16,1,0.3,1), transform 800ms cubic-bezier(0.16,1,0.3,1), filter 800ms cubic-bezier(0.16,1,0.3,1);
+      transition: opacity 800ms cubic-bezier(0.16,1,0.3,1), transform 800ms cubic-bezier(0.16,1,0.3,1);
     }
     .reveal.in {
       opacity: 1;
       transform: translateY(0);
-      filter: blur(0);
     }
 
     /* ── Word split (hero) ───────────────────────────────────────── */
@@ -548,19 +626,15 @@
       font-size: 0.85rem;
       color: var(--fg);
       background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--line-med);
       padding: 13px 16px;
       width: 100%;
       outline: none;
-      transition: border-color 180ms ease, box-shadow 180ms ease;
+      transition: border-color 180ms ease;
       -webkit-appearance: none;
     }
-    input:focus, textarea:focus, select:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(56,189,248,0.10);
-    }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 1px solid var(--accent-lt); outline-offset: 2px; }
     input::placeholder, textarea::placeholder { color: var(--a4); }
     input[type="checkbox"], input[type="radio"] {
       -webkit-appearance: checkbox;
@@ -570,14 +644,10 @@
       background: transparent;
       border: 1px solid var(--line-med);
       padding: 0;
-      box-shadow: none;
       cursor: pointer;
-      accent-color: var(--gold);
+      accent-color: var(--accent);
     }
-    input[type="checkbox"]:focus, input[type="radio"]:focus {
-      border-color: var(--gold);
-      box-shadow: none;
-    }
+    input[type="checkbox"]:focus, input[type="radio"]:focus { border-color: var(--accent); }
     select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b95aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; background-color: rgba(12,14,20,0.85); padding-right: 40px; cursor: pointer; }
     label {
       display: block;
@@ -588,19 +658,6 @@
       text-transform: uppercase;
       color: var(--a3);
       margin-bottom: 8px;
-    }
-
-    /* ── Timeline ────────────────────────────────────────────────── */
-    .step-num {
-      width: 44px; height: 44px;
-      border: 1px solid rgba(56,189,248,0.2);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 200;
-      font-size: 0.9rem;
-      color: var(--gold);
-      flex-shrink: 0;
-      background: rgba(56,189,248,0.05);
     }
 
     /* ── Quote ───────────────────────────────────────────────────── */
@@ -622,13 +679,6 @@
       transform-origin: left;
       animation: draw-line 1.2s cubic-bezier(0.4,0,0.2,1) 0.4s both;
     }
-
-    /* ── Float subtle ────────────────────────────────────────────── */
-    @keyframes float {
-      0%,100% { transform: translateY(0); }
-      50%      { transform: translateY(-8px); }
-    }
-    .float { animation: float 5s ease-in-out infinite; }
 
     /* ── Demo card animate ───────────────────────────────────────── */
     @keyframes bar-fill {
@@ -668,20 +718,6 @@
     }
     /* (hero ambient orbs removed, the fixed beams field now supplies hero depth) */
 
-    /* ── Problem card enhanced hover ─────────────────────────────── */
-    .prob-card {
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(56,189,248,0.12);
-      padding: 40px;
-      transition: transform 280ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 280ms ease, border-color 280ms ease;
-    }
-    .prob-card:hover {
-      transform: translateY(-6px) perspective(800px) rotateX(1deg);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,189,248,0.08);
-    }
-
     /* ── How-it-works step connector ─────────────────────────────── */
     .how-connector {
       position: absolute;
@@ -695,14 +731,6 @@
       transition: transform 600ms cubic-bezier(0.16,1,0.3,1);
     }
     .reveal.in .how-connector { transform: scaleY(1); }
-
-    /* ── Grain overlay on dark sections ─────────────────────────── */
-    .grain-overlay {
-      position: absolute; inset: 0; pointer-events: none; z-index: 1;
-      opacity: 0.04;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-size: 128px 128px;
-    }
 
     /* ══ Cinematic upgrade ════════════════════════════════════════ */
 
@@ -770,7 +798,7 @@
     .loader {
       width: 38px; height: 38px; border-radius: 50%;
       border: 2px solid rgba(56,189,248,0.18);
-      border-top-color: var(--gold);
+      border-top-color: var(--accent);
       animation: spin 0.9s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -780,13 +808,11 @@
       position: relative;
       background: transparent;
       border: none;
-      box-shadow: none;
     }
     .hero-spline { position: absolute; inset: 0; width: 100%; height: 100%; transform: translateX(clamp(20px, 4vw, 70px)); }
     html[dir="rtl"] .hero-spline { transform: translateX(clamp(-70px, -4vw, -20px)); }
-    /* Transparent Spline scene → robot floats directly on the beams. A soft drop-shadow
-       keeps it grounded (placed, not pasted). No dark masking overlay. */
-    .hero-spline spline-viewer { width: 100%; height: 100%; display: block; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.45)); }
+    /* Transparent Spline scene → the robot floats directly on the beams field. */
+    .hero-spline spline-viewer { width: 100%; height: 100%; display: block; }
     /* Desktop: keep the robot in the right half so it never crowds the copy */
     @media (min-width: 881px) {
       .hero-spline { left: auto; right: 0; width: min(54%, 700px); transform: none; }
@@ -818,7 +844,7 @@
         transition-duration: 0.001ms !important;
         scroll-behavior: auto !important;
       }
-      .reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
       .grad-text { animation: none !important; }
       #beams-bg { opacity: 1; }
     }
@@ -1085,7 +1111,7 @@
   })();
 </script>
 
-<header id="nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,12,24,0.72);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.07);transition:box-shadow 300ms ease, border-color 300ms ease;">
+<header id="nav" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,12,24,0.72);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.07);transition:border-color 300ms ease;">
   <div class="nav-inner" style="max-width:1200px;margin:0 auto;padding:0 32px;height:180px;display:flex;align-items:center;justify-content:space-between;">
 
     <!-- Logo -->
@@ -1136,8 +1162,8 @@
   }
   setNav(); window.addEventListener('resize', setNav);
   window.addEventListener('scroll', () => {
-    document.getElementById('nav').style.boxShadow =
-      window.scrollY > 20 ? '0 1px 0 var(--line)' : 'none';
+    document.getElementById('nav').style.borderBottomColor =
+      window.scrollY > 20 ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.07)';
   });
 </script>
 
@@ -1199,7 +1225,7 @@
 
     <!-- Trust row. hero.trust* are global keys from the shared T dictionary (not lp.* keys),
          so they are written literally instead of going through A()/E(). -->
-    <div style="display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;margin-top:32px;max-width:600px;">
+    <div style="display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;margin-top:32px;max-width:600px;">
       <span class="t-small" style="display:flex;align-items:center;gap:7px;">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
         <span data-i18n="hero.trust1">Verified Meta Tech Provider</span>
@@ -1232,24 +1258,24 @@
       <p class="t-body reveal" style="transition-delay:60ms;" data-i18n="lp.problem.sub">Vehicle enquiries are a race. The first credible reply gets the test drive, and the test drive is where the deal is made.</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1px;background:var(--line);">
+    <div class="tile-grid g-3">
 
-      <div class="reveal prob-card" style="">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:rgba(56,189,248,0.45);margin-bottom:20px;line-height:1;">01</div>
-        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="lp.problem.items.0.t">Sales floor is busy</h3>
-        <p class="t-body" style="font-size:0.83rem;" data-i18n="lp.problem.items.0.d">Your salespeople are with customers, on a handover or out on a test drive. The enquiry from the listing portal waits in the inbox until the evening, or until tomorrow.</p>
+      <div class="tile reveal" style="">
+        <div class="tile-num">01</div>
+        <h3 class="t-h3" data-i18n="lp.problem.items.0.t">Sales floor is busy</h3>
+        <p class="t-body" data-i18n="lp.problem.items.0.d">Your salespeople are with customers, on a handover or out on a test drive. The enquiry from the listing portal waits in the inbox until the evening, or until tomorrow.</p>
       </div>
 
-      <div class="reveal prob-card" style="transition-delay:80ms;">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:rgba(56,189,248,0.45);margin-bottom:20px;line-height:1;">02</div>
-        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="lp.problem.items.1.t">Availability questions eat the day</h3>
-        <p class="t-body" style="font-size:0.83rem;" data-i18n="lp.problem.items.1.d">Is it still available, what mileage, which equipment line, what does it cost with the winter package. The same questions, dozens of times a day, tying up people who should be closing.</p>
+      <div class="tile reveal" style="transition-delay:80ms;">
+        <div class="tile-num">02</div>
+        <h3 class="t-h3" data-i18n="lp.problem.items.1.t">Availability questions eat the day</h3>
+        <p class="t-body" data-i18n="lp.problem.items.1.d">Is it still available, what mileage, which equipment line, what does it cost with the winter package. The same questions, dozens of times a day, tying up people who should be closing.</p>
       </div>
 
-      <div class="reveal prob-card" style="transition-delay:160ms;">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:rgba(56,189,248,0.45);margin-bottom:20px;line-height:1;">03</div>
-        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="lp.problem.items.2.t">No shows on test drives</h3>
-        <p class="t-body" style="font-size:0.83rem;" data-i18n="lp.problem.items.2.d">An appointment agreed by email without confirmation or reminder fails often. Vehicle prepared, plates fitted, salesperson blocked, and nobody turns up.</p>
+      <div class="tile reveal" style="transition-delay:160ms;">
+        <div class="tile-num">03</div>
+        <h3 class="t-h3" data-i18n="lp.problem.items.2.t">No shows on test drives</h3>
+        <p class="t-body" data-i18n="lp.problem.items.2.d">An appointment agreed by email without confirmation or reminder fails often. Vehicle prepared, plates fitted, salesperson blocked, and nobody turns up.</p>
       </div>
     </div>
   </div>
@@ -1266,11 +1292,11 @@
       <p class="t-body reveal" style="margin-top:20px;" data-i18n="lp.math.sub">A dealership with steady listing traffic, calculated with conservative assumptions. Run your own numbers with us in the intro call.</p>
     </div>
 
-    <div class="service-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1px;background:var(--line);">
+    <div class="tile-grid g-2">
 
-      <div class="card-filled reveal" style="padding:40px;display:flex;flex-direction:column;background:linear-gradient(160deg,rgba(56,189,248,0.10) 0%,rgba(255,255,255,0.04) 60%);border:1px solid rgba(56,189,248,0.45);">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;" data-i18n="lp.math.tag">Car dealership</div>
-        <p class="t-body" style="font-size:0.83rem;margin-bottom:26px;" data-i18n="lp.math.setup">350 enquiries a month from listings, phone and the contact form.</p>
+      <div class="tile tile--feature reveal">
+        <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;" data-i18n="lp.math.tag">Car dealership</div>
+        <p class="t-body" style="margin-bottom:26px;" data-i18n="lp.math.setup">350 enquiries a month from listings, phone and the contact form.</p>
 
         <div style="border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:12px;margin-bottom:26px;">
 
@@ -1292,13 +1318,13 @@
 
         <div style="margin-top:auto;border-top:1px solid var(--line);padding-top:24px;">
           <div class="t-label" style="color:var(--a3);margin-bottom:8px;" data-i18n="lp.math.yearLabel">Lost per year (approx.)</div>
-          <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(1.9rem,3.4vw,2.6rem);letter-spacing:-0.03em;color:var(--gold);line-height:1.05;" data-i18n="lp.math.year">$136,000</div>
+          <div class="tile-figure" data-i18n="lp.math.year">$136,000</div>
         </div>
       </div>
 
-      <div class="card-filled reveal" style="padding:40px;display:flex;flex-direction:column;transition-delay:80ms;">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;" data-i18n="lp.math.howTag">How the figure is derived</div>
-        <p class="t-body" style="font-size:0.83rem;margin-bottom:20px;" data-i18n="lp.math.how">Of 350 monthly enquiries, roughly 105 are answered after the buyer has already booked a test drive elsewhere. At a 6 percent close rate that is about 6.3 lost sales a month. At $1,800 average margin this comes to roughly $11,300 a month, or about $136,000 a year.</p>
+      <div class="tile reveal" style="transition-delay:80ms;">
+        <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;" data-i18n="lp.math.howTag">How the figure is derived</div>
+        <p class="t-body" style="margin-bottom:20px;" data-i18n="lp.math.how">Of 350 monthly enquiries, roughly 105 are answered after the buyer has already booked a test drive elsewhere. At a 6 percent close rate that is about 6.3 lost sales a month. At $1,800 average margin this comes to roughly $11,300 a month, or about $136,000 a year.</p>
         <div style="margin-top:auto;border-top:1px solid var(--line);padding-top:24px;">
           <p class="t-body" style="font-size:0.8rem;color:var(--a3);"><strong style="font-weight:400;color:var(--fg);" data-i18n="lp.math.withLabel">With HYBOTE:</strong> <span data-i18n="lp.math.with">Every test drive request is confirmed instantly and the appointment lands straight in the salesperson’s calendar.</span></p>
         </div>
@@ -1322,36 +1348,42 @@
       <p class="t-body reveal" style="transition-delay:60ms;" data-i18n="lp.caps.sub">Built around how a dealership actually sells, from first enquiry to a confirmed appointment on the floor.</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1px;background:var(--line);">
+    <div class="tile-grid g-6">
 
-      <div class="reveal prob-card" style="">
-        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="lp.caps.items.0.t">Instant reply on every channel</h3>
-        <p class="t-body" style="font-size:0.83rem;" data-i18n="lp.caps.items.0.d">Listing portals, contact form, WhatsApp, email and phone. The buyer gets a specific answer on the vehicle within seconds, not a generic acknowledgement.</p>
+      <div class="tile reveal" style="">
+        <div class="tile-num">01</div>
+        <h3 class="t-h3" data-i18n="lp.caps.items.0.t">Instant reply on every channel</h3>
+        <p class="t-body" data-i18n="lp.caps.items.0.d">Listing portals, contact form, WhatsApp, email and phone. The buyer gets a specific answer on the vehicle within seconds, not a generic acknowledgement.</p>
       </div>
 
-      <div class="reveal prob-card" style="transition-delay:60ms;">
-        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="lp.caps.items.1.t">Live vehicle availability</h3>
-        <p class="t-body" style="font-size:0.83rem;" data-i18n="lp.caps.items.1.d">Still in stock, mileage, equipment line, first registration, price with and without packages. Answered from your current inventory, so nothing is promised that is already sold.</p>
+      <div class="tile reveal" style="transition-delay:60ms;">
+        <div class="tile-num">02</div>
+        <h3 class="t-h3" data-i18n="lp.caps.items.1.t">Live vehicle availability</h3>
+        <p class="t-body" data-i18n="lp.caps.items.1.d">Still in stock, mileage, equipment line, first registration, price with and without packages. Answered from your current inventory, so nothing is promised that is already sold.</p>
       </div>
 
-      <div class="reveal prob-card" style="transition-delay:120ms;">
-        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="lp.caps.items.2.t">Test drives booked and confirmed</h3>
-        <p class="t-body" style="font-size:0.83rem;" data-i18n="lp.caps.items.2.d">The buyer picks a slot, gets an immediate confirmation and a reminder before the appointment. That alone removes a large share of no shows.</p>
+      <div class="tile reveal" style="transition-delay:120ms;">
+        <div class="tile-num">03</div>
+        <h3 class="t-h3" data-i18n="lp.caps.items.2.t">Test drives booked and confirmed</h3>
+        <p class="t-body" data-i18n="lp.caps.items.2.d">The buyer picks a slot, gets an immediate confirmation and a reminder before the appointment. That alone removes a large share of no shows.</p>
       </div>
 
-      <div class="reveal prob-card" style="transition-delay:180ms;">
-        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="lp.caps.items.3.t">Trade in and financing pre check</h3>
-        <p class="t-body" style="font-size:0.83rem;" data-i18n="lp.caps.items.3.d">Current vehicle, mileage, condition, desired monthly rate. Your salesperson walks into the appointment already knowing what the deal looks like.</p>
+      <div class="tile reveal" style="transition-delay:180ms;">
+        <div class="tile-num">04</div>
+        <h3 class="t-h3" data-i18n="lp.caps.items.3.t">Trade in and financing pre check</h3>
+        <p class="t-body" data-i18n="lp.caps.items.3.d">Current vehicle, mileage, condition, desired monthly rate. Your salesperson walks into the appointment already knowing what the deal looks like.</p>
       </div>
 
-      <div class="reveal prob-card" style="transition-delay:240ms;">
-        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="lp.caps.items.4.t">Handover to the right salesperson</h3>
-        <p class="t-body" style="font-size:0.83rem;" data-i18n="lp.caps.items.4.d">New cars, used cars, commercial vehicles or service. The enquiry is routed to the right person with the full conversation attached, and synced to your CRM.</p>
+      <div class="tile reveal" style="transition-delay:240ms;">
+        <div class="tile-num">05</div>
+        <h3 class="t-h3" data-i18n="lp.caps.items.4.t">Handover to the right salesperson</h3>
+        <p class="t-body" data-i18n="lp.caps.items.4.d">New cars, used cars, commercial vehicles or service. The enquiry is routed to the right person with the full conversation attached, and synced to your CRM.</p>
       </div>
 
-      <div class="reveal prob-card" style="transition-delay:300ms;">
-        <h3 class="t-h3" style="margin-bottom:12px;" data-i18n="lp.caps.items.5.t">Follow up after the test drive</h3>
-        <p class="t-body" style="font-size:0.83rem;" data-i18n="lp.caps.items.5.d">A short, well timed check back instead of a contact that quietly goes cold. Buyers who are still deciding come back into the conversation.</p>
+      <div class="tile reveal" style="transition-delay:300ms;">
+        <div class="tile-num">06</div>
+        <h3 class="t-h3" data-i18n="lp.caps.items.5.t">Follow up after the test drive</h3>
+        <p class="t-body" data-i18n="lp.caps.items.5.d">A short, well timed check back instead of a contact that quietly goes cold. Buyers who are still deciding come back into the conversation.</p>
       </div>
     </div>
   </div>
@@ -1361,47 +1393,39 @@
 
 <section id="ablauf" style="padding:100px 32px;background:transparent;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 80% 50%,rgba(56,189,248,0.04) 0%,transparent 60%);z-index:0;"></div>
-  <div style="max-width:900px;margin:0 auto;position:relative;z-index:1;">
+  <div style="max-width:1100px;margin:0 auto;position:relative;z-index:1;">
 
-    <div style="margin-bottom:64px;">
+    <div style="margin-bottom:56px;">
       <div class="sec-label reveal"><span data-i18n="lp.process.label">Our approach</span></div>
       <h2 class="t-h2 reveal" style="max-width:540px;" data-i18n="lp.process.h2">How we work.</h2>
     </div>
 
-    <div style="display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);">
+    <ol class="process-grid">
 
-      <div class="reveal" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:36px 0;border-bottom:1px solid var(--line);">
-        <div class="step-num">01</div>
-        <div style="padding-top:10px;">
-          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:var(--fg);margin-bottom:10px;" data-i18n="lp.process.steps.0.t">Analysis</h3>
-          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:var(--a3);line-height:1.8;" data-i18n="lp.process.steps.0.d">We look at where your enquiries come from, how fast they are answered today and how many test drive appointments actually take place.</p>
-        </div>
-      </div>
+      <li class="process-step reveal" style="">
+        <div class="tile-num">01</div>
+        <h3 class="t-h3" data-i18n="lp.process.steps.0.t">Understand</h3>
+        <p class="t-body" data-i18n="lp.process.steps.0.d">We look at where your enquiries come from, how fast they are answered today and how many test drive appointments actually take place.</p>
+      </li>
 
-      <div class="reveal" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:36px 0;border-bottom:1px solid var(--line);transition-delay:60ms;">
-        <div class="step-num">02</div>
-        <div style="padding-top:10px;">
-          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:var(--fg);margin-bottom:10px;" data-i18n="lp.process.steps.1.t">Design</h3>
-          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:var(--a3);line-height:1.8;" data-i18n="lp.process.steps.1.d">We define the conversation flow, which vehicle data may be shared and when a salesperson takes over.</p>
-        </div>
-      </div>
+      <li class="process-step reveal" style="transition-delay:60ms;">
+        <div class="tile-num">02</div>
+        <h3 class="t-h3" data-i18n="lp.process.steps.1.t">Design</h3>
+        <p class="t-body" data-i18n="lp.process.steps.1.d">We define the conversation flow, which vehicle data may be shared and when a salesperson takes over.</p>
+      </li>
 
-      <div class="reveal" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:36px 0;border-bottom:1px solid var(--line);transition-delay:120ms;">
-        <div class="step-num">03</div>
-        <div style="padding-top:10px;">
-          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:var(--fg);margin-bottom:10px;" data-i18n="lp.process.steps.2.t">Build</h3>
-          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:var(--a3);line-height:1.8;" data-i18n="lp.process.steps.2.d">We build the assistant on your inventory data, in your tone of voice, in the languages your customers speak.</p>
-        </div>
-      </div>
+      <li class="process-step reveal" style="transition-delay:120ms;">
+        <div class="tile-num">03</div>
+        <h3 class="t-h3" data-i18n="lp.process.steps.2.t">Build</h3>
+        <p class="t-body" data-i18n="lp.process.steps.2.d">We build the assistant on your inventory data, in your tone of voice, in the languages your customers speak.</p>
+      </li>
 
-      <div class="reveal" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:36px 0;transition-delay:180ms;">
-        <div class="step-num">04</div>
-        <div style="padding-top:10px;">
-          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:var(--fg);margin-bottom:10px;" data-i18n="lp.process.steps.3.t">Integration</h3>
-          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:var(--a3);line-height:1.8;" data-i18n="lp.process.steps.3.d">Inventory system, CRM and appointment calendar are connected, so every enquiry lands where your team already works.</p>
-        </div>
-      </div>
-    </div>
+      <li class="process-step reveal" style="transition-delay:180ms;">
+        <div class="tile-num">04</div>
+        <h3 class="t-h3" data-i18n="lp.process.steps.3.t">Integrate</h3>
+        <p class="t-body" data-i18n="lp.process.steps.3.d">Inventory system, CRM and appointment calendar are connected, so every enquiry lands where your team already works.</p>
+      </li>
+    </ol>
   </div>
 </section>
 
@@ -1454,7 +1478,7 @@
           <span data-i18n="lp.faq.items.4.q">How long until it is live?</span>
           <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="faq-a" id="faq-a-4"><div class="faq-a-inner t-body" data-i18n="lp.faq.items.4.a">First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it after the analysis.</div></div>
+        <div class="faq-a" id="faq-a-4"><div class="faq-a-inner t-body" data-i18n="lp.faq.items.4.a">First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it once we have mapped your processes.</div></div>
       </div>
 
       <div class="faq-item reveal" style="transition-delay:200ms;">
@@ -1504,9 +1528,9 @@
     min-height: 48px;
     transition: color 180ms ease;
   }
-  .faq-q:hover { color: var(--gold); }
-  .faq-q:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; }
-  .faq-arrow { flex-shrink: 0; color: var(--gold); transition: transform 300ms cubic-bezier(0.34,1.56,0.64,1); }
+  .faq-q:hover { color: var(--accent); }
+  .faq-q:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+  .faq-arrow { flex-shrink: 0; color: var(--accent); transition: transform 300ms cubic-bezier(0.34,1.56,0.64,1); }
   .faq-q[aria-expanded="true"] .faq-arrow { transform: rotate(180deg); }
   .faq-a { overflow: hidden; max-height: 0; transition: max-height 350ms cubic-bezier(0.4,0,0.2,1); }
   .faq-a-inner { padding-bottom: 24px; }
@@ -1540,8 +1564,8 @@
 
       <div style="display:flex;flex-direction:column;gap:20px;">
         <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:80ms;">
-          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(56,189,248,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);border:1px solid rgba(56,189,248,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
           <div>
             <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.78rem;color:var(--fg);margin-bottom:2px;" data-i18n="contact.i1.title">Intro call</div>
@@ -1549,17 +1573,17 @@
           </div>
         </div>
         <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:120ms;">
-          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(56,189,248,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);border:1px solid rgba(56,189,248,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
           <div>
-            <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.78rem;color:var(--fg);margin-bottom:2px;" data-i18n="contact.i2.title">Response within the hour</div>
-            <div class="t-small" data-i18n="contact.i2.sub">We respond within the hour.</div>
+            <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.78rem;color:var(--fg);margin-bottom:2px;" data-i18n="contact.i2.title">Personal reply</div>
+            <div class="t-small" data-i18n="contact.i2.sub">We get back to you directly, using your details.</div>
           </div>
         </div>
         <div class="reveal" style="display:flex;align-items:center;gap:14px;transition-delay:160ms;">
-          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(56,189,248,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.05);border:1px solid rgba(56,189,248,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
           <div>
             <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.78rem;color:var(--fg);margin-bottom:2px;" data-i18n="contact.i3.title">No obligation</div>
@@ -1668,8 +1692,8 @@
         <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.82rem;color:#c53030;" data-i18n="form.error">Something went wrong. Please try again or email us directly at <a href="mailto:contact@hybote.ai" style="color:inherit;text-decoration:underline;">contact@hybote.ai</a></p>
       </div>
       <div id="ok" style="display:none;text-align:center;padding:32px 0;">
-        <div style="width:48px;height:48px;border:1px solid var(--gold);background:rgba(56,189,248,0.06);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <div style="width:48px;height:48px;border:1px solid var(--accent);background:rgba(56,189,248,0.06);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <h3 class="t-h3" style="margin-bottom:8px;" data-i18n="form.thanks.title">Thank you.</h3>
         <p class="t-body" style="font-size:0.83rem;" data-i18n="form.thanks.sub">We'll be in touch within 24 hours, usually much sooner.</p>
@@ -1837,7 +1861,7 @@
             <a href="/#leistungen" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.svc3">Inbox & enquiries</a>
             <a href="/#leistungen" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.svc4">Social DM Agent</a>
             <a href="/#leistungen" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.svc5">HYBOTE Starter</a>
-            <a href="/#leistungen" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.svc6">Consulting & processes</a>
+            <a href="/#leistungen" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.svc6">Consulting & software</a>
           </div>
         </div>
         <div>
@@ -1928,7 +1952,7 @@ const T = {
     "wa.tooltip": "Auf WhatsApp schreiben",
     "call.tooltip": "Direkt anrufen",
     "hero.badge": "System aktiv · rund um die Uhr",
-    "hero.eyebrow": "KI-AUTOMATISIERUNG · BERATUNG · PROZESSOPTIMIERUNG",
+    "hero.eyebrow": "KI-AUTOMATISIERUNG · BERATUNG · INDIVIDUELLE SOFTWARE",
     "hero.h1": "Die Zukunft läuft<br/><span class=\"grad-text\" style=\"font-style:italic;\">von selbst.</span>",
     "hero.sub": "Wir bauen KI, die im Hintergrund arbeitet: leise, präzise, <strong style=\"font-weight:400;color:var(--fg);\">rund um die Uhr.</strong>",
     "hero.cta1": "Kostenloses Kennenlerngespräch",
@@ -1948,33 +1972,40 @@ const T = {
     "prob.h2": "Jede Stunde Verzögerung<br/>kostet Sie einen Klienten.",
     "prob.sub": "Anspruchsvolle Kunden erwarten sofortige Antworten. Wer zuerst antwortet, gewinnt. Nicht wer das beste Produkt hat.",
     "prob.c1.title": "Reaktion zu langsam",
-    "prob.c1.body": "Wird eine Anfrage nicht innerhalb von 5 Minuten beantwortet, sinkt die Konversionschance um über 80 %. Die meisten Unternehmen reagieren erst nach Stunden, viele gar nicht.",
+    "prob.c1.body": "Nach 5 Minuten sinkt die Chance, eine Anfrage zu gewinnen, um über 80 %. Die meisten Unternehmen antworten erst nach Stunden oder gar nicht.",
     "prob.c2.title": "Mitarbeiter sind der Engpass",
     "prob.c2.body": "Mitarbeiter sind in Meetings, nach Dienstschluss oder im Urlaub. E-Mails und Formulare stapeln sich, und Kunden wechseln zur Konkurrenz.",
     "prob.c3.title": "Uneinheitliche Qualität",
-    "prob.c3.body": "Anspruchsvolle Kunden erwarten professionelle Kommunikation an jedem Kontaktpunkt. Eine schwache Erstantwort zerstört den ersten Eindruck, unwiderruflich.",
+    "prob.c3.body": "Anspruchsvolle Kunden erwarten professionelle Antworten an jedem Kontaktpunkt. Eine schwache Erstantwort bekommt selten eine zweite Chance.",
     "sol.label": "Die Lösung",
     "sol.h2": "Ein System, das<br/><em>keine Anfrage</em> mehr verpasst.",
-    "sol.sub": "HYBOTE beantwortet, qualifiziert und übergibt jede Kundenanfrage vollautomatisch: sofort, rund um die Uhr, auf jedem Kanal. Keine Anfrage geht verloren, kein Kunde wartet. Und Ihr Team konzentriert sich auf das Wesentliche.",
+    "sol.sub": "HYBOTE beantwortet, qualifiziert und übergibt jede Anfrage automatisch: sofort, rund um die Uhr, auf jedem Kanal. Ihr Team konzentriert sich auf das Wesentliche.",
     "sol.f1.title": "KI-Automatisierung",
-    "sol.f1.body": "Maßgeschneiderte Assistenten auf allen Kanälen. Sie antworten, qualifizieren Interessenten, buchen Termine und geben kritische Fälle an Ihr Team weiter, in Ihrer Markensprache.",
+    "sol.f1.body": "Assistenten für alle Ihre Kanäle antworten, qualifizieren Interessenten, buchen Termine und geben kritische Fälle an Ihr Team weiter, in Ihrer Markensprache.",
     "sol.f2.title": "KI-Beratung",
-    "sol.f2.body": "Wir identifizieren die wirkungsvollsten Anwendungsfälle, priorisieren sie und erstellen eine klare Roadmap. Strategie vor Technologie.",
+    "sol.f2.body": "Wir finden die Anwendungsfälle mit der größten Wirkung und setzen klare Prioritäten. Strategie vor Technologie.",
     "sol.f3.title": "KI-Prozessoptimierung",
-    "sol.f3.body": "Wir prüfen Ihre Workflows, automatisieren Routineaufgaben, verknüpfen Ihre Systeme und machen die Einsparungen messbar.",
+    "sol.f3.body": "Wir automatisieren Routineaufgaben, verknüpfen Ihre Systeme und machen die Einsparungen messbar.",
     "sol.f4.title": "Datenschutz-Shield",
-    "sol.f4.body": "Alle Kundendaten werden mit höchster Diskretion behandelt. Keine Weitergabe an Dritte, ausnahmslos.",
+    "sol.f4.body": "Strikte Datentrennung: kein Austausch zwischen Kunden und kein Datenhandel.",
     "sol.cta": "Kostenloses Kennenlerngespräch",
     "ch.label": "Unsere Leistungen",
     "ch.h2": "Sechs Wege,<br/>wie wir <em>Sie entlasten.</em>",
-    "ch.sub": "Jeder Bereich deckt einen Kanal ab, über den Kunden bei Ihnen anklopfen. Einzeln buchbar oder als Komplettpaket.",
+    "ch.sub": "Agenten für die Kanäle Ihrer Kunden, dazu Beratung und Software. Einzeln buchbar oder als Komplettpaket.",
     "svc.wa.title": "WhatsApp Agent",
     "svc.starter.title": "HYBOTE Starter",
     "svc.starter.badge": "All-in-One",
-    "svc.starter.body": "Das Komplettpaket für den Einstieg: Webdesign, WhatsApp-Assistent und Telefon-Assistent aus einer Hand, einsatzbereit. Ihre neue Website beantwortet Anfragen über Chat und Telefon vollautomatisch. Ein Paket, ein Preis.",
-    "svc.consult.title": "Beratung & Prozessautomatisierung",
-    "svc.consult.body": "Wir analysieren Ihre Abläufe, automatisieren wiederkehrende Prozesse und binden alles nahtlos in Ihr CRM ein. Jeder Lead wird automatisch bewertet, priorisiert und synchronisiert, damit Ihr Team sich auf das Wesentliche konzentriert.",
-    "ch.wa.body": "HYBOTE ist über eine Enterprise-Grade WhatsApp Business API angebunden: zuverlässig, stabil und Ende-zu-Ende-verschlüsselt. Jede Anfrage wird in Echtzeit verarbeitet. Hochwertige Assets werden direkt im Chat übermittelt. Nahtlos mit gängigen CRM-Systemen verbunden.",
+    "svc.starter.body": "Webdesign, WhatsApp-Assistent und Telefon-Assistent aus einer Hand, einsatzbereit. Ein Paket, ein Preis.",
+    "svc.consult.title": "Beratung & Software",
+    "svc.consult.body": "Prozessautomatisierung, Web-Apps und CRM-Anbindungen, passend zu Ihren Abläufen.",
+    "band.lead": "Wo Ihre Prozesse mehr brauchen als einen Agenten:",
+    "band.1.title": "Prozessautomatisierung",
+    "band.1.body": "Wiederkehrende Aufgaben laufen von selbst, verbunden mit Ihren Systemen.",
+    "band.2.title": "Web-Apps & Portale",
+    "band.2.body": "Kundenportale und interne Werkzeuge, gebaut für einen klaren Zweck.",
+    "band.3.title": "CRM & Schnittstellen",
+    "band.3.body": "Ihre Kanäle, Ihr CRM und Ihre Werkzeuge nutzen eine gemeinsame Datenbasis.",
+    "ch.wa.body": "Beantwortet jede WhatsApp-Anfrage in Echtzeit über die WhatsApp Business API. Ende-zu-Ende-verschlüsselt, mit Ihrem CRM synchronisiert.",
     "ch.wa.tag1": "Enterprise-Verbindung",
     "ch.wa.tag2": "Rich Media",
     "ch.wa.tag3": "CRM-Sync",
@@ -1989,24 +2020,24 @@ const T = {
     "ch.cf.tag2": "Instant-Antwort",
     "ch.cf.tag3": "Smart Routing",
     "ch.emcf.title": "Posteingang & Anfragen",
-    "ch.emcf.body": "Ob E-Mail oder ausgefülltes Kontaktformular: Jede schriftliche Anfrage wird sofort gelesen, eingeordnet und im Ton Ihres Unternehmens beantwortet.",
+    "ch.emcf.body": "Jede E-Mail und jede Formularanfrage wird gelesen, eingeordnet und im Ton Ihres Unternehmens beantwortet, in Sekunden.",
     "ch.social.title": "Social-DM Agent",
-    "ch.social.body": "Eingehende Nachrichten über Instagram, Facebook Messenger und Google-Business-Chat werden in Echtzeit erfasst, qualifiziert und beantwortet.",
+    "ch.social.body": "Nachrichten über Instagram und Facebook Messenger werden in Echtzeit erfasst, qualifiziert und beantwortet.",
     "ch.tel.title": "24/7 Telefon- & Voice-Agent",
-    "ch.tel.body": "Eingehende Anrufe werden sofort und professionell angenommen, rund um die Uhr und in der Sprache des Anrufers. Das Anliegen wird qualifiziert, erste Fragen werden beantwortet und bei Bedarf steht direkt ein Termin.",
+    "ch.tel.body": "Nimmt Anrufe rund um die Uhr in der Sprache des Anrufers an, qualifiziert das Anliegen und bucht den Termin.",
     "ch.qi.title": "KI-Qualifizierung",
     "ch.qi.body": "Jede Anfrage wird automatisch bewertet und priorisiert, kanalübergreifend. Die dringendsten Kontakte landen immer ganz oben, damit Ihr Team sich auf das Wesentliche konzentriert.",
     "ch.crm.title": "CRM-Integration",
     "ch.crm.body": "Jedes Gespräch und jeder Kontakt wird in Echtzeit in Ihr bestehendes CRM übertragen. Keine manuelle Dateneingabe, alle Informationen sind sofort dort, wo sie gebraucht werden. Dazu erhalten Sie ein Echtzeit-Dashboard und eine mobile App mit Push-Benachrichtigungen.",
     "how.label": "Unsere Methodik",
     "how.h2": "Wie wir arbeiten.",
-    "how.s1.title": "Analyse",
-    "how.s1.body": "Wir analysieren Ihre Prozesse und identifizieren die größten Hebel.",
-    "how.s2.title": "Design",
+    "how.s1.title": "Verstehen",
+    "how.s1.body": "Wir erfassen Ihre Prozesse und finden die größten Hebel.",
+    "how.s2.title": "Entwerfen",
     "how.s2.body": "Wir entwickeln die Lösung und die Roadmap.",
-    "how.s3.title": "Umsetzung",
+    "how.s3.title": "Bauen",
     "how.s3.body": "Wir bauen die Automatisierung, maßgeschneidert auf Sie.",
-    "how.s4.title": "Integration",
+    "how.s4.title": "Anbinden",
     "how.s4.body": "Wir verknüpfen es nahtlos mit Ihren bestehenden Systemen.",
     "how.s5.title": "Optimierung",
     "how.s5.body": "Wir messen, optimieren und skalieren.",
@@ -2046,7 +2077,7 @@ const T = {
     "footer.svc3": "Posteingang & Anfragen",
     "footer.svc4": "Social-DM Agent",
     "footer.svc5": "HYBOTE Starter",
-    "footer.svc6": "Beratung & Prozesse",
+    "footer.svc6": "Beratung & Software",
     "footer.col1": "Produkt",
     "footer.sol": "Lösung",
     "footer.ch": "Leistungen",
@@ -2069,9 +2100,10 @@ const T = {
     "demo.via": "via WhatsApp · gerade eben",
     "demo.msg": "\"Guten Morgen, wir suchen eine Lösung, um eingehende Kundenanfragen automatisch zu erfassen, zu beantworten und zu qualifizieren, über WhatsApp, E-Mail und Kontaktformulare. Können wir das besprechen?\"",
     "demo.reply.label": "HYBOTE Antwort",
-    "demo.reply.body": "Guten Morgen! Sehr gerne, das ist genau unser Spezialgebiet. Wir bauen Systeme, die Ihre Anfragen über alle Kanäle sofort beantworten, qualifizieren und mit Ihrem CRM synchronisieren. Passt Ihnen ein kurzes Gespräch diese Woche?",
+    "demo.reply.body": "Guten Morgen. Sehr gerne, das ist genau unser Spezialgebiet. Wir bauen Systeme, die Ihre Anfragen über alle Kanäle sofort beantworten, qualifizieren und mit Ihrem CRM synchronisieren. Passt Ihnen ein kurzes Gespräch diese Woche?",
     "demo.tag1": "Qualifiziert",
     "demo.tag2": "CRM aktualisiert",
+    "demo.instant": "sofort",
     "ticker.1": "Anfrage eingegangen &ensp;·&ensp; Qualifiziert &ensp;·&ensp; Sofortantwort gesendet &ensp;·&ensp; CRM aktualisiert",
     "ticker.2": "WhatsApp-Nachricht &ensp;·&ensp; Kunde qualifiziert &ensp;·&ensp; Termin automatisch gebucht &ensp;·&ensp; In Sekunden",
     "ticker.3": "Kontaktformular &ensp;·&ensp; Prozess automatisiert &ensp;·&ensp; Sofortantwort gesendet &ensp;·&ensp; Mühelos",
@@ -2083,13 +2115,13 @@ const T = {
     "faq.label": "FAQ",
     "faq.h2": "Häufig gestellte<br/>Fragen.",
     "faq.q1": "Was macht HYBOTE genau?",
-    "faq.a1": "HYBOTE beantwortet jede Kundenanfrage sofort: über WhatsApp, Telefon, E-Mail, Kontaktformular und Social Media. Interessenten werden qualifiziert, Termine gebucht und alles in Ihr CRM übertragen. Das Ergebnis: keine verlorene Anfrage, und Ihr Team hat den Kopf frei für das Wesentliche.",
+    "faq.a1": "HYBOTE baut KI-Agenten, die Anfragen über WhatsApp, Telefon, E-Mail und Social Media beantworten, Interessenten qualifizieren und Termine buchen. Beratung und individuelle Software runden das Angebot ab.",
     "faq.q2": "Für wen ist HYBOTE geeignet?",
-    "faq.a2": "Für jedes Unternehmen, bei dem Kundenanfragen liegen bleiben können, ob 3 oder 300 pro Tag. Wenn Ihre Kunden Sie über WhatsApp, Telefon, E-Mail oder Social Media erreichen und schnelle Antworten erwarten, ist HYBOTE für Sie gebaut, unabhängig von der Branche.",
+    "faq.a2": "Für jedes Unternehmen, bei dem Anfragen liegen bleiben können, ob 3 oder 300 pro Tag. Wenn Ihre Kunden Sie über WhatsApp, Telefon, E-Mail oder Social Media erreichen und schnelle Antworten erwarten, passt HYBOTE, in jeder Branche.",
     "faq.q3": "Wie läuft die Zusammenarbeit ab?",
-    "faq.a3": "Analyse → Design → Umsetzung → Integration → Optimierung. Wir starten immer mit einer Analyse, um die größten Hebel zu identifizieren.",
+    "faq.a3": "Verstehen, Entwerfen, Bauen, Anbinden. Wir starten immer damit, Ihre Prozesse zu erfassen und die größten Hebel zu finden.",
     "faq.q4": "Wie schnell sehen wir Ergebnisse?",
-    "faq.a4": "Erste Automatisierungen laufen oft innerhalb weniger Tage. Den genauen Zeitrahmen legen wir nach der Analyse fest.",
+    "faq.a4": "Erste Automatisierungen laufen oft innerhalb weniger Tage. Den genauen Zeitrahmen legen wir fest, sobald wir Ihre Prozesse erfasst haben.",
     "faq.q5": "Was ist mit unseren Daten und der Sicherheit?",
     "faq.a5": "Ihre Daten bleiben Ihre Daten. Wir arbeiten nach dem Prinzip der Datensparsamkeit, DSGVO-konform, und integrieren uns in Ihre bestehenden sicheren Systeme.",
     "faq.q6": "Welche Kanäle und Sprachen werden unterstützt?",
@@ -2102,10 +2134,10 @@ const T = {
     "faq.a9": "Diskretion ist nicht verhandelbar. HYBOTE arbeitet mit strikter Datenisolierung: keine mandantenübergreifende Datenweitergabe, Ende-zu-Ende-Verschlüsselung aller Kommunikation und keine Weitergabe an Datenhändler.",
     "mission.label": "Unsere Mission",
     "mission.h2": "Keine Anfrage<br/>bleibt liegen.",
-    "mission.body": "Zwischen der Frage eines Kunden und Ihrer Antwort entscheidet sich, ob er bei Ihnen kauft oder beim Nächsten. Wir schließen diese Lücke: Jede Anfrage bekommt sofort eine Antwort, freundlich und kompetent, zu jeder Uhrzeit. Ihr Team führt dann die Gespräche, bei denen es wirklich zählt.",
+    "mission.body": "Die Zeit zwischen der Frage eines Kunden und Ihrer Antwort entscheidet, wer den Auftrag bekommt. Wir schließen diese Lücke zu jeder Uhrzeit, damit Ihr Team sich auf die Gespräche konzentriert, die zählen.",
     "vision.label": "Unsere Vision",
     "vision.h2": "Der Partner, den<br/>Unternehmen behalten.",
-    "vision.body": "Wir bauen Systeme, die nach dem Start niemand mehr erklären muss, weil sie einfach laufen. Kein Pilotprojekt, kein Experiment, sondern Technik, auf die sich ein Betrieb im Alltag verlässt: branchenübergreifend, in über 50 Sprachen, an sieben Tagen die Woche.",
+    "vision.body": "Wir bauen Systeme, die nach dem Start niemand mehr erklären muss, weil sie einfach laufen: im Tagesbetrieb, branchenübergreifend, in über 50 Sprachen, an sieben Tagen die Woche.",
     "vision.lang50": "Sprachen. HYBOTE spricht Ihre Kunden in über 50 Sprachen an, ohne dass Sie etwas einrichten müssen.",
     "contact.label": "Kontakt",
     "contact.h2": "Kostenloses<br/>Kennenlerngespräch.",
@@ -2123,8 +2155,8 @@ const T = {
     "contact.form.alt": "Lieber schreiben? Anfrage senden",
     "contact.i1.title": "Kennenlerngespräch",
     "contact.i1.sub": "20 Minuten, per Videokonferenz",
-    "contact.i2.title": "Antwort innerhalb einer Stunde",
-    "contact.i2.sub": "Wir melden uns innerhalb einer Stunde.",
+    "contact.i2.title": "Persönliche Antwort",
+    "contact.i2.sub": "Wir melden uns direkt über Ihre Kontaktdaten.",
     "contact.i3.title": "Keine Verpflichtung",
     "contact.i3.sub": "Unverbindlich, kostenlos, transparent.",
     "out.label": "Mit HYBOTE",
@@ -2187,7 +2219,7 @@ const T = {
     "wa.tooltip": "Chat on WhatsApp",
     "call.tooltip": "Call us",
     "hero.badge": "System live · active 24/7",
-    "hero.eyebrow": "AI AUTOMATION · CONSULTING · PROCESS OPTIMIZATION",
+    "hero.eyebrow": "AI AUTOMATION · CONSULTING · CUSTOM SOFTWARE",
     "hero.h1": "The future runs<br/><span class=\"grad-text\" style=\"font-style:italic;\">on its own.</span>",
     "hero.sub": "We build AI that works in the background: quiet, precise, <strong style=\"font-weight:400;color:var(--fg);\">around the clock.</strong>",
     "hero.cta1": "Free intro call",
@@ -2207,33 +2239,40 @@ const T = {
     "prob.h2": "Every hour of delay<br/>costs you a client.",
     "prob.sub": "High-end clients expect instant responses. Whoever replies first wins, not whoever has the best product.",
     "prob.c1.title": "Response too slow",
-    "prob.c1.body": "If an enquiry is not answered within 5 minutes, the conversion probability drops by over 80%. Most businesses respond hours later, many not at all.",
+    "prob.c1.body": "After 5 minutes, the chance of winning an enquiry drops by over 80%. Most businesses reply hours later, or not at all.",
     "prob.c2.title": "Staff are the bottleneck",
     "prob.c2.body": "Staff are in meetings, off hours, or on leave. Emails and forms pile up, and clients move to competitors.",
     "prob.c3.title": "Inconsistent quality",
-    "prob.c3.body": "High-end clients expect professional communication at every touchpoint. A weak first reply destroys the first impression, irreversibly.",
+    "prob.c3.body": "High-end clients expect professional replies at every touchpoint. A weak first answer rarely gets a second chance.",
     "sol.label": "The Solution",
     "sol.h2": "One system that<br/><em>never misses</em> an enquiry.",
-    "sol.sub": "HYBOTE answers, qualifies and hands over every customer enquiry automatically: instantly, around the clock, on every channel. No enquiry is lost, no customer waits. And your team focuses on what matters.",
+    "sol.sub": "HYBOTE answers, qualifies and hands over every enquiry automatically: instantly, around the clock, on every channel. Your team focuses on what matters.",
     "sol.f1.title": "AI Automation",
-    "sol.f1.body": "Custom-built assistants across all your channels. They reply, qualify prospects, book appointments and escalate critical cases to your team, in your brand voice.",
+    "sol.f1.body": "Assistants for all your channels reply, qualify prospects, book appointments and hand critical cases to your team, in your brand voice.",
     "sol.f2.title": "AI Consulting",
-    "sol.f2.body": "We identify the highest-impact use cases, prioritise them and create a clear roadmap. Strategy before technology.",
+    "sol.f2.body": "We identify the use cases with the greatest impact and set clear priorities. Strategy before technology.",
     "sol.f3.title": "AI Process Optimisation",
-    "sol.f3.body": "We audit your workflows, automate repetitive tasks, connect your systems and make the savings measurable.",
+    "sol.f3.body": "We automate repetitive tasks, connect your systems and make the savings measurable.",
     "sol.f4.title": "Privacy Shield",
-    "sol.f4.body": "All client data is handled with maximum discretion. No third-party data sharing, ever.",
+    "sol.f4.body": "Strict data isolation: no sharing between clients and no data brokering.",
     "sol.cta": "Free intro call",
     "ch.label": "Our Services",
     "ch.h2": "Six ways we take<br/><em>work off your plate.</em>",
-    "ch.sub": "Each one covers a channel your customers reach you on. Book them individually or as one package.",
+    "ch.sub": "Agents for the channels your customers use, plus consulting and software. Book them individually or as one package.",
     "svc.wa.title": "WhatsApp Agent",
     "svc.starter.title": "HYBOTE Starter",
     "svc.starter.badge": "All-in-One",
-    "svc.starter.body": "The complete starter package: web design, a WhatsApp assistant and a phone assistant from one source, ready to go. Your new website answers enquiries by chat and phone automatically. One package, one price.",
-    "svc.consult.title": "Consulting & Process Automation",
-    "svc.consult.body": "We analyse your workflows, automate recurring processes and integrate everything into your CRM. Every lead is automatically scored, prioritised and synced, so your team can focus on what matters.",
-    "ch.wa.body": "HYBOTE connects via an enterprise-grade WhatsApp Business API: reliable, stable and end-to-end encrypted. Every enquiry is processed in real time. Rich media is delivered directly in the conversation, and everything syncs with common CRM systems.",
+    "svc.starter.body": "Web design, a WhatsApp assistant and a phone assistant from one source, ready to go. One package, one price.",
+    "svc.consult.title": "Consulting & Software",
+    "svc.consult.body": "Process automation, web apps and CRM integrations, built around how you work.",
+    "band.lead": "Where your processes need more than an agent:",
+    "band.1.title": "Process automation",
+    "band.1.body": "Recurring tasks run on their own, connected to your systems.",
+    "band.2.title": "Web apps & portals",
+    "band.2.body": "Customer portals and internal tools, built for one clear purpose.",
+    "band.3.title": "CRM & integrations",
+    "band.3.body": "Your channels, CRM and tools share one source of truth.",
+    "ch.wa.body": "Answers every WhatsApp enquiry in real time via the WhatsApp Business API. End-to-end encrypted, synced with your CRM.",
     "ch.wa.tag1": "Enterprise Connection",
     "ch.wa.tag2": "Rich Media",
     "ch.wa.tag3": "CRM Sync",
@@ -2248,24 +2287,24 @@ const T = {
     "ch.cf.tag2": "Instant reply",
     "ch.cf.tag3": "Smart routing",
     "ch.emcf.title": "Inbox & enquiries",
-    "ch.emcf.body": "Whether it arrives by email or through your contact form, every written enquiry is read, sorted and answered in your company tone within seconds.",
+    "ch.emcf.body": "Every email and contact form enquiry is read, sorted and answered in your company tone within seconds.",
     "ch.social.title": "Social DM Agent",
-    "ch.social.body": "Incoming messages via Instagram, Facebook Messenger, and Google Business Chat are captured, qualified, and answered in real time.",
+    "ch.social.body": "Instagram and Facebook Messenger messages are captured, qualified and answered in real time.",
     "ch.tel.title": "24/7 Phone & Voice Agent",
-    "ch.tel.body": "Incoming calls are answered immediately and professionally, around the clock and in the language of the caller. The request is qualified, first questions get answered and an appointment is booked when it makes sense.",
+    "ch.tel.body": "Answers calls around the clock in the caller’s language, qualifies the request and books the appointment.",
     "ch.qi.title": "AI Lead Scoring",
     "ch.qi.body": "Every enquiry is automatically scored and prioritised across all channels. The most urgent contacts always surface first so your team can focus on what matters.",
     "ch.crm.title": "CRM Integration",
     "ch.crm.body": "Every conversation and contact is synced to your existing CRM in real time. No manual data entry, all information is instantly where it needs to be. You also get a live dashboard and a mobile app with push notifications.",
     "how.label": "Our Approach",
     "how.h2": "How we work.",
-    "how.s1.title": "Analysis",
+    "how.s1.title": "Understand",
     "how.s1.body": "We map your processes and identify the biggest levers.",
     "how.s2.title": "Design",
     "how.s2.body": "We design the solution and the roadmap.",
     "how.s3.title": "Build",
     "how.s3.body": "We build the automation, bespoke to you.",
-    "how.s4.title": "Integration",
+    "how.s4.title": "Integrate",
     "how.s4.body": "We connect it seamlessly into your existing stack.",
     "how.s5.title": "Optimisation",
     "how.s5.body": "We measure, optimise and scale.",
@@ -2305,7 +2344,7 @@ const T = {
     "footer.svc3": "Inbox & enquiries",
     "footer.svc4": "Social DM Agent",
     "footer.svc5": "HYBOTE Starter",
-    "footer.svc6": "Consulting & processes",
+    "footer.svc6": "Consulting & software",
     "footer.col1": "Product",
     "footer.sol": "Solution",
     "footer.ch": "Services",
@@ -2328,9 +2367,10 @@ const T = {
     "demo.via": "via WhatsApp · just now",
     "demo.msg": "\"Good morning, we are looking for a solution to automatically capture, answer and qualify incoming client enquiries across WhatsApp, email and contact forms. Can we discuss?\"",
     "demo.reply.label": "HYBOTE Response",
-    "demo.reply.body": "Good morning! Absolutely, this is exactly our speciality. We build systems that answer, qualify and sync your enquiries across every channel with your CRM. Would a short call this week work for you?",
+    "demo.reply.body": "Good morning. Absolutely, this is exactly our speciality. We build systems that answer, qualify and sync your enquiries across every channel with your CRM. Would a short call this week work for you?",
     "demo.tag1": "Qualified",
     "demo.tag2": "CRM Updated",
+    "demo.instant": "instantly",
     "ticker.1": "Enquiry received &ensp;·&ensp; Qualified &ensp;·&ensp; Instant reply sent &ensp;·&ensp; CRM updated",
     "ticker.2": "WhatsApp message &ensp;·&ensp; Client qualified &ensp;·&ensp; Appointment booked automatically &ensp;·&ensp; In seconds",
     "ticker.3": "Contact form &ensp;·&ensp; Process automated &ensp;·&ensp; Instant reply sent &ensp;·&ensp; Effortlessly",
@@ -2342,13 +2382,13 @@ const T = {
     "faq.label": "FAQ",
     "faq.h2": "Frequently asked<br/>questions.",
     "faq.q1": "What exactly does HYBOTE do?",
-    "faq.a1": "HYBOTE answers every customer enquiry instantly: on WhatsApp, phone, email, contact form and social media. Prospects get qualified, appointments get booked and everything lands in your CRM. The result: no lost enquiries, and your team is free to focus on what matters.",
+    "faq.a1": "HYBOTE builds AI agents that answer enquiries on WhatsApp, phone, email and social media, qualify prospects and book appointments. Consulting and custom software complete the picture.",
     "faq.q2": "Who is HYBOTE for?",
-    "faq.a2": "For any business where customer enquiries can slip through, whether 3 or 300 a day. If your customers reach you on WhatsApp, phone, email or social media and expect fast answers, HYBOTE is built for you, regardless of industry.",
+    "faq.a2": "For any business where enquiries can slip through, whether 3 or 300 a day. If your customers reach you on WhatsApp, phone, email or social media and expect fast answers, HYBOTE fits, in any industry.",
     "faq.q3": "How does working together work?",
-    "faq.a3": "Analysis, design, build, integration, optimisation. We always start by mapping your processes to find the biggest levers.",
+    "faq.a3": "Understand, design, build, integrate. We always start by mapping your processes to find the biggest levers.",
     "faq.q4": "How fast do we see results?",
-    "faq.a4": "First automations typically go live within a few days. We set the exact timeline once the analysis is done.",
+    "faq.a4": "First automations typically go live within a few days. We set the exact timeline once we have mapped your processes.",
     "faq.q5": "What about our data and security?",
     "faq.a5": "Your data stays yours. We operate on a data-minimisation principle, GDPR-compliant, and integrate into your existing secure systems.",
     "faq.q6": "Which channels and languages are supported?",
@@ -2361,10 +2401,10 @@ const T = {
     "faq.a9": "Discretion is non-negotiable. HYBOTE operates under strict data isolation: no cross-client data sharing, end-to-end encryption on all communications and no data brokering.",
     "mission.label": "Our Mission",
     "mission.h2": "No enquiry<br/>slips through.",
-    "mission.body": "What happens between a customer asking and you answering decides whether they buy from you or from the next company. We close that gap: every enquiry gets an answer straight away, friendly and competent, at any hour. Your team then handles the conversations that really count.",
+    "mission.body": "The time between a customer’s question and your answer decides who wins the order. We close that gap at any hour, so your team can focus on the conversations that count.",
     "vision.label": "Our Vision",
     "vision.h2": "The partner<br/>companies keep.",
-    "vision.body": "We build systems nobody has to explain once they are live, because they simply run. Not a pilot, not an experiment, but technology a business relies on day to day: across industries, in over 50 languages, seven days a week.",
+    "vision.body": "We build systems nobody has to explain once they are live, because they simply run: in daily operations, across industries, in over 50 languages, seven days a week.",
     "vision.lang50": "Languages. HYBOTE speaks to your customers in over 50 languages with nothing to configure.",
     "contact.label": "Contact",
     "contact.h2": "Book a free<br/>intro call.",
@@ -2382,8 +2422,8 @@ const T = {
     "contact.form.alt": "Prefer to write? Send a request",
     "contact.i1.title": "Intro call",
     "contact.i1.sub": "20 minutes, via video call",
-    "contact.i2.title": "Response within the hour",
-    "contact.i2.sub": "We respond within the hour.",
+    "contact.i2.title": "Personal reply",
+    "contact.i2.sub": "We get back to you directly, using your details.",
     "contact.i3.title": "No obligation",
     "contact.i3.sub": "Non-binding, free, transparent.",
     "out.label": "With HYBOTE",
@@ -2446,7 +2486,7 @@ const T = {
     "wa.tooltip": "تواصل عبر واتساب",
     "call.tooltip": "اتصل بنا",
     "hero.badge": "النظام يعمل · على مدار الساعة",
-    "hero.eyebrow": "أتمتة الذكاء الاصطناعي · الاستشارات · تحسين العمليات",
+    "hero.eyebrow": "أتمتة الذكاء الاصطناعي · الاستشارات · البرمجيات المخصصة",
     "hero.h1": "المستقبل يعمل<br/><span class=\"grad-text\">من تلقاء نفسه.</span>",
     "hero.sub": "نبني ذكاءً اصطناعياً يعمل في الخلفية: بهدوء ودقة، <strong style=\"font-weight:400;color:var(--fg);\">على مدار الساعة.</strong>",
     "hero.cta1": "مكالمة تعارف مجانية",
@@ -2466,33 +2506,40 @@ const T = {
     "prob.h2": "كل ساعة تأخير<br/>تكلّفك عميلاً.",
     "prob.sub": "يتوقع العملاء المميزون ردوداً فورية. من يرد أولاً يفوز، لا من يملك أفضل منتج.",
     "prob.c1.title": "الاستجابة بطيئة للغاية",
-    "prob.c1.body": "إذا لم يُرَدّ على استفسار في غضون 5 دقائق، تنخفض فرصة التحويل بنسبة تزيد على 80٪. معظم الشركات تردّ بعد ساعات، وكثير منها لا يردّ أصلاً.",
+    "prob.c1.body": "بعد 5 دقائق تنخفض فرصة كسب الاستفسار بنسبة تزيد على 80٪. معظم الشركات تردّ بعد ساعات، وبعضها لا يردّ أصلاً.",
     "prob.c2.title": "الموظفون عائق النمو",
     "prob.c2.body": "يكون الموظفون في اجتماعات أو بعد انتهاء الدوام أو في إجازة. تتراكم رسائل البريد الإلكتروني والنماذج، وينتقل العملاء إلى المنافسين.",
     "prob.c3.title": "جودة غير متسقة",
-    "prob.c3.body": "يتوقع العملاء الراقيون تواصلاً احترافياً في كل لحظة. رد أول ضعيف يدمر الانطباع الأول بشكل لا رجعة فيه.",
+    "prob.c3.body": "يتوقع العملاء الراقيون ردوداً احترافية في كل نقطة تواصل. الرد الأول الضعيف نادراً ما تُتاح له فرصة ثانية.",
     "sol.label": "الحل",
     "sol.h2": "نظام واحد<br/><em>لا يفوّت</em> أي استفسار.",
-    "sol.sub": "تجيب HYBOTE على كل استفسار من عملائك وتؤهله وتسلّمه تلقائياً بالكامل: فوراً، على مدار الساعة، وعبر كل القنوات. لا يضيع أي استفسار، ولا ينتظر أي عميل. وفريقك يركّز على ما هو أهم.",
+    "sol.sub": "تجيب HYBOTE على كل استفسار وتؤهله وتسلّمه تلقائياً: فوراً، على مدار الساعة، وعبر كل القنوات. وفريقك يركّز على ما هو أهم.",
     "sol.f1.title": "أتمتة الذكاء الاصطناعي",
-    "sol.f1.body": "مساعدون مصمَّمون خصيصاً عبر كل القنوات. يردّون ويؤهّلون العملاء ويحجزون المواعيد ويحيلون الحالات المهمة إلى فريقك، بصوت علامتك التجارية.",
+    "sol.f1.body": "مساعدون لكل قنواتك يردّون ويؤهّلون العملاء ويحجزون المواعيد ويحيلون الحالات المهمة إلى فريقك، بصوت علامتك التجارية.",
     "sol.f2.title": "استشارات الذكاء الاصطناعي",
-    "sol.f2.body": "نحدد أكثر تطبيقات الذكاء الاصطناعي تأثيرًا، ونرتّب أولوياتها، ونضع خارطة طريق واضحة. الاستراتيجية قبل التقنية.",
+    "sol.f2.body": "نحدد حالات الاستخدام الأكثر تأثيراً ونضع أولويات واضحة. الاستراتيجية قبل التقنية.",
     "sol.f3.title": "تحسين العمليات بالذكاء الاصطناعي",
-    "sol.f3.body": "ندقّق سير عملك، ونؤتمت المهام المتكررة، ونربط أنظمتك، ونجعل الوفورات قابلة للقياس.",
+    "sol.f3.body": "نؤتمت المهام المتكررة، ونربط أنظمتك، ونجعل الوفورات قابلة للقياس.",
     "sol.f4.title": "درع الخصوصية",
-    "sol.f4.body": "تُعالَج جميع بيانات العملاء بأقصى درجات السرية. لا مشاركة بيانات مع أطراف ثالثة، أبداً.",
+    "sol.f4.body": "عزل صارم للبيانات: لا تبادل بين العملاء ولا اتجار بالبيانات.",
     "sol.cta": "مكالمة تعارف مجانية",
     "ch.label": "خدماتنا",
     "ch.h2": "ست طرق<br/><em>نخفف بها عنك.</em>",
-    "ch.sub": "كل مجال يغطي قناة يتواصل عبرها عملاؤك معك. يمكن حجزها منفردة أو كباقة متكاملة.",
+    "ch.sub": "وكلاء للقنوات التي يستخدمها عملاؤك، إضافةً إلى الاستشارات والبرمجيات. يمكن حجزها منفردة أو كباقة متكاملة.",
     "svc.wa.title": "وكيل واتساب",
     "svc.starter.title": "باقة HYBOTE Starter",
     "svc.starter.badge": "الكل في واحد",
-    "svc.starter.body": "الباقة المتكاملة للانطلاق: تصميم الموقع، ومساعد واتساب، ومساعد هاتفي من مصدر واحد وجاهز للعمل. موقعك الجديد يرد على الاستفسارات عبر المحادثة والهاتف تلقائياً بالكامل. باقة واحدة، سعر واحد.",
-    "svc.consult.title": "استشارات وأتمتة العمليات",
-    "svc.consult.body": "نحلّل سير عملك، ونؤتمت المهام المتكررة، ونربط كل شيء بنظام إدارة علاقات العملاء لديك. يُقيَّم كل عميل محتمل ويُرتَّب وتتم مزامنته تلقائياً، ليركّز فريقك على ما يهم.",
-    "ch.wa.body": "تعتمد HYBOTE على اتصال بمستوى المؤسسات عبر WhatsApp Business API: موثوق وثابت ومشفر من طرف إلى طرف. كل استفسار يُعالَج في الوقت الفعلي، وتُسلَّم الملفات عالية الجودة مباشرة في المحادثة، مع تكامل سلس مع أنظمة إدارة علاقات العملاء.",
+    "svc.starter.body": "تصميم الموقع ومساعد واتساب ومساعد هاتفي من مصدر واحد وجاهزة للعمل. باقة واحدة وسعر واحد.",
+    "svc.consult.title": "الاستشارات والبرمجيات",
+    "svc.consult.body": "أتمتة العمليات وتطبيقات الويب وربط CRM، مصمّمة وفق طريقة عملك.",
+    "band.lead": "عندما تحتاج عملياتك إلى أكثر من وكيل واحد:",
+    "band.1.title": "أتمتة العمليات",
+    "band.1.body": "تعمل المهام المتكررة تلقائياً ومرتبطة بأنظمتك.",
+    "band.2.title": "تطبيقات الويب والبوابات",
+    "band.2.body": "بوابات للعملاء وأدوات داخلية، مبنية لغرض واحد واضح.",
+    "band.3.title": "نظام CRM والتكاملات",
+    "band.3.body": "قنواتك ونظام CRM وأدواتك تشترك في مصدر واحد للحقيقة.",
+    "ch.wa.body": "يجيب على كل استفسار عبر واتساب في الوقت الفعلي من خلال WhatsApp Business API. مشفّر من طرف إلى طرف ومتزامن مع نظام إدارة علاقات العملاء لديك.",
     "ch.wa.tag1": "اتصال المؤسسات",
     "ch.wa.tag2": "وسائط غنية",
     "ch.wa.tag3": "مزامنة CRM",
@@ -2507,24 +2554,24 @@ const T = {
     "ch.cf.tag2": "رد فوري",
     "ch.cf.tag3": "توجيه ذكي",
     "ch.emcf.title": "البريد والطلبات",
-    "ch.emcf.body": "سواء وصل عبر البريد الإلكتروني أو نموذج التواصل، تتم قراءة كل استفسار مكتوب وترتيبه والرد عليه بأسلوب شركتك خلال ثوانٍ.",
+    "ch.emcf.body": "تُقرأ كل رسالة بريد إلكتروني وكل استفسار عبر النموذج وتُصنَّف ويُردّ عليها بأسلوب شركتك خلال ثوانٍ.",
     "ch.social.title": "وكيل الرسائل المباشرة",
-    "ch.social.body": "يتم التقاط الرسائل الواردة عبر Instagram وFacebook Messenger وGoogle Business Chat وتأهيلها والرد عليها في الوقت الفعلي: قناة واردة أخرى، ونفس العملية الآلية.",
+    "ch.social.body": "تُلتقط الرسائل الواردة عبر Instagram وFacebook Messenger وتُؤهَّل ويُردّ عليها في الوقت الفعلي.",
     "ch.tel.title": "وكيل الهاتف والصوت 24/7",
-    "ch.tel.body": "يتم الرد على المكالمات الواردة فوراً وباحترافية، على مدار الساعة وبلغة المتصل. يُؤهَّل الطلب، ويُجاب على الأسئلة الأولية، ويُحجز موعد مباشرة عند الحاجة.",
+    "ch.tel.body": "يردّ على المكالمات على مدار الساعة بلغة المتصل، ويؤهّل الطلب ويحجز الموعد.",
     "ch.qi.title": "تأهيل بالذكاء الاصطناعي",
     "ch.qi.body": "يتم تقييم كل استفسار وترتيب أولوياته تلقائياً عبر جميع القنوات. أهم جهات الاتصال تظهر دائماً في المقدمة ليتمكن فريقك من التركيز على ما يهم.",
     "ch.crm.title": "تكامل CRM",
     "ch.crm.body": "تتم مزامنة كل محادثة وجهة اتصال مع نظام إدارة علاقات العملاء الحالي لديك في الوقت الفعلي. لا إدخال يدوي للبيانات، فجميع المعلومات متاحة فوراً في مكانها الصحيح. كما تحصل على لوحة تحكم مباشرة وتطبيق جوّال مع إشعارات فورية.",
     "how.label": "منهجيتنا",
     "how.h2": "كيف نعمل.",
-    "how.s1.title": "التدقيق",
+    "how.s1.title": "الفهم",
     "how.s1.body": "ندرس عملياتك ونحدد أكبر نقاط التأثير.",
     "how.s2.title": "التصميم",
     "how.s2.body": "نصمم الحل وخارطة الطريق.",
     "how.s3.title": "البناء",
     "how.s3.body": "نبني الأتمتة مصمَّمة خصيصًا لك.",
-    "how.s4.title": "الدمج",
+    "how.s4.title": "الربط",
     "how.s4.body": "ندمجها بسلاسة في أنظمتك القائمة.",
     "how.s5.title": "التحسين",
     "how.s5.body": "نقيس ونحسّن ونوسّع النطاق.",
@@ -2564,7 +2611,7 @@ const T = {
     "footer.svc3": "البريد والطلبات",
     "footer.svc4": "وكيل الرسائل المباشرة",
     "footer.svc5": "باقة HYBOTE Starter",
-    "footer.svc6": "الاستشارات والعمليات",
+    "footer.svc6": "الاستشارات والبرمجيات",
     "footer.col1": "المنتج",
     "footer.sol": "الحل",
     "footer.ch": "خدماتنا",
@@ -2587,9 +2634,10 @@ const T = {
     "demo.via": "عبر واتساب · الآن",
     "demo.msg": "\"صباح الخير، نبحث عن حل لتلقي الاستفسارات الواردة من العملاء والرد عليها وتأهيلها تلقائياً عبر واتساب والبريد الإلكتروني ونماذج التواصل. هل يمكننا مناقشة ذلك؟\"",
     "demo.reply.label": "رد HYBOTE",
-    "demo.reply.body": "صباح الخير! بكل سرور، هذا بالضبط مجال تخصصنا. نبني أنظمة تجيب فوراً على استفساراتك من جميع القنوات وتؤهّلها وتزامنها مع نظام إدارة علاقات العملاء لديك. هل يناسبك محادثة قصيرة هذا الأسبوع؟",
+    "demo.reply.body": "صباح الخير. بكل سرور، هذا بالضبط مجال تخصصنا. نبني أنظمة تجيب فوراً على استفساراتك من جميع القنوات وتؤهّلها وتزامنها مع نظام إدارة علاقات العملاء لديك. هل يناسبك محادثة قصيرة هذا الأسبوع؟",
     "demo.tag1": "مؤهَّل",
     "demo.tag2": "تم تحديث CRM",
+    "demo.instant": "فوراً",
     "ticker.1": "استفسار وارد &ensp;·&ensp; مؤهَّل &ensp;·&ensp; رد فوري أُرسل &ensp;·&ensp; تم تحديث CRM",
     "ticker.2": "رسالة واتساب &ensp;·&ensp; عميل مؤهَّل &ensp;·&ensp; موعد محجوز تلقائياً &ensp;·&ensp; في ثوانٍ",
     "ticker.3": "نموذج تواصل &ensp;·&ensp; عملية مؤتمتة &ensp;·&ensp; رد فوري أُرسل &ensp;·&ensp; بلا جهد",
@@ -2601,13 +2649,13 @@ const T = {
     "faq.label": "الأسئلة الشائعة",
     "faq.h2": "الأسئلة<br/>المتكررة.",
     "faq.q1": "ماذا تفعل هايبوت بالضبط؟",
-    "faq.a1": "تجيب HYBOTE على كل استفسار من عملائك فوراً: عبر واتساب والهاتف والبريد الإلكتروني ونموذج التواصل ووسائل التواصل الاجتماعي. يتم تأهيل المهتمين وحجز المواعيد ونقل كل شيء إلى نظام إدارة علاقات العملاء لديك. النتيجة: لا استفسارات ضائعة، وفريقك متفرغ لما هو أهم.",
+    "faq.a1": "تبني HYBOTE وكلاء ذكاء اصطناعي يجيبون على الاستفسارات عبر واتساب والهاتف والبريد الإلكتروني ووسائل التواصل الاجتماعي، ويؤهّلون المهتمين ويحجزون المواعيد. وتكتمل الصورة بالاستشارات والبرمجيات المخصصة.",
     "faq.q2": "لمن صُمّمت HYBOTE؟",
-    "faq.a2": "لأي شركة قد تضيع فيها استفسارات العملاء، سواء 3 أو 300 يومياً. إذا كان عملاؤك يتواصلون معك عبر واتساب أو الهاتف أو البريد الإلكتروني أو وسائل التواصل ويتوقعون إجابات سريعة، فقد بُنيت HYBOTE لك، أياً كان مجالك.",
+    "faq.a2": "لأي شركة قد تضيع فيها الاستفسارات، سواء 3 أو 300 يومياً. إذا كان عملاؤك يتواصلون معك عبر واتساب أو الهاتف أو البريد الإلكتروني أو وسائل التواصل ويتوقعون إجابات سريعة، فإن HYBOTE مناسبة لك في أي قطاع.",
     "faq.q3": "كيف تسير عملية العمل معكم؟",
-    "faq.a3": "التدقيق ← التصميم ← البناء ← الدمج ← التحسين. نبدأ دائمًا بتدقيق لتحديد أكبر نقاط التأثير.",
+    "faq.a3": "الفهم، ثم التصميم، ثم البناء، ثم الربط. نبدأ دائماً برصد عملياتك لتحديد أكبر نقاط التأثير.",
     "faq.q4": "ما مدى سرعة ظهور النتائج؟",
-    "faq.a4": "غالبًا ما تنطلق أولى الأتمتات خلال أيام قليلة؛ ونحدد الإطار الزمني الدقيق بعد التدقيق.",
+    "faq.a4": "غالباً ما تنطلق أولى الأتمتات خلال أيام قليلة، ونحدد الإطار الزمني الدقيق بعد رصد عملياتك.",
     "faq.q5": "ماذا عن بياناتنا وأمنها؟",
     "faq.a5": "بياناتك تبقى ملكك. نعمل بأقل قدر من البيانات، وبما يتوافق مع حماية البيانات (GDPR)، وندمج حلولنا في أنظمتك الآمنة القائمة.",
     "faq.q6": "ما القنوات واللغات المدعومة؟",
@@ -2620,10 +2668,10 @@ const T = {
     "faq.a9": "السرية غير قابلة للتفاوض. تعمل HYBOTE بعزل صارم للبيانات: لا مشاركة بين العملاء، وتشفير شامل لجميع الاتصالات، ولا مشاركة مع أطراف ثالثة. بيانات عملائك تبقى حصراً داخل نظامك.",
     "mission.label": "مهمتنا",
     "mission.h2": "لا يبقى<br/>أي استفسار معلقاً.",
-    "mission.body": "ما يحدث بين سؤال العميل وردّك عليه هو ما يقرر إن كان سيشتري منك أو من غيرك. نحن نغلق هذه الفجوة: كل استفسار يحصل على رد فوري، ودود ومختص، في أي وقت. وفريقك يتولى بعدها المحادثات التي تهم فعلاً.",
+    "mission.body": "الوقت بين سؤال العميل وردّك عليه هو ما يحسم من ينال الطلب. نحن نغلق هذه الفجوة في أي ساعة، ليركّز فريقك على المحادثات التي تهم.",
     "vision.label": "رؤيتنا",
     "vision.h2": "الشريك الذي<br/>تحتفظ به الشركات.",
-    "vision.body": "نبني أنظمة لا يحتاج أحد لشرحها بعد إطلاقها، لأنها تعمل ببساطة. ليست مشروعاً تجريبياً ولا تجربة، بل تقنية يعتمد عليها العمل يومياً: عبر القطاعات، بأكثر من 50 لغة، سبعة أيام في الأسبوع.",
+    "vision.body": "نبني أنظمة لا يحتاج أحد لشرحها بعد إطلاقها، لأنها تعمل ببساطة: في التشغيل اليومي، عبر القطاعات، بأكثر من 50 لغة، سبعة أيام في الأسبوع.",
     "vision.lang50": "لغة. تخاطب HYBOTE عملاءك بأكثر من 50 لغة دون أي إعداد منك.",
     "contact.label": "التواصل",
     "contact.h2": "احجز مكالمة<br/>تعارف مجانية.",
@@ -2641,8 +2689,8 @@ const T = {
     "contact.form.alt": "تفضل الكتابة؟ أرسل طلباً",
     "contact.i1.title": "مكالمة تعارف",
     "contact.i1.sub": "20 دقيقة، عبر مكالمة فيديو",
-    "contact.i2.title": "رد خلال ساعة",
-    "contact.i2.sub": "نرد خلال ساعة.",
+    "contact.i2.title": "رد شخصي",
+    "contact.i2.sub": "نتواصل معك مباشرة عبر بياناتك.",
     "contact.i3.title": "بدون التزام",
     "contact.i3.sub": "غير ملزم، مجاني، شفاف.",
     "out.label": "مع HYBOTE",
@@ -2828,13 +2876,13 @@ function setLang(lang) {
     "lp.caps.items.5.d": "A short, well timed check back instead of a contact that quietly goes cold. Buyers who are still deciding come back into the conversation.",
     "lp.process.label": "Our approach",
     "lp.process.h2": "How we work.",
-    "lp.process.steps.0.t": "Analysis",
+    "lp.process.steps.0.t": "Understand",
     "lp.process.steps.0.d": "We look at where your enquiries come from, how fast they are answered today and how many test drive appointments actually take place.",
     "lp.process.steps.1.t": "Design",
     "lp.process.steps.1.d": "We define the conversation flow, which vehicle data may be shared and when a salesperson takes over.",
     "lp.process.steps.2.t": "Build",
     "lp.process.steps.2.d": "We build the assistant on your inventory data, in your tone of voice, in the languages your customers speak.",
-    "lp.process.steps.3.t": "Integration",
+    "lp.process.steps.3.t": "Integrate",
     "lp.process.steps.3.d": "Inventory system, CRM and appointment calendar are connected, so every enquiry lands where your team already works.",
     "lp.faq.label": "FAQ",
     "lp.faq.h2": "Questions from<br/>dealership managers.",
@@ -2847,7 +2895,7 @@ function setLang(lang) {
     "lp.faq.items.3.q": "Does it also handle service and workshop bookings?",
     "lp.faq.items.3.a": "Yes. Service enquiries follow the same pattern: describe the issue, check the calendar, book the slot, send a reminder. Many dealerships start there because the volume is predictable.",
     "lp.faq.items.4.q": "How long until it is live?",
-    "lp.faq.items.4.a": "First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it after the analysis.",
+    "lp.faq.items.4.a": "First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it once we have mapped your processes.",
     "lp.faq.items.5.q": "What about data protection and customer data?",
     "lp.faq.items.5.a": "Your data stays yours. We work on a data minimisation principle, GDPR compliant, with strict separation between clients. Customer data is not used to train anything and is not passed on.",
     "lp.cross.label": "Also built for",
@@ -2905,13 +2953,13 @@ function setLang(lang) {
     "lp.caps.items.5.d": "Ein kurzes, gut getimtes Nachfassen statt eines Kontakts, der still einschläft. Käufer, die noch überlegen, kommen zurück ins Gespräch.",
     "lp.process.label": "Unser Vorgehen",
     "lp.process.h2": "Wie wir arbeiten.",
-    "lp.process.steps.0.t": "Analyse",
+    "lp.process.steps.0.t": "Verstehen",
     "lp.process.steps.0.d": "Wir sehen uns an, woher Ihre Anfragen kommen, wie schnell sie heute beantwortet werden und wie viele Probefahrttermine tatsächlich stattfinden.",
-    "lp.process.steps.1.t": "Konzeption",
+    "lp.process.steps.1.t": "Entwerfen",
     "lp.process.steps.1.d": "Wir legen den Gesprächsverlauf fest, welche Fahrzeugdaten herausgegeben werden dürfen und wann ein Verkäufer übernimmt.",
-    "lp.process.steps.2.t": "Umsetzung",
+    "lp.process.steps.2.t": "Bauen",
     "lp.process.steps.2.d": "Wir bauen den Assistenten auf Ihren Bestandsdaten auf, in Ihrer Tonalität und in den Sprachen Ihrer Kunden.",
-    "lp.process.steps.3.t": "Integration",
+    "lp.process.steps.3.t": "Anbinden",
     "lp.process.steps.3.d": "Bestandssystem, CRM und Terminkalender werden angebunden, damit jede Anfrage dort landet, wo Ihr Team ohnehin arbeitet.",
     "lp.faq.label": "FAQ",
     "lp.faq.h2": "Fragen von<br/>Autohaus-Leitungen.",
@@ -2924,7 +2972,7 @@ function setLang(lang) {
     "lp.faq.items.3.q": "Übernimmt es auch Service- und Werkstatttermine?",
     "lp.faq.items.3.a": "Ja. Serviceanfragen folgen demselben Muster: Anliegen aufnehmen, Kalender prüfen, Termin buchen, Erinnerung senden. Viele Autohäuser starten dort, weil das Volumen planbar ist.",
     "lp.faq.items.4.q": "Wie lange dauert es bis zum Livegang?",
-    "lp.faq.items.4.a": "Erste Automatisierungen gehen meist innerhalb weniger Tage live. Der genaue Zeitplan hängt davon ab, wie Ihr Bestandssystem angebunden wird, und wir legen ihn nach der Analyse fest.",
+    "lp.faq.items.4.a": "Erste Automatisierungen gehen meist innerhalb weniger Tage live. Der genaue Zeitplan hängt davon ab, wie Ihr Bestandssystem angebunden wird, und wir legen ihn fest, sobald wir Ihre Prozesse erfasst haben.",
     "lp.faq.items.5.q": "Wie ist das mit Datenschutz und Kundendaten?",
     "lp.faq.items.5.a": "Ihre Daten bleiben Ihre Daten. Wir arbeiten nach dem Prinzip der Datensparsamkeit, DSGVO-konform und mit strikter Trennung zwischen Mandanten. Kundendaten werden nicht zum Training verwendet und nicht weitergegeben.",
     "lp.cross.label": "Ebenfalls im Einsatz für",
@@ -2982,13 +3030,13 @@ function setLang(lang) {
     "lp.caps.items.5.d": "تواصل قصير في توقيت مناسب بدل جهة اتصال تخبو بهدوء. فيعود المشترون المترددون إلى المحادثة.",
     "lp.process.label": "منهجنا",
     "lp.process.h2": "كيف نعمل.",
-    "lp.process.steps.0.t": "التحليل",
+    "lp.process.steps.0.t": "الفهم",
     "lp.process.steps.0.d": "ننظر في مصادر استفساراتك وسرعة الرد عليها اليوم وعدد مواعيد تجربة القيادة التي تتم فعلاً.",
     "lp.process.steps.1.t": "التصميم",
     "lp.process.steps.1.d": "نحدد مسار المحادثة وبيانات المركبات التي يمكن مشاركتها ومتى يتولى المندوب.",
-    "lp.process.steps.2.t": "التنفيذ",
+    "lp.process.steps.2.t": "البناء",
     "lp.process.steps.2.d": "نبني المساعد اعتماداً على بيانات مخزونك وبنبرة علامتك وباللغات التي يتحدثها عملاؤك.",
-    "lp.process.steps.3.t": "التكامل",
+    "lp.process.steps.3.t": "الربط",
     "lp.process.steps.3.d": "يُربط نظام المخزون ونظام إدارة العملاء وتقويم المواعيد، ليصل كل استفسار حيث يعمل فريقك أصلاً.",
     "lp.faq.label": "الأسئلة الشائعة",
     "lp.faq.h2": "أسئلة من<br/>مديري وكالات السيارات.",
@@ -3001,7 +3049,7 @@ function setLang(lang) {
     "lp.faq.items.3.q": "هل يتولى أيضاً مواعيد الخدمة والورشة؟",
     "lp.faq.items.3.a": "نعم. تتبع استفسارات الخدمة النمط نفسه: توصيف العطل، ومراجعة التقويم، وحجز الموعد، وإرسال تذكير. وكثير من الوكالات تبدأ من هنا لأن الحجم قابل للتنبؤ.",
     "lp.faq.items.4.q": "كم يستغرق الأمر حتى يبدأ العمل؟",
-    "lp.faq.items.4.a": "تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. ويعتمد الجدول الدقيق على طريقة ربط نظام المخزون، ونحدده بعد التحليل.",
+    "lp.faq.items.4.a": "تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. ويعتمد الجدول الدقيق على طريقة ربط نظام المخزون، ونحدده بعد رصد عملياتك.",
     "lp.faq.items.5.q": "ماذا عن حماية البيانات وبيانات العملاء؟",
     "lp.faq.items.5.a": "بياناتك تبقى ملكك. نعمل بمبدأ تقليل البيانات، بما يتوافق مع اللائحة الأوروبية، مع فصل صارم بين العملاء. ولا تُستخدم بيانات العملاء للتدريب ولا تُشارَك.",
     "lp.cross.label": "مصمم أيضاً لـ",
@@ -3108,7 +3156,7 @@ function setLang(lang) {
       "name": "How long until it is live?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it after the analysis."
+        "text": "First automations typically go live within a few days. The exact timeline depends on how your inventory system is connected, and we set it once we have mapped your processes."
       }
     },
     {
@@ -3144,9 +3192,9 @@ function setLang(lang) {
 <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(8,11,18,0.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(56,189,248,0.25);padding:16px 24px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
   <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.78rem;color:var(--a2);line-height:1.6;margin:0;flex:1;min-width:200px;">
     <span data-i18n="cookie.notice">Calendly is loaded immediately for appointment booking and may process booking and technical data in the USA.</span>
-    <a id="cookie-privacy-link" href="/datenschutz.html?lang=en" target="_blank" rel="noopener" style="color:var(--gold-lt);text-decoration:none;border-bottom:1px solid rgba(125,211,252,0.35);" data-i18n="cookie.link">Details in our Privacy Policy</a>.
+    <a id="cookie-privacy-link" href="/datenschutz.html?lang=en" target="_blank" rel="noopener" style="color:var(--accent-lt);text-decoration:none;border-bottom:1px solid rgba(125,211,252,0.35);" data-i18n="cookie.link">Details in our Privacy Policy</a>.
   </p>
-  <button onclick="dismissCookieNotice()" style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.7rem;letter-spacing:0.10em;text-transform:uppercase;color:var(--bg);background:var(--gold);border:none;padding:9px 20px;cursor:pointer;white-space:nowrap;transition:opacity 150ms;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'" data-i18n="cookie.dismiss">Got it</button>
+  <button onclick="dismissCookieNotice()" style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.7rem;letter-spacing:0.10em;text-transform:uppercase;color:var(--bg);background:var(--accent);border:none;padding:9px 20px;cursor:pointer;white-space:nowrap;transition:opacity 150ms;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'" data-i18n="cookie.dismiss">Got it</button>
 </div>
 <script>
   (function() {
@@ -3181,10 +3229,9 @@ function setLang(lang) {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(56,189,248,0.35), 0 2px 8px rgba(0,0,0,0.25);
     text-decoration: none;
     z-index: 200;
-    transition: transform 200ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 200ms ease;
+    transition: transform 200ms cubic-bezier(0.34,1.56,0.64,1);
     cursor: pointer;
   }
   .wa-btn { right: 28px; }
@@ -3192,7 +3239,6 @@ function setLang(lang) {
   .wa-btn:hover,
   .call-btn:hover {
     transform: scale(1.08);
-    box-shadow: 0 6px 28px rgba(56,189,248,0.5), 0 4px 12px rgba(0,0,0,0.3);
   }
   .wa-btn:focus-visible,
   .call-btn:focus-visible {

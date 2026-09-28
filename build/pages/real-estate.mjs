@@ -213,7 +213,7 @@ export default {
       h2: { en: 'How we work.', de: 'Wie wir arbeiten.', ar: 'كيف نعمل.' },
       steps: [
         {
-          t: { en: 'Analysis', de: 'Analyse', ar: 'التحليل' },
+          t: { en: 'Understand', de: 'Verstehen', ar: 'الفهم' },
           d: {
             en: 'We look at where your enquiries come from, how quickly they are answered today and which listings generate the most contact.',
             de: 'Wir sehen uns an, woher Ihre Anfragen kommen, wie schnell sie heute beantwortet werden und welche Objekte den meisten Kontakt erzeugen.',
@@ -221,7 +221,7 @@ export default {
           },
         },
         {
-          t: { en: 'Design', de: 'Konzeption', ar: 'التصميم' },
+          t: { en: 'Design', de: 'Entwerfen', ar: 'التصميم' },
           d: {
             en: 'We define the conversation flow, the qualification criteria and the point at which a human colleague takes over.',
             de: 'Wir legen den Gesprächsverlauf fest, die Qualifizierungskriterien und den Punkt, an dem ein Mensch übernimmt.',
@@ -229,7 +229,7 @@ export default {
           },
         },
         {
-          t: { en: 'Build', de: 'Umsetzung', ar: 'التنفيذ' },
+          t: { en: 'Build', de: 'Bauen', ar: 'البناء' },
           d: {
             en: 'We build the assistant on your listing data, in your tone of voice, in the languages your clients speak.',
             de: 'Wir bauen den Assistenten auf Ihren Objektdaten auf, in Ihrer Tonalität und in den Sprachen Ihrer Kunden.',
@@ -237,7 +237,7 @@ export default {
           },
         },
         {
-          t: { en: 'Integration', de: 'Integration', ar: 'التكامل' },
+          t: { en: 'Integrate', de: 'Anbinden', ar: 'الربط' },
           d: {
             en: 'Portals, CRM and calendar are connected. From day one every enquiry lands where your team already works.',
             de: 'Portale, CRM und Kalender werden angebunden. Ab dem ersten Tag landet jede Anfrage dort, wo Ihr Team ohnehin arbeitet.',
@@ -310,9 +310,9 @@ export default {
             ar: 'كم يستغرق الأمر حتى يبدأ العمل؟',
           },
           a: {
-            en: 'First automations typically go live within a few days. We set the exact timeline once the analysis is done, because it depends on how many systems need connecting.',
-            de: 'Erste Automatisierungen gehen meist innerhalb weniger Tage live. Den genauen Zeitplan legen wir nach der Analyse fest, denn er hängt davon ab, wie viele Systeme angebunden werden.',
-            ar: 'تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. ونحدد الجدول الزمني الدقيق بعد التحليل، لأنه يعتمد على عدد الأنظمة المطلوب ربطها.',
+            en: 'First automations typically go live within a few days. We set the exact timeline once we have mapped your processes, because it depends on how many systems need connecting.',
+            de: 'Erste Automatisierungen gehen meist innerhalb weniger Tage live. Den genauen Zeitplan legen wir fest, sobald wir Ihre Prozesse erfasst haben, denn er hängt davon ab, wie viele Systeme angebunden werden.',
+            ar: 'تبدأ الأتمتة الأولى بالعمل عادة خلال أيام قليلة. ونحدد الجدول الزمني الدقيق بعد رصد عملياتك، لأنه يعتمد على عدد الأنظمة المطلوب ربطها.',
           },
         },
         {

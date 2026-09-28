@@ -45,7 +45,7 @@ export function absolutise(html) {
     .replace(/src="logo\.png"/g, 'src="/logo.png"')
     .replace(/href="(datenschutz|agb|danke)\.html/g, 'href="/$1.html')
     .replace(/href="#"/g, 'href="/"')
-    .replace(/href="#(problem|loesung|leistungen|ablauf|mission|assessment|faq)"/g, 'href="/#$1"');
+    .replace(/href="#(problem|loesung|leistungen|ablauf|mission|beispiele|faq)"/g, 'href="/#$1"');
 }
 
 export function readShell(indexPath) {

@@ -6,8 +6,11 @@
 // für das T-Dictionary. Damit können EN, DE und AR nicht auseinanderlaufen.
 //
 // Es kommen ausschliesslich bestehende CSS-Klassen aus index.html zum Einsatz:
-// sec-label, t-display, t-h2, t-h3, t-body, t-small, t-label, prob-card,
-// card-filled, step-num, btn-dark, btn-outline, grad-text, dot-live, reveal, rule.
+// sec-label, t-display, t-h2, t-h3, t-body, t-small, t-label, tile-grid (g-2, g-3, g-6),
+// tile, tile--feature, tile-num, tile-figure, process-grid, process-step, btn-dark,
+// btn-outline, grad-text, dot-live, reveal, rule.
+// Die Kachel-Raster teilen die Kachelzahl gleichmäßig durch die Spaltenzahl (3 → 1,
+// 2 → 1, 6 → 3 → 2 → 1), deshalb prüfen die Funktionen unten die Anzahl der Einträge.
 
 const LANGS = ['en', 'de', 'ar'];
 
@@ -78,7 +81,7 @@ function hero(c, { A, E }) {
 
     <!-- Trust row. hero.trust* are global keys from the shared T dictionary (not lp.* keys),
          so they are written literally instead of going through A()/E(). -->
-    <div style="display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;margin-top:32px;max-width:600px;">
+    <div style="display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;margin-top:32px;max-width:600px;">
       <span class="t-small" style="display:flex;align-items:center;gap:7px;">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
         <span data-i18n="hero.trust1">Verified Meta Tech Provider</span>
@@ -105,13 +108,14 @@ function hero(c, { A, E }) {
 
 /* ── Problem: drei konkrete Situationen aus dem Alltag der Branche ──────── */
 function problem(c, { A, E }) {
+  if (c.problem.items.length !== 3) throw new Error('problem: genau 3 Einträge erwartet');
   const cards = c.problem.items
     .map(
       (_, i) => `
-      <div class="reveal prob-card" style="${delay(i * 80)}">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:2.5rem;color:rgba(56,189,248,0.45);margin-bottom:20px;line-height:1;">0${i + 1}</div>
-        <h3 class="t-h3" style="margin-bottom:12px;" ${A(`problem.items.${i}.t`)}>${E(`problem.items.${i}.t`)}</h3>
-        <p class="t-body" style="font-size:0.83rem;" ${A(`problem.items.${i}.d`)}>${E(`problem.items.${i}.d`)}</p>
+      <div class="tile reveal" style="${delay(i * 80)}">
+        <div class="tile-num">0${i + 1}</div>
+        <h3 class="t-h3" ${A(`problem.items.${i}.t`)}>${E(`problem.items.${i}.t`)}</h3>
+        <p class="t-body" ${A(`problem.items.${i}.d`)}>${E(`problem.items.${i}.d`)}</p>
       </div>`
     )
     .join('\n');
@@ -126,7 +130,7 @@ function problem(c, { A, E }) {
       <p class="t-body reveal" style="transition-delay:60ms;" ${A('problem.sub')}>${E('problem.sub')}</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1px;background:var(--line);">
+    <div class="tile-grid g-3">
 ${cards}
     </div>
   </div>
@@ -135,7 +139,7 @@ ${cards}
 <hr class="rule" />`;
 }
 
-/* ── Die Rechnung: der Case aus #assessment, aufgeklappt ────────────────── */
+/* ── Die Rechnung: der Case aus #beispiele, aufgeklappt ────────────────── */
 function numbers(c, { A, E }) {
   const rows = c.math.rows
     .map(
@@ -157,11 +161,11 @@ function numbers(c, { A, E }) {
       <p class="t-body reveal" style="margin-top:20px;" ${A('math.sub')}>${E('math.sub')}</p>
     </div>
 
-    <div class="service-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1px;background:var(--line);">
+    <div class="tile-grid g-2">
 
-      <div class="card-filled reveal" style="padding:40px;display:flex;flex-direction:column;background:linear-gradient(160deg,rgba(56,189,248,0.10) 0%,rgba(255,255,255,0.04) 60%);border:1px solid rgba(56,189,248,0.45);">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;" ${A('math.tag')}>${E('math.tag')}</div>
-        <p class="t-body" style="font-size:0.83rem;margin-bottom:26px;" ${A('math.setup')}>${E('math.setup')}</p>
+      <div class="tile tile--feature reveal">
+        <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;" ${A('math.tag')}>${E('math.tag')}</div>
+        <p class="t-body" style="margin-bottom:26px;" ${A('math.setup')}>${E('math.setup')}</p>
 
         <div style="border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:12px;margin-bottom:26px;">
 ${rows}
@@ -169,13 +173,13 @@ ${rows}
 
         <div style="margin-top:auto;border-top:1px solid var(--line);padding-top:24px;">
           <div class="t-label" style="color:var(--a3);margin-bottom:8px;" ${A('math.yearLabel')}>${E('math.yearLabel')}</div>
-          <div style="font-family:'Montserrat',sans-serif;font-weight:200;font-size:clamp(1.9rem,3.4vw,2.6rem);letter-spacing:-0.03em;color:var(--gold);line-height:1.05;" ${A('math.year')}>${E('math.year')}</div>
+          <div class="tile-figure" ${A('math.year')}>${E('math.year')}</div>
         </div>
       </div>
 
-      <div class="card-filled reveal" style="padding:40px;display:flex;flex-direction:column;transition-delay:80ms;">
-        <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;" ${A('math.howTag')}>${E('math.howTag')}</div>
-        <p class="t-body" style="font-size:0.83rem;margin-bottom:20px;" ${A('math.how')}>${E('math.how')}</p>
+      <div class="tile reveal" style="transition-delay:80ms;">
+        <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;" ${A('math.howTag')}>${E('math.howTag')}</div>
+        <p class="t-body" style="margin-bottom:20px;" ${A('math.how')}>${E('math.how')}</p>
         <div style="margin-top:auto;border-top:1px solid var(--line);padding-top:24px;">
           <p class="t-body" style="font-size:0.8rem;color:var(--a3);"><strong style="font-weight:400;color:var(--fg);" ${A('math.withLabel')}>${E('math.withLabel')}</strong> <span ${A('math.with')}>${E('math.with')}</span></p>
         </div>
@@ -193,12 +197,14 @@ ${rows}
 
 /* ── Fähigkeiten: was HYBOTE in dieser Branche konkret übernimmt ────────── */
 function capabilities(c, { A, E }) {
+  if (c.caps.items.length !== 6) throw new Error('caps: genau 6 Einträge erwartet (3×2)');
   const items = c.caps.items
     .map(
       (_, i) => `
-      <div class="reveal prob-card" style="${delay(i * 60)}">
-        <h3 class="t-h3" style="margin-bottom:12px;" ${A(`caps.items.${i}.t`)}>${E(`caps.items.${i}.t`)}</h3>
-        <p class="t-body" style="font-size:0.83rem;" ${A(`caps.items.${i}.d`)}>${E(`caps.items.${i}.d`)}</p>
+      <div class="tile reveal" style="${delay(i * 60)}">
+        <div class="tile-num">0${i + 1}</div>
+        <h3 class="t-h3" ${A(`caps.items.${i}.t`)}>${E(`caps.items.${i}.t`)}</h3>
+        <p class="t-body" ${A(`caps.items.${i}.d`)}>${E(`caps.items.${i}.d`)}</p>
       </div>`
     )
     .join('\n');
@@ -213,7 +219,7 @@ function capabilities(c, { A, E }) {
       <p class="t-body reveal" style="transition-delay:60ms;" ${A('caps.sub')}>${E('caps.sub')}</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1px;background:var(--line);">
+    <div class="tile-grid g-6">
 ${items}
     </div>
   </div>
@@ -224,33 +230,31 @@ ${items}
 
 /* ── Ablauf ─────────────────────────────────────────────────────────────── */
 function process(c, { A, E }) {
-  const last = c.process.steps.length - 1;
+  if (c.process.steps.length !== 4) throw new Error('process: genau 4 Schritte erwartet (4 → 2 → 1)');
   const steps = c.process.steps
     .map(
       (_, i) => `
-      <div class="reveal" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:36px 0;${i === last ? '' : 'border-bottom:1px solid var(--line);'}${delay(i * 60)}">
-        <div class="step-num">0${i + 1}</div>
-        <div style="padding-top:10px;">
-          <h3 style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:1.05rem;color:var(--fg);margin-bottom:10px;" ${A(`process.steps.${i}.t`)}>${E(`process.steps.${i}.t`)}</h3>
-          <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.83rem;color:var(--a3);line-height:1.8;" ${A(`process.steps.${i}.d`)}>${E(`process.steps.${i}.d`)}</p>
-        </div>
-      </div>`
+      <li class="process-step reveal" style="${delay(i * 60)}">
+        <div class="tile-num">0${i + 1}</div>
+        <h3 class="t-h3" ${A(`process.steps.${i}.t`)}>${E(`process.steps.${i}.t`)}</h3>
+        <p class="t-body" ${A(`process.steps.${i}.d`)}>${E(`process.steps.${i}.d`)}</p>
+      </li>`
     )
     .join('\n');
 
   return `
 <section id="ablauf" style="padding:100px 32px;background:transparent;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 80% 50%,rgba(56,189,248,0.04) 0%,transparent 60%);z-index:0;"></div>
-  <div style="max-width:900px;margin:0 auto;position:relative;z-index:1;">
+  <div style="max-width:1100px;margin:0 auto;position:relative;z-index:1;">
 
-    <div style="margin-bottom:64px;">
+    <div style="margin-bottom:56px;">
       <div class="sec-label reveal"><span ${A('process.label')}>${E('process.label')}</span></div>
       <h2 class="t-h2 reveal" style="max-width:540px;" ${A('process.h2')}>${E('process.h2')}</h2>
     </div>
 
-    <div style="display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);">
+    <ol class="process-grid">
 ${steps}
-    </div>
+    </ol>
   </div>
 </section>
 
