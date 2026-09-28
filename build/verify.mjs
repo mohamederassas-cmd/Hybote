@@ -7,7 +7,7 @@
 // die FAQ-Nummerierung stimmen. Beides zusammen läuft in Sekunden und lohnt
 // sich vor jedem Deploy.
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -111,6 +111,27 @@ console.log('\nStartseite');
   const enKeys = Object.keys(T.en);
   const used = [...new Set([...h.matchAll(/data-i18n="([^"]+)"/g)].map((m) => m[1]))];
 
+  // Inline-Defaults müssen dem englischen Wörterbuch entsprechen, sonst blitzt beim Laden anderer Text auf
+  const norm = (x) => x.replace(/\s+/g, ' ').trim();
+  const escapeRe = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const inlineMismatches = [];
+  for (const key of used) {
+    const re = new RegExp(`<([a-zA-Z0-9]+)\\b[^>]*\\bdata-i18n="${escapeRe(key)}"[^>]*>([\\s\\S]*?)</\\1>`, 'g');
+    for (const m of h.matchAll(re)) {
+      if (T.en[key] !== undefined && norm(m[2]) !== norm(T.en[key])) inlineMismatches.push(key);
+    }
+  }
+  if (inlineMismatches.length) console.log('     abweichende Inline-Defaults:', [...new Set(inlineMismatches)].join(', '));
+
+  // FAQ-Strukturdaten: so viele Fragen wie in der sichtbaren FAQ
+  const faqLd = [...h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+    .map((m) => JSON.parse(m[1]))
+    .find((o) => o['@type'] === 'FAQPage');
+
+  // Selbst gehostete Schriften: jede url() in fonts.css muss auf eine vorhandene Datei zeigen
+  const fontCss = readFileSync(join(ROOT, 'fonts', 'fonts.css'), 'utf8');
+  const fontFiles = [...fontCss.matchAll(/url\("\/(fonts\/[^"]+)"\)/g)].map((m) => m[1]);
+
   report('index.html', {
     'DE vollständig gegenüber EN': enKeys.every((k) => T.de[k] !== undefined),
     'AR vollständig gegenüber EN': enKeys.every((k) => T.ar[k] !== undefined),
@@ -118,6 +139,12 @@ console.log('\nStartseite');
     'keine verwaisten AR-Keys': Object.keys(T.ar).every((k) => T.en[k] !== undefined),
     'jedes data-i18n hat einen Eintrag': used.every((k) => T.en[k] !== undefined),
     'genau ein Analytics-Tag': (h.match(/_vercel\/insights/g) || []).length === 1,
+    'jede Datei aus fonts.css existiert': fontFiles.length > 0 && fontFiles.every((f) => existsSync(join(ROOT, f))),
+    'lädt die lokalen Schriften, kein Google Fonts':
+      h.includes('<link href="/fonts/fonts.css" rel="stylesheet" />') && !/fonts\.(googleapis|gstatic)\.com/.test(h),
+    'Inline-Defaults entsprechen T.en': inlineMismatches.length === 0,
+    'FAQ-JSON-LD hat so viele Fragen wie die FAQ':
+      faqLd !== undefined && faqLd.mainEntity.length === (h.match(/class="faq-q"/g) || []).length,
     'drei Verweise aus den Beispielrechnungen':
       SLUGS.every((s) => h.includes(`href="/${s}" class="case-link"`)),
     'drei Footer-Verweise': SLUGS.every((s) => h.includes(`href="/${s}" style=`)),
@@ -126,6 +153,28 @@ console.log('\nStartseite');
       h.includes('@media (max-width: 767px)') && h.includes('height: 112px !important;'),
   });
   console.log(`     i18n-Keys je Sprache: ${enKeys.length}`);
+}
+
+/* ── CI-Textregeln (Corporate Identity Guide v2, Kapitel 01 und 06) ─────── */
+console.log('\nCI-Textregeln');
+for (const [name, path] of BOOKING_PAGES) {
+  const h = readFileSync(path, 'utf8');
+  const a = h.indexOf('const T = {');
+  const b = h.indexOf('\n};', a);
+  const T = eval('(' + h.slice(a + 'const T = '.length, b + 2) + ')');
+  // sichtbarer Text: alle Wörterbuch-Werte aller Sprachen, ohne HTML-Tags
+  const copy = ['en', 'de', 'ar'].flatMap((l) => Object.values(T[l])).map((v) => v.replace(/<[^>]*>/g, ' '));
+  const hits = (re) => copy.filter((v) => re.test(v));
+
+  report(name, {
+    'keine Gedankenstriche': hits(/—/).length === 0,
+    'keine Ausrufezeichen': hits(/!/).length === 0,
+    'keine Emojis': hits(/\p{Emoji_Presentation}/u).length === 0,
+    'kein Audit oder Assessment als Angebot': hits(/\baudit|assessment/i).length === 0,
+    'keine verbotenen Meta-Formulierungen':
+      hits(/meta[- ]partner|official partner|offizieller partner|meta verified|powered by meta/i).length === 0,
+    'alter Slogan "Hospitality Meets AI" nirgends': !/Hospitality Meets AI/i.test(h),
+  });
 }
 
 /* ── Rechtstextseiten und gemeinsame CI ────────────────────────────────── */
@@ -145,8 +194,9 @@ console.log('\nRechtstextseiten');
     'Cyan ist der einzige Akzent':
       ['#38bdf8', '#7dd3fc', '#0ea5e9'].every((token) => css.includes(token)) &&
       !/gold|#c9a053|#e8c47a|#fff6e2|201\s*,\s*160\s*,\s*83/i.test(combined),
-    'aktuelle Typografie geladen':
-      legalPages.every((h) => h.includes('family=Cormorant+Garamond')) &&
+    'aktuelle Typografie geladen (selbst gehostet)':
+      legalPages.every((h) => h.includes('<link href="/fonts/fonts.css" rel="stylesheet" />')) &&
+      legalPages.every((h) => !/fonts\.(googleapis|gstatic)\.com/.test(h)) &&
       css.includes("'Cormorant Garamond', serif") &&
       css.includes("'Montserrat', sans-serif") &&
       css.includes("'Cairo', sans-serif"),

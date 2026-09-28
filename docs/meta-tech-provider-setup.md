@@ -3,7 +3,7 @@
 ## Öffentliche Meta-Kennungen
 
 - Meta App ID: `1580264870470342`
-- Embedded Signup Configuration ID: `1048835977913160` (v3; wird durch die v4-Konfiguration ersetzt, siehe unten)
+- Embedded Signup Configuration ID: `2471938683272654` (v4, permanenter Token, Coexistence aktiv; gesetzt am 02.09.2026 in `meta-connect.js:5`. Alte v3-Konfiguration `1048835977913160` ist abgelöst und wird am 15.10.2026 abgeschaltet.)
 - Graph API: `v26.0`
 - Embedded Signup: **v4** (konfigurationsgetrieben, kein `sessionInfoVersion` mehr im Code)
 - Coexistence-Feature-Typ: `whatsapp_business_app_onboarding` (Konstante `COEXISTENCE_FEATURE_TYPE` in `meta-connect.js`)
@@ -236,11 +236,28 @@ echte Signup entscheidet, ob die folgende Weckerkette überhaupt gebraucht wird:
 
 ## Meta App Review
 
-Benötigte Berechtigungen:
+**Ergebnis 14.09.2026 (Einreichung 1580349617128534, abgeschickt 05.09. 22:04):**
+`whatsapp_business_messaging`, `whatsapp_business_management`, `public_profile` = **genehmigt**
+(Advanced Access). `business_management` = **abgelehnt** („Screencast passt nicht zum
+Anwendungsfall", Richtlinie 1.6). Wörtliches Feedback und die eingereichten Nutzungstexte:
+`06 Produkte & Demos/Meta App Review/_Arbeitsdateien/meta-feedback-2026-09-14.txt`.
+
+**Entscheidung: `business_management` wird nicht neu beantragt.** Drei Gründe: (1) Metas
+Tech-Provider-Doku verlangt Advanced Access nur für die zwei WhatsApp-Rechte; `business_management`
+ist laut Embedded-Signup-Doku nur für Solution Partner nötig, die eine Kreditlinie teilen.
+(2) `api/meta/complete.js` macht keinen einzigen Aufruf, der das Recht braucht – die Portfolio-ID
+kommt im FINISH-Event des Dialogs, Portfolio-Name und Verifizierungsstatus liefert
+`GET /{waba_id}?fields=owner_business_info,business_verification_status` mit
+`whatsapp_business_management`. (3) Video 3 zeigte ein Terminal mit dem Systemnutzer-Token statt
+der App; genau das hat Meta moniert. Sollte das Recht je gebraucht werden (Solution Partner,
+Kreditlinie, Werbekonten), dann nur mit echter Nutzung in `complete.js`, vollständigem
+Signup-Screencast (Login → Erteilung → Nutzung, englische UI, Untertitel) und Tester-Rolle für
+die aufnehmende Person.
+
+Benötigte Berechtigungen (alle genehmigt):
 
 - `whatsapp_business_management`
 - `whatsapp_business_messaging`
-- `business_management`
 - `public_profile`
 
 Reviewer-Nachweise:
@@ -262,12 +279,56 @@ Bereits im Review-Entwurf gespeichert:
 
 Die Tech-Provider-Zugriffsverifizierung wurde am 31. August 2026 genehmigt.
 
+Stand 05.09.2026 abends: alle fünf Schritte der Einreichung sind grün, die drei Screencasts sind
+hochgeladen (`06 Produkte & Demos/Meta App Review/`), die Reviewer-Anleitung beschreibt die drei
+Videos mit ihren Kennungen und enthält einen Einladungslink, der bis 10.10.2027 gültig ist
+(Meta verlangt mindestens ein Jahr). Erzeugt per `signInviteToken()` aus `api/meta/_invite.js` mit
+`ttlSeconds` = 400 Tage, Mandant `novaestates`. **Die Einreichung ist noch NICHT abgeschickt** – der
+Knopf „Zur Überprüfung einreichen" wird bewusst von Hand gedrückt.
+
+Inhalt der Screencasts (für Rückfragen des Reviewers):
+
+- `whatsapp_business_messaging.mov` (79 s): HYBOTE-Demokonsole sendet die Vorlage `hello_world`
+  (en_US) per `POST /v26.0/1144466258744194/messages` von der Testnummer +1 555-650-1936 an
+  +49 1520 2641713; API-Antwort mit `accepted`, dann Live-Bild von WhatsApp Desktop mit der Nachricht.
+- `whatsapp_business_management.mov` (86 s): WhatsApp Manager des „Test WhatsApp Business Account"
+  (WABA 1965271924088955): Telefonnummernliste, Anlage der Utility-Vorlage
+  `hybote_demo_terminbestaetigung_video` (Deutsch, zwei Variablen), Einreichung, Detailseite mit
+  Status „Wird überprüft" (Vorlagen-ID 1639871090895097). ⚠️ Zeigt Metas eigene Oberfläche, keinen
+  API-Aufruf der App – bei einer Ablehnung „screencast does not show the app using the permission"
+  als Erstes neu aufnehmen (z. B. `GET /{waba}/message_templates` und `POST` einer Vorlage per cURL,
+  analog zu Video 3).
+- `business_management.mov` (60 s): Terminal, drei Graph-API-Aufrufe mit dem System-User-Token
+  gegen das Portfolio 1164771143385164: Portfolio lesen, `owned_whatsapp_business_accounts`,
+  `client_whatsapp_business_accounts` (Skript `_Arbeitsdateien/video3/demo.zsh`).
+
+**Erledigt am 14.09.2026 (per Chrome im Dashboard, jeweils geprüft):**
+
+1. Login-Konfiguration „HYBOTE Coexistence v4" (2471938683272654): `business_management`
+   abgewählt, gespeichert. Detailansicht zeigt jetzt genau `whatsapp_business_management` +
+   `whatsapp_business_messaging`, Systemnutzer-Token, „Token läuft nie ab", Produkte WhatsApp
+   Cloud API + Marketing Messages API, erweiterte Aufgaben develop/manage_templates/
+   view_phone_assets/manage_phone_assets/view_templates/messaging/manage. ID unverändert, kein
+   Code-Deploy nötig.
+2. Anwendungsfall → Berechtigungen und Features: Anfrage `business_management` entfernt
+   (Dialog „Möchtest du diese Berechtigung wirklich entfernen?" bestätigt). Zeile zeigt nur noch
+   „Zur App-Review hinzufügen". Einziger Nebeneffekt: `metaWhoami()`/`whoami.mjs` liefern
+   `me/businesses` ggf. leer (Diagnose, mit Fallback).
+3. Überprüfung → Veröffentlichen → „Veröffentlichen": Meldung „Deine App wurde erfolgreich
+   veröffentlicht". Seitenleiste zeigt **„Veröffentlicht"** (Live). Rückweg: Knopf „Nicht mehr
+   veröffentlichen" auf derselben Seite.
+4. Nachkontrolle: `node scripts/meta/subscriptions.mjs` → Callback
+   `https://hybote.ai/api/meta/webhook`, aktiv, 15 Felder unverändert. `meta-connect.html` liefert
+   200, `GET /api/meta/invite?token=…` bestätigt den Reviewer-Link (novaestates, en, bis
+   10.10.2027), `POST /api/meta/session` 200.
+
 Noch offen:
 
-- realer Embedded-Signup-Test und Upload der daraus erstellten Screen-Recordings
-- endgültige App-Review-Einreichung und anschließende Veröffentlichung
-- Reviewer-Anleitung um den Einladungslink ergänzen: Die Seite ist ohne Token nicht mehr frei
-  erreichbar. Ohne diesen Hinweis lehnt der Prüfer aus reinem Missverständnis ab.
+- Echten Coexistence-Signup mit einem fremden Portfolio fahren (Bruder mit bestehendem echtem
+  Facebook-Konto, keine App-Rolle mehr nötig; Zweitnummer bleibt in der Business App,
+  Bestätigung per In-App-Code, kein SMS- oder Anrufempfang nötig).
+- Alte Login-Konfiguration „Embedded-Signup-Konfiguration … 60-tägigem Ablauftoken"
+  (ID 1048835977913160) löschen, sobald v4 im Live-Betrieb bestätigt ist.
 
 ## Embedded Signup v4 (Frist 15. Oktober 2026 für v2/v3)
 

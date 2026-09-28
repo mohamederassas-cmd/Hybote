@@ -2,16 +2,14 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' https://connect.facebook.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.fbcdn.net; connect-src 'self' https://graph.facebook.com https://www.facebook.com; frame-src https://www.facebook.com https://web.facebook.com; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' https://connect.facebook.net; style-src 'self'; font-src 'self'; img-src 'self' data: https://*.fbcdn.net; connect-src 'self' https://graph.facebook.com https://www.facebook.com; frame-src https://www.facebook.com https://web.facebook.com; upgrade-insecure-requests" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#070b16" />
   <title>HYBOTE – Connect WhatsApp</title>
   <meta name="description" content="Connect your WhatsApp Business account securely to HYBOTE." />
   <link rel="icon" href="data:," />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Cairo:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="/fonts/fonts.css" rel="stylesheet" />
   <link rel="stylesheet" href="meta-connect.css" />
 </head>
 <body>
@@ -45,6 +43,7 @@
       <h1 id="page-title" data-i18n="title">Connect WhatsApp Business to HYBOTE</h1>
       <p class="intro-copy" data-i18n="intro">Authorize HYBOTE through the official Meta dialog. Your business keeps control of its WhatsApp Business Account and phone number.</p>
       <div class="trust-row" aria-label="Trust signals">
+        <span data-i18n="trustProvider">Verified Tech Provider</span>
         <span data-i18n="trustMeta">Official Meta dialog</span>
         <span data-i18n="trustOwner">Your business retains ownership</span>
         <span data-i18n="trustRevoke">Access can be revoked anytime</span>

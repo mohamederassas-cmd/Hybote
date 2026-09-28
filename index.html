@@ -28,9 +28,9 @@
   <link rel="alternate" hreflang="x-default" href="https://hybote.ai/" />
   <link rel="canonical" href="https://hybote.ai/" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=Cairo:wght@200;300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="preload" href="/fonts/montserrat-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link href="/fonts/fonts.css" rel="stylesheet" />
   <link rel="preconnect" href="https://assets.calendly.com" />
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
 
@@ -1212,6 +1212,27 @@
         </a>
         <a href="#assessment" class="btn-outline" data-i18n="hero.cta2">See the numbers</a>
       </div>
+
+      <!-- Trust row. max-width matches the sub paragraph so the row wraps instead of
+           running under the Spline robot, whose canvas paints over the hero copy. -->
+      <div style="display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;margin-top:32px;max-width:520px;">
+        <span class="t-small" style="display:flex;align-items:center;gap:7px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          <span data-i18n="hero.trust1">Verified Meta Tech Provider</span>
+        </span>
+        <span class="t-small" style="display:flex;align-items:center;gap:7px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-i18n="hero.trust2">GDPR Compliant</span>
+        </span>
+        <span class="t-small" style="display:flex;align-items:center;gap:7px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-i18n="hero.trust3">No Commitment</span>
+        </span>
+        <span class="t-small" style="display:flex;align-items:center;gap:7px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-i18n="hero.trust4">24/7 Active</span>
+        </span>
+      </div>
     </div>
 
     <!-- Right: interactive 3D robot (Spline) -->
@@ -1889,7 +1910,7 @@
           <span data-i18n="faq.q8">Does HYBOTE use the official WhatsApp Business API?</span>
           <svg class="faq-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="faq-a" id="faq-a-7"><div class="faq-a-inner t-body" data-i18n="faq.a8">HYBOTE communicates via WhatsApp with enterprise-grade reliability and a stable, secure connection. All WhatsApp communication is end-to-end encrypted. Qualified contacts are synced into your CRM.</div></div>
+        <div class="faq-a" id="faq-a-7"><div class="faq-a-inner t-body" data-i18n="faq.a8">Yes. HYBOTE is a verified Tech Provider for the WhatsApp Business Platform. Access is authorised through Meta. The channels, permissions and integrations needed for your project are agreed during scoping.</div></div>
       </div>
 
       <div class="faq-item reveal" style="transition-delay:320ms;">
@@ -2213,6 +2234,9 @@
   async function handleSub(e) {
     e.preventDefault();
     const btn = e.target.querySelector('[type="submit"]');
+    if (btn.disabled) return;
+    btn.disabled = true;
+    document.getElementById('form-err').style.display = 'none';
     btn.style.opacity = '0.5';
     btn.style.pointerEvents = 'none';
     try {
@@ -2220,6 +2244,7 @@
         method: 'POST',
         body: new FormData(e.target)
       });
+      if (!res.ok) throw new Error('submit failed');
       const data = await res.json();
       if (data.success) {
         window.location.href = 'danke.html?lang=' + currentLang;
@@ -2227,6 +2252,7 @@
         throw new Error('submit failed');
       }
     } catch {
+      btn.disabled = false;
       btn.style.opacity = '1';
       btn.style.pointerEvents = '';
       document.getElementById('form-err').style.display = 'block';
@@ -2296,6 +2322,11 @@
     </div>
 
     <div style="height:1px;background:var(--line);margin-bottom:24px;"></div>
+
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:var(--a3);line-height:1.6;" data-i18n="footer.provider">Verified Tech Provider for the WhatsApp Business Platform · Meta access verification granted 08/2026</span>
+    </div>
 
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
       <span style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.7rem;color:var(--a3);" data-i18n="footer.copy">© 2026 HYBOTE. All rights reserved.</span>
@@ -2487,7 +2518,7 @@ const T = {
     "hero.sub": "Wir bauen KI, die im Hintergrund arbeitet: leise, präzise, <strong style=\"font-weight:400;color:var(--fg);\">rund um die Uhr.</strong>",
     "hero.cta1": "Kostenloses Kennenlerngespräch",
     "hero.cta2": "Rechenbeispiele ansehen",
-    "hero.trust1": "Enterprise WhatsApp API",
+    "hero.trust1": "Verifizierter Meta Tech Provider",
     "hero.trust2": "DSGVO-konform",
     "hero.trust3": "Keine Bindung",
     "hero.trust4": "24/7 Aktiv",
@@ -2613,6 +2644,7 @@ const T = {
     "footer.privacy": "Datenschutz",
     "footer.terms": "AGB",
     "footer.copy": "© 2026 HYBOTE. Alle Rechte vorbehalten.",
+    "footer.provider": "Verifizierter Tech Provider für die WhatsApp Business Platform · Zugriffsverifizierung durch Meta erteilt 08/2026",
     "footer.powered": "Powered and designed by HYBOTE AI Systems LLC",
     "footer.trust": "Enterprise WhatsApp API · KI-Sprachagent · DSGVO-konform",
     "demo.header": "Eingehende Anfrage",
@@ -2650,7 +2682,7 @@ const T = {
     "faq.q7": "Was kostet es?",
     "faq.a7": "Das hängt vom Umfang ab. Wir starten mit einem kostenlosen Kennenlerngespräch und machen Ihnen danach ein konkretes Angebot.",
     "faq.q8": "Nutzt HYBOTE die offizielle WhatsApp Business API?",
-    "faq.a8": "HYBOTE kommuniziert über WhatsApp mit Enterprise-Zuverlässigkeit und stabiler, sicherer Verbindung. Alle WhatsApp-Kommunikation ist Ende-zu-Ende-verschlüsselt. Qualifizierte Kontakte werden in Ihr CRM synchronisiert.",
+    "faq.a8": "Ja. HYBOTE ist verifizierter Tech Provider für die WhatsApp Business Platform. Der Zugriff wird über Meta autorisiert. Benötigte Kanäle, Berechtigungen und Anbindungen werden für Ihr Projekt abgestimmt.",
     "faq.q9": "Wie schützt HYBOTE die Datenprivatsphäre?",
     "faq.a9": "Diskretion ist nicht verhandelbar. HYBOTE arbeitet mit strikter Datenisolierung: keine mandantenübergreifende Datenweitergabe, Ende-zu-Ende-Verschlüsselung aller Kommunikation und keine Weitergabe an Datenhändler.",
     "mission.label": "Unsere Mission",
@@ -2745,7 +2777,7 @@ const T = {
     "hero.sub": "We build AI that works in the background: quiet, precise, <strong style=\"font-weight:400;color:var(--fg);\">around the clock.</strong>",
     "hero.cta1": "Free intro call",
     "hero.cta2": "See the numbers",
-    "hero.trust1": "Enterprise WhatsApp API",
+    "hero.trust1": "Verified Meta Tech Provider",
     "hero.trust2": "GDPR Compliant",
     "hero.trust3": "No Commitment",
     "hero.trust4": "24/7 Active",
@@ -2871,6 +2903,7 @@ const T = {
     "footer.privacy": "Privacy Policy",
     "footer.terms": "Terms",
     "footer.copy": "© 2026 HYBOTE. All rights reserved.",
+    "footer.provider": "Verified Tech Provider for the WhatsApp Business Platform · Meta access verification granted 08/2026",
     "footer.powered": "Powered and designed by HYBOTE AI Systems LLC",
     "footer.trust": "Enterprise WhatsApp API · AI Voice Agent · GDPR Compliant",
     "demo.header": "Incoming Enquiry",
@@ -2908,7 +2941,7 @@ const T = {
     "faq.q7": "What does it cost?",
     "faq.a7": "It depends on scope. We start with a free intro call and give you a concrete proposal afterwards.",
     "faq.q8": "Does HYBOTE use the official WhatsApp Business API?",
-    "faq.a8": "HYBOTE communicates via WhatsApp with enterprise-grade reliability and a stable, secure connection. All WhatsApp communication is end-to-end encrypted. Qualified contacts are synced into your CRM.",
+    "faq.a8": "Yes. HYBOTE is a verified Tech Provider for the WhatsApp Business Platform. Access is authorised through Meta. The channels, permissions and integrations needed for your project are agreed during scoping.",
     "faq.q9": "How does HYBOTE protect data privacy?",
     "faq.a9": "Discretion is non-negotiable. HYBOTE operates under strict data isolation: no cross-client data sharing, end-to-end encryption on all communications and no data brokering.",
     "mission.label": "Our Mission",
@@ -3003,7 +3036,7 @@ const T = {
     "hero.sub": "نبني ذكاءً اصطناعياً يعمل في الخلفية: بهدوء ودقة، <strong style=\"font-weight:400;color:var(--fg);\">على مدار الساعة.</strong>",
     "hero.cta1": "مكالمة تعارف مجانية",
     "hero.cta2": "شاهد الأرقام",
-    "hero.trust1": "واجهة WhatsApp للمؤسسات",
+    "hero.trust1": "مزود تقني معتمد لدى Meta",
     "hero.trust2": "متوافق مع GDPR",
     "hero.trust3": "بدون التزام",
     "hero.trust4": "نشط 24/7",
@@ -3129,6 +3162,7 @@ const T = {
     "footer.privacy": "سياسة الخصوصية",
     "footer.terms": "الشروط والأحكام",
     "footer.copy": "© 2026 HYBOTE. جميع الحقوق محفوظة.",
+    "footer.provider": "مزوّد تقني موثّق لمنصة WhatsApp Business · تم منح التحقق من الوصول من Meta في 08/2026",
     "footer.powered": "Powered and designed by HYBOTE AI Systems LLC",
     "footer.trust": "واجهة WhatsApp للمؤسسات · صوت ذكي · متوافق مع GDPR",
     "demo.header": "استفسار وارد",
@@ -3166,7 +3200,7 @@ const T = {
     "faq.q7": "كم التكلفة؟",
     "faq.a7": "يعتمد على النطاق. نبدأ بمكالمة تعارف مجانية، ثم نقدّم لك عرضاً محدداً بعدها.",
     "faq.q8": "هل تستخدم HYBOTE واجهة WhatsApp Business API الرسمية؟",
-    "faq.a8": "تتواصل HYBOTE عبر واتساب بموثوقية على مستوى المؤسسات واتصال مستقر وآمن ومشفر من طرف إلى طرف. تُزامَن البيانات تلقائياً مع نظام إدارة علاقات العملاء (CRM) الخاص بك.",
+    "faq.a8": "نعم. HYBOTE مزود تقني معتمد لمنصة واتساب للأعمال. تُمنح الصلاحيات عبر Meta، ويُتفق على القنوات والأذونات والتكاملات المطلوبة لمشروعك.",
     "faq.q9": "كيف تحمي HYBOTE خصوصية البيانات؟",
     "faq.a9": "السرية غير قابلة للتفاوض. تعمل HYBOTE بعزل صارم للبيانات: لا مشاركة بين العملاء، وتشفير شامل لجميع الاتصالات، ولا مشاركة مع أطراف ثالثة. بيانات عملائك تبقى حصراً داخل نظامك.",
     "mission.label": "مهمتنا",
@@ -3408,7 +3442,7 @@ function setLang(lang) {
       "name": "Does HYBOTE use the official WhatsApp Business API?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "HYBOTE communicates via WhatsApp with enterprise-grade reliability and a stable, secure connection. All WhatsApp communication is end-to-end encrypted. Qualified contacts are synced into your CRM."
+        "text": "Yes. HYBOTE is a verified Tech Provider for the WhatsApp Business Platform. Access is authorised through Meta. The channels, permissions and integrations needed for your project are agreed during scoping."
       }
     },
     {

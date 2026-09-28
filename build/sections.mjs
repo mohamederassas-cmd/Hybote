@@ -76,6 +76,27 @@ function hero(c, { A, E }) {
       <a href="#numbers" class="btn-outline" ${A('hero.cta2')}>${E('hero.cta2')}</a>
     </div>
 
+    <!-- Trust row. hero.trust* are global keys from the shared T dictionary (not lp.* keys),
+         so they are written literally instead of going through A()/E(). -->
+    <div style="display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;margin-top:32px;max-width:600px;">
+      <span class="t-small" style="display:flex;align-items:center;gap:7px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        <span data-i18n="hero.trust1">Verified Meta Tech Provider</span>
+      </span>
+      <span class="t-small" style="display:flex;align-items:center;gap:7px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span data-i18n="hero.trust2">GDPR Compliant</span>
+      </span>
+      <span class="t-small" style="display:flex;align-items:center;gap:7px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span data-i18n="hero.trust3">No Commitment</span>
+      </span>
+      <span class="t-small" style="display:flex;align-items:center;gap:7px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--a3)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span data-i18n="hero.trust4">24/7 Active</span>
+      </span>
+    </div>
+
   </div>
 </section>
 
@@ -105,7 +126,7 @@ function problem(c, { A, E }) {
       <p class="t-body reveal" style="transition-delay:60ms;" ${A('problem.sub')}>${E('problem.sub')}</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--line);">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1px;background:var(--line);">
 ${cards}
     </div>
   </div>
@@ -136,7 +157,7 @@ function numbers(c, { A, E }) {
       <p class="t-body reveal" style="margin-top:20px;" ${A('math.sub')}>${E('math.sub')}</p>
     </div>
 
-    <div class="service-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line);">
+    <div class="service-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1px;background:var(--line);">
 
       <div class="card-filled reveal" style="padding:40px;display:flex;flex-direction:column;background:linear-gradient(160deg,rgba(56,189,248,0.10) 0%,rgba(255,255,255,0.04) 60%);border:1px solid rgba(56,189,248,0.45);">
         <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;" ${A('math.tag')}>${E('math.tag')}</div>
@@ -192,7 +213,7 @@ function capabilities(c, { A, E }) {
       <p class="t-body reveal" style="transition-delay:60ms;" ${A('caps.sub')}>${E('caps.sub')}</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--line);">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1px;background:var(--line);">
 ${items}
     </div>
   </div>

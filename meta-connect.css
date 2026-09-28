@@ -80,7 +80,7 @@ html[dir="rtl"] h1 { font-family: "Cairo", sans-serif; font-weight: 400; line-he
 .steps-list { display: grid; gap: 30px; margin: 34px 0 0; padding: 0; list-style: none; }
 .steps-list li { display: grid; grid-template-columns: 38px 1fr; gap: 16px; position: relative; }
 .steps-list li:not(:last-child)::after { content: ""; position: absolute; inset-inline-start: 18px; top: 41px; height: 41px; border-inline-start: 1px dashed rgba(125, 211, 252, 0.27); }
-.step-number { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 50%; color: var(--accent-light); background: rgba(56, 189, 248, 0.07); font-size: 12px; font-weight: 600; }
+.step-number { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 50%; color: var(--accent-light); background: rgba(56, 189, 248, 0.07); font-size: 12px; font-weight: 500; }
 .steps-list strong { display: block; margin: 2px 0 7px; font-size: 13px; font-weight: 500; }
 .steps-list p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
 
