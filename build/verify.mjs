@@ -90,10 +90,11 @@ for (const [name, path] of BOOKING_PAGES) {
       (h.match(/id="ueber-uns"/g) || []).length === 1 && h.includes('src="/media/founder-mohamed-erassas.jpg"'),
     'Gründer-Sektion steht vor dem FAQ': h.indexOf('id="ueber-uns"') < h.indexOf('id="faq"'),
     'Gründer-Texte in EN, DE und AR': ['en', 'de', 'ar'].every((l) => T[l]['founder.p1'] && T[l]['video.h2']),
-    // Mohamed: 13 Jahre Hotellerie, ausschliesslich Business- und Luxushotellerie.
-    // "Zehn Jahre Fünf-Sterne" stand im Vertriebsdeck und ist falsch.
-    'Gründer-Fakt: 13 Jahre, nicht zehn':
-      founderCopy.some((v) => v.includes('13')) && !founderCopy.some((v) => /\bten years|zehn jahre|decade|عشر سنوات/i.test(v)),
+    // Freigegebene Formulierung (Mohamed, 16.10.2026): "über ein Jahrzehnt in der gehobenen
+    // und namhaften Hotellerie". "Zehn Jahre Fünf-Sterne-Hotellerie" ist falsch.
+    'Gründer-Fakt: über ein Jahrzehnt, gehobene Hotellerie':
+      /over a decade/.test(T.en['founder.p1']) && /ein Jahrzehnt/.test(T.de['founder.p1']) && /عقد/.test(T.ar['founder.p1']) &&
+      !founderCopy.some((v) => /\bten years|zehn jahre|five-star hotels|fünf-sterne-hotels|fünf-sterne-hotellerie tätig/i.test(v)),
   });
 }
 
@@ -142,6 +143,21 @@ console.log('\nStartseite');
   const b = h.indexOf('\n};', a);
   const T = eval('(' + h.slice(a + 'const T = '.length, b + 2) + ')');
   const enKeys = Object.keys(T.en);
+
+  // Doppelte Keys überschreibt das Objektliteral stillschweigend (der spätere gewinnt).
+  // Zeilenweise zählen, damit kein toter Alt-Eintrag neben dem gültigen stehen bleibt.
+  const dupes = [];
+  {
+    let lang = null;
+    const seen = {};
+    for (const line of h.slice(a, b).split('\n')) {
+      const m = /^  (de|en|ar): \{$/.exec(line);
+      if (m) { lang = m[1]; seen[lang] = new Set(); continue; }
+      const k = /^    "([^"]+)": /.exec(line);
+      if (lang && k) { if (seen[lang].has(k[1])) dupes.push(`${lang}:${k[1]}`); seen[lang].add(k[1]); }
+    }
+  }
+  if (dupes.length) console.log('     doppelte Keys:', dupes.join(', '));
   const used = [...new Set([...h.matchAll(/data-i18n="([^"]+)"/g)].map((m) => m[1]))];
 
   // Inline-Defaults müssen dem englischen Wörterbuch entsprechen, sonst blitzt beim Laden anderer Text auf
@@ -168,6 +184,7 @@ console.log('\nStartseite');
   report('index.html', {
     'DE vollständig gegenüber EN': enKeys.every((k) => T.de[k] !== undefined),
     'AR vollständig gegenüber EN': enKeys.every((k) => T.ar[k] !== undefined),
+    'keine doppelten Keys im Wörterbuch': dupes.length === 0,
     'keine verwaisten DE-Keys': Object.keys(T.de).every((k) => T.en[k] !== undefined),
     'keine verwaisten AR-Keys': Object.keys(T.ar).every((k) => T.en[k] !== undefined),
     'jedes data-i18n hat einen Eintrag': used.every((k) => T.en[k] !== undefined),
