@@ -9,7 +9,9 @@ const routes = {
   'google/start': require('./_handlers/google-start.js'),
   'google/callback': require('./_handlers/google-callback.js'),
   'imap/verify': require('./_handlers/imap-verify.js'),
-  'ig/complete': require('./_handlers/ig-complete.js')
+  'ig/complete': require('./_handlers/ig-complete.js'),
+  // Video-Aufrufe aus den Erstmails des Sales Pilot (16.10.2026), Seite /v/<code>.
+  'video-view': require('./_handlers/video-view.js')
 };
 
 module.exports = async function handler(request, response) {

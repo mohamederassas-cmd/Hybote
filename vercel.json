@@ -1,5 +1,17 @@
 {
+  "rewrites": [
+    { "source": "/v/:code", "destination": "/v/index.html" }
+  ],
   "headers": [
+    {
+      "source": "/v/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    },
     {
       "source": "/meta-connect.html",
       "headers": [
