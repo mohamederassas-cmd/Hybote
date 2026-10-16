@@ -61,6 +61,13 @@ export function readShell(indexPath) {
     // Header inkl. Nav-Resize- und Hero-Scroll-Script
     header: between(src, '<header id="nav"', sec('HERO'), 'header'),
 
+    // Erklärvideo inkl. Player-Skript und VideoObject-JSON-LD. Die trennende <hr>
+    // gehört wie beim FAQ zum Endmarker, die Landingpage setzt sie selbst.
+    video: between(src, sec('EXPLAINER VIDEO'), '<hr class="rule" />\n\n\n' + sec('PROBLEM'), 'video'),
+
+    // Gründer-Sektion "Wer ist HYBOTE" (Foto, Text, drei Grundsätze)
+    founder: between(src, sec('FOUNDER'), sec('MISSION & VISION'), 'founder'),
+
     // FAQ-Optik und die toggleFaq-Mechanik. Die trennende <hr> gehört zum
     // Endmarker, damit sie nicht mitkopiert wird: die Landingpage setzt ihre
     // Trennlinien selbst und bekäme sonst zwei direkt hintereinander.
@@ -89,7 +96,7 @@ export function readShell(indexPath) {
 
   // Prüfsummen der optik-tragenden Teile. Der Build vergleicht sie später gegen
   // die erzeugten Seiten: weicht ein Byte ab, ist die Hülle nicht mehr identisch.
-  const critical = ['head', 'background', 'header', 'footer', 'faq'];
+  const critical = ['head', 'background', 'header', 'footer', 'faq', 'video', 'founder'];
   const hashes = Object.fromEntries(critical.map((k) => [k, sha(parts[k])]));
 
   const rewritten = Object.fromEntries(

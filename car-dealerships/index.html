@@ -521,6 +521,66 @@
     }
     .tile .t-h3 { margin-bottom: 12px; }
     .tile .t-body { font-size: 0.86rem; margin: 0; }
+
+    /* ── Founder: photo tile, copy, signature ────────────────────────
+       The photo is absolutely positioned so it never sets the row height:
+       on wide screens the text tile does, on phones the 4:5 ratio does. */
+    .tile.tile--media { padding: 0; overflow: hidden; min-height: 520px; background: var(--s1); }
+    .tile.tile--media:hover { background: var(--s1); }
+    .tile--media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
+    @media (max-width: 767px) { .tile.tile--media { min-height: 0; aspect-ratio: 4 / 5; } }
+    .founder-copy { display: flex; flex-direction: column; gap: 16px; margin-bottom: 36px; }
+    .founder-sign { margin-top: auto; padding-top: 24px; border-top: 1px solid var(--line); }
+    .founder-name {
+      font-family: 'Cormorant Garamond', 'Montserrat', serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 1.6rem;
+      line-height: 1.2;
+      color: var(--fg);
+      margin-bottom: 6px;
+    }
+
+    /* ── Explainer video: poster first, the MP4 only loads on play ── */
+    .video-frame {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--line-med);
+      background: var(--s1);
+    }
+    .video-frame video { display: block; width: 100%; height: 100%; object-fit: contain; background: var(--bg); }
+    .video-play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: rgba(7,11,22,0.12);
+      cursor: pointer;
+      transition: background 200ms ease;
+    }
+    .video-play[hidden] { display: none; }
+    .video-play:hover { background: rgba(7,11,22,0.03); }
+    .video-play:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+    .video-play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 26px;
+      background: var(--accent);
+      color: #070b16;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: background 200ms ease;
+    }
+    .video-play:hover .video-play-btn { background: var(--accent-lt); }
+    .video-play-time { padding-inline-start: 12px; border-inline-start: 1px solid rgba(7,11,22,0.3); letter-spacing: 0.06em; }
+    html[lang="ar"] .video-play-btn { letter-spacing: 0; }
+    @media (max-width: 639px) { .video-play-btn { padding: 12px 18px; font-size: 0.66rem; } }
     @media (max-width: 639px) {
       .tile { padding: 32px 26px; }
       .tile--panel { padding: 36px 26px; }
@@ -1248,6 +1308,72 @@
 </section>
 
 <hr class="rule" />
+<!-- ══════════════════════════════════════════════════════════
+     EXPLAINER VIDEO
+══════════════════════════════════════════════════════════ -->
+<section id="video" style="padding:100px 32px;">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div style="max-width:640px;margin-bottom:56px;">
+      <div class="sec-label reveal" data-i18n="video.label">Explainer video</div>
+      <h2 class="t-h2 reveal" style="margin-bottom:20px;" data-i18n="video.h2">HYBOTE in<br/><em>77 seconds.</em></h2>
+      <p class="t-body reveal" style="transition-delay:60ms;" data-i18n="video.sub">What happens when a customer calls or writes at 2&nbsp;AM, and why nobody on your team has to be awake for it.</p>
+    </div>
+
+    <div class="video-frame reveal" style="transition-delay:120ms;">
+      <video id="explainer-video" preload="none" playsinline width="1920" height="1080" poster="/media/hybote-explainer-poster.jpg" aria-label="HYBOTE explainer video" data-i18n-aria="video.title">
+        <source src="/media/hybote-explainer-en.mp4" type="video/mp4" />
+      </video>
+      <button type="button" class="video-play" id="explainer-play">
+        <span class="video-play-btn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 3.5v17L20.5 12z"/></svg>
+          <span data-i18n="video.play">Play video</span>
+          <span class="video-play-time">1:17</span>
+        </span>
+      </button>
+    </div>
+    <p class="t-small reveal" style="margin-top:16px;color:var(--a4);" data-i18n="video.caption">Video in English, 1:17</p>
+
+  </div>
+</section>
+
+<script>
+  // Explainer: only the poster loads with the page. The MP4 is requested on the first click.
+  (function () {
+    var v = document.getElementById('explainer-video');
+    var b = document.getElementById('explainer-play');
+    if (!v || !b) return;
+    b.addEventListener('click', function () {
+      b.hidden = true;
+      v.controls = true;
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    });
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "HYBOTE in 77 seconds",
+  "description": "Who answers at 2 AM? How HYBOTE answers every call and every message instantly, 24/7, on every channel, so nobody on your team has to be awake for it.",
+  "thumbnailUrl": "https://hybote.ai/media/hybote-explainer-poster.jpg",
+  "contentUrl": "https://hybote.ai/media/hybote-explainer-en.mp4",
+  "uploadDate": "2026-10-16T18:00:00+02:00",
+  "duration": "PT1M17S",
+  "inLanguage": "en",
+  "publisher": {
+    "@type": "Organization",
+    "name": "HYBOTE",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hybote.ai/logo.png"
+    }
+  }
+}
+</script>
+
+<hr class="rule" />
 
 <section id="problem" style="padding:100px 32px;">
   <div style="max-width:1100px;margin:0 auto;">
@@ -1426,6 +1552,55 @@
         <p class="t-body" data-i18n="lp.process.steps.3.d">Inventory system, CRM and appointment calendar are connected, so every enquiry lands where your team already works.</p>
       </li>
     </ol>
+  </div>
+</section>
+
+<hr class="rule" />
+<!-- ══════════════════════════════════════════════════════════
+     FOUNDER
+══════════════════════════════════════════════════════════ -->
+<section id="ueber-uns" style="padding:100px 32px;background:transparent;">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div class="tile-grid g-2">
+
+      <div class="tile tile--media reveal">
+        <img src="/media/founder-mohamed-erassas.jpg" width="899" height="1246" loading="lazy" decoding="async" alt="Mohamed Erassas, founder of HYBOTE" data-i18n-alt="founder.alt" />
+      </div>
+
+      <div class="tile tile--panel reveal" style="transition-delay:80ms;">
+        <div class="sec-label" data-i18n="founder.label">Who is HYBOTE</div>
+        <h2 class="t-h2" style="margin-bottom:28px;font-size:clamp(1.9rem,3.4vw,2.7rem);" data-i18n="founder.h2">Five-star service.<br/><em>In every industry.</em></h2>
+        <div class="founder-copy">
+          <p class="t-body" data-i18n="founder.p1">I spent 13 years in hospitality, exclusively in business and luxury hotels, most of that time in luxury. There, nobody waits for an answer. You notice what a guest needs before they ask, and you reply in their language and in the right tone, at three in the afternoon or at three at night.</p>
+          <p class="t-body" data-i18n="founder.p2">That standard is not a technical skill. It is trained every day, at every touchpoint, with discretion as a given. My enthusiasm for AI came later, and with it one question: why should this level of service exist only at a hotel front desk?</p>
+          <p class="t-body" data-i18n="founder.p3">HYBOTE is my answer. We bring the discipline of five-star hospitality into AI agents that answer every call and every message, 24/7, in over 50 languages. For real estate, car dealerships, clinics and every business where the first answer decides.</p>
+        </div>
+        <div class="founder-sign">
+          <div class="founder-name">Mohamed Erassas</div>
+          <div class="t-label" data-i18n="founder.role">Founder, HYBOTE</div>
+        </div>
+      </div>
+
+      <div class="tile tile--band reveal" style="transition-delay:160ms;">
+        <div class="t-label" data-i18n="founder.band.lead">What 13 years in hospitality taught me:</div>
+        <div class="cols-3">
+          <div>
+            <h3 class="t-h3" data-i18n="founder.band.1.title">Nobody waits</h3>
+            <p class="t-body" data-i18n="founder.band.1.body">In a luxury hotel, no guest waits for an answer. With HYBOTE, neither do your customers, at 3&nbsp;PM or at 3&nbsp;AM.</p>
+          </div>
+          <div>
+            <h3 class="t-h3" data-i18n="founder.band.2.title">Every guest in their language</h3>
+            <p class="t-body" data-i18n="founder.band.2.body">Guests arrive from all over the world and are answered in their language and tone. HYBOTE speaks over 50 languages.</p>
+          </div>
+          <div>
+            <h3 class="t-h3" data-i18n="founder.band.3.title">Discretion as standard</h3>
+            <p class="t-body" data-i18n="founder.band.3.body">What a guest shares stays protected. Your customer data is kept separate and never shared.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
@@ -1878,7 +2053,7 @@
         <div>
           <div style="font-family:'Montserrat',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--a3);margin-bottom:16px;" data-i18n="footer.col2">Company</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="/#mission" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.about">About</a>
+            <a href="#ueber-uns" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.about">About</a>
             <a href="#kontakt" style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.8rem;color:var(--a3);text-decoration:none;transition:color 180ms ease;" onmouseover="this.style.color='#f5f1eb'" onmouseout="this.style.color='#8b95aa'" data-i18n="footer.contact">Contact</a>
           </div>
         </div>
@@ -2139,6 +2314,26 @@ const T = {
     "vision.h2": "Der Partner, den<br/>Unternehmen behalten.",
     "vision.body": "Wir bauen Systeme, die nach dem Start niemand mehr erklären muss, weil sie einfach laufen: im Tagesbetrieb, branchenübergreifend, in über 50 Sprachen, an sieben Tagen die Woche.",
     "vision.lang50": "Sprachen. HYBOTE spricht Ihre Kunden in über 50 Sprachen an, ohne dass Sie etwas einrichten müssen.",
+    "video.label": "Erklärvideo",
+    "video.h2": "HYBOTE in<br/><em>77 Sekunden.</em>",
+    "video.sub": "Was passiert, wenn ein Kunde um 2&nbsp;Uhr nachts anruft oder schreibt, und warum dafür niemand in Ihrem Team wach sein muss.",
+    "video.play": "Video abspielen",
+    "video.title": "HYBOTE Erklärvideo",
+    "video.caption": "Video auf Englisch, 1:17",
+    "founder.label": "Wer ist HYBOTE",
+    "founder.h2": "Fünf-Sterne-Service.<br/><em>In jeder Branche.</em>",
+    "founder.p1": "Ich war 13 Jahre in der Hotellerie tätig, ausschließlich in der Business- und Luxushotellerie, die meiste Zeit davon im Luxussegment. Dort wartet niemand auf eine Antwort. Man erkennt, was ein Gast braucht, bevor er fragt, und antwortet in seiner Sprache und im richtigen Ton, um drei Uhr nachmittags genauso wie um drei Uhr nachts.",
+    "founder.p2": "Dieser Standard ist keine technische Fähigkeit. Er wird jeden Tag trainiert, an jedem Kontaktpunkt, und Diskretion ist selbstverständlich. Meine Begeisterung für KI kam später und mit ihr eine Frage: Warum sollte dieser Service nur an der Hotelrezeption möglich sein?",
+    "founder.p3": "HYBOTE ist meine Antwort. Wir übertragen die Disziplin der Fünf-Sterne-Hotellerie auf KI-Agenten, die jeden Anruf und jede Nachricht annehmen, rund um die Uhr und in über 50 Sprachen. Für Immobilien, Autohäuser, Kliniken und jedes Unternehmen, in dem die erste Antwort entscheidet.",
+    "founder.role": "Gründer, HYBOTE",
+    "founder.alt": "Mohamed Erassas, Gründer von HYBOTE",
+    "founder.band.lead": "Was mich 13 Jahre Hotellerie gelehrt haben:",
+    "founder.band.1.title": "Niemand wartet",
+    "founder.band.1.body": "Im Luxushotel wartet kein Gast auf eine Antwort. Mit HYBOTE warten auch Ihre Kunden nicht, ob um 15&nbsp;Uhr oder um 3&nbsp;Uhr nachts.",
+    "founder.band.2.title": "Jeder Gast in seiner Sprache",
+    "founder.band.2.body": "Gäste kommen aus aller Welt und werden in ihrer Sprache und im passenden Ton bedient. HYBOTE spricht über 50 Sprachen.",
+    "founder.band.3.title": "Diskretion als Standard",
+    "founder.band.3.body": "Was ein Gast anvertraut, bleibt geschützt. Ihre Kundendaten werden getrennt gehalten und nie weitergegeben.",
     "contact.label": "Kontakt",
     "contact.h2": "Kostenloses<br/>Kennenlerngespräch.",
     "contact.sub": "Wir zeigen Ihnen in 20 Minuten, wo in Ihrem Betrieb der größte Hebel liegt. Unverbindlich und kostenlos.",
@@ -2406,6 +2601,26 @@ const T = {
     "vision.h2": "The partner<br/>companies keep.",
     "vision.body": "We build systems nobody has to explain once they are live, because they simply run: in daily operations, across industries, in over 50 languages, seven days a week.",
     "vision.lang50": "Languages. HYBOTE speaks to your customers in over 50 languages with nothing to configure.",
+    "video.label": "Explainer video",
+    "video.h2": "HYBOTE in<br/><em>77 seconds.</em>",
+    "video.sub": "What happens when a customer calls or writes at 2&nbsp;AM, and why nobody on your team has to be awake for it.",
+    "video.play": "Play video",
+    "video.title": "HYBOTE explainer video",
+    "video.caption": "Video in English, 1:17",
+    "founder.label": "Who is HYBOTE",
+    "founder.h2": "Five-star service.<br/><em>In every industry.</em>",
+    "founder.p1": "I spent 13 years in hospitality, exclusively in business and luxury hotels, most of that time in luxury. There, nobody waits for an answer. You notice what a guest needs before they ask, and you reply in their language and in the right tone, at three in the afternoon or at three at night.",
+    "founder.p2": "That standard is not a technical skill. It is trained every day, at every touchpoint, with discretion as a given. My enthusiasm for AI came later, and with it one question: why should this level of service exist only at a hotel front desk?",
+    "founder.p3": "HYBOTE is my answer. We bring the discipline of five-star hospitality into AI agents that answer every call and every message, 24/7, in over 50 languages. For real estate, car dealerships, clinics and every business where the first answer decides.",
+    "founder.role": "Founder, HYBOTE",
+    "founder.alt": "Mohamed Erassas, founder of HYBOTE",
+    "founder.band.lead": "What 13 years in hospitality taught me:",
+    "founder.band.1.title": "Nobody waits",
+    "founder.band.1.body": "In a luxury hotel, no guest waits for an answer. With HYBOTE, neither do your customers, at 3&nbsp;PM or at 3&nbsp;AM.",
+    "founder.band.2.title": "Every guest in their language",
+    "founder.band.2.body": "Guests arrive from all over the world and are answered in their language and tone. HYBOTE speaks over 50 languages.",
+    "founder.band.3.title": "Discretion as standard",
+    "founder.band.3.body": "What a guest shares stays protected. Your customer data is kept separate and never shared.",
     "contact.label": "Contact",
     "contact.h2": "Book a free<br/>intro call.",
     "contact.sub": "We'll show you in 20 minutes where the biggest lever sits in your business. No commitment, free of charge.",
@@ -2673,6 +2888,26 @@ const T = {
     "vision.h2": "الشريك الذي<br/>تحتفظ به الشركات.",
     "vision.body": "نبني أنظمة لا يحتاج أحد لشرحها بعد إطلاقها، لأنها تعمل ببساطة: في التشغيل اليومي، عبر القطاعات، بأكثر من 50 لغة، سبعة أيام في الأسبوع.",
     "vision.lang50": "لغة. تخاطب HYBOTE عملاءك بأكثر من 50 لغة دون أي إعداد منك.",
+    "video.label": "فيديو توضيحي",
+    "video.h2": "HYBOTE في<br/><em>77 ثانية.</em>",
+    "video.sub": "ماذا يحدث عندما يتصل بك عميل أو يراسلك في الثانية فجرًا، ولماذا لا يحتاج أحد في فريقك إلى أن يكون مستيقظًا لذلك.",
+    "video.play": "تشغيل الفيديو",
+    "video.title": "فيديو HYBOTE التوضيحي",
+    "video.caption": "الفيديو باللغة الإنجليزية، 1:17",
+    "founder.label": "من هي HYBOTE",
+    "founder.h2": "خدمة خمس نجوم.<br/><em>في كل قطاع.</em>",
+    "founder.p1": "عملتُ 13 عامًا في قطاع الضيافة، حصريًا في فنادق الأعمال والفنادق الفاخرة، وقضيت معظم تلك السنوات في الفنادق الفاخرة. هناك لا ينتظر أحد ردًا. تدرك ما يحتاجه الضيف قبل أن يطلبه، وتجيبه بلغته وبالأسلوب المناسب، في الثالثة عصرًا كما في الثالثة فجرًا.",
+    "founder.p2": "هذا المعيار ليس مهارة تقنية، بل مهارة تُصقَل كل يوم وفي كل نقطة تواصل، والتكتّم فيها أمر بديهي. جاء شغفي بالذكاء الاصطناعي لاحقًا، ومعه سؤال واحد: لماذا يقتصر هذا المستوى من الخدمة على مكتب الاستقبال في الفندق؟",
+    "founder.p3": "جوابي على ذلك هو HYBOTE. ننقل انضباط الضيافة من فئة الخمس نجوم إلى وكلاء ذكاء اصطناعي يجيبون عن كل مكالمة وكل رسالة على مدار الساعة طوال أيام الأسبوع، بأكثر من 50 لغة. للعقارات ومعارض السيارات والعيادات، ولكل نشاط تكون فيه الإجابة الأولى هي الحاسمة.",
+    "founder.role": "المؤسّس، HYBOTE",
+    "founder.alt": "محمد الرصاص، مؤسس HYBOTE",
+    "founder.band.lead": "ما علّمتني إياه 13 عامًا في قطاع الضيافة:",
+    "founder.band.1.title": "لا أحد ينتظر",
+    "founder.band.1.body": "في الفندق الفاخر لا ينتظر أي ضيف ردًا. ومع HYBOTE لا ينتظر عملاؤك أيضًا، سواء في الثالثة عصرًا أو الثالثة فجرًا.",
+    "founder.band.2.title": "كل ضيف بلغته",
+    "founder.band.2.body": "يأتي الضيوف من كل أنحاء العالم ويُخاطَبون بلغتهم وبالأسلوب المناسب. وتتحدث HYBOTE بأكثر من 50 لغة.",
+    "founder.band.3.title": "التكتّم معيار ثابت",
+    "founder.band.3.body": "ما يشاركه الضيف يبقى محميًا. تُحفَظ بيانات عملائك بشكل منفصل ولا تُشارَك أبدًا.",
     "contact.label": "التواصل",
     "contact.h2": "احجز مكالمة<br/>تعارف مجانية.",
     "contact.sub": "سنريك في 20 دقيقة أين تكمن أكبر رافعة في عملك. بدون التزام ومجاناً.",
@@ -2766,6 +3001,16 @@ function setLang(lang) {
     if (T[lang] && T[lang][key] !== undefined) {
       el.placeholder = T[lang][key];
     }
+  });
+
+  // Update translated attributes (image alt texts, aria-labels)
+  document.querySelectorAll('[data-i18n-alt]').forEach(el => {
+    const key = el.dataset.i18nAlt;
+    if (T[lang] && T[lang][key] !== undefined) el.alt = T[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    const key = el.dataset.i18nAria;
+    if (T[lang] && T[lang][key] !== undefined) el.setAttribute('aria-label', T[lang][key]);
   });
 
   // Update page title

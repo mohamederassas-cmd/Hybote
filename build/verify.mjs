@@ -64,6 +64,39 @@ for (const [name, path] of BOOKING_PAGES) {
   });
 }
 
+/* ── Erklärvideo und Gründer-Sektion: auf allen vier Seiten ────────────── */
+console.log('\nErklärvideo und Gründer');
+const MEDIA = ['hybote-explainer-en.mp4', 'hybote-explainer-poster.jpg', 'founder-mohamed-erassas.jpg'];
+for (const [name, path] of BOOKING_PAGES) {
+  const h = readFileSync(path, 'utf8');
+  const video = (h.match(/<video id="explainer-video"[^>]*>/) || [''])[0];
+  const ld = [...h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+    .map((m) => { try { return JSON.parse(m[1]); } catch { return null; } });
+  const videoLd = ld.find((o) => o && o['@type'] === 'VideoObject');
+  const a = h.indexOf('const T = {');
+  const T = eval('(' + h.slice(a + 'const T = '.length, h.indexOf('\n};', a) + 2) + ')');
+  const founderCopy = ['en', 'de', 'ar'].flatMap((l) => Object.entries(T[l]).filter(([k]) => k.startsWith('founder.')).map(([, v]) => v));
+
+  report(name, {
+    'genau ein Erklärvideo': (h.match(/id="explainer-video"/g) || []).length === 1,
+    'Video lädt erst beim Klick (preload="none", kein autoplay)':
+      video.includes('preload="none"') && !video.includes('autoplay'),
+    'Video, Poster und Gründerfoto liegen in /media': MEDIA.every((f) => existsSync(join(ROOT, 'media', f))),
+    'VideoObject-JSON-LD mit Dauer und Datei':
+      !ld.includes(null) && videoLd !== undefined && videoLd.duration === 'PT1M17S' &&
+      videoLd.contentUrl === 'https://hybote.ai/media/hybote-explainer-en.mp4',
+    'Video steht vor dem Problem-Abschnitt': h.indexOf('id="video"') !== -1 && h.indexOf('id="video"') < h.indexOf('id="problem"'),
+    'genau eine Gründer-Sektion mit Foto':
+      (h.match(/id="ueber-uns"/g) || []).length === 1 && h.includes('src="/media/founder-mohamed-erassas.jpg"'),
+    'Gründer-Sektion steht vor dem FAQ': h.indexOf('id="ueber-uns"') < h.indexOf('id="faq"'),
+    'Gründer-Texte in EN, DE und AR': ['en', 'de', 'ar'].every((l) => T[l]['founder.p1'] && T[l]['video.h2']),
+    // Mohamed: 13 Jahre Hotellerie, ausschliesslich Business- und Luxushotellerie.
+    // "Zehn Jahre Fünf-Sterne" stand im Vertriebsdeck und ist falsch.
+    'Gründer-Fakt: 13 Jahre, nicht zehn':
+      founderCopy.some((v) => v.includes('13')) && !founderCopy.some((v) => /\bten years|zehn jahre|decade|عشر سنوات/i.test(v)),
+  });
+}
+
 /* ── Landingpages ───────────────────────────────────────────────────────── */
 console.log('\nLandingpages');
 for (const slug of SLUGS) {
@@ -84,7 +117,7 @@ for (const slug of SLUGS) {
     'Danke-Redirect absolut und mit Quelle':
       h.includes(`'/danke.html?lang=' + currentLang + '&src=${slug}'`),
     'genau ein Analytics-Tag': (h.match(/_vercel\/insights/g) || []).length === 1,
-    'drei JSON-LD-Blöcke': (h.match(/application\/ld\+json/g) || []).length === 3,
+    'vier JSON-LD-Blöcke (Breadcrumb, Service, FAQ, Video)': (h.match(/application\/ld\+json/g) || []).length === 4,
     'FAQ lückenlos ab 0': Array.from({ length: 6 }, (_, i) => i).every(
       (i) => h.includes(`toggleFaq(${i})`) && h.includes(`id="faq-a-${i}"`)
     ),
@@ -148,6 +181,7 @@ console.log('\nStartseite');
     'drei Verweise aus den Beispielrechnungen':
       SLUGS.every((s) => h.includes(`href="/${s}" class="case-link"`)),
     'drei Footer-Verweise': SLUGS.every((s) => h.includes(`href="/${s}" style=`)),
+    'Footer "About" führt zur Gründer-Sektion': h.includes('<a href="#ueber-uns" style='),
     'mobiles weißes Logo vorhanden': h.includes('srcset="/logo-mobile-white.png"'),
     'mobiler Header auf 112 px begrenzt':
       h.includes('@media (max-width: 767px)') && h.includes('height: 112px !important;'),

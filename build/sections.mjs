@@ -317,14 +317,20 @@ function crossLinks(c, { A, E }, siblings) {
 <hr class="rule" />`;
 }
 
-export function renderBody(cfg, dict, siblings) {
+/**
+ * `shared` enthält Sektionen, die zeichengleich aus index.html kommen (Erklärvideo,
+ * Gründer). Ihre Texte sind globale Keys im T-Dictionary, keine lp.*-Keys.
+ */
+export function renderBody(cfg, dict, siblings, shared) {
   const h = helpers(dict);
   return [
     hero(cfg, h),
+    shared.video + '\n\n<hr class="rule" />',
     problem(cfg, h),
     numbers(cfg, h),
     capabilities(cfg, h),
     process(cfg, h),
+    shared.founder + '\n\n<hr class="rule" />',
     faq(cfg, h),
     crossLinks(cfg, h, siblings),
   ].join('\n');

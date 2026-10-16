@@ -23,6 +23,7 @@ const mime = {
   '.woff2':'font/woff2',
   '.ttf':  'font/ttf',
   '.webp': 'image/webp',
+  '.mp4':  'video/mp4',
 };
 
 // Nur für lokale Screenshots: ?dev=1 schaltet die Scroll-Reveal-Animation ab und
@@ -65,7 +66,29 @@ createServer(async (req, res) => {
         }
         data = Buffer.from(html, 'utf8');
       }
-      res.writeHead(200, { 'Content-Type': mime[extname(c)] || 'application/octet-stream' });
+      const type = mime[extname(c)] || 'application/octet-stream';
+      // Range-Anfragen wie bei Vercel, sonst lässt sich das Erklärvideo lokal
+      // nicht spulen (und Safari spielt es gar nicht ab).
+      const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+      if (range && (range[1] || range[2])) {
+        const size = data.length;
+        const start = range[1] ? +range[1] : Math.max(0, size - +range[2]);
+        const end = range[1] && range[2] ? Math.min(+range[2], size - 1) : size - 1;
+        if (start >= size || start > end) {
+          res.writeHead(416, { 'Content-Range': `bytes */${size}` });
+          res.end();
+          return;
+        }
+        res.writeHead(206, {
+          'Content-Type': type,
+          'Accept-Ranges': 'bytes',
+          'Content-Range': `bytes ${start}-${end}/${size}`,
+          'Content-Length': end - start + 1,
+        });
+        res.end(data.subarray(start, end + 1));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': type, 'Accept-Ranges': 'bytes' });
       res.end(data);
       return;
     } catch { /* nächster Kandidat */ }

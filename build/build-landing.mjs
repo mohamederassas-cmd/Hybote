@@ -169,6 +169,8 @@ function verify(html, shell, cfg) {
     ['CSS-Block 2 (CI, Typo, Hintergrund-Layer)', styles[1]],
     ['Hintergrund-Animation', absolutise(shell.parts.background)],
     ['Header', absolutise(shell.parts.header)],
+    ['Erklärvideo', absolutise(shell.parts.video)],
+    ['Gründer-Sektion', absolutise(shell.parts.founder)],
     ['Footer', absolutise(shell.parts.footer)],
     ['FAQ-Optik + toggleFaq', absolutise(shell.parts.faq)],
     ['Scroll-Reveal', absolutise(shell.parts.reveal)],
@@ -187,7 +189,10 @@ function verify(html, shell, cfg) {
 /* ── Zusammenbau ────────────────────────────────────────────────────────── */
 function buildPage(shell, cfg, siblings) {
   const dict = makeDict(cfg.content);
-  const body = renderBody(cfg.content, dict, siblings);
+  const body = renderBody(cfg.content, dict, siblings, {
+    video: absolutise(shell.parts.video),
+    founder: absolutise(shell.parts.founder),
+  });
 
   const html = [
     buildHead(shell.parts.head, cfg),
