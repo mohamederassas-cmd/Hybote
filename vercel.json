@@ -1,4 +1,9 @@
 {
+  "redirects": [
+    { "source": "/real-estate", "destination": "/#beispiele", "permanent": true },
+    { "source": "/car-dealerships", "destination": "/#beispiele", "permanent": true },
+    { "source": "/medical-practices", "destination": "/#beispiele", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/v/:code", "destination": "/v/index.html" }
   ],

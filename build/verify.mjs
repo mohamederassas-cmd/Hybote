@@ -1,21 +1,19 @@
-// Prüft die erzeugten Landingpages, ohne einen Browser zu starten.
+// Prüft die Seiten, ohne einen Browser zu starten.
 //
 //   node build/verify.mjs
 //
-// Ergänzt die Hüllen-Prüfung im Generator: dort geht es darum, dass die Optik
-// zeichengleich übernommen wurde, hier darum, dass Pfade, Meta-Angaben und
-// die FAQ-Nummerierung stimmen. Beides zusammen läuft in Sekunden und lohnt
-// sich vor jedem Deploy.
+// Pfade, Meta-Angaben, i18n-Vollständigkeit und die FAQ-Nummerierung.
+// Läuft in Sekunden und lohnt sich vor jedem Deploy.
 
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SLUGS = ['real-estate', 'car-dealerships', 'medical-practices'];
+// Die Branchenseiten wurden am 21.10.2026 entfernt; alte Links leitet vercel.json um.
+const REMOVED_SLUGS = ['real-estate', 'car-dealerships', 'medical-practices'];
 const BOOKING_PAGES = [
   ['index.html', join(ROOT, 'index.html')],
-  ...SLUGS.map((slug) => [`${slug}/index.html`, join(ROOT, slug, 'index.html')]),
 ];
 const LEGACY_CALENDAR_MARKERS = [
   'lead' + 'connector',
@@ -64,7 +62,7 @@ for (const [name, path] of BOOKING_PAGES) {
   });
 }
 
-/* ── Erklärvideo und Gründer-Sektion: auf allen vier Seiten ────────────── */
+/* ── Erklärvideo und Gründer-Sektion ───────────────────────────────────── */
 console.log('\nErklärvideo und Gründer');
 const MEDIA = ['hybote-explainer-en.mp4', 'hybote-explainer-poster.jpg', 'founder-mohamed-erassas.jpg'];
 for (const [name, path] of BOOKING_PAGES) {
@@ -95,41 +93,6 @@ for (const [name, path] of BOOKING_PAGES) {
     'Gründer-Fakt: über ein Jahrzehnt, gehobene Hotellerie':
       /over a decade/.test(T.en['founder.p1']) && /ein Jahrzehnt/.test(T.de['founder.p1']) && /عقد/.test(T.ar['founder.p1']) &&
       !founderCopy.some((v) => /\bten years|zehn jahre|five-star hotels|fünf-sterne-hotels|fünf-sterne-hotellerie tätig/i.test(v)),
-  });
-}
-
-/* ── Landingpages ───────────────────────────────────────────────────────── */
-console.log('\nLandingpages');
-for (const slug of SLUGS) {
-  const h = readFileSync(join(ROOT, slug, 'index.html'), 'utf8');
-  const base = `https://hybote.ai/${slug}`;
-
-  report(slug, {
-    'canonical zeigt auf die Seite': h.includes(`<link rel="canonical" href="${base}" />`),
-    'og:url zeigt auf die Seite': h.includes(`<meta property="og:url" content="${base}" />`),
-    'hreflang de/ar/x-default gesetzt':
-      h.includes(`hreflang="de" href="${base}?lang=de"`) &&
-      h.includes(`hreflang="ar" href="${base}?lang=ar"`) &&
-      h.includes(`hreflang="x-default" href="${base}"`),
-    'eigener Title (nicht der Startseiten-Title)':
-      !h.includes('<title>HYBOTE | The Future Runs On Its Own</title>'),
-    'keine relativen Asset-Pfade': !h.includes('src="logo.png"'),
-    'keine relativen Legal-Links': !/href="(datenschutz|agb|danke)\.html/.test(h),
-    'Danke-Redirect absolut und mit Quelle':
-      h.includes(`'/danke.html?lang=' + currentLang + '&src=${slug}'`),
-    'genau ein Analytics-Tag': (h.match(/_vercel\/insights/g) || []).length === 1,
-    'vier JSON-LD-Blöcke (Breadcrumb, Service, FAQ, Video)': (h.match(/application\/ld\+json/g) || []).length === 4,
-    'FAQ lückenlos ab 0': Array.from({ length: 6 }, (_, i) => i).every(
-      (i) => h.includes(`toggleFaq(${i})`) && h.includes(`id="faq-a-${i}"`)
-    ),
-    'keine FAQ-Lücke dahinter': !h.includes('toggleFaq(6)'),
-    'Formular-Betreff branchenspezifisch':
-      /name="subject" value="New HYBOTE Demo Request · /.test(h),
-    'Header-CTA bleibt auf der Seite': h.includes('href="#kontakt" class="btn-dark"'),
-    'Header-Nav führt zur Startseite': h.includes('href="/#problem"'),
-    'mobiles weißes Logo vorhanden': h.includes('srcset="/logo-mobile-white.png"'),
-    'mobiler Header auf 112 px begrenzt':
-      h.includes('@media (max-width: 767px)') && h.includes('height: 112px !important;'),
   });
 }
 
@@ -195,9 +158,8 @@ console.log('\nStartseite');
     'Inline-Defaults entsprechen T.en': inlineMismatches.length === 0,
     'FAQ-JSON-LD hat so viele Fragen wie die FAQ':
       faqLd !== undefined && faqLd.mainEntity.length === (h.match(/class="faq-q"/g) || []).length,
-    'drei Verweise aus den Beispielrechnungen':
-      SLUGS.every((s) => h.includes(`href="/${s}" class="case-link"`)),
-    'drei Footer-Verweise': SLUGS.every((s) => h.includes(`href="/${s}" style=`)),
+    'keine Verweise auf die entfernten Branchenseiten':
+      REMOVED_SLUGS.every((s) => !h.includes(`href="/${s}"`)) && !h.includes('case-link'),
     'Footer "About" führt zur Gründer-Sektion': h.includes('<a href="#ueber-uns" style='),
     'mobiles weißes Logo vorhanden': h.includes('srcset="/logo-mobile-white.png"'),
     'mobiler Header auf 112 px begrenzt':
@@ -277,10 +239,11 @@ console.log('\nRechtstextseiten');
   });
 }
 
-/* ── Sitemap und Datenschutz ────────────────────────────────────────────── */
+/* ── Sitemap, Redirects und Datenschutz ────────────────────────────────────────────── */
 console.log('\nWeitere Dateien');
 {
   const sm = readFileSync(join(ROOT, 'sitemap.xml'), 'utf8');
+  const vercel = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
   const ds = readFileSync(join(ROOT, 'datenschutz.html'), 'utf8');
   const connect = readFileSync(join(ROOT, 'meta-connect.html'), 'utf8');
   const connectJs = readFileSync(join(ROOT, 'meta-connect.js'), 'utf8');
@@ -292,8 +255,12 @@ console.log('\nWeitere Dateien');
     .filter((line) => !/^\s*(\/\/|\*|\/\*)/.test(line))
     .join('\n');
   report('sitemap.xml + datenschutz.html', {
-    'alle drei Seiten in der Sitemap':
-      SLUGS.every((s) => sm.includes(`<loc>https://hybote.ai/${s}</loc>`)),
+    'entfernte Branchenseiten nicht in der Sitemap':
+      REMOVED_SLUGS.every((s) => !sm.includes(`https://hybote.ai/${s}`)),
+    'entfernte Branchenseiten leiten dauerhaft um':
+      REMOVED_SLUGS.every((s) => (vercel.redirects || []).some(
+        (r) => r.source === `/${s}` && r.destination === '/#beispiele' && r.permanent === true
+      )) && REMOVED_SLUGS.every((s) => !existsSync(join(ROOT, s))),
     'Analytics in allen drei Sprachblöcken der Datenschutzerklärung':
       (ds.match(/Vercel Web Analytics/g) || []).length === 3,
     'Calendly-Datenschutzhinweis in allen drei Sprachblöcken':
