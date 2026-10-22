@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; upgrade-insecure-requests" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="theme-color" content="#070b16" />
+  <title>HYBOTE – Angebot</title>
+  <link rel="icon" href="data:," />
+  <link href="/fonts/fonts.css" rel="stylesheet" />
+  <link rel="stylesheet" href="angebot.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="brand-link" aria-label="HYBOTE">
+        <img src="/logo-mobile-white.png" class="brand-logo" alt="HYBOTE" width="2328" height="374" />
+      </a>
+      <span class="header-note" data-i18n="secure">Persönlicher Link</span>
+    </div>
+  </header>
+
+  <main class="offer-main" aria-live="polite">
+    <section id="view-loading" class="state-view">
+      <p class="muted" data-i18n="loading">Ihr Angebot wird geladen …</p>
+    </section>
+
+    <section id="view-error" class="state-view" hidden>
+      <div class="eyebrow" data-i18n="errorEyebrow">Link nicht verfügbar</div>
+      <h1 data-i18n="errorTitle">Dieser Link ist nicht mehr gültig.</h1>
+      <p class="intro-copy" data-i18n="errorBody">Das Angebot ist abgelaufen, wurde durch eine neue Fassung ersetzt oder der Link ist unvollständig. Schreiben Sie uns kurz, wir senden Ihnen gern einen neuen Link.</p>
+      <p><a href="mailto:merassas@hybote.ai">merassas@hybote.ai</a></p>
+    </section>
+
+    <div id="view-offer" hidden>
+      <section class="intro">
+        <div class="eyebrow" id="offer-eyebrow"></div>
+        <h1><span id="offer-title"></span><br /><em id="offer-company"></em></h1>
+        <p class="meta-line" id="offer-meta"></p>
+        <p class="intro-copy" id="offer-intro" hidden></p>
+      </section>
+
+      <div class="offer-grid">
+        <div class="col">
+          <section class="card" aria-labelledby="items-title">
+            <h2 id="items-title" data-i18n="itemsTitle">Leistungen</h2>
+            <ul class="items" id="offer-items"></ul>
+            <dl class="totals" id="offer-totals"></dl>
+            <p class="fine" data-i18n="net">Alle Preise netto zuzüglich etwaiger Steuern und Abgaben.</p>
+          </section>
+
+          <section class="card" aria-labelledby="docs-title">
+            <h2 id="docs-title" data-i18n="docsTitle">Ihre Unterlagen</h2>
+            <p class="fine" data-i18n="docsHint">Bitte lesen Sie die Unterlagen vor der Annahme. Mit der Annahme gelten alle hier aufgeführten Dokumente als vereinbart.</p>
+            <ul class="docs" id="offer-docs"></ul>
+          </section>
+        </div>
+
+        <div class="col">
+          <section class="card card-accept" id="accept-card" aria-labelledby="accept-title">
+            <h2 id="accept-title" data-i18n="acceptTitle">Angebot annehmen</h2>
+            <form id="accept-form" novalidate>
+              <label class="field"><span data-i18n="name">Vor- und Nachname</span><input id="f-name" name="name" autocomplete="name" required minlength="3" maxlength="120" /></label>
+              <label class="field"><span data-i18n="role">Funktion</span><input id="f-role" name="role" autocomplete="organization-title" required maxlength="120" /></label>
+              <label class="field"><span data-i18n="email">E-Mail für die Bestätigung</span><input id="f-email" name="email" type="email" autocomplete="email" required maxlength="254" /></label>
+              <label class="check"><input id="f-confirm" type="checkbox" required /><span id="confirm-text"></span></label>
+              <p class="form-error" id="form-error" role="alert" hidden></p>
+              <button type="submit" class="btn-primary" id="accept-btn" data-i18n="acceptBtn">Angebot verbindlich annehmen</button>
+              <p class="fine" data-i18n="acceptFine">Mit dem Klick schließen Sie den Vertrag elektronisch. Als Nachweis speichern wir Name, Funktion, E-Mail, Zeitpunkt, IP-Adresse und die Prüfsummen der Dokumente. Sie erhalten eine Bestätigung mit allen Unterlagen per E-Mail.</p>
+            </form>
+            <div class="decline">
+              <button type="button" class="btn-link" id="decline-toggle" data-i18n="declineToggle">Angebot ablehnen</button>
+              <form id="decline-form" hidden>
+                <label class="field"><span data-i18n="declineReason">Grund (optional)</span><textarea id="f-reason" rows="3" maxlength="500"></textarea></label>
+                <button type="submit" class="btn-secondary" id="decline-btn" data-i18n="declineBtn">Ablehnung senden</button>
+              </form>
+            </div>
+          </section>
+
+          <section class="card card-done" id="done-card" hidden>
+            <div class="done-mark" aria-hidden="true">✓</div>
+            <h2 id="done-title"></h2>
+            <p class="intro-copy" id="done-body"></p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span>Hybote AI Systems LLC · 30 N Gould St, Ste R, Sheridan, Wyoming 82801, USA</span>
+    <a href="/datenschutz.html" data-i18n="privacy">Datenschutz</a>
+  </footer>
+
+  <script src="angebot.js" defer></script>
+</body>
+</html>
