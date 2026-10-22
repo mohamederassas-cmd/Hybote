@@ -2,7 +2,7 @@
 //
 // Der Tower ist nur im Tailnet erreichbar. Wie beim Embedded Signup gibt es keine direkte Verbindung:
 //   Tower  → signiertes Token (DOC_ACCEPT_SECRET), PDFs + manifest.json im privaten Blob-Store
-//            (DOCS_BLOB_TOKEN, Pfad angebote/<jti>/), Zeile in der n8n-Tabelle ops_documents (SENT)
+//            (DOCS_BLOB_TOKEN bzw. BLOB_READ_WRITE_TOKEN, Pfad angebote/<jti>/), Zeile in der n8n-Tabelle ops_documents (SENT)
 //   hier   → Token pruefen, Zusammenfassung und PDFs ausliefern, VIEWED / ACCEPTED / DECLINED schreiben
 //            (needs_sync='yes'); der Tower holt die Zeilen im 60-s-Takt ab und setzt 'no'.
 //
@@ -42,8 +42,10 @@ function verifyToken(token) {
 }
 
 function tableId() { return process.env.N8N_OPS_DOCS_TABLE_ID || ''; }
+// Eigener Name; BLOB_READ_WRITE_TOKEN ist Vercels Standard, wenn der Store im Dashboard mit dem Projekt verbunden wird.
+function blobToken() { return process.env.DOCS_BLOB_TOKEN || process.env.BLOB_READ_WRITE_TOKEN || ''; }
 function configured() {
-  return Boolean((process.env.DOC_ACCEPT_SECRET || '').length >= 32 && process.env.DOCS_BLOB_TOKEN && process.env.N8N_BASE_URL && process.env.N8N_API_KEY && tableId());
+  return Boolean((process.env.DOC_ACCEPT_SECRET || '').length >= 32 && blobToken() && process.env.N8N_BASE_URL && process.env.N8N_API_KEY && tableId());
 }
 
 function rowFilter(jti, status) {
@@ -68,7 +70,7 @@ async function updateRow(jti, fromStatus, data) {
 }
 
 async function readManifest(jti) {
-  const result = await get(`angebote/${jti}/manifest.json`, { access: 'private', token: process.env.DOCS_BLOB_TOKEN, useCache: false });
+  const result = await get(`angebote/${jti}/manifest.json`, { access: 'private', token: blobToken(), useCache: false });
   if (!result || result.statusCode !== 200) return null;
   const text = await new Response(result.stream).text();
   return JSON.parse(text);
@@ -136,7 +138,7 @@ async function file(request, response) {
   const index = Number(request.query && request.query.i);
   const doc = ctx && (ctx.manifest.documents || []).find((d) => d.i === index);
   if (!doc) return json(response, 404, { ok: false, code: 'UNAVAILABLE' });
-  const result = await get(doc.url, { access: 'private', token: process.env.DOCS_BLOB_TOKEN });
+  const result = await get(doc.url, { access: 'private', token: blobToken() });
   if (!result || result.statusCode !== 200) return json(response, 404, { ok: false, code: 'UNAVAILABLE' });
   const name = `${ctx.manifest.number} ${String(doc.title || 'Dokument').replace(/[^\p{L}\p{N} ._-]+/gu, '').slice(0, 80)}.pdf`;
   response.setHeader('Content-Type', 'application/pdf');
