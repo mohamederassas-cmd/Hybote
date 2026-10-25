@@ -83,7 +83,10 @@ for (const [name, path] of BOOKING_PAGES) {
     'VideoObject-JSON-LD mit Dauer und Datei':
       !ld.includes(null) && videoLd !== undefined && videoLd.duration === 'PT1M17S' &&
       videoLd.contentUrl === 'https://hybote.ai/media/hybote-explainer-en.mp4',
-    'Video steht vor dem Problem-Abschnitt': h.indexOf('id="video"') !== -1 && h.indexOf('id="video"') < h.indexOf('id="problem"'),
+    // Neuaufbau 10/2026: das Video gehört zum Live-Beispiel, zwischen Demo und Leistungen
+    'Erklärvideo steht im Live-Beispiel':
+      h.indexOf('id="beispiele"') !== -1 &&
+      h.indexOf('id="beispiele"') < h.indexOf('id="video"') && h.indexOf('id="video"') < h.indexOf('id="leistungen"'),
     'genau eine Gründer-Sektion mit Foto':
       (h.match(/id="ueber-uns"/g) || []).length === 1 && h.includes('src="/media/founder-mohamed-erassas.jpg"'),
     'Gründer-Sektion steht vor dem FAQ': h.indexOf('id="ueber-uns"') < h.indexOf('id="faq"'),
@@ -144,6 +147,16 @@ console.log('\nStartseite');
   const fontCss = readFileSync(join(ROOT, 'fonts', 'fonts.css'), 'utf8');
   const fontFiles = [...fontCss.matchAll(/url\("\/(fonts\/[^"]+)"\)/g)].map((m) => m[1]);
 
+  // Jeder Seitenanker braucht ein Ziel, sonst springt ein Nav- oder CTA-Link ins Leere
+  const ids = new Set([...h.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+  const deadAnchors = [...new Set([...h.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]))].filter((a) => !ids.has(a));
+  if (deadAnchors.length) console.log('     Anker ohne Ziel:', deadAnchors.join(', '));
+
+  // Reihenfolge der Abschnitte (Argument der Seite); #kunden ist optional
+  const order = ['beispiele', 'leistungen', 'ueber-uns', 'kunden', 'faq', 'kontakt']
+    .map((id) => h.indexOf(`<section id="${id}"`))
+    .filter((pos) => pos !== -1);
+
   report('index.html', {
     'DE vollständig gegenüber EN': enKeys.every((k) => T.de[k] !== undefined),
     'AR vollständig gegenüber EN': enKeys.every((k) => T.ar[k] !== undefined),
@@ -160,15 +173,19 @@ console.log('\nStartseite');
       faqLd !== undefined && faqLd.mainEntity.length === (h.match(/class="faq-q"/g) || []).length,
     'keine Verweise auf die entfernten Branchenseiten':
       REMOVED_SLUGS.every((s) => !h.includes(`href="/${s}"`)) && !h.includes('case-link'),
-    'Footer "About" führt zur Gründer-Sektion': h.includes('<a href="#ueber-uns" style='),
-    'mobiles weißes Logo vorhanden': h.includes('srcset="/logo-mobile-white.png"'),
-    'mobiler Header auf 112 px begrenzt':
-      h.includes('@media (max-width: 767px)') && h.includes('height: 112px !important;'),
+    'jeder Seitenanker hat ein Ziel': deadAnchors.length === 0,
+    'Redirect-Ziel #beispiele vorhanden': h.includes('<section id="beispiele"'),
+    'Abschnitte in der vorgesehenen Reihenfolge':
+      order.length >= 5 && order.every((pos, i) => i === 0 || order[i - 1] < pos),
+    'weißes Logo im Header': h.includes('src="/logo-mobile-white.png"'),
+    // Schlanke Seite: kein Tailwind-CDN, kein Spline-Roboter, kein Three.js-Terrain mehr
+    'keine schweren Fremdbibliotheken':
+      !/cdn\.tailwindcss\.com|splinetool|spline-viewer|three@|three\.module/i.test(h),
   });
   console.log(`     i18n-Keys je Sprache: ${enKeys.length}`);
 }
 
-/* ── CI-Textregeln (Corporate Identity Guide v2, Kapitel 01 und 06) ─────── */
+/* ── CI-Textregeln (Corporate Identity v3, Stand 10/2026) ───────────────── */
 console.log('\nCI-Textregeln');
 for (const [name, path] of BOOKING_PAGES) {
   const h = readFileSync(path, 'utf8');
@@ -187,13 +204,18 @@ for (const [name, path] of BOOKING_PAGES) {
     'keine verbotenen Meta-Formulierungen':
       hits(/meta[- ]partner|official partner|offizieller partner|meta verified|powered by meta/i).length === 0,
     'alter Slogan "Hospitality Meets AI" nirgends': !/Hospitality Meets AI/i.test(h),
-    // Formsprache (Guide Kapitel 05): keine Schlagschatten, Gold nur im Hero, Blur nur auf Overlays
+    // Formsprache: keine Schlagschatten, kein Gold (seit CI v3), Blur nur auf Overlays
     'keine Schlagschatten': !/box-shadow|drop-shadow/.test(h),
-    'Gold nur in der Hero-Headline und ihrem Unterstrich':
-      h.split('\n').filter((l) => /c9a053|e8c47a|fff6e2/i.test(l)).every((l) => l.includes('hero headline stays gold') || l.includes('hero-line')),
+    'kein Gold mehr (CI v3)': !/c9a053|e8c47a|fff6e2/i.test(h),
     'Blur nur auf Header und Cookie-Banner':
       h.split('\n').filter((l) => /backdrop-filter/.test(l)).every((l) => l.includes('id="nav"') || l.includes('id="cookie-banner"')),
     'kein Gold-Token mehr im CSS': !/var\(--gold|var\(--teal/.test(h),
+    // Trustpilot-Markenrichtlinien: keine nachgebauten Sterne oder TrustScores; Kundenstimmen
+    // nur mit Link zum Profil und Echtheitshinweis (§ 5b Abs. 3 UWG) direkt daneben.
+    'keine nachgebauten Bewertungssterne': !/★|☆|trustscore/i.test(h),
+    'Kundenstimmen mit Trustpilot-Link und Echtheitshinweis':
+      !h.includes('id="kunden"') ||
+      (h.includes('href="https://www.trustpilot.com/review/hybote.ai"') && T.en['kunden.note'] !== undefined),
   });
 }
 
@@ -220,7 +242,7 @@ console.log('\nRechtstextseiten');
       css.includes("'Cormorant Garamond', serif") &&
       css.includes("'Montserrat', sans-serif") &&
       css.includes("'Cairo', sans-serif"),
-    'mobile Headerhöhe und Logo entsprechen der Hauptseite':
+    'mobile Headerhöhe und Logo der Rechtstextseiten unverändert':
       css.includes('height: 112px;') &&
       legalPages.every((h) => h.includes('srcset="logo-mobile-white.png"')),
     'EN, AR und DE auf beiden Seiten schaltbar':
