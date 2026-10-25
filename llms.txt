@@ -1,0 +1,13 @@
+# HYBOTE
+
+> HYBOTE AI Systems builds AI agents that answer every customer call and message within seconds, day and night, in over 50 languages, on WhatsApp, phone, email and social, and hand over to the team when a person is needed. In use from interpreting services to real estate.
+
+## Research
+
+- [The Gulf Buyer Response Benchmark 2026](https://hybote.ai/benchmark/): 144 anonymous buyer enquiries to real estate brokerages across the GCC (July to September 2026, WhatsApp and email, 94 % outside office hours). 63 % never received a reply within the measurement window, the median first reply took 9.4 hours, 5 % were answered within 5 minutes. WhatsApp: 61 % replied, email: 22 %. Aggregated, no company named, groups below 20 enquiries left out.
+- [Benchmark PDF](https://hybote.ai/benchmark/hybote-gulf-buyer-response-benchmark-2026.pdf): method, results and a self-test.
+
+## Company
+
+- [Website](https://hybote.ai/): AI agents for customer enquiries, automations and custom software.
+- [Free intro call](https://calendly.com/hybote-demo/free-intro-call)

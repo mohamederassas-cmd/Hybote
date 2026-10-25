@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HYBOTE · AI front desk</title>
+  <meta name="description" content="Every call and message answered in seconds, day and night, in 50+ languages. The benchmark, a free intro call and the video in one place." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="icon" href="/logo.png" />
+  <link rel="preload" href="/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link href="/fonts/fonts.css" rel="stylesheet" />
+  <style>
+    /* Link-Seite für Instagram- und LinkedIn-Profil (Marketingplan 25.10.2026), CI v3: Cyan nur auf der
+       Hauptaktion (Erstgespräch), Flächen statt Linien, keine Etiketten. UTM kommt aus der Profil-Adresse und wird
+       an die Links weitergereicht. */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg: #070b16; --s1: #0c1222; --s2: #131b30; --s3: #1c2740; --fg: #f5f1eb; --a1: #d4cfc8; --a2: #b0a898; --a3: #8b95aa; --a4: #566070; --accent: #38BDF8; }
+    html { overflow-x: clip; }
+    body { background: var(--bg); color: var(--fg); font-family: 'Montserrat', system-ui, sans-serif; font-weight: 400; min-height: 100vh; display: flex; justify-content: center; -webkit-font-smoothing: antialiased; }
+    main { width: 100%; max-width: 480px; padding: 56px 16px 40px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .logo { height: 26px; width: auto; opacity: .92; }
+    h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: 36px; line-height: 1.12; margin: 36px 0 14px; }
+    p.bio { color: var(--a2); font-size: 15px; line-height: 1.6; max-width: 36ch; }
+    nav { width: 100%; display: grid; gap: 12px; margin-top: 36px; }
+    nav a { display: flex; flex-direction: column; gap: 4px; padding: 18px 22px; border-radius: 12px; background: var(--s1); text-decoration: none; text-align: left; }
+    nav a:hover { background: var(--s2); }
+    nav a b { font-weight: 500; font-size: 16px; color: var(--fg); }
+    nav a span { font-size: 13px; color: var(--a3); }
+    nav a.primary { background: var(--accent); }
+    nav a.primary b { color: var(--bg); }
+    nav a.primary span { color: var(--s3); }
+    footer { margin-top: 48px; font-size: 12px; color: var(--a4); }
+    footer a { color: inherit; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="/" aria-label="HYBOTE home"><img class="logo" src="/logo-mobile-white.png" alt="HYBOTE" width="162" height="26" /></a>
+    <h1>Every enquiry answered in seconds</h1>
+    <p class="bio">AI agents that answer calls and messages day and night, in over 50 languages, and hand over to your team when a person is needed.</p>
+    <nav>
+      <a class="primary" data-utm href="https://calendly.com/hybote-demo/free-intro-call?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links&amp;utm_content=intro_call" target="_blank" rel="noopener"><b>Book a free intro call</b><span>15 minutes, no preparation needed</span></a>
+      <a data-utm href="/benchmark/?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links&amp;utm_content=benchmark"><b>The Gulf Buyer Response Benchmark</b><span>144 enquiries, 63 % without a reply</span></a>
+      <a data-utm href="/?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links&amp;utm_content=video#video"><b>HYBOTE in 77 seconds</b><span>The video</span></a>
+      <a data-utm href="/?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links&amp;utm_content=website"><b>hybote.ai</b><span>The website</span></a>
+    </nav>
+    <footer>HYBOTE AI Systems · <a href="/datenschutz.html">Privacy</a></footer>
+  </main>
+  <script>
+    // Quelle und Medium aus der Profil-Adresse übernehmen (z. B. LinkedIn statt Instagram).
+    (function () {
+      var q = new URLSearchParams(location.search);
+      var src = q.get('utm_source'), med = q.get('utm_medium');
+      if (!src && !med) return;
+      document.querySelectorAll('a[data-utm]').forEach(function (a) {
+        var url = new URL(a.getAttribute('href'), location.origin);
+        if (src) url.searchParams.set('utm_source', src);
+        if (med) url.searchParams.set('utm_medium', med);
+        a.setAttribute('href', url.origin === location.origin ? url.pathname + url.search + url.hash : url.toString());
+      });
+    })();
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

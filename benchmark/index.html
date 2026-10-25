@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Gulf Buyer Response Benchmark 2026 | HYBOTE</title>
+  <meta name="description" content="144 anonymous buyer enquiries to real estate brokerages across the GCC: 63 % never received a reply, the median first reply took 9.4 hours. Method, results and a self-test for any business." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://hybote.ai/benchmark/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://hybote.ai/benchmark/" />
+  <meta property="og:title" content="The Gulf Buyer Response Benchmark 2026" />
+  <meta property="og:description" content="144 anonymous buyer enquiries, 63 % without a reply, a median wait of 9.4 hours. What it shows for every business that lives on enquiries." />
+  <meta property="og:image" content="https://hybote.ai/benchmark/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://hybote.ai/benchmark/og.jpg" />
+  <link rel="icon" href="/logo.png" />
+  <link rel="preload" href="/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link href="/fonts/fonts.css" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "The Gulf Buyer Response Benchmark 2026",
+    "description": "Aggregated results of 144 anonymous buyer enquiries sent by HYBOTE to real estate brokerages across the GCC between July and September 2026, by WhatsApp and email, 94 % outside office hours. Measured: share of enquiries without a reply, time to the first reply, differences by channel and country. No brokerage, agent or person is named; groups below 20 enquiries are not reported.",
+    "url": "https://hybote.ai/benchmark/",
+    "creator": { "@type": "Organization", "name": "HYBOTE AI Systems", "url": "https://hybote.ai/" },
+    "publisher": { "@type": "Organization", "name": "HYBOTE AI Systems", "url": "https://hybote.ai/" },
+    "temporalCoverage": "2026-07-13/2026-09-10",
+    "spatialCoverage": "Gulf Cooperation Council (GCC)",
+    "variableMeasured": ["Share of enquiries without a reply", "Median time to first reply", "Share answered within 5 minutes", "Reply rate by channel"],
+    "distribution": [{ "@type": "DataDownload", "encodingFormat": "application/pdf", "contentUrl": "https://hybote.ai/benchmark/hybote-gulf-buyer-response-benchmark-2026.pdf" }],
+    "isAccessibleForFree": true,
+    "datePublished": "2026-10-25"
+  }
+  </script>
+  <style>
+    /* CI v3 der Webseite (10/2026): fast schwarzer Grund, Flächen statt Linien, Cyan nur auf der Hauptaktion,
+       Überschriften in Cormorant Garamond, Text in Montserrat, keine Etiketten, kein Gold, nichts kursiv. */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #070b16; --s1: #0c1222; --s2: #131b30; --s3: #1c2740; --s4: #24304d;
+      --fg: #f5f1eb; --a1: #d4cfc8; --a2: #b0a898; --a3: #8b95aa; --a4: #566070;
+      --accent: #38BDF8;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Montserrat', system-ui, sans-serif;
+    }
+    html { overflow-x: clip; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-weight: 400; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+    @media (min-width: 768px) { .wrap { padding: 0 32px; } }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 28px 0; }
+    header img { height: 22px; width: auto; display: block; opacity: .92; }
+    header nav a { font-size: 14px; color: var(--a2); text-decoration: none; }
+    header nav a:hover { color: var(--fg); }
+    h1, h2 { font-family: var(--serif); font-weight: 400; letter-spacing: -0.01em; font-variant-numeric: lining-nums; }
+    h1 { font-size: clamp(40px, 7vw, 76px); line-height: 1.04; margin: 48px 0 24px; max-width: 14ch; }
+    h2 { font-size: clamp(30px, 4.6vw, 44px); line-height: 1.1; margin-bottom: 20px; }
+    .lead { font-size: clamp(17px, 2.2vw, 20px); color: var(--a1); max-width: 62ch; }
+    .meta { margin-top: 18px; font-size: 14px; color: var(--a3); }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 26px; border-radius: 999px; font-size: 15px; font-weight: 500; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-secondary { background: var(--s2); color: var(--fg); }
+    .btn-secondary:hover { background: var(--s3); }
+    section { padding: 72px 0 0; }
+    .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 56px; }
+    @media (min-width: 900px) { .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+    .stat { background: var(--s1); border-radius: 12px; padding: 24px 20px; }
+    .stat .n { font-family: var(--serif); font-size: clamp(44px, 6vw, 60px); line-height: 1; font-variant-numeric: lining-nums; }
+    .stat p { margin-top: 12px; font-size: 14px; color: var(--a2); line-height: 1.5; }
+    .card { background: var(--s1); border-radius: 12px; padding: 28px 22px; }
+    @media (min-width: 768px) { .card { padding: 36px 36px; } }
+    .grid2 { display: grid; gap: 12px; }
+    @media (min-width: 900px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+    .chart-title { font-family: var(--serif); font-size: 26px; line-height: 1.2; margin-bottom: 6px; }
+    .chart-note { font-size: 13px; color: var(--a3); margin-bottom: 22px; }
+    .bar { margin-bottom: 16px; }
+    .bar-row { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--a1); margin-bottom: 8px; }
+    .bar-row b { font-weight: 500; color: var(--fg); font-variant-numeric: tabular-nums; }
+    .track { height: 10px; background: var(--s3); border-radius: 999px; overflow: hidden; }
+    .fill { height: 100%; background: var(--a3); border-radius: 999px; }
+    .fill.strong { background: var(--fg); }
+    ol.steps { list-style: none; counter-reset: s; display: grid; gap: 12px; }
+    ol.steps li { counter-increment: s; background: var(--s1); border-radius: 12px; padding: 20px 20px 20px 68px; position: relative; color: var(--a1); }
+    ol.steps li::before { content: counter(s, decimal-leading-zero); position: absolute; left: 22px; top: 16px; font-family: var(--serif); font-size: 26px; color: var(--a3); font-variant-numeric: lining-nums; }
+    ul.plain { list-style: none; display: grid; gap: 10px; color: var(--a1); max-width: 70ch; }
+    ul.plain li { padding-left: 18px; position: relative; }
+    ul.plain li::before { content: ""; position: absolute; left: 0; top: .78em; width: 8px; height: 1px; background: var(--a3); }
+    .closing { margin-top: 72px; background: var(--s2); border-radius: 12px; padding: 40px 22px; }
+    @media (min-width: 768px) { .closing { padding: 56px 48px; } }
+    .closing p { color: var(--a1); max-width: 56ch; }
+    footer { margin: 80px 0 0; padding: 28px 0 40px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--a4); }
+    footer nav { display: flex; gap: 18px; }
+    footer a { text-decoration: none; }
+    footer a:hover { color: var(--a1); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a href="/" aria-label="HYBOTE home"><img src="/logo-mobile-white.png" alt="HYBOTE" width="137" height="22" /></a>
+      <nav><a href="/">hybote.ai</a></nav>
+    </header>
+
+    <main>
+      <h1>The Gulf Buyer Response Benchmark 2026</h1>
+      <p class="lead">We sent 144 anonymous buyer enquiries to real estate brokerages across the GCC, 94 % of them outside office hours, and recorded what happened next. The data comes from real estate. The lesson applies to every business that lives on enquiries.</p>
+      <p class="meta">July to September 2026 · WhatsApp and email · aggregated, no company named</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://calendly.com/hybote-demo/free-intro-call?utm_source=hybote.ai&amp;utm_medium=benchmark&amp;utm_campaign=benchmark_2026" target="_blank" rel="noopener">Book a free intro call</a>
+        <a class="btn btn-secondary" href="/benchmark/hybote-gulf-buyer-response-benchmark-2026.pdf" download>Download the PDF</a>
+      </div>
+
+      <div class="stats" role="list">
+        <div class="stat" role="listitem"><div class="n">63 %</div><p>of the enquiries never received a reply within the measurement window</p></div>
+        <div class="stat" role="listitem"><div class="n">9.4 h</div><p>median time to the first reply, when there was one</p></div>
+        <div class="stat" role="listitem"><div class="n">5 %</div><p>were answered within 5 minutes, 9 % within one hour</p></div>
+        <div class="stat" role="listitem"><div class="n">61 %</div><p>replied on WhatsApp, against 22 % by email</p></div>
+      </div>
+
+      <section aria-labelledby="results">
+        <h2 id="results">What a buyer experienced</h2>
+        <div class="grid2">
+          <div class="card">
+            <div class="chart-title">How fast the first reply came</div>
+            <div class="chart-note">All 144 enquiries, share answered within each time</div>
+            <div class="bar"><div class="bar-row"><span>Within 5 minutes</span><b>5 %</b></div><div class="track"><div class="fill" style="width:5%"></div></div></div>
+            <div class="bar"><div class="bar-row"><span>Within 1 hour</span><b>9 %</b></div><div class="track"><div class="fill" style="width:9%"></div></div></div>
+            <div class="bar"><div class="bar-row"><span>Within 24 hours</span><b>31 %</b></div><div class="track"><div class="fill" style="width:31%"></div></div></div>
+            <div class="bar"><div class="bar-row"><span>No reply at all</span><b>63 %</b></div><div class="track"><div class="fill strong" style="width:63%"></div></div></div>
+          </div>
+          <div class="card">
+            <div class="chart-title">Where the customer writes matters</div>
+            <div class="chart-note">Share of enquiries that got any reply, by channel</div>
+            <div class="bar"><div class="bar-row"><span>WhatsApp (57 enquiries)</span><b>61 %</b></div><div class="track"><div class="fill strong" style="width:61%"></div></div></div>
+            <div class="bar"><div class="bar-row"><span>Email (87 enquiries)</span><b>22 %</b></div><div class="track"><div class="fill" style="width:22%"></div></div></div>
+            <div class="chart-note" style="margin:22px 0 0">Median first reply: 8.7 hours on WhatsApp, 11.3 hours by email.</div>
+          </div>
+          <div class="card">
+            <div class="chart-title">The same gap in every market we could measure</div>
+            <div class="chart-note">Share of enquiries that got any reply, countries with at least 20 enquiries</div>
+            <div class="bar"><div class="bar-row"><span>United Arab Emirates (83)</span><b>33 %</b></div><div class="track"><div class="fill" style="width:33%"></div></div></div>
+            <div class="bar"><div class="bar-row"><span>Qatar (20)</span><b>50 %</b></div><div class="track"><div class="fill" style="width:50%"></div></div></div>
+            <div class="chart-note" style="margin:22px 0 0">In both, the median first reply took more than 9 hours.</div>
+          </div>
+          <div class="card">
+            <div class="chart-title">After closing time</div>
+            <div class="chart-note">133 enquiries sent in the evening or at night</div>
+            <div class="bar"><div class="bar-row"><span>Got a reply</span><b>38 %</b></div><div class="track"><div class="fill" style="width:38%"></div></div></div>
+            <div class="bar"><div class="bar-row"><span>Answered within 5 minutes</span><b>5 %</b></div><div class="track"><div class="fill" style="width:5%"></div></div></div>
+            <div class="chart-note" style="margin:22px 0 0">94 % of the test enquiries went out at that time, because that is when buyers browse and ask.</div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="meaning">
+        <h2 id="meaning">What it means for any business</h2>
+        <ul class="plain">
+          <li>Customers do not wait for office hours. The first business that answers with a clear next step usually gets the appointment.</li>
+          <li>The channel matters, but speed decides. Even on WhatsApp the typical answer arrived many hours later.</li>
+          <li>Silence is the most common answer. More than half of the enquiries in this test never got one.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="selftest">
+        <h2 id="selftest">Test your own business in ten minutes</h2>
+        <ol class="steps">
+          <li>Ask someone outside your team to send one enquiry by WhatsApp and one by email after 6 PM, from a number you do not know.</li>
+          <li>Write down the exact time of the first reply on each channel, or note that none came.</li>
+          <li>Check whether the reply answered the question and asked one question back, such as budget or timing.</li>
+          <li>Compare your times with this benchmark: 5 minutes, one hour and the 9.4 hour median.</li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="method">
+        <h2 id="method">How the test worked</h2>
+        <ul class="plain">
+          <li>HYBOTE sent anonymous buyer enquiries to real estate brokerages in the GCC between 13 July and 10 September 2026, by WhatsApp (57) and email (87).</li>
+          <li>Only the first valid test per brokerage and channel counts, so no company is counted twice.</li>
+          <li>We measured the time to the first reply within the measurement window. No reply within the window counts as no reply.</li>
+          <li>All results are aggregated. No brokerage, agent or person is named or described, and any group below 20 enquiries is left out.</li>
+          <li>Percentages are rounded to whole numbers.</li>
+        </ul>
+      </section>
+
+      <div class="closing">
+        <h2>Answer every enquiry in seconds, day and night</h2>
+        <p>HYBOTE builds AI agents that answer calls and messages within seconds, in over 50 languages, and hand over to your team when a person is needed. In use from interpreting services to real estate.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://calendly.com/hybote-demo/free-intro-call?utm_source=hybote.ai&amp;utm_medium=benchmark&amp;utm_campaign=benchmark_2026&amp;utm_content=closing" target="_blank" rel="noopener">Book a free intro call</a>
+          <a class="btn btn-secondary" href="/benchmark/hybote-gulf-buyer-response-benchmark-2026.pdf" download>Download the PDF</a>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <span>HYBOTE AI Systems · The Future Runs On Its Own.</span>
+      <nav><a href="/">Home</a><a href="/datenschutz.html">Privacy</a><a href="/agb.html">Terms</a></nav>
+    </footer>
+  </div>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
