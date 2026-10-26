@@ -1,7 +1,7 @@
 /* Eigene Ereignisse für Vercel Web Analytics (Pro, 25.10.2026, Marketing Pilot liest sie über die Web-Analytics-API).
    Keine Cookies, keine personenbezogenen Daten: nur Ereignisname plus Seite bzw. Ziel.
    - video_play / video_10s / video_complete: Erklärvideo (#explainer-video) auf der Startseite
-   - cta_calendly: Klick auf einen Calendly-Link, calendly_view / calendly_booked: eingebetteter Kalender
+   - cta_calendly: Klick auf einen Calendly-Link, calendly_view / calendly_booked: eingebetteter Kalender oder Calendly-Fenster
    - pdf_download: Klick auf eine PDF-Datei (z. B. Benchmark)
    - link_click: Knopf auf /links/ (Ziel als data-track oder Pfad) */
 (function () {
@@ -32,7 +32,7 @@
     if (page.indexOf('/links') === 0) send('link_click', { target: (a.getAttribute('data-track') || href.split('?')[0]).slice(0, 80) });
   }, true);
 
-  // Eingebetteter Kalender auf der Startseite: angezeigt und gebucht.
+  // Eingebetteter Kalender oder Calendly-Fenster (calendly-popup.js): angezeigt und gebucht.
   window.addEventListener('message', function (e) {
     if (e.origin !== 'https://calendly.com' || !e.data || !e.data.event) return;
     if (e.data.event === 'calendly.event_type_viewed') send('calendly_view', { page: page });

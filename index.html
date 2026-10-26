@@ -1535,6 +1535,7 @@
   <!-- Vercel Web Analytics (cookiefrei, keine IP-Speicherung) -->
   <script defer src="/_vercel/insights/script.js"></script>
   <script defer src="/track.js"></script>
+  <script defer src="/calendly-popup.js"></script>
   <!-- Scroll-Film: GSAP 3.15 + ScrollTrigger und Lenis 1.3 selbst gehostet, Engine in film.js -->
   <script defer src="/vendor/gsap.min.js"></script>
   <script defer src="/vendor/ScrollTrigger.min.js"></script>
@@ -2220,7 +2221,7 @@
 
         <div class="calendly-fallback">
           <span data-i18n="contact.cal.fallback">Calendar not displaying?</span>
-          <a id="calendly-fallback-link" href="https://calendly.com/hybote-demo/free-intro-call" target="_blank" rel="noopener noreferrer" data-i18n="contact.cal.open">Open Calendly directly</a>
+          <a id="calendly-fallback-link" data-cal-popup href="https://calendly.com/hybote-demo/free-intro-call" target="_blank" rel="noopener noreferrer" data-i18n="contact.cal.open">Open Calendly directly</a>
         </div>
       </div>
 
@@ -2394,15 +2395,8 @@
     if (status) status.hidden = true;
   });
 
-  // Termin im eingebetteten Kalender gebucht: kurz die Bestätigung von Calendly zeigen (und track.js das Ereignis
-  // calendly_booked senden lassen), dann auf die Dankesseite. Der direkte Calendly-Link leitet über die Einstellung
-  // „Bestätigungsseite: Weiterleitung“ des Termintyps ebenfalls dorthin.
-  window.addEventListener('message', function (event) {
-    if (event.origin !== 'https://calendly.com' || !event.data || event.data.event !== 'calendly.event_scheduled') return;
-    setTimeout(function () {
-      window.location.href = '/danke.html?via=calendly' + (currentLang !== 'en' ? '&lang=' + currentLang : '');
-    }, 1600);
-  });
+  // Nach der Buchung (eingebetteter Kalender oder Fenster über den Direktlink) leitet /calendly-popup.js auf die
+  // Dankesseite weiter. Calendly selbst kann das im kostenlosen Tarif nicht.
 
   // Formular als Zweitoption auf- und zuklappen
   (function () {
