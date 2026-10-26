@@ -46,8 +46,10 @@ for (const [name, path] of BOOKING_PAGES) {
       (h.match(/assets\.calendly\.com\/assets\/external\/widget\.js/g) || []).length === 1,
     'direkter Fallback-Link vorhanden':
       h.includes('href="https://calendly.com/hybote-demo/free-intro-call"'),
-    'Advanced Embed mit automatischer Höhe':
-      h.includes('Calendly.initInlineWidget({') && h.includes('resize: true'),
+    // Seit 26.10.2026: breit (Kalender und Uhrzeiten nebeneinander) feste Höhe, damit Calendly beim Monatswechsel nicht
+    // mitten in der Schiebe-Animation die Größe ändert (Geisterbilder in Chrome); schmal wächst das iframe weiter mit.
+    'Advanced Embed: schmal automatische Höhe, breit feste Höhe':
+      h.includes('Calendly.initInlineWidget({') && h.includes('resize: !wide') && h.includes('.hybote-calendly-widget.is-fixed { height:'),
     'doppelte Details und Calendly-Banner ausgeblendet':
       h.includes('hide_event_type_details=1&hide_gdpr_banner=1'),
     'vollständiges Kampagnen-Tracking':
@@ -83,7 +85,10 @@ for (const [name, path] of BOOKING_PAGES) {
     'VideoObject-JSON-LD mit Dauer und Datei':
       !ld.includes(null) && videoLd !== undefined && videoLd.duration === 'PT1M17S' &&
       videoLd.contentUrl === 'https://hybote.ai/media/hybote-explainer-en.mp4',
-    'Video steht vor dem Problem-Abschnitt': h.indexOf('id="video"') !== -1 && h.indexOf('id="video"') < h.indexOf('id="problem"'),
+    // Neuaufbau 10/2026: das Video gehört zum Live-Beispiel, zwischen Demo und Leistungen
+    'Erklärvideo steht im Live-Beispiel':
+      h.indexOf('id="beispiele"') !== -1 &&
+      h.indexOf('id="beispiele"') < h.indexOf('id="video"') && h.indexOf('id="video"') < h.indexOf('id="leistungen"'),
     'genau eine Gründer-Sektion mit Foto':
       (h.match(/id="ueber-uns"/g) || []).length === 1 && h.includes('src="/media/founder-mohamed-erassas.jpg"'),
     'Gründer-Sektion steht vor dem FAQ': h.indexOf('id="ueber-uns"') < h.indexOf('id="faq"'),
@@ -144,6 +149,16 @@ console.log('\nStartseite');
   const fontCss = readFileSync(join(ROOT, 'fonts', 'fonts.css'), 'utf8');
   const fontFiles = [...fontCss.matchAll(/url\("\/(fonts\/[^"]+)"\)/g)].map((m) => m[1]);
 
+  // Jeder Seitenanker braucht ein Ziel, sonst springt ein Nav- oder CTA-Link ins Leere
+  const ids = new Set([...h.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+  const deadAnchors = [...new Set([...h.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]))].filter((a) => !ids.has(a));
+  if (deadAnchors.length) console.log('     Anker ohne Ziel:', deadAnchors.join(', '));
+
+  // Reihenfolge der Abschnitte (Argument der Seite); #kunden ist optional
+  const order = ['beispiele', 'leistungen', 'ueber-uns', 'kunden', 'faq', 'kontakt']
+    .map((id) => h.indexOf(`<section id="${id}"`))
+    .filter((pos) => pos !== -1);
+
   report('index.html', {
     'DE vollständig gegenüber EN': enKeys.every((k) => T.de[k] !== undefined),
     'AR vollständig gegenüber EN': enKeys.every((k) => T.ar[k] !== undefined),
@@ -160,15 +175,19 @@ console.log('\nStartseite');
       faqLd !== undefined && faqLd.mainEntity.length === (h.match(/class="faq-q"/g) || []).length,
     'keine Verweise auf die entfernten Branchenseiten':
       REMOVED_SLUGS.every((s) => !h.includes(`href="/${s}"`)) && !h.includes('case-link'),
-    'Footer "About" führt zur Gründer-Sektion': h.includes('<a href="#ueber-uns" style='),
-    'mobiles weißes Logo vorhanden': h.includes('srcset="/logo-mobile-white.png"'),
-    'mobiler Header auf 112 px begrenzt':
-      h.includes('@media (max-width: 767px)') && h.includes('height: 112px !important;'),
+    'jeder Seitenanker hat ein Ziel': deadAnchors.length === 0,
+    'Redirect-Ziel #beispiele vorhanden': h.includes('<section id="beispiele"'),
+    'Abschnitte in der vorgesehenen Reihenfolge':
+      order.length >= 5 && order.every((pos, i) => i === 0 || order[i - 1] < pos),
+    'weißes Logo im Header': h.includes('src="/logo-mobile-white.png"'),
+    // Schlanke Seite: kein Tailwind-CDN, kein Spline-Roboter, kein Three.js-Terrain mehr
+    'keine schweren Fremdbibliotheken':
+      !/cdn\.tailwindcss\.com|splinetool|spline-viewer|three@|three\.module/i.test(h),
   });
   console.log(`     i18n-Keys je Sprache: ${enKeys.length}`);
 }
 
-/* ── CI-Textregeln (Corporate Identity Guide v2, Kapitel 01 und 06) ─────── */
+/* ── CI-Textregeln (Corporate Identity v3, Stand 10/2026) ───────────────── */
 console.log('\nCI-Textregeln');
 for (const [name, path] of BOOKING_PAGES) {
   const h = readFileSync(path, 'utf8');
@@ -187,13 +206,60 @@ for (const [name, path] of BOOKING_PAGES) {
     'keine verbotenen Meta-Formulierungen':
       hits(/meta[- ]partner|official partner|offizieller partner|meta verified|powered by meta/i).length === 0,
     'alter Slogan "Hospitality Meets AI" nirgends': !/Hospitality Meets AI/i.test(h),
-    // Formsprache (Guide Kapitel 05): keine Schlagschatten, Gold nur im Hero, Blur nur auf Overlays
-    'keine Schlagschatten': !/box-shadow|drop-shadow/.test(h),
-    'Gold nur in der Hero-Headline und ihrem Unterstrich':
-      h.split('\n').filter((l) => /c9a053|e8c47a|fff6e2/i.test(l)).every((l) => l.includes('hero headline stays gold') || l.includes('hero-line')),
-    'Blur nur auf Header und Cookie-Banner':
-      h.split('\n').filter((l) => /backdrop-filter/.test(l)).every((l) => l.includes('id="nav"') || l.includes('id="cookie-banner"')),
+    // Kein Gold als CSS-Farbe (seit CI v3). Die Geschmacksregeln zu Schatten und Blur hat der Owner am
+    // 25.10.2026 mit dem Scroll-Film aufgehoben.
+    'kein Gold mehr (CI v3)': !/c9a053|e8c47a|fff6e2/i.test(h),
     'kein Gold-Token mehr im CSS': !/var\(--gold|var\(--teal/.test(h),
+    // Trustpilot-Markenrichtlinien: keine nachgebauten Sterne oder TrustScores. Kundenstimmen immer mit
+    // Echtheitshinweis (§ 5b Abs. 3 UWG) direkt daneben. Seit 26.10.2026 (Owner): freigegebene Stimmen dürfen vor
+    // Trustpilot online gehen; sobald die Seite Trustpilot erwähnt, muss das Profil verlinkt sein.
+    'keine nachgebauten Bewertungssterne': !/★|☆|trustscore/i.test(h),
+    'Kundenstimmen mit Echtheitshinweis': !h.includes('id="kunden"') || T.en['kunden.note'] !== undefined,
+    'Trustpilot nur mit Profil-Link':
+      // sichtbarer Text und Attribute zählen, Kommentare, Stylesheets und Skripte nicht
+      !/trustpilot/i.test(copy.join(' ') + h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, '')) ||
+      h.includes('href="https://www.trustpilot.com/review/hybote.ai"'),
+  });
+}
+
+/* ── Scroll-Film der Startseite ─────────────────────────────────────────── */
+console.log('\nScroll-Film');
+{
+  const h = readFileSync(join(ROOT, 'index.html'), 'utf8');
+  const engine = readFileSync(join(ROOT, 'film.js'), 'utf8');
+  const vercel = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
+  const win = {};
+  try { new Function('window', readFileSync(join(ROOT, 'film-manifest.js'), 'utf8'))(win); } catch { /* unten als Fehler gemeldet */ }
+  const M = win.HYBOTE_FILM;
+  const frameDir = (shot, v) => join(ROOT, 'film', shot, v);
+  const framesOk = M && M.order.every((shot) => ['desktop', 'phone'].every((v) => {
+    const spec = M.shots[shot] && M.shots[shot][v];
+    return spec && Array.from({ length: spec.count }, (_, i) => String(i + 1).padStart(3, '0')).every((n) => existsSync(join(frameDir(shot, v), `${n}.webp`)));
+  }));
+  // Poster und Standbilder: Datei vorhanden, Hash wie im Manifest (sonst liefert der Jahres-Cache alte Bilder)
+  const refs = [...h.matchAll(/\/film\/(loops|stills)\/([\w-]+)\.webp\?v=([0-9a-f]+)/g)];
+  const refsOk = M && refs.length > 0 && refs.every(([, kind, name, v]) => {
+    const entry = (kind === 'loops' ? M.loops : M.stills)[name];
+    return entry && entry.v === v && existsSync(join(ROOT, 'film', kind, `${name}.webp`));
+  });
+  const cache = (vercel.headers || []).find((x) => x.source === '/film/(.*)');
+  report('index.html + film.js', {
+    'Film-Manifest lesbar, fünf Kapitel': !!M && M.order.length === 5,
+    'alle Bildfolgen (Desktop und Handy) vollständig': !!framesOk,
+    'Hero-Loops vorhanden': !!M && ['hero', 'hero-phone'].every((n) => M.loops[n] && existsSync(join(ROOT, 'film', 'loops', `${n}.mp4`))),
+    'Poster und Standbilder mit aktuellem Hash': !!refsOk,
+    'GSAP, ScrollTrigger und Lenis selbst gehostet, kein CDN':
+      ['gsap.min.js', 'ScrollTrigger.min.js', 'lenis.min.js'].every((f) => existsSync(join(ROOT, 'vendor', f)) && h.includes(`src="/vendor/${f}"`)) &&
+      !/cdn\.jsdelivr|unpkg\.com|cdnjs|gsap\.com\/|lenis\.darkroom/.test(h),
+    'Rückfall ohne Film (reduzierte Bewegung, ?film=off)':
+      engine.includes('prefers-reduced-motion: reduce') && engine.includes("params.get('film') === 'off'") &&
+      h.includes('.film-scene:not(.is-live) .beats') && (h.match(/class="beat-still"/g) || []).length === 5,
+    'Erklärvideo bleibt ohne autoplay, Loop ohne Ton und ohne Vorladen':
+      /<video class="film-loop" muted playsinline loop preload="none">/.test(h),
+    'film/ ist ein Jahr im Cache': !!cache && cache.headers.some((x) => /max-age=31536000, immutable/.test(x.value)),
+    'Platz am Seitenende für Floating Buttons und Cookie-Hinweis':
+      h.includes('calc(120px + var(--cookie-h, 0px))') && h.includes('html.fabs-off .wa-btn'),
+    'Footer-Logo in normaler Größe': h.includes('class="footer-logo"') && !h.includes('footer-mark'),
   });
 }
 
@@ -220,9 +286,10 @@ console.log('\nRechtstextseiten');
       css.includes("'Cormorant Garamond', serif") &&
       css.includes("'Montserrat', sans-serif") &&
       css.includes("'Cairo', sans-serif"),
-    'mobile Headerhöhe und Logo entsprechen der Hauptseite':
-      css.includes('height: 112px;') &&
-      legalPages.every((h) => h.includes('srcset="logo-mobile-white.png"')),
+    // Seit 26.10.2026 (Owner-Wunsch) wie die Startseite: schwebende Glasleiste mit weißer Wortmarke statt hoher Kopfzeile
+    'schwebende Glas-Kopfzeile mit weißer Wortmarke':
+      css.includes('.site-header .header-inner') && css.includes('backdrop-filter') &&
+      legalPages.every((h) => h.includes('srcset="logo-mobile-white.png"') && h.includes('<div class="ambient"')),
     'EN, AR und DE auf beiden Seiten schaltbar':
       legalPages.every((h) =>
         ['en', 'ar', 'de'].every((lang) =>

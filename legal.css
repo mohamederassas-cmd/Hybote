@@ -1,4 +1,6 @@
-/* HYBOTE legal pages — shared corporate design */
+/* HYBOTE Rechtstextseiten (AGB, Datenschutz, Datenlöschung): Gestaltung wie die Startseite „Der Concierge“
+   (26.10.2026). Schwebende Glasleiste, Raumlicht hinter allem, Text in einer Glaskarte mit ruhiger Lesebreite.
+   Ein Grund, eine Schrift-Farbe, ein Akzent: Cyan steht für Hinweise und Links. */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -18,10 +20,12 @@
   --a2: #b0a898;
   --a3: #8b95aa;
   --a4: #566070;
-  --a5: #2c3550;
-  --line: rgba(255, 255, 255, 0.06);
-  --line-med: rgba(255, 255, 255, 0.1);
-  --cyan-line: rgba(56, 189, 248, 0.24);
+  --glass: rgba(19, 27, 48, 0.5);
+  --glass-strong: rgba(12, 18, 34, 0.74);
+  --glass-hi: rgba(255, 255, 255, 0.2);
+  --glass-edge: rgba(255, 255, 255, 0.09);
+  --gutter: clamp(16px, 4.6vw, 56px);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html {
@@ -32,66 +36,82 @@ html {
   overflow-x: clip;
 }
 
+/* Der Grund liegt auf html, damit das Raumlicht (z-index -1) hinter den Glasflächen sichtbar bleibt */
 body {
   min-height: 100vh;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 300;
-  background:
-    radial-gradient(80rem 46rem at 8% -12%, rgba(14, 165, 233, 0.13), transparent 58%),
-    radial-gradient(58rem 38rem at 100% 22%, rgba(56, 189, 248, 0.07), transparent 64%),
-    var(--bg);
+  display: flex;
+  flex-direction: column;
+  background: transparent;
   color: var(--fg);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(56, 189, 248, 0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56, 189, 248, 0.022) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: linear-gradient(to bottom, #000, transparent 62%);
-  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 62%);
-}
-
-::selection {
-  background: rgba(56, 189, 248, 0.28);
-  color: var(--fg);
-}
+::selection { background: var(--accent); color: var(--bg); }
 
 a { color: var(--accent-lt); }
 
 a:focus-visible,
 button:focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 4px;
+  outline-offset: 3px;
 }
 
+/* ── Raumlicht ─────────────────────────────────────────────── */
+.ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.ambient i { position: absolute; border-radius: 50%; }
+.ambient i:nth-child(1) {
+  width: 78vmax; height: 78vmax; top: -34vmax; left: -24vmax;
+  background: radial-gradient(closest-side, rgba(56, 189, 248, 0.12), rgba(56, 189, 248, 0));
+  animation: drift-a 42s ease-in-out infinite alternate;
+}
+.ambient i:nth-child(2) {
+  width: 90vmax; height: 90vmax; bottom: -46vmax; right: -32vmax;
+  background: radial-gradient(closest-side, rgba(36, 49, 82, 0.9), rgba(36, 49, 82, 0));
+  animation: drift-b 54s ease-in-out infinite alternate;
+}
+@keyframes drift-a { to { transform: translate3d(12vmax, 8vmax, 0); } }
+@keyframes drift-b { to { transform: translate3d(-14vmax, -6vmax, 0); } }
+
+/* ── Glas ──────────────────────────────────────────────────── */
+.site-header .header-inner,
+.legal-card {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--glass), var(--glass)) padding-box,
+    linear-gradient(180deg, var(--glass-hi), var(--glass-edge) 38%, rgba(255, 255, 255, 0.04)) border-box;
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+/* ── Kopfzeile: schwebende Glasleiste ──────────────────────── */
 .site-header {
   position: fixed;
-  inset: 0 0 auto;
+  inset: 14px 0 auto;
   z-index: 100;
-  background: rgba(7, 11, 22, 0.76);
-  border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  padding-inline: var(--gutter);
+  pointer-events: none;
 }
 
 .header-inner {
-  width: min(100%, 1200px);
-  height: 180px;
+  max-width: 1180px;
+  height: 64px;
   margin: 0 auto;
-  padding-inline: 32px;
+  padding-inline: 24px 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 20px;
+  border-radius: 999px;
+  pointer-events: auto;
+}
+
+.site-header .header-inner {
+  background:
+    linear-gradient(var(--glass-strong), var(--glass-strong)) padding-box,
+    linear-gradient(180deg, var(--glass-hi), var(--glass-edge) 38%, rgba(255, 255, 255, 0.04)) border-box;
 }
 
 .brand-link,
@@ -99,6 +119,7 @@ button:focus-visible {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  min-height: 44px;
 }
 
 .brand-link { text-decoration: none; }
@@ -106,112 +127,116 @@ button:focus-visible {
 .brand-logo {
   display: block;
   width: auto;
-  height: 160px;
-  filter: invert(1);
+  height: 17px;
 }
 
 .lang-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border: 1px solid var(--line);
-  background: rgba(12, 18, 34, 0.54);
+  gap: 2px;
 }
 
 .lang-pill {
-  min-width: 30px;
-  min-height: 36px;
-  padding: 4px 2px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0 8px;
   border: 0;
-  border-bottom: 1px solid transparent;
+  border-radius: 999px;
   background: transparent;
   color: var(--a3);
   cursor: pointer;
-  font: 400 0.68rem/1 'Montserrat', sans-serif;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: color 180ms ease, border-color 180ms ease;
+  font: 500 0.8125rem/1 'Montserrat', sans-serif;
+  letter-spacing: 0.06em;
+  transition: color 180ms ease, background-color 180ms ease;
 }
 
 .lang-pill:hover { color: var(--fg); }
 
 .lang-pill.active {
   color: var(--fg);
-  border-bottom-color: var(--accent);
+  background: rgba(255, 255, 255, 0.09);
 }
 
-.lang-sep {
-  color: var(--a5);
-  font-size: 0.6rem;
-  user-select: none;
-}
+.lang-sep { display: none; }
 
+/* ── Inhalt ────────────────────────────────────────────────── */
 .legal-main {
-  width: min(100%, 1080px);
+  flex: 1;
+  width: min(100%, 1000px);
   margin: 0 auto;
-  padding: 260px 32px 100px;
+  padding: 150px var(--gutter) 100px;
 }
 
 .doc-hero {
-  max-width: 900px;
-  margin: 0 auto 42px;
+  max-width: 860px;
+  margin: 0 auto 40px;
 }
 
 .back-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   min-height: 44px;
-  margin-bottom: 42px;
-  color: var(--a3);
-  font: 400 0.68rem/1 'Montserrat', sans-serif;
-  letter-spacing: 0.14em;
+  margin-bottom: 36px;
+  padding: 0 18px 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(19, 27, 48, 0.42);
+  color: var(--a1);
+  font: 500 0.875rem/1 'Montserrat', sans-serif;
   text-decoration: none;
-  text-transform: uppercase;
-  transition: color 180ms ease, gap 180ms ease;
+  transition: color 180ms ease, background-color 180ms ease, gap 200ms var(--ease);
 }
 
 .back-link:hover {
   gap: 13px;
-  color: var(--accent-lt);
+  color: var(--fg);
+  background: rgba(36, 49, 82, 0.6);
 }
 
 .doc-label {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 18px;
-  color: var(--accent);
-  font: 400 0.66rem/1.4 'Montserrat', sans-serif;
+  margin-bottom: 20px;
+  color: var(--a1);
+  font: 500 0.8125rem/1.4 'Montserrat', sans-serif;
   letter-spacing: 0.24em;
   text-transform: uppercase;
 }
 
 .doc-label::before {
   content: '';
-  width: 28px;
-  height: 1px;
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.52);
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.14), 0 0 14px rgba(56, 189, 248, 0.7);
 }
 
 h1 {
-  max-width: 880px;
+  max-width: 860px;
   color: var(--fg);
-  font: 300 clamp(3rem, 7vw, 5.75rem)/0.98 'Cormorant Garamond', serif;
-  letter-spacing: -0.025em;
+  font: 300 clamp(3rem, 7vw, 5.6rem)/0.98 'Cormorant Garamond', serif;
+  letter-spacing: -0.02em;
   overflow-wrap: normal;
   hyphens: auto;
+  text-wrap: balance;
 }
 
 .doc-date {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-top: 22px;
-  color: var(--a3);
-  font-size: 0.76rem;
+  margin-top: 24px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(7, 11, 22, 0.32);
+  color: var(--a1);
+  font-size: 0.8125rem;
   line-height: 1.6;
 }
 
@@ -221,63 +246,45 @@ h1 {
   height: 5px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.72);
 }
 
 .legal-card {
   position: relative;
-  max-width: 900px;
+  max-width: 860px;
   margin: 0 auto;
-  padding: clamp(34px, 6vw, 72px);
-  overflow: hidden;
-  border: 1px solid rgba(56, 189, 248, 0.17);
-  background:
-    radial-gradient(52rem 24rem at 100% 0%, rgba(56, 189, 248, 0.075), transparent 62%),
-    linear-gradient(145deg, rgba(19, 27, 48, 0.72), rgba(12, 18, 34, 0.82));
-  box-shadow: 0 36px 100px rgba(0, 0, 0, 0.34);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-.legal-card::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent-lt), transparent);
-  opacity: 0.76;
+  padding: clamp(28px, 5.5vw, 64px);
+  border-radius: 12px;
+  box-shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.75);
 }
 
 .legal-content h2 {
   position: relative;
-  margin: 52px 0 18px;
-  padding-bottom: 15px;
+  margin: 48px 0 16px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
   color: var(--fg);
-  font: 400 clamp(1.45rem, 3vw, 1.85rem)/1.18 'Cormorant Garamond', serif;
-  letter-spacing: -0.01em;
+  font: 400 clamp(1.55rem, 3vw, 2rem)/1.15 'Cormorant Garamond', serif;
+  letter-spacing: -0.005em;
 }
 
-.legal-content h2:first-child { margin-top: 0; }
-
-.legal-content h2::after {
-  content: '';
-  position: absolute;
-  inset: auto auto 0 0;
-  width: 42px;
-  height: 1px;
-  background: var(--accent);
+.legal-content h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
 }
 
 .legal-content p,
 .legal-content li {
   color: var(--a1);
-  font: 300 0.9rem/1.86 'Montserrat', sans-serif;
+  font: 400 0.9688rem/1.8 'Montserrat', sans-serif;
 }
 
-.legal-content p + p { margin-top: 16px; }
+.legal-content p { max-width: 68ch; }
+
+.legal-content p + p { margin-top: 14px; }
 
 .legal-content ul {
-  margin: 13px 0 18px;
+  margin: 12px 0 18px;
   padding-inline-start: 22px;
 }
 
@@ -294,40 +301,42 @@ h1 {
 }
 
 .legal-content a {
-  color: var(--accent-lt) !important;
+  color: var(--accent-lt);
+  text-decoration: underline;
   text-decoration-color: rgba(125, 211, 252, 0.42);
   text-underline-offset: 3px;
   transition: color 180ms ease, text-decoration-color 180ms ease;
 }
 
 .legal-content a:hover {
-  color: var(--fg) !important;
+  color: var(--fg);
   text-decoration-color: var(--fg);
 }
 
 .wa-box {
   position: relative;
   margin-top: 18px;
-  padding: 28px 30px;
-  border: 1px solid rgba(56, 189, 248, 0.22);
-  border-inline-start: 2px solid var(--accent);
-  background: rgba(7, 11, 22, 0.48);
+  padding: 24px 26px;
+  border-radius: 10px;
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  background: rgba(56, 189, 248, 0.06);
 }
 
 .wa-box p,
-.wa-box li { color: var(--a2); }
+.wa-box li { color: var(--a1); }
 
 .wa-box strong { color: var(--fg); }
 
+/* ── Fußzeile ──────────────────────────────────────────────── */
 .legal-footer {
-  border-top: 1px solid var(--line);
-  background: rgba(7, 11, 22, 0.58);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(12, 18, 34, 0.82);
 }
 
 .footer-inner {
-  width: min(100%, 1080px);
+  width: min(100%, 1180px);
   margin: 0 auto;
-  padding: 30px 32px 42px;
+  padding: 28px var(--gutter) 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -335,19 +344,20 @@ h1 {
 }
 
 .footer-note {
-  color: var(--a4);
-  font-size: 0.72rem;
+  color: var(--a3);
+  font-size: 0.8125rem;
   line-height: 1.7;
 }
 
 .footer-note a {
-  color: var(--a3) !important;
+  color: var(--a1);
   text-decoration: none;
   transition: color 180ms ease;
 }
 
-.footer-note a:hover { color: var(--accent-lt) !important; }
+.footer-note a:hover { color: var(--accent-lt); }
 
+/* ── Arabisch ──────────────────────────────────────────────── */
 html[dir='rtl'] body,
 html[dir='rtl'] h1,
 html[dir='rtl'] h2,
@@ -360,6 +370,8 @@ html[dir='rtl'] div {
   font-family: 'Cairo', sans-serif;
 }
 
+html[dir='rtl'] h1 { line-height: 1.25; letter-spacing: 0; }
+
 html[dir='rtl'] .doc-label,
 html[dir='rtl'] .back-link,
 html[dir='rtl'] .lang-pill {
@@ -368,68 +380,41 @@ html[dir='rtl'] .lang-pill {
 
 html[dir='rtl'] .back-link svg { transform: scaleX(-1); }
 
-html[dir='rtl'] .legal-content h2::after {
-  right: 0;
-  left: auto;
-}
-
+/* ── Handy ─────────────────────────────────────────────────── */
 @media (max-width: 767px) {
+  .site-header { inset-block-start: 10px; }
+
   .header-inner {
-    height: 112px;
-    padding-inline: 20px;
+    height: 58px;
+    padding-inline: 18px 6px;
   }
 
-  .brand-logo {
-    width: clamp(96px, 29vw, 112px);
-    height: auto;
-    filter: none;
-  }
+  .brand-logo { height: 15px; }
 
-  .lang-row { padding-inline: 8px; }
+  .lang-pill { min-width: 36px; padding: 0 6px; }
 
-  .lang-pill {
-    min-width: 28px;
-    min-height: 42px;
-    font-size: 0.65rem;
-  }
+  .legal-main { padding: 112px var(--gutter) 64px; }
 
-  .legal-main {
-    padding: 164px 20px 68px;
-  }
+  .doc-hero { margin-bottom: 28px; }
 
-  .doc-hero { margin-bottom: 30px; }
+  .back-link { margin-bottom: 28px; }
 
-  .back-link { margin-bottom: 30px; }
-
-  h1 { font-size: clamp(2.7rem, 13vw, 4rem); }
+  h1 { font-size: clamp(2.6rem, 12vw, 3.6rem); }
 
   html[lang='de'] h1 {
-    font-size: clamp(2.5rem, 10.5vw, 3.4rem);
+    font-size: clamp(2.4rem, 10.5vw, 3.2rem);
     hyphens: none;
   }
 
-  .legal-card {
-    width: calc(100% + 40px);
-    margin-inline: -20px;
-    padding: 36px 24px 46px;
-    border-inline: 0;
-  }
+  .legal-card { padding: 28px 20px 36px; }
 
-  .legal-content h2 { margin-top: 44px; }
+  .legal-content h2 { margin-top: 36px; padding-top: 26px; }
 
-  .wa-box {
-    margin-inline: -8px;
-    padding: 23px 20px;
-  }
-
-  .footer-inner {
-    padding: 26px 20px 34px;
-  }
+  .wa-box { padding: 20px 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-  }
+  html { scroll-behavior: auto; }
+  .ambient i { animation: none; }
+  .back-link { transition: none; }
 }

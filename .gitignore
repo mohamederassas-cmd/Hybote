@@ -26,3 +26,10 @@ serve.mjs
 # Claude-spezifisch
 .claude/
 .vercel
+
+# Arbeitsordner (nicht Teil der Website)
+Promo-Video/
+Screenshots/
+outputs/
+# Rohmaterial des Scroll-Films (Higgsfield-Clips, Schlüsselbilder)
+assets-src/
