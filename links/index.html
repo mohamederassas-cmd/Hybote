@@ -41,6 +41,7 @@
     <p class="bio">AI agents that answer calls and messages day and night, in over 50 languages, and hand over to your team when a person is needed.</p>
     <nav>
       <a class="primary" data-utm data-cal-popup href="https://calendly.com/hybote-demo/free-intro-call?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links&amp;utm_content=intro_call" data-track="intro_call" target="_blank" rel="noopener"><b>Book a free intro call</b><span>15 minutes, no preparation needed</span></a>
+      <a data-wa href="https://wa.me/12134234114?text=Hi%20HYBOTE%20(Instagram)" data-track="whatsapp" target="_blank" rel="noopener"><b>Text our AI on WhatsApp</b><span>Any hour, in your language</span></a>
       <a data-utm href="/benchmark/?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links&amp;utm_content=benchmark" data-track="benchmark"><b>The Gulf Buyer Response Benchmark</b><span>144 enquiries, 63 % without a reply</span></a>
       <a data-utm href="/?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links&amp;utm_content=video#video" data-track="video"><b>HYBOTE in 77 seconds</b><span>The video</span></a>
       <a data-utm href="/?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links&amp;utm_content=website" data-track="website"><b>hybote.ai</b><span>The website</span></a>
@@ -59,6 +60,13 @@
         if (med) url.searchParams.set('utm_medium', med);
         a.setAttribute('href', url.origin === location.origin ? url.pathname + url.search + url.hash : url.toString());
       });
+      // WhatsApp-Selbsttest (Paket 3f): wa.me kennt keine UTM, deshalb nennt der vorausgefüllte Text die Quelle,
+      // damit sich Layla-Gespräche zuordnen lassen. Nummer +1 213 423 4114 (WhatsApp), nicht die 650er (Telefon).
+      var wa = document.querySelector('a[data-wa]');
+      if (wa && src) {
+        var label = { instagram: 'Instagram', linkedin: 'LinkedIn', facebook: 'Facebook' }[src.toLowerCase()] || 'Links';
+        wa.setAttribute('href', 'https://wa.me/12134234114?text=' + encodeURIComponent('Hi HYBOTE (' + label + ')'));
+      }
     })();
   </script>
   <script defer src="/_vercel/insights/script.js"></script>

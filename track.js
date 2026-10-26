@@ -3,6 +3,7 @@
    - video_play / video_10s / video_complete: Erklärvideo (#explainer-video) auf der Startseite
    - cta_calendly: Klick auf einen Calendly-Link, calendly_view / calendly_booked: eingebetteter Kalender oder Calendly-Fenster
    - pdf_download: Klick auf eine PDF-Datei (z. B. Benchmark)
+   - whatsapp_click: Klick auf den WhatsApp-Selbsttest (wa.me, /links/ und /benchmark/)
    - link_click: Knopf auf /links/ (Ziel als data-track oder Pfad) */
 (function () {
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -22,13 +23,14 @@
     v.addEventListener('ended', function () { once('video_complete'); });
   }
 
-  // Klicks auf Calendly, PDFs und die Knöpfe der Link-Seite.
+  // Klicks auf Calendly, PDFs, WhatsApp und die Knöpfe der Link-Seite.
   document.addEventListener('click', function (e) {
     var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
     if (!a) return;
     var href = a.getAttribute('href') || '';
     if (/calendly\.com\//i.test(href)) send('cta_calendly', { page: page });
     else if (/\.pdf(\?|#|$)/i.test(href)) send('pdf_download', { page: page, file: href.split('/').pop().split('?')[0].slice(0, 80) });
+    else if (/^https:\/\/wa\.me\//i.test(href)) send('whatsapp_click', { page: page });
     if (page.indexOf('/links') === 0) send('link_click', { target: (a.getAttribute('data-track') || href.split('?')[0]).slice(0, 80) });
   }, true);
 

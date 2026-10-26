@@ -306,6 +306,21 @@ console.log('\nRechtstextseiten');
   });
 }
 
+/* ── WhatsApp-Selbsttest (Paket 3f, 26.10.2026) ────────────────────────── */
+console.log('\nWhatsApp-Selbsttest');
+{
+  // Layla antwortet auf +1 213 423 4114. Die 650er-Nummer ist der Telefon-Agent und kann kein WhatsApp.
+  // wa.me kennt keine UTM, deshalb nennt der vorausgefüllte Text die Quelle.
+  for (const [name, source] of [['links/index.html', 'Instagram'], ['benchmark/index.html', 'Benchmark']]) {
+    const h = readFileSync(join(ROOT, name), 'utf8');
+    report(name, {
+      'Knopf zeigt auf die WhatsApp-Nummer, Quelle im Text':
+        h.includes(`href="https://wa.me/12134234114?text=Hi%20HYBOTE%20(${source})"`),
+      'nie die Nummer des Telefon-Agenten': !h.includes('16505146359') && !/wa\.me\/1?650/.test(h),
+    });
+  }
+}
+
 /* ── Sitemap, Redirects und Datenschutz ────────────────────────────────────────────── */
 console.log('\nWeitere Dateien');
 {

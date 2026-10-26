@@ -87,6 +87,8 @@
     .fill.strong { background: var(--fg); }
     ol.steps { list-style: none; counter-reset: s; display: grid; gap: 12px; }
     ol.steps li { counter-increment: s; background: var(--s1); border-radius: 12px; padding: 20px 20px 20px 68px; position: relative; color: var(--a1); }
+    .try { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin-top: 24px; }
+    .try p { color: var(--a1); max-width: 52ch; }
     ol.steps li::before { content: counter(s, decimal-leading-zero); position: absolute; left: 22px; top: 16px; font-family: var(--serif); font-size: 26px; color: var(--a3); font-variant-numeric: lining-nums; }
     ul.plain { list-style: none; display: grid; gap: 10px; color: var(--a1); max-width: 70ch; }
     ul.plain li { padding-left: 18px; position: relative; }
@@ -175,6 +177,11 @@
           <li>Check whether the reply answered the question and asked one question back, such as budget or timing.</li>
           <li>Compare your times with this benchmark: 5 minutes, one hour and the 9.4 hour median.</li>
         </ol>
+        <!-- WhatsApp-Selbsttest (Paket 3f): Der vorausgefüllte Text nennt die Quelle, damit sich Layla-Gespräche zuordnen lassen. -->
+        <div class="try">
+          <p>Then run the same test on us. Send our AI a WhatsApp message at any hour and time the reply.</p>
+          <a class="btn btn-secondary" href="https://wa.me/12134234114?text=Hi%20HYBOTE%20(Benchmark)" target="_blank" rel="noopener">Text our AI on WhatsApp</a>
+        </div>
       </section>
 
       <section aria-labelledby="method">
