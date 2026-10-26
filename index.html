@@ -36,9 +36,10 @@
 
   <style>
     /* ── CI v3: Tokens ─────────────────────────────────────────────
-       Ein Grund, eine Schrift-Farbe, ein Akzent. Cyan nur auf der Hauptaktion,
-       den Floating Buttons und kleinen Statuspunkten. Tiefe entsteht über die
-       Flächenstufen --bg → --s3, nie über Schatten oder Linien. */
+       Ein Grund, eine Schrift-Farbe, ein Akzent. Cyan steht für die Antwort: Hauptaktion,
+       Floating Buttons, Statuspunkte und die Augen des Concierge. Neugestaltung „Der Concierge“
+       26.10.2026: bildfüllender Film mit dem HYBOTE-Concierge, darüber Glasflächen; Lampenlicht
+       und das Gold von Fliege und Antenne kommen nur aus dem Bild, nie aus dem CSS. */
     :root {
       --bg:       #070b16;
       --s1:       #0c1222;
@@ -56,14 +57,22 @@
       --a3:       #8b95aa;
       --a4:       #566070;
 
+      /* Glas: halbtransparente Fläche über Film und Lichtflecken, Kante oben heller */
+      --glass:        rgba(19, 27, 48, 0.5);
+      --glass-strong: rgba(12, 18, 34, 0.74);
+      --glass-edge:   rgba(255, 255, 255, 0.09);
+      --glass-hi:     rgba(255, 255, 255, 0.2);
+      --glass-blur:   blur(18px) saturate(140%);
+      --glass-depth:  0 30px 80px -40px rgba(0, 0, 0, 0.75);
+
       --serif: 'Cormorant Garamond', Georgia, serif;
       --sans:  'Montserrat', system-ui, sans-serif;
 
       --radius:  12px;
       --pill:    999px;
-      --maxw:    1200px;
-      --gutter:  clamp(20px, 5vw, 48px);
-      --section: clamp(72px, 8vw, 116px);
+      --maxw:    1280px;
+      --gutter:  clamp(16px, 4.6vw, 56px);
+      --section: clamp(88px, 10vw, 152px);
       --ease:    cubic-bezier(0.16, 1, 0.3, 1);
     }
     /* Arabisch: Cairo für alles, keine Laufweite */
@@ -72,9 +81,12 @@
     /* ── Grundlagen ────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; }
     html { background: var(--bg); overflow-x: clip; scroll-behavior: smooth; }
+    html.is-smooth { scroll-behavior: auto; }
+    html.is-smooth body { overscroll-behavior: none; }
+    /* Der Grund liegt auf html, damit die Lichtflecken (z-index -1) hinter den Glasflächen sichtbar bleiben */
     body {
       margin: 0;
-      background: var(--bg);
+      background: transparent;
       color: var(--fg);
       font-family: var(--sans);
       font-weight: 400;
@@ -101,23 +113,99 @@
       margin-inline: auto;
       padding-inline: var(--gutter);
     }
-    .section { padding-block: var(--section); scroll-margin-top: 64px; }
+    /* overflow-x: clip hält Leuchten und Glas-Überstände in der Seitenbreite, ohne sticky zu stören */
+    .section { position: relative; padding-block: var(--section); scroll-margin-top: 88px; overflow-x: clip; }
 
-    /* ── Typografie: fünf Größen ───────────────────────────────── */
-    .display {
-      font-family: var(--serif);
-      font-weight: 300;
-      font-size: clamp(2.75rem, 8vw, 7.25rem);
-      line-height: 1;
-      letter-spacing: -0.01em;
-      text-wrap: balance;
+    /* ── Raumlicht: zwei, drei große Lichtflecken und feines Korn hinter allen Glasflächen ── */
+    .ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+    .ambient i { position: absolute; border-radius: 50%; will-change: transform; }
+    .ambient i:nth-child(1) {
+      width: 78vmax; height: 78vmax; top: -30vmax; left: -22vmax;
+      background: radial-gradient(closest-side, rgba(56, 189, 248, 0.13), rgba(56, 189, 248, 0)); /* taste-skill-ignore: Raumlicht */
+      animation: drift-a 42s ease-in-out infinite alternate;
+    }
+    .ambient i:nth-child(2) {
+      width: 90vmax; height: 90vmax; bottom: -42vmax; right: -30vmax;
+      background: radial-gradient(closest-side, rgba(36, 49, 82, 0.95), rgba(36, 49, 82, 0)); /* taste-skill-ignore: Raumlicht */
+      animation: drift-b 54s ease-in-out infinite alternate;
+    }
+    .ambient i:nth-child(3) {
+      width: 48vmax; height: 48vmax; top: 38%; left: 46%;
+      background: radial-gradient(closest-side, rgba(14, 165, 233, 0.09), rgba(14, 165, 233, 0)); /* taste-skill-ignore: Raumlicht */
+      animation: drift-c 36s ease-in-out infinite alternate;
+    }
+    .ambient::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.05;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    @keyframes drift-a { to { transform: translate3d(14vmax, 10vmax, 0); } }
+    @keyframes drift-b { to { transform: translate3d(-16vmax, -8vmax, 0); } }
+    @keyframes drift-c { to { transform: translate3d(-12vmax, 12vmax, 0); } }
+
+    /* ── Glas: eine Fläche, eine Kante, Licht von oben ─────────── */
+    .glass {
+      position: relative;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(var(--glass), var(--glass)) padding-box,
+        linear-gradient(180deg, var(--glass-hi), var(--glass-edge) 38%, rgba(255, 255, 255, 0.04)) border-box; /* taste-skill-ignore: Glaskante */
+      box-shadow: var(--glass-depth);
+      -webkit-backdrop-filter: var(--glass-blur);
+      backdrop-filter: var(--glass-blur);
+    }
+    .glass--strong {
+      background:
+        linear-gradient(var(--glass-strong), var(--glass-strong)) padding-box,
+        linear-gradient(180deg, var(--glass-hi), var(--glass-edge) 38%, rgba(255, 255, 255, 0.04)) border-box; /* taste-skill-ignore: Glaskante */
+    }
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .glass, .glass--strong { background: linear-gradient(var(--s1), var(--s1)) padding-box, linear-gradient(var(--s3), var(--s3)) border-box; }
+    }
+    /* Lichtkante folgt dem Zeiger (nur mit Maus, Skript setzt --mx/--my) */
+    .spot::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 400ms ease;
+      background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(125, 211, 252, 0.11), rgba(125, 211, 252, 0) 60%); /* taste-skill-ignore: Zeigerlicht */
+    }
+    .spot:hover::after { opacity: 1; }
+
+    /* ── Typografie ────────────────────────────────────────────── */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      line-height: 1.4;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--a1);
+    }
+    .eyebrow::before {
+      content: '';
+      flex-shrink: 0;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.14), 0 0 14px rgba(56, 189, 248, 0.7);
     }
     .h2 {
       font-family: var(--serif);
-      font-weight: 400;
-      font-size: clamp(2.3rem, 5vw, 4.25rem);
-      line-height: 1.04;
-      letter-spacing: -0.005em;
+      font-weight: 300;
+      font-size: clamp(2.6rem, 5.6vw, 5rem);
+      line-height: 1;
+      letter-spacing: -0.012em;
       text-wrap: balance;
     }
     .h3 {
@@ -126,12 +214,22 @@
       font-size: 1.25rem;
       line-height: 1.35;
     }
-    .lead { font-size: clamp(1.0625rem, 1.4vw, 1.25rem); line-height: 1.6; }
+    .lead { font-size: clamp(1.0625rem, 1.35vw, 1.25rem); line-height: 1.6; color: var(--a1); }
     .small { font-size: 0.9375rem; line-height: 1.55; color: var(--a1); }
-    html[lang="ar"] .display, html[lang="ar"] .h2 { line-height: 1.3; letter-spacing: 0; }
+    .sec-head {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: clamp(24px, 5vw, 80px);
+      align-items: end;
+      margin-bottom: clamp(44px, 5.5vw, 80px);
+    }
+    .sec-head .lead { max-width: 46ch; }
+    html[lang="ar"] .h2 { line-height: 1.3; letter-spacing: 0; }
+    @media (max-width: 899px) { .sec-head { grid-template-columns: minmax(0, 1fr); } }
 
-    /* ── Buttons: voll rund, eine Füllfarbe ────────────────────── */
+    /* ── Buttons: voll rund; Haupt-Aktion Cyan, Zweit-Aktion Glas ─ */
     .btn {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -147,14 +245,26 @@
       text-decoration: none;
       white-space: nowrap;
       cursor: pointer;
-      transition: background-color 200ms ease, color 200ms ease, transform 200ms var(--ease);
+      transition: background-color 200ms ease, color 200ms ease, box-shadow 300ms ease, transform 200ms var(--ease);
     }
     .btn:active { transform: scale(0.97); }
-    .btn--primary { background: var(--accent); color: var(--bg); }
-    .btn--primary:hover { background: var(--accent-lt); }
-    .btn--secondary { background: var(--s3); color: var(--fg); }
-    .btn--secondary:hover { background: var(--s4); }
-    .btn--small { min-height: 42px; padding: 0 20px; font-size: 0.9375rem; }
+    .btn--primary { background: var(--accent); color: var(--bg); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    .btn--primary:hover { background: var(--accent-lt); box-shadow: 0 10px 40px -10px rgba(56, 189, 248, 0.65); }
+    .btn--glass {
+      color: var(--fg);
+      border: 1px solid transparent;
+      background:
+        linear-gradient(rgba(19, 27, 48, 0.42), rgba(19, 27, 48, 0.42)) padding-box,
+        linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.06)) border-box; /* taste-skill-ignore: Glaskante */
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+    }
+    .btn--glass:hover {
+      background:
+        linear-gradient(rgba(36, 49, 82, 0.6), rgba(36, 49, 82, 0.6)) padding-box,
+        linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.1)) border-box; /* taste-skill-ignore: Glaskante */
+    }
+    .btn--small { min-height: 44px; padding: 0 20px; font-size: 0.9375rem; }
     .btn svg { flex-shrink: 0; transition: transform 200ms var(--ease); }
     .btn:hover svg { transform: translateX(3px); }
     html[dir="rtl"] .btn svg { transform: scaleX(-1); }
@@ -169,30 +279,52 @@
     }
     .text-link:hover { text-decoration-color: var(--accent); color: var(--accent-lt); }
 
-    .card { background: var(--s1); border-radius: var(--radius); padding: clamp(28px, 3.2vw, 44px); }
-
     /* ── Einblendungen: ohne Skript sofort sichtbar ────────────── */
     .js .reveal {
       opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 800ms var(--ease), transform 800ms var(--ease);
+      transform: translateY(28px);
+      transition: opacity 900ms var(--ease), transform 900ms var(--ease);
       transition-delay: var(--d, 0ms);
     }
     .js .reveal.in { opacity: 1; transform: none; }
 
-    /* ── Header ────────────────────────────────────────────────── */
+    /* ── Header: schwebende Glasleiste ─────────────────────────── */
     .nav {
       position: fixed;
-      inset: 0 0 auto;
+      inset: 14px 0 auto;
       z-index: 100;
-      transition: background-color 300ms ease;
+      padding-inline: var(--gutter);
+      pointer-events: none;
     }
-    .nav.is-solid, .nav.is-open { background: var(--bg); }
-    .nav-inner { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-    .nav-logo { display: flex; align-items: center; flex-shrink: 0; }
-    .nav-logo img { height: 18px; width: auto; }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      max-width: var(--maxw);
+      height: 64px;
+      margin-inline: auto;
+      padding-inline: 24px 8px;
+      border-radius: var(--pill);
+      pointer-events: auto;
+      transition: background 400ms ease, box-shadow 400ms ease;
+    }
+    .nav:not(.is-solid):not(.is-open) .nav-inner {
+      background:
+        linear-gradient(rgba(7, 11, 22, 0.18), rgba(7, 11, 22, 0.18)) padding-box,
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)) border-box; /* taste-skill-ignore: Glaskante */
+      box-shadow: none;
+    }
+    .nav.is-solid .nav-inner, .nav.is-open .nav-inner {
+      background:
+        linear-gradient(var(--glass-strong), var(--glass-strong)) padding-box,
+        linear-gradient(180deg, var(--glass-hi), var(--glass-edge) 38%, rgba(255, 255, 255, 0.04)) border-box; /* taste-skill-ignore: Glaskante */
+    }
+    .nav-logo { display: flex; align-items: center; flex-shrink: 0; min-height: 44px; }
+    .nav-logo img { height: 17px; width: auto; }
     .nav-links { display: flex; align-items: center; gap: clamp(20px, 2.6vw, 36px); }
     .nav-links a {
+      position: relative;
       font-size: 0.9375rem;
       font-weight: 500;
       color: var(--a1);
@@ -200,12 +332,23 @@
       white-space: nowrap;
       transition: color 180ms ease;
     }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 -6px;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 300ms var(--ease);
+    }
     .nav-links a:hover { color: var(--fg); }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
     .lang { display: flex; align-items: center; gap: 2px; }
     .lang button {
-      min-width: 38px;
-      height: 34px;
+      min-width: 40px;
+      height: 40px;
       padding: 0 8px;
       border: 0;
       border-radius: var(--pill);
@@ -219,112 +362,480 @@
       transition: background-color 180ms ease, color 180ms ease;
     }
     .lang button:hover { color: var(--fg); }
-    .lang button[aria-pressed="true"] { background: var(--s3); color: var(--fg); }
+    .lang button[aria-pressed="true"] { background: rgba(255, 255, 255, 0.09); color: var(--fg); }
     .nav-toggle {
       display: none;
-      height: 40px;
-      padding: 0 16px;
+      height: 44px;
+      padding: 0 18px;
       border: 0;
       border-radius: var(--pill);
-      background: var(--s3);
+      background: rgba(255, 255, 255, 0.09);
       font-size: 0.8125rem;
       font-weight: 500;
       cursor: pointer;
     }
     .nav-panel { display: none; }
     @media (max-width: 400px) {
-      .nav-inner { gap: 12px; }
-      .nav-right { gap: 6px; }
-      .lang button { min-width: 32px; padding: 0 6px; }
-      .nav-logo img { height: 16px; }
+      .nav-inner { gap: 10px; padding-inline: 18px 6px; }
+      .nav-right { gap: 4px; }
+      .lang button { min-width: 34px; padding: 0 6px; }
+      .nav-logo img { height: 15px; }
     }
     @media (max-width: 899px) {
+      .nav { inset-block-start: 10px; }
+      .nav-inner { height: 58px; }
       .nav-links, .nav-cta { display: none; }
       .nav-toggle { display: inline-flex; align-items: center; }
       .nav.is-open .nav-panel {
         display: flex;
         flex-direction: column;
-        gap: 4px;
-        padding: 8px var(--gutter) 28px;
-        background: var(--bg);
-        min-height: calc(100svh - 76px);
+        gap: 2px;
+        max-width: var(--maxw);
+        max-height: calc(100svh - 96px);
+        overflow-y: auto;
+        margin: 10px auto 0;
+        padding: 14px 24px 26px;
+        pointer-events: auto;
       }
       .nav-panel a:not(.btn) {
-        padding: 14px 0;
+        padding: 12px 0;
         font-family: var(--serif);
         font-size: 2rem;
         line-height: 1.2;
         text-decoration: none;
       }
-      .nav-panel .btn { margin-top: 20px; align-self: flex-start; }
+      .nav-panel .btn { margin-top: 18px; align-self: flex-start; }
     }
 
-    /* ── Hero ──────────────────────────────────────────────────── */
-    .hero {
-      position: relative;
-      isolation: isolate;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: clamp(128px, 17vh, 196px);
-      text-align: center;
-      overflow: hidden;
-      background: var(--bg);
-    }
-    .hero-copy { position: relative; z-index: 1; padding-inline: var(--gutter); }
-    /* Das Foto beginnt unter dem Text und läuft dunkel in ihn hinein */
-    .hero-media {
-      order: 2;
-      position: relative;
-      z-index: 0;
-      display: block;
+    /* ── Film: Hero und fünf Kapitel ─────────────────────────────
+       Der Concierge füllt die ganze Bühne (film.js: cover). Ohne Skript oder ohne Film ein
+       normaler Abschnitt: Hero mit Standbild, darunter die Kapitel mit je einem Standbild.
+       film.js setzt .is-live, dann steht die Bühne (sticky) und der Scroll treibt Film und Texte. */
+    .film-scene { position: relative; background: var(--bg); --glass-blur: blur(8px) saturate(130%); --film-blur: blur(8px); }
+    .film-stage { position: relative; }
+    .film-frame { position: relative; height: 100svh; min-height: 560px; overflow: hidden; background: var(--bg); }
+    /* Poster = erstes Filmbild, bildfüllend wie im Canvas (film.js: cover, Handy: Hochformat 3:4) */
+    .film-poster {
+      position: absolute;
+      inset: 0;
       width: 100%;
-      margin-top: clamp(-280px, -17vw, -120px);
-      aspect-ratio: 1600 / 678;
-      overflow: hidden;
-    }
-    .hero-media img {
-      width: 100%;
+      max-width: none;
       height: 100%;
       object-fit: cover;
-      object-position: 50% 100%;
-      transform-origin: 50% 70%;
-      animation: hero-drift 40s ease-in-out infinite alternate;
     }
-    @keyframes hero-drift { from { transform: scale(1); } to { transform: scale(1.06); } }
-    /* neutraler Scrim: oben in den Grund, unten in den nächsten Abschnitt */
-    .hero-media::after {
+    .film-loop-wrap, .film-canvas { position: absolute; inset: 0; }
+    .film-loop { position: absolute; max-width: none; opacity: 0; transition: opacity 800ms ease; }
+    .film-loop.is-on { opacity: 1; }
+    .film-canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 500ms ease; }
+    html.film-ready .film-canvas { opacity: 1; }
+    /* Lesbarkeit: links und unten dunkler, rechts die Glaskarten; unten läuft das Bild in den Seitengrund */
+    .film-frame::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, /* taste-skill-ignore: neutraler Scrim über dem Foto */
-        var(--bg) 0%, rgba(7,11,22,0.55) 28%,
-        rgba(7,11,22,0.08) 55%, rgba(7,11,22,0.15) 82%, var(--bg) 100%);
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(0deg, var(--bg) 0%, rgba(7, 11, 22, 0.55) 16%, rgba(7, 11, 22, 0) 38%),
+        linear-gradient(90deg, rgba(7, 11, 22, 0.86) 0%, rgba(7, 11, 22, 0.62) 30%, rgba(7, 11, 22, 0) 54%, rgba(7, 11, 22, 0) 80%, rgba(7, 11, 22, 0.3) 100%),
+        linear-gradient(180deg, rgba(7, 11, 22, 0.5) 0%, rgba(7, 11, 22, 0) 18%); /* taste-skill-ignore: Lesbarkeit über dem Film */
     }
-    .hero-copy { max-width: 1040px; display: flex; flex-direction: column; align-items: center; gap: 28px; }
-    .hero-sub { max-width: 46ch; font-size: clamp(1.0625rem, 1.4vw, 1.25rem); line-height: 1.6; }
-    .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 8px; }
-    .hero-trust {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px 24px;
+    html[dir="rtl"] .film-frame::after {
+      background:
+        linear-gradient(0deg, var(--bg) 0%, rgba(7, 11, 22, 0.55) 16%, rgba(7, 11, 22, 0) 38%),
+        linear-gradient(270deg, rgba(7, 11, 22, 0.86) 0%, rgba(7, 11, 22, 0.62) 30%, rgba(7, 11, 22, 0) 54%, rgba(7, 11, 22, 0) 80%, rgba(7, 11, 22, 0.3) 100%),
+        linear-gradient(180deg, rgba(7, 11, 22, 0.5) 0%, rgba(7, 11, 22, 0) 18%); /* taste-skill-ignore: Lesbarkeit über dem Film */
+    }
+
+    html.js .film-scene.is-live { height: calc((var(--hold, 6) + 1) * 100svh); }
+    html.js .film-scene.is-live > .film-stage { position: sticky; top: 0; height: 100svh; overflow-x: clip; }
+    .film-scene.is-live .film-frame { position: absolute; inset: 0 0 auto; height: 100lvh; min-height: 0; }
+
+    /* Kapitelraster: der Concierge steht rechts der Mitte, alles Lesbare links in einer Spalte, oben die
+       Überschrift, unten Glaskarten und Text (RTL gespiegelt, dann steht er links) */
+    .ch-left, .ch-right { position: absolute; z-index: 2; inset-inline-start: var(--gutter); }
+    .ch-left { top: clamp(112px, 17svh, 190px); width: min(42vw, 660px); }
+    .ch-right { bottom: clamp(64px, 12svh, 132px); width: min(32vw, 440px); }
+    .mask { overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+    .mask > span { display: block; }
+
+    /* Hero: wie ein Filmplakat, Titel groß unten links, Ticker als Glaskarte unten rechts */
+    .hero-copy { position: absolute; inset: 0 0 auto; z-index: 2; height: 100svh; min-height: 560px; pointer-events: none; }
+    .hero-copy a, .hero-copy button { pointer-events: auto; }
+    .hero-main {
+      position: absolute;
+      inset-inline-start: var(--gutter);
+      bottom: calc(clamp(72px, 13svh, 140px) + var(--cookie-h, 0px) * 0.5);
+      width: min(46vw, 760px);
+    }
+    .hero-head .eyebrow { margin-bottom: 26px; }
+    .hero-title {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(3rem, 6.3vw, 7.4rem);
+      line-height: 0.94;
+      letter-spacing: -0.02em;
+      text-wrap: balance;
+    }
+    html[lang="ar"] .hero-title { line-height: 1.2; letter-spacing: 0; }
+    .hero-foot { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; margin-top: clamp(24px, 3svh, 36px); }
+    .hero-sub { max-width: 44ch; color: var(--a1); font-size: clamp(1rem, 1.2vw, 1.1875rem); line-height: 1.6; }
+    .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hero-trust { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hero-trust li {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 34px;
+      padding: 0 14px;
+      border-radius: var(--pill);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(7, 11, 22, 0.32);
+      -webkit-backdrop-filter: var(--film-blur);
+      backdrop-filter: var(--film-blur);
       font-size: 0.8125rem;
       color: var(--a1);
     }
-    .hero-trust li { display: inline-flex; align-items: center; gap: 9px; }
-    .hero-trust li::before {
+    .hero-trust li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+
+    /* Ticker: eine Nacht am Empfang, die Anfragen wechseln (Skript), ohne Skript steht die erste.
+       Er schwebt links neben dem Kopf des Concierge (Kopf bei ~82 % der Bildbreite), wie eine eintreffende Nachricht. */
+    .ticker {
+      position: absolute;
+      inset-inline-end: 27vw;
+      top: 20svh;
+      width: min(21vw, 320px);
+      padding: 18px 20px 18px;
+    }
+    .ticker-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; font-size: 0.8125rem; letter-spacing: 0.01em; color: var(--a3); }
+    .ticker-top time { font-variant-numeric: tabular-nums; letter-spacing: 0.04em; color: var(--a1); }
+    .ticker-item { display: grid; gap: 10px; }
+    .ticker-chan { display: flex; align-items: center; gap: 10px; font-size: 0.8125rem; font-weight: 500; color: var(--a1); }
+    .ticker-chan svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--fg); }
+    .ticker-q { font-family: var(--serif); font-size: 1.3rem; line-height: 1.25; color: var(--fg); }
+    .ticker-a { display: inline-flex; align-items: center; gap: 9px; font-size: 0.875rem; color: var(--accent-lt); }
+    .ticker-a::before {
       content: '';
-      width: 5px;
-      height: 5px;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
       border-radius: 50%;
-      background: var(--accent);
+      background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23070b16' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 11px no-repeat;
     }
-    @media (max-width: 700px) {
-      .hero { padding-top: 116px; }
-      .hero-media { aspect-ratio: auto; height: 560px; margin-top: -250px; }
-      .hero-actions { flex-direction: column; align-items: stretch; width: 100%; max-width: 340px; }
+    .ticker-bar { height: 2px; margin-top: 18px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+    .ticker-bar i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+    html[dir="rtl"] .ticker-bar i { transform-origin: right; }
+    .ticker.is-run .ticker-bar i { animation: tick 4.2s linear infinite; }
+    .ticker-item.is-swap { animation: swap 600ms var(--ease); }
+    @keyframes tick { to { transform: scaleX(1); } }
+    @keyframes swap { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+    .film-cue {
+      position: absolute;
+      z-index: 2;
+      inset-inline: 0;
+      bottom: max(18px, 2.4svh);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8125rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--a3);
+      pointer-events: none;
     }
+    .film-cue::after {
+      content: '';
+      width: 1px;
+      height: 36px;
+      background: var(--a3);
+      transform-origin: top;
+      animation: cue 2.6s var(--ease) infinite;
+    }
+    @keyframes cue { 0% { transform: scaleY(0); opacity: 1; } 55% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+    .film-scene:not(.is-live) .film-cue { display: none; }
+    @media (prefers-reduced-motion: no-preference) {
+      .js .hero-title > span { transform: translateY(105%); animation: rise-line 1200ms var(--ease) 140ms forwards; }
+      .js .hero-head .eyebrow, .js .hero-foot > *, .js .ticker { opacity: 0; transform: translateY(16px); animation: rise 1000ms var(--ease) forwards; }
+      .js .hero-head .eyebrow { animation-delay: 60ms; }
+      .js .hero-foot > :nth-child(1) { animation-delay: 480ms; }
+      .js .hero-foot > :nth-child(2) { animation-delay: 580ms; }
+      .js .hero-foot > :nth-child(3) { animation-delay: 680ms; }
+      .js .ticker { animation-delay: 900ms; }
+    }
+    @keyframes rise-line { to { transform: none; } }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+
+    /* Kapitel: Nummer und Uhrzeit als Glas-Chip, große Überschrift, Text darunter */
+    .beats { counter-reset: beat; }
+    .beat { counter-increment: beat; }
+    .beat-label { margin-bottom: 22px; }
+    .beat-label > span {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 36px;
+      padding: 0 16px 0 12px;
+      border-radius: var(--pill);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(7, 11, 22, 0.4);
+      -webkit-backdrop-filter: var(--film-blur);
+      backdrop-filter: var(--film-blur);
+      font-size: 0.8125rem;
+      letter-spacing: 0.04em;
+      color: var(--a1);
+    }
+    .beat-label > span::before {
+      content: '0' counter(beat) ' / 05';
+      padding-inline-end: 12px;
+      border-inline-end: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 0.8125rem;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.08em;
+      color: var(--accent-lt);
+      direction: ltr;
+      unicode-bidi: isolate;
+    }
+    .beat-label b { font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; color: var(--fg); }
+    .beat-title {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(2.6rem, 5vw, 5.4rem);
+      line-height: 0.98;
+      letter-spacing: -0.015em;
+      text-wrap: balance;
+    }
+    html[lang="ar"] .beat-title { line-height: 1.25; letter-spacing: 0; }
+    .beat-body { max-width: 40ch; margin-top: 22px; color: var(--a1); font-size: clamp(1rem, 1.15vw, 1.125rem); line-height: 1.65; }
+    .beat-side .beat-body { margin-top: 0; }
+
+    .bubbles { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .bubble {
+      max-width: 320px;
+      padding: 12px 16px 9px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.9375rem;
+      line-height: 1.45;
+      -webkit-backdrop-filter: var(--film-blur);
+      backdrop-filter: var(--film-blur);
+    }
+    .bubble time { display: block; margin-top: 3px; font-size: 0.8125rem; font-variant-numeric: tabular-nums; color: var(--a3); text-align: end; }
+    .bubble--in { align-self: flex-start; background: rgba(28, 39, 64, 0.72); border-start-start-radius: 5px; }
+    .bubble--out { align-self: flex-end; background: rgba(14, 76, 112, 0.66); border-color: rgba(125, 211, 252, 0.28); border-start-end-radius: 5px; }
+    .bubble--out time { color: var(--accent-lt); }
+
+    .pulse {
+      position: absolute;
+      z-index: 1;
+      width: 120px;
+      height: 120px;
+      margin: -60px 0 0 -60px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56,189,248,0.3), rgba(56,189,248,0) 66%); /* taste-skill-ignore: Antwort-Impuls */
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .chans { position: absolute; inset: 0; }
+    .chan {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      margin-top: -22px;
+      direction: ltr;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .chan-line { display: block; width: clamp(36px, 4.5vw, 80px); height: 1px; background: linear-gradient(90deg, var(--accent), rgba(56, 189, 248, 0.2)); transform-origin: left center; } /* taste-skill-ignore: Kanal-Linie */
+    .chan::before { content: ''; flex-shrink: 0; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.18), 0 0 18px rgba(56, 189, 248, 0.8); }
+    .chan span {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+      padding: 0 18px 0 14px;
+      border-radius: var(--pill);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(12, 18, 34, 0.6);
+      -webkit-backdrop-filter: var(--film-blur);
+      backdrop-filter: var(--film-blur);
+      unicode-bidi: plaintext;
+    }
+    .chan svg { width: 18px; height: 18px; flex-shrink: 0; }
+    /* Arabisch: Bild gespiegelt; .is-before setzt film.js, wenn die Beschriftung vor dem Punkt steht (Linie zeigt auf den Concierge) */
+    html[dir="rtl"] .film-poster, html[dir="rtl"] .film-canvas { transform: scaleX(-1); }
+    .chan.is-before { flex-direction: row-reverse; }
+    .chan.is-before .chan-line { transform-origin: right center; background: linear-gradient(270deg, var(--accent), rgba(56, 189, 248, 0.2)); } /* taste-skill-ignore: Kanal-Linie */
+
+    .booking { display: grid; gap: 4px; max-width: 320px; margin-bottom: 24px; padding: 20px 22px; }
+    .booking-title { display: flex; align-items: center; gap: 9px; font-size: 0.8125rem; color: var(--accent-lt); }
+    .booking-title::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+    .booking-slot { font-family: var(--serif); font-size: 2rem; line-height: 1.2; }
+    .booking-note { font-size: 0.8125rem; color: var(--a1); }
+
+    .greet { margin-top: 20px; font-family: var(--serif); font-size: clamp(1.9rem, 2.8vw, 2.8rem); line-height: 1.25; color: var(--accent-lt); }
+    .greet [lang="ar"] { font-family: 'Cairo', sans-serif; font-size: 0.82em; }
+    .film-scene.is-live .greet { position: relative; height: 1.3em; overflow: hidden; }
+    .film-scene.is-live .greet > span { position: absolute; top: 0; left: 0; white-space: nowrap; visibility: hidden; }
+    html[dir="rtl"] .film-scene.is-live .greet > span { left: auto; right: 0; }
+    .film-scene:not(.is-live) .greet > span + span::before { content: ' · '; color: var(--a3); }
+
+    /* Fortschritt: fünf Segmente, das laufende Kapitel leuchtet (film.js setzt data-beat) */
+    .film-rail { display: none; }
+    .film-scene.is-live .film-rail {
+      position: absolute;
+      z-index: 3;
+      inset-inline-start: var(--gutter);
+      bottom: max(22px, 3svh);
+      display: flex;
+      gap: 6px;
+      opacity: 0;
+      transition: opacity 400ms ease;
+      pointer-events: none;
+    }
+    .film-rail i { width: 34px; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, 0.18); transition: background-color 400ms ease, width 400ms var(--ease); }
+    .film-scene.is-live:is([data-beat="0"], [data-beat="1"], [data-beat="2"], [data-beat="3"], [data-beat="4"]) .film-rail { opacity: 1; }
+    .film-scene[data-beat="0"] .film-rail i:nth-child(-n+1),
+    .film-scene[data-beat="1"] .film-rail i:nth-child(-n+2),
+    .film-scene[data-beat="2"] .film-rail i:nth-child(-n+3),
+    .film-scene[data-beat="3"] .film-rail i:nth-child(-n+4),
+    .film-scene[data-beat="4"] .film-rail i:nth-child(-n+5) { background: var(--accent); }
+    .film-scene[data-beat="0"] .film-rail i:nth-child(1),
+    .film-scene[data-beat="1"] .film-rail i:nth-child(2),
+    .film-scene[data-beat="2"] .film-rail i:nth-child(3),
+    .film-scene[data-beat="3"] .film-rail i:nth-child(4),
+    .film-scene[data-beat="4"] .film-rail i:nth-child(5) { width: 56px; }
+
+    .film-end { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 0 var(--gutter) var(--section); text-align: center; }
+    .film-slogan { font-family: var(--serif); font-weight: 300; font-size: clamp(2.2rem, 4.4vw, 4.4rem); line-height: 1.02; }
+
+    /* Film läuft: Kapitel liegen übereinander auf der Bühne */
+    .film-scene.is-live .beats { position: absolute; inset: 0 0 auto; z-index: 2; height: 100svh; pointer-events: none; }
+    .film-scene.is-live .beat { position: absolute; inset: 0; visibility: hidden; }
+    .film-scene.is-live .beat-still { display: none; }
+    .film-scene.is-live .film-end { position: absolute; z-index: 3; inset-inline: 0; bottom: 7svh; padding: 0 var(--gutter); }
+    .film-scene.is-live .film-end a { pointer-events: auto; }
+    /* Desktop: das Schlussfenster liegt beim Concierge, Slogan und Knopf links daneben (film.js: windowed) */
+    @media (min-width: 768px) {
+      .film-scene.is-live .film-end { inset-inline: var(--gutter) auto; top: 50%; bottom: auto; width: min(32vw, 480px); padding: 0; transform: translateY(-50%); align-items: flex-start; text-align: start; }
+    }
+    /* Startzustände: GSAP überschreibt sie inline, solange es die Elemente bewegt. Nach einem Refresh setzt
+       ScrollTrigger Inline-Werte zurück; dann greift wieder dieser Ausgangszustand. */
+    .film-scene.is-live .film-end > *,
+    .film-scene.is-live .beat-body,
+    .film-scene.is-live [data-in] { visibility: hidden; opacity: 0; }
+    .film-scene.is-live .beat .mask > span { transform: translateY(110%); }
+    .film-scene.is-live .chan-line { transform: scaleX(0); }
+
+    /* Ohne Film: die Kapitel untereinander, je mit Standbild */
+    .film-scene:not(.is-live) .beats {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(72px, 9vw, 128px);
+      width: 100%;
+      max-width: calc(var(--maxw) + 2 * var(--gutter));
+      margin-inline: auto;
+      padding: var(--section) var(--gutter);
+    }
+    .film-scene:not(.is-live) .beat {
+      display: grid;
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      grid-template-areas: "still head" "still side";
+      column-gap: clamp(32px, 5vw, 72px);
+      row-gap: 22px;
+      align-items: end;
+    }
+    .film-scene:not(.is-live) .beat .ch-left,
+    .film-scene:not(.is-live) .beat .ch-right { position: static; width: auto; transform: none; }
+    .film-scene:not(.is-live) .beat-still { grid-area: still; align-self: center; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
+    .film-scene:not(.is-live) .beat-head { grid-area: head; }
+    .film-scene:not(.is-live) .beat-side { grid-area: side; align-self: start; }
+    .film-scene:not(.is-live) .beat--3 { grid-template-areas: "still head" "still side" "still chans"; }
+    .film-scene:not(.is-live) .chans { grid-area: chans; position: static; display: flex; flex-wrap: wrap; gap: 8px; }
+    .film-scene:not(.is-live) .chan { position: static; margin: 0; }
+    .film-scene:not(.is-live) .chan::before,
+    .film-scene:not(.is-live) .chan-line,
+    .film-scene:not(.is-live) .pulse { display: none; }
+    @media (max-width: 859px) {
+      .film-scene:not(.is-live) .beat { grid-template-columns: minmax(0, 1fr); grid-template-areas: "still" "head" "side"; }
+      .film-scene:not(.is-live) .beat--3 { grid-template-areas: "still" "head" "side" "chans"; }
+    }
+
+    @media (max-width: 1100px) and (min-width: 768px) {
+      .hero-main { width: min(62vw, 720px); }
+      .ticker { display: none; }
+    }
+    @media (max-width: 767px) {
+      .film-frame::after,
+      html[dir="rtl"] .film-frame::after {
+        background: linear-gradient(180deg, rgba(7, 11, 22, 0.7) 0%, rgba(7, 11, 22, 0) 16%, rgba(7, 11, 22, 0) 38%, rgba(7, 11, 22, 0.72) 58%, rgba(7, 11, 22, 0.94) 80%, var(--bg) 100%); /* taste-skill-ignore: Lesbarkeit über dem Film */
+      }
+      .film-scene.is-live .beat { display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; padding: 0 var(--gutter) calc(max(22px, 3svh) + var(--cookie-h, 0px)); }
+      .film-scene.is-live .ch-left, .film-scene.is-live .ch-right { position: static; width: auto; }
+      .film-scene.is-live .chans { position: static; display: flex; flex-wrap: wrap; gap: 6px; order: 1; }
+      .film-scene.is-live .chans .chan { position: static; margin: 0; }
+      .film-scene.is-live .chans .chan::before, .film-scene.is-live .chans .chan-line { display: none; }
+      .film-scene.is-live .beat-side { order: 2; }
+      .hero-main { inset-inline: var(--gutter); width: auto; bottom: calc(max(22px, 3svh) + var(--cookie-h, 0px)); }
+      .hero-head .eyebrow { margin-bottom: 14px; font-size: 0.8125rem; letter-spacing: 0.18em; }
+      .hero-title { font-size: clamp(2.6rem, 12vw, 3.6rem); }
+      .hero-foot { gap: 16px; margin-top: 18px; }
+      .hero-ctas { width: 100%; }
+      .hero-ctas .btn { flex: 1 1 auto; }
+      .hero-sub { font-size: 0.9375rem; }
+      .hero-trust, .film-cue, .ticker { display: none; }
+      .film-scene.is-live .film-rail { inset-inline: var(--gutter) auto; top: calc(82px + 1svh); bottom: auto; }
+      .film-rail i { width: 22px; }
+      .film-scene[data-beat] .film-rail i:is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5)) { width: 22px; }
+      .beat-label { margin-bottom: 12px; }
+      .beat-title { font-size: clamp(2.1rem, 9vw, 2.9rem); }
+      .beat-body { margin-top: 12px; font-size: 0.9375rem; }
+      .bubbles { margin-bottom: 14px; }
+      .bubble { max-width: 84%; font-size: 0.875rem; }
+      .booking { margin-bottom: 14px; padding: 14px 16px; }
+      .booking-slot { font-size: 1.6rem; }
+      .chan { font-size: 0.8125rem; }
+      .chan span { min-height: 38px; padding: 0 12px 0 10px; }
+      .chan-line { width: 14px; }
+    }
+    @media (max-width: 767px) and (max-height: 740px) {
+      .beat--2 .beat-body, .beat--4 .beat-body { display: none; }
+      .hero-sub { display: none; }
+    }
+
+    /* ── Benchmark: Beleg direkt nach dem Film, Problem zuerst ─── */
+    .band { position: relative; padding-block: clamp(40px, 6vw, 96px) var(--section); overflow-x: clip; }
+    .band-card {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: clamp(28px, 5vw, 88px);
+      align-items: center;
+      padding: clamp(32px, 5vw, 72px);
+      overflow: hidden;
+    }
+    .band-num {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: clamp(7rem, 17vw, 16rem);
+      line-height: 0.8;
+      letter-spacing: -0.04em;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    .band-num small { margin-inline-start: 0.06em; font-size: 0.36em; letter-spacing: 0; color: var(--accent-lt); }
+    .band-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+    .band-copy .eyebrow { margin-bottom: 4px; }
+    .band-title { font-family: var(--serif); font-weight: 400; font-size: clamp(1.75rem, 2.8vw, 2.6rem); line-height: 1.12; text-wrap: balance; }
+    .band-sub { color: var(--a1); }
+    .band-facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+    .band-facts li { padding: 12px 18px; border-radius: var(--radius); background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.07); }
+    .band-facts b { display: block; font-family: var(--serif); font-weight: 400; font-size: 1.75rem; line-height: 1.1; }
+    .band-facts span { font-size: 0.8125rem; color: var(--a3); }
+    html[dir="rtl"] .band-num { text-align: right; }
+    @media (max-width: 859px) { .band-card { grid-template-columns: minmax(0, 1fr); } }
 
     /* ── Live-Beispiel ─────────────────────────────────────────── */
     .demo-grid {
@@ -333,17 +844,19 @@
       gap: clamp(48px, 7vw, 112px);
       align-items: center;
     }
-    .demo-copy { display: flex; flex-direction: column; gap: 28px; }
-    .outcomes { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+    .demo-copy { display: flex; flex-direction: column; gap: 26px; }
+    .demo-copy .eyebrow { margin-bottom: -4px; }
+    .outcomes { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
     .outcomes li {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 12px 18px;
+      padding: 14px 18px;
       border-radius: var(--radius);
-      background: var(--s1);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(12, 18, 34, 0.55);
       color: var(--a2);
-      transition: color 400ms ease, background-color 400ms ease;
+      transition: color 400ms ease, background-color 400ms ease, border-color 400ms ease;
     }
     .outcomes .mark {
       display: grid;
@@ -354,18 +867,28 @@
       border-radius: 50%;
       background: var(--s3);
       color: transparent;
-      transition: background-color 400ms ease, color 400ms ease;
+      transition: background-color 400ms ease, color 400ms ease, box-shadow 400ms ease;
     }
-    .outcomes li.is-done { color: var(--fg); background: var(--s2); }
-    .outcomes li.is-done .mark { background: var(--accent); color: var(--bg); }
-    .demo-note { font-size: 0.9375rem; color: var(--a2); }
+    .outcomes li.is-done { color: var(--fg); background: rgba(19, 27, 48, 0.8); border-color: rgba(125, 211, 252, 0.22); }
+    .outcomes li.is-done .mark { background: var(--accent); color: var(--bg); box-shadow: 0 0 16px rgba(56, 189, 248, 0.6); }
+    .demo-note { font-size: 0.875rem; color: var(--a3); }
 
-    .demo-stage { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 480px; margin-inline: auto; }
+    .demo-stage { position: relative; display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 480px; margin-inline: auto; }
+    /* Leuchten hinter dem Telefon: das Gespräch ist die Antwort */
+    .demo-stage::before {
+      content: '';
+      position: absolute;
+      inset: 12% -18% -8%;
+      z-index: -1;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0)); /* taste-skill-ignore: Leuchten hinter der Demo */
+      pointer-events: none;
+    }
     .demo-langs { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
     .demo-langs-label { font-size: 0.8125rem; color: var(--a1); }
-    .demo-langs-btns { display: flex; gap: 4px; padding: 4px; border-radius: var(--pill); background: var(--s1); }
+    .demo-langs-btns { display: flex; gap: 4px; padding: 4px; border-radius: var(--pill); }
     .demo-langs-btns button {
-      min-height: 34px;
+      min-height: 36px;
       padding: 0 14px;
       border: 0;
       border-radius: var(--pill);
@@ -378,10 +901,11 @@
     }
     .demo-langs-btns button[lang="ar"] { font-family: 'Cairo', sans-serif; }
     .demo-langs-btns button:hover { color: var(--fg); }
-    .demo-langs-btns button[aria-pressed="true"] { background: var(--s3); color: var(--fg); }
+    .demo-langs-btns button[aria-pressed="true"] { background: rgba(255, 255, 255, 0.1); color: var(--fg); }
 
-    /* Telefon: echtes Interface-Fragment, eigene Formsprache erlaubt */
-    .phone { border-radius: 28px; background: var(--s1); overflow: hidden; }
+    /* Telefon: echtes Interface-Fragment im Glasrahmen, eigene Formsprache erlaubt */
+    .phone { padding: 8px; border-radius: 34px; }
+    .phone-screen { border-radius: 27px; overflow: hidden; background: var(--s1); }
     .phone-top { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--s2); }
     .phone-avatar {
       display: grid;
@@ -463,7 +987,7 @@
     }
     .chips-label { width: 100%; font-size: 0.8125rem; color: var(--a1); }
     .chip {
-      min-height: 40px;
+      min-height: 44px;
       padding: 0 16px;
       border: 0;
       border-radius: var(--pill);
@@ -480,18 +1004,21 @@
     .chips-end p { font-size: 0.9375rem; }
     .chips-end .text-link { font-size: 0.9375rem; }
 
-    /* Erklärvideo, gespiegelt zur Demo */
+    /* Erklärvideo: breite Glaskarte, links das Video, rechts der Text */
     .video-row {
       margin-top: clamp(96px, 11vw, 160px);
       display: grid;
       grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
-      gap: clamp(32px, 5vw, 72px);
-      align-items: end;
+      gap: clamp(28px, 4vw, 64px);
+      align-items: center;
+      padding: clamp(10px, 1vw, 14px);
+      padding-inline-end: clamp(24px, 4vw, 56px);
       scroll-margin-top: 96px;
     }
-    .video-copy { display: flex; flex-direction: column; gap: 16px; padding-bottom: 8px; }
-    .video-title { font-family: var(--serif); font-weight: 400; font-size: clamp(1.75rem, 3.2vw, 2.75rem); line-height: 1.1; }
-    .video-frame { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--s1); aspect-ratio: 16 / 9; }
+    .video-copy { display: flex; flex-direction: column; gap: 16px; padding-block: 16px; }
+    .video-copy .eyebrow { margin-bottom: 0; }
+    .video-title { font-family: var(--serif); font-weight: 300; font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.05; }
+    .video-frame { position: relative; overflow: hidden; border-radius: 8px; background: var(--s1); aspect-ratio: 16 / 9; }
     .video-frame video { width: 100%; height: 100%; object-fit: cover; }
     .video-play {
       position: absolute;
@@ -523,84 +1050,110 @@
 
     @media (max-width: 959px) {
       .demo-grid, .video-row { grid-template-columns: minmax(0, 1fr); }
+      .video-row { padding: 10px 10px 24px; }
+      .video-copy { padding-inline: 14px; }
       .chat { height: 380px; }
-      .video-copy { order: -1; }
     }
 
-    /* ── Leistungen ────────────────────────────────────────────── */
-    .svc-head {
-      display: grid;
-      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-      gap: clamp(24px, 5vw, 80px);
-      align-items: end;
-      margin-bottom: clamp(48px, 6vw, 80px);
-    }
-    .svc-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
-    .svc { display: flex; flex-direction: column; gap: 18px; }
-    .svc--agents {
-      grid-column: span 12;
-      display: grid;
-      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-      gap: clamp(24px, 5vw, 72px);
+    /* ── Leistungen: Bento aus Glaskarten, jede zeigt, was die Leistung tut ── */
+    .bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+    .svc { display: flex; flex-direction: column; overflow: hidden; }
+    .svc--agents { grid-column: span 7; }
+    .svc--auto { grid-column: span 5; }
+    .svc--ai { grid-column: span 5; }
+    .svc--dev { grid-column: span 7; }
+    .svc-ui { position: relative; flex: 1; min-height: 280px; padding: clamp(20px, 2.4vw, 32px); padding-bottom: 0; overflow: hidden; }
+    .svc-body { display: grid; gap: 12px; padding: clamp(24px, 2.6vw, 36px); padding-top: 24px; }
+    .svc-num { font-size: 0.8125rem; font-variant-numeric: tabular-nums; letter-spacing: 0.16em; color: var(--accent-lt); }
+    .svc-name { font-family: var(--serif); font-weight: 300; font-size: clamp(2rem, 3vw, 2.9rem); line-height: 1.02; letter-spacing: -0.01em; }
+    .svc-text { color: var(--a1); max-width: 52ch; }
+    .proof { font-size: 0.875rem; color: var(--a3); }
+    .proof strong { color: var(--fg); font-weight: 500; }
+    .proof-chip {
+      display: inline-flex;
       align-items: center;
-    }
-    .svc--agents .svc { gap: 18px; }
-    .svc--auto, .svc--ai { grid-column: span 6; }
-    .svc--dev {
-      grid-column: span 12;
-      display: grid;
-      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-      gap: clamp(24px, 5vw, 72px);
-      align-items: start;
-    }
-    .svc--agents .h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(1.75rem, 3.2vw, 2.75rem); line-height: 1.08; }
-    .svc .proof {
-      padding-top: 6px;
-      font-size: 0.9375rem;
+      gap: 10px;
+      justify-self: start;
+      padding: 8px 14px;
+      border-radius: var(--pill);
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(125, 211, 252, 0.2);
+      font-size: 0.8125rem;
       color: var(--a1);
     }
-    .svc .proof strong { color: var(--fg); font-weight: 500; }
-    /* kleine Interface-Fragmente statt Icons */
-    .inbox { display: flex; flex-direction: column; gap: 6px; margin-block: 8px; }
+    .proof-chip::before { content: ''; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--accent); }
+    .proof-chip strong { color: var(--fg); font-weight: 500; }
+    @media (max-width: 1023px) { .svc--agents, .svc--auto, .svc--ai, .svc--dev { grid-column: span 12; } }
+
+    /* 01 Agenten: Posteingang über vier Kanäle, jede Zeile wird beantwortet */
+    .inbox { display: grid; gap: 8px; }
     .inbox li {
-      display: flex;
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) auto;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 13px 16px;
+      gap: 14px;
+      padding: 12px 14px;
       border-radius: 10px;
-      background: var(--s2);
-      font-size: 0.9375rem;
+      background: rgba(7, 11, 22, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: border-color 500ms ease, background-color 500ms ease;
     }
-    .inbox-st { display: inline-flex; align-items: center; gap: 8px; font-size: 0.8125rem; color: var(--a1); white-space: nowrap; }
-    .inbox-st::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-    .flow { display: flex; flex-direction: column; gap: 4px; }
-    .flow li { display: flex; align-items: center; gap: 12px; font-size: 0.9375rem; color: var(--a1); padding: 6px 0; }
-    .flow li::before { content: ''; width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: var(--s4); }
-    .flow li:last-child { color: var(--fg); }
-    .flow li:last-child::before { background: var(--accent); }
-    .doccheck { display: flex; flex-direction: column; gap: 6px; }
-    .doccheck li {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      background: var(--s2);
-      font-size: 0.9375rem;
-    }
-    .doccheck .ok, .doccheck .open { font-size: 0.8125rem; white-space: nowrap; }
-    .doccheck .ok { color: var(--a1); }
-    .doccheck .open { color: var(--fg); }
-    .projects { display: flex; flex-direction: column; gap: 6px; }
-    .projects-lead { font-size: 0.9375rem; color: var(--a1); margin-bottom: 6px; }
-    .projects li { padding: 14px 16px; border-radius: 10px; background: var(--s2); font-size: 0.9375rem; }
-    @media (max-width: 959px) {
-      .svc-head, .svc--dev { grid-template-columns: minmax(0, 1fr); }
-      .svc--agents { grid-template-columns: minmax(0, 1fr); }
-      .svc--auto, .svc--ai { grid-column: span 12; }
-    }
+    .inbox-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--s3); color: var(--fg); }
+    .inbox-ico svg { width: 18px; height: 18px; }
+    .inbox-txt { min-width: 0; }
+    .inbox-txt b { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--a1); }
+    .inbox-txt > span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9375rem; color: var(--fg); }
+    .inbox-st { display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px; border-radius: var(--pill); background: rgba(255, 255, 255, 0.05); font-size: 0.8125rem; white-space: nowrap; color: var(--a3); transition: background-color 400ms ease, color 400ms ease; }
+    .inbox-st::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--a4); transition: background-color 400ms ease, box-shadow 400ms ease; }
+    .inbox li.is-done { background: rgba(19, 27, 48, 0.7); border-color: rgba(125, 211, 252, 0.2); }
+    .inbox li.is-done .inbox-st { background: rgba(56, 189, 248, 0.12); color: var(--accent-lt); }
+    .inbox li.is-done .inbox-st::before { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+    .wave { display: inline-flex; align-items: center; gap: 2px; height: 14px; margin-inline-start: 8px; vertical-align: -2px; }
+    .wave i { width: 2px; height: 100%; border-radius: 2px; background: var(--accent); transform: scaleY(0.3); }
+    .is-run .wave i { animation: wave 1s ease-in-out infinite; }
+    .wave i:nth-child(2) { animation-delay: 120ms; }
+    .wave i:nth-child(3) { animation-delay: 240ms; }
+    .wave i:nth-child(4) { animation-delay: 360ms; }
+    .wave i:nth-child(5) { animation-delay: 480ms; }
+    @keyframes wave { 0%, 100% { transform: scaleY(0.3); } 50% { transform: scaleY(1); } }
+    @media (max-width: 479px) { .inbox li { grid-template-columns: 36px minmax(0, 1fr); } .inbox-st { grid-column: 2; justify-self: start; } .inbox-ico { width: 36px; height: 36px; } }
+
+    /* 02 Automationen: Ablauf als Knoten, ein Lichtpunkt läuft hindurch */
+    .flow { position: relative; display: grid; gap: 12px; padding-block: 4px 8px; }
+    .flow::before { content: ''; position: absolute; inset-block: 22px 30px; inset-inline-start: 21px; width: 1px; background: linear-gradient(180deg, rgba(125, 211, 252, 0.5), rgba(125, 211, 252, 0.08)); } /* taste-skill-ignore: Ablauflinie */
+    .flow::after { content: ''; position: absolute; inset-inline-start: 17px; top: 21px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 14px var(--accent); opacity: 0; }
+    .is-run .flow::after { animation: flow 4.8s var(--ease) infinite; }
+    @keyframes flow { 0% { opacity: 0; transform: translateY(0); } 6% { opacity: 1; } 88% { opacity: 1; transform: translateY(var(--flow-h, 200px)); } 100% { opacity: 0; transform: translateY(var(--flow-h, 200px)); } }
+    .flow li { position: relative; display: flex; align-items: center; gap: 14px; }
+    .flow-node { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; background: var(--s2); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--accent-lt); }
+    .flow-node svg { width: 18px; height: 18px; }
+    .flow-txt { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 0 14px; border-radius: 10px; background: rgba(7, 11, 22, 0.42); border: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.9375rem; }
+    .flow-txt small { font-size: 0.8125rem; color: var(--a3); white-space: nowrap; }
+
+    /* 03 Eigene KI: Dokumentprüfung, Häkchen erscheinen nacheinander */
+    .docs { display: grid; gap: 8px; }
+    .docs li { display: flex; align-items: center; gap: 12px; min-height: 54px; padding: 0 14px; border-radius: 10px; background: rgba(7, 11, 22, 0.42); border: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.9375rem; }
+    .doc-ico { width: 18px; height: 18px; flex-shrink: 0; color: var(--a3); }
+    .doc-name { flex: 1; min-width: 0; }
+    .doc-st { display: grid; place-items: center; width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: var(--s3); color: transparent; transition: background-color 400ms ease, color 400ms ease; }
+    .doc-st svg { width: 12px; height: 12px; }
+    .docs li.is-ok .doc-st { background: var(--accent); color: var(--bg); }
+    .docs li.is-miss .doc-st { width: auto; padding: 0 10px; border-radius: var(--pill); background: rgba(255, 255, 255, 0.08); color: var(--a1); font-size: 0.8125rem; white-space: nowrap; }
+    .doc-scan { position: absolute; inset-inline: clamp(20px, 2.4vw, 32px); top: clamp(20px, 2.4vw, 32px); height: 54px; border-radius: 10px; border: 1px solid rgba(125, 211, 252, 0.45); box-shadow: 0 0 24px -6px rgba(56, 189, 248, 0.6); opacity: 0; pointer-events: none; transition: transform 600ms var(--ease), opacity 300ms ease; }
+    .is-run .doc-scan { opacity: 1; }
+    .docs-sum { display: flex; align-items: center; gap: 14px; margin-top: 18px; font-size: 0.8125rem; color: var(--a3); }
+    .docs-sum i { flex: 1; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+    .docs-sum i::before { content: ''; display: block; height: 100%; width: var(--done, 75%); background: var(--accent); transition: width 600ms var(--ease); }
+
+    /* 04 Software: Browserrahmen mit echten Kundenprojekten */
+    .browser { position: relative; margin-bottom: -1px; border-radius: 10px 10px 0 0; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); border-bottom: 0; background: var(--s1); }
+    .browser-bar { display: flex; align-items: center; gap: 14px; height: 38px; padding: 0 14px; background: var(--s2); }
+    .browser-dots { display: flex; gap: 6px; }
+    .browser-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.16); }
+    .browser-url { flex: 1; max-width: 320px; min-height: 24px; display: flex; align-items: center; padding: 0 12px; border-radius: var(--pill); background: rgba(255, 255, 255, 0.05); font-size: 0.8125rem; color: var(--a3); direction: ltr; }
+    .browser-view { position: relative; aspect-ratio: 16 / 9; }
+    .browser-view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity 900ms ease; }
+    .browser-view img.is-on { opacity: 1; }
 
     /* ── Fünf-Sterne-Standard und Gründer ──────────────────────── */
     .founder-grid {
@@ -609,19 +1162,81 @@
       gap: clamp(40px, 7vw, 112px);
       align-items: center;
     }
+    .founder-media { position: relative; }
     .founder-photo { border-radius: var(--radius); overflow: hidden; background: var(--s1); }
+    /* Porträt öffnet sich wie ein Rollladen; der erste Absatz füllt sich beim Scrollen mit Farbe */
+    @media (prefers-reduced-motion: no-preference) {
+      .js [data-shutter] { clip-path: inset(0 0 100% 0); transition: clip-path 1200ms cubic-bezier(0.77, 0, 0.175, 1); }
+      .js [data-shutter] img { transform: scale(1.12); transition: transform 1700ms var(--ease); }
+      .js [data-shutter].is-in { clip-path: inset(0); }
+      .js [data-shutter].is-in img { transform: none; }
+    }
+    [data-fill] .w { transition: color 240ms linear; }
+    [data-fill].is-filling .w { color: color-mix(in oklab, var(--fg) 28%, transparent); }
+    [data-fill].is-filling .w.on { color: var(--fg); }
     .founder-photo img { width: 100%; aspect-ratio: 899 / 1246; object-fit: cover; }
+    .founder-card {
+      position: absolute;
+      inset-inline-end: clamp(-48px, -3vw, -16px);
+      bottom: clamp(24px, 4vw, 48px);
+      display: grid;
+      gap: 2px;
+      padding: 18px 24px;
+    }
+    .founder-name { font-family: var(--serif); font-size: 1.75rem; line-height: 1.15; }
     .founder-copy { display: flex; flex-direction: column; gap: 22px; }
-    .founder-copy .h2 { margin-bottom: 8px; }
-    .founder-sign { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-top: 10px; }
-    .founder-name { font-family: var(--serif); font-size: 1.75rem; line-height: 1.2; }
-    .principles { margin-top: clamp(56px, 7vw, 96px); }
-    .principles-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(24px, 3vw, 40px); margin-top: 32px; }
-    .principles-grid dt { font-weight: 500; font-size: 1.0625rem; line-height: 1.35; margin-bottom: 10px; }
-    .principles-grid dd { color: var(--a1); font-size: 0.9375rem; }
-    @media (max-width: 1023px) { .principles-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 859px) { .founder-grid { grid-template-columns: minmax(0, 1fr); } .founder-photo { max-width: 460px; } }
+    .founder-copy .eyebrow { margin-bottom: -2px; }
+    .founder-copy .h2 { margin-bottom: 6px; }
+    .founder-copy p:not(.lead) { color: var(--a1); }
+    .principles { margin-top: clamp(72px, 9vw, 128px); }
+    .principles-head { margin-bottom: 28px; font-family: var(--serif); font-weight: 300; font-size: clamp(1.9rem, 3vw, 2.8rem); line-height: 1.1; }
+    .principles-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .principle { display: flex; flex-direction: column; gap: 14px; padding: clamp(24px, 2.4vw, 32px); }
+    .principle-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .principle-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(125, 211, 252, 0.22); color: var(--accent-lt); }
+    .principle-ico svg { width: 20px; height: 20px; }
+    .principle-num { font-size: 0.8125rem; letter-spacing: 0.16em; font-variant-numeric: tabular-nums; color: var(--a3); }
+    .principle dt { font-weight: 500; font-size: 1.0625rem; line-height: 1.35; }
+    .principle dd { color: var(--a1); font-size: 0.9375rem; }
+    @media (max-width: 1100px) { .principles-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 859px) {
+      .founder-grid { grid-template-columns: minmax(0, 1fr); }
+      .founder-media { max-width: 460px; }
+      .founder-card { inset-inline-end: 16px; bottom: 16px; }
+    }
     @media (max-width: 559px) { .principles-grid { grid-template-columns: minmax(0, 1fr); } }
+
+    /* ── Kundenstimmen: freigegebene Stimmen ohne Sterne; Echtheitshinweis darunter (§ 5b Abs. 3 UWG) ── */
+    .voices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .voice { display: flex; flex-direction: column; gap: 20px; margin: 0; padding: clamp(28px, 3.4vw, 48px); }
+    .voice--lead { grid-column: 1 / -1; }
+    .voice-quote { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+    .voice-mark { display: block; height: 0.5em; margin-bottom: 4px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 4.5rem; line-height: 0.9; color: var(--accent); }
+    html[dir="rtl"] .voice-mark { transform: scaleX(-1); text-align: end; }
+    .voice-title { font-family: var(--serif); font-weight: 400; font-size: clamp(1.6rem, 2.2vw, 2.1rem); line-height: 1.15; text-wrap: balance; }
+    .voice--lead .voice-title { max-width: 24ch; font-weight: 300; font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.05; }
+    html[lang="ar"] .voice-title { line-height: 1.4; }
+    .voice-text { color: var(--a1); max-width: 70ch; }
+    .voice--lead .voice-text { font-size: clamp(1.0625rem, 1.25vw, 1.1875rem); }
+    .voice-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+    .voice-by { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+    .voice-logo { width: auto; height: 40px; flex-shrink: 0; opacity: 0.92; }
+    .voice-firm { display: grid; gap: 1px; }
+    .voice-firm b { font-weight: 500; }
+    .voice-firm > span { color: var(--a3); font-size: 0.875rem; }
+    .voice-site { display: inline-flex; align-items: center; gap: 5px; justify-self: start; min-height: 24px; color: var(--accent-lt); font-size: 0.875rem; text-decoration: none; direction: ltr; transition: color 180ms ease; }
+    .voice-site:hover { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
+    .voice-tr { font-size: 0.8125rem; color: var(--a3); }
+    html[lang="de"] .voice-tr { display: none; }
+    .voices-note { max-width: 72ch; margin-top: 22px; font-size: 0.875rem; color: var(--a3); }
+    .voice-by .proof-chip { border-radius: 14px; line-height: 1.4; }
+    /* Leitkarte: Überschrift links, Text rechts */
+    @media (min-width: 960px) {
+      .voice--lead .voice-quote { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(32px, 5vw, 80px); row-gap: 12px; align-items: start; }
+      .voice--lead .voice-mark, .voice--lead .voice-title { grid-column: 1; }
+      .voice--lead .voice-text { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+    }
+    @media (max-width: 859px) { .voices { grid-template-columns: minmax(0, 1fr); } }
 
     /* ── FAQ ───────────────────────────────────────────────────── */
     .faq-grid {
@@ -630,16 +1245,19 @@
       gap: clamp(40px, 6vw, 96px);
       align-items: start;
     }
-    .faq-side { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; position: sticky; top: 112px; }
-    .faq-list { display: flex; flex-direction: column; gap: 8px; }
-    .faq-item { border-radius: var(--radius); background: var(--s1); transition: background-color 200ms ease; }
-    .faq-item:hover { background: var(--s2); }
+    .faq-side { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; position: sticky; top: 120px; }
+    .faq-side .eyebrow { margin-bottom: -6px; }
+    .faq-cta { display: grid; gap: 14px; justify-items: start; width: 100%; margin-top: 8px; padding: 24px; }
+    .faq-cta p { color: var(--a1); font-size: 0.9375rem; }
+    .faq-list { display: flex; flex-direction: column; gap: 10px; }
+    .faq-item { transition: background 200ms ease; }
     .faq-q {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
+      min-height: 72px;
       padding: 22px 26px;
       border: 0;
       background: transparent;
@@ -650,41 +1268,90 @@
       cursor: pointer;
     }
     .faq-arrow {
+      display: grid;
+      place-items: center;
       flex-shrink: 0;
-      width: 9px;
-      height: 9px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      transition: background-color 300ms ease, transform 300ms var(--ease);
+    }
+    .faq-arrow::before {
+      content: '';
+      width: 8px;
+      height: 8px;
       margin-top: -4px;
       border-right: 1.6px solid var(--a1);
       border-bottom: 1.6px solid var(--a1);
       transform: rotate(45deg);
-      transition: transform 300ms var(--ease);
     }
-    .faq-q[aria-expanded="true"] .faq-arrow { transform: rotate(225deg); margin-top: 4px; }
+    .faq-q[aria-expanded="true"] .faq-arrow,
+    .form-toggle[aria-expanded="true"] .faq-arrow { transform: rotate(180deg); background: rgba(56, 189, 248, 0.16); }
     .faq-a { overflow: hidden; max-height: 0; transition: max-height 350ms cubic-bezier(0.4, 0, 0.2, 1); }
-    .faq-a-inner { padding: 0 26px 24px; color: var(--a1); }
+    .faq-a-inner { padding: 0 26px 26px; color: var(--a1); max-width: 64ch; }
     @media (max-width: 859px) { .faq-grid { grid-template-columns: minmax(0, 1fr); } .faq-side { position: static; } }
 
-    /* ── Kontakt ───────────────────────────────────────────────── */
-    #kontakt { scroll-margin-top: 64px; }
+    /* ── Kontakt: der Concierge im Morgengrauen dahinter ───────── */
+    #kontakt { scroll-margin-top: 72px; overflow: hidden; }
+    .contact-bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+    .contact-bg img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
+    .contact-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, var(--bg) 0%, rgba(7, 11, 22, 0.35) 28%, rgba(7, 11, 22, 0.55) 72%, var(--bg) 100%); /* taste-skill-ignore: Übergang in den Seitengrund */
+    }
+    /* Oben Text und Schritte nebeneinander, darunter Calendly in voller Breite: ab ~1000px zeigt Calendly seine
+       Desktop-Ansicht (Kalender links, Uhrzeiten rechts) in fester Höhe statt einer langen, mitwachsenden Spalte */
     .contact-grid {
       display: grid;
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-      gap: clamp(40px, 6vw, 96px);
-      align-items: start;
+      grid-template-columns: minmax(0, 1fr);
+      gap: clamp(40px, 5vw, 64px);
     }
     .contact-copy { display: flex; flex-direction: column; gap: 28px; }
-    .steps { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
-    .steps li { padding: 20px 22px; border-radius: var(--radius); background: var(--s1); }
+    @media (min-width: 960px) {
+      .contact-copy { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: clamp(40px, 6vw, 96px); row-gap: 24px; align-items: start; }
+      .contact-copy > :not(.steps) { grid-column: 1; }
+      .contact-copy > .steps { grid-column: 2; grid-row: 1 / span 5; margin-top: 0; }
+    }
+    .contact-copy .eyebrow { margin-bottom: -6px; }
+    .steps { position: relative; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; counter-reset: step; }
+    .steps li { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 16px; padding: 20px 22px; counter-increment: step; }
+    .steps li::before {
+      content: counter(step);
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(125, 211, 252, 0.26);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--accent-lt);
+    }
     .steps h3 { font-size: 1.0625rem; font-weight: 500; line-height: 1.35; margin-bottom: 6px; }
     .steps p { font-size: 0.9375rem; color: var(--a1); }
     .direct { display: flex; flex-direction: column; gap: 10px; }
     .direct-label { font-size: 0.9375rem; color: var(--a1); }
     .direct-links { display: flex; flex-wrap: wrap; gap: 8px; }
-    .contact-side { display: flex; flex-direction: column; gap: 16px; }
-    @media (max-width: 959px) { .contact-grid { grid-template-columns: minmax(0, 1fr); } }
+    /* Calendly zeigt Kalender und Uhrzeiten erst ab ~900px nebeneinander; breiter wird nur der weiße Rand */
+    .contact-side { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 1000px; margin-inline: auto; }
 
     /* Calendly-Karte */
-    .calendly-card { position: relative; overflow: hidden; border-radius: var(--radius); background: var(--s1); }
+    /* Calendly ohne backdrop-filter: Chrome zeichnet das eingebettete iframe unter einer Unschärfe-Ebene fehlerhaft
+       neu (Geisterbilder beim Datums- und Monatswechsel). Deshalb eine feste Fläche mit Glaskante und kein
+       overflow-/Radius-Zuschnitt um das iframe; breit (.is-fixed) mit fester Höhe, damit Calendly beim Monatswechsel
+       nicht mitten in der Schiebe-Animation die Größe ändert. */
+    .calendly-card {
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(var(--s1), var(--s1)) padding-box,
+        linear-gradient(180deg, var(--glass-hi), var(--glass-edge) 38%, rgba(255, 255, 255, 0.04)) border-box; /* taste-skill-ignore: Glaskante */
+      box-shadow: var(--glass-depth);
+    }
     .calendly-card-head { padding: 32px 32px 24px; }
     .calendly-card-head p { margin-top: 6px; color: var(--a1); font-size: 0.9375rem; }
     .calendly-meta {
@@ -694,7 +1361,7 @@
       margin-top: 16px;
       padding: 7px 14px;
       border-radius: var(--pill);
-      background: var(--s3);
+      background: rgba(255, 255, 255, 0.07);
       color: var(--a1);
       font-size: 0.8125rem;
       font-weight: 500;
@@ -710,6 +1377,7 @@
       background: #ffffff;
     }
     .hybote-calendly-widget { width: 100%; min-width: 320px; min-height: 700px; direction: ltr; }
+    .hybote-calendly-widget.is-fixed { height: 700px; min-height: 0; }
     .calendly-status {
       position: absolute;
       inset: 0;
@@ -756,21 +1424,20 @@
     }
 
     /* Formular als aufklappbare Zweitoption */
-    .form-card { border-radius: var(--radius); background: var(--s1); }
     .form-toggle {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: 22px 32px;
+      min-height: 64px;
+      padding: 18px 32px;
       border: 0;
       background: transparent;
       font-weight: 500;
       text-align: start;
       cursor: pointer;
     }
-    .form-toggle[aria-expanded="true"] .faq-arrow { transform: rotate(225deg); margin-top: 4px; }
     .form-body { padding: 0 32px 32px; }
     #cf { display: flex; flex-direction: column; gap: 18px; }
     .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -779,12 +1446,12 @@
     input, textarea, select {
       width: 100%;
       padding: 13px 16px;
-      border: 1px solid transparent;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
-      background: var(--s2);
+      background: rgba(7, 11, 22, 0.55);
       color: var(--fg);
       font-family: var(--sans);
-      font-size: 0.9375rem;
+      font-size: 1rem;
       outline: none;
       transition: border-color 180ms ease;
       -webkit-appearance: none;
@@ -811,27 +1478,24 @@
     .form-err { display: none; padding: 12px 16px; border-radius: 10px; background: var(--s2); color: #f2a7a7; font-size: 0.9375rem; }
     .form-err a { color: inherit; }
 
-    /* ── Footer ────────────────────────────────────────────────── */
-    .footer { padding-block: clamp(80px, 10vw, 136px) 40px; background: var(--s1); }
-    .footer-mark { width: 100%; height: auto; opacity: 0.92; }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 5fr) repeat(2, minmax(0, 2fr));
-      gap: clamp(32px, 5vw, 72px);
-      margin-top: clamp(48px, 6vw, 80px);
-    }
-    .footer-slogan { font-family: var(--serif); font-size: 1.75rem; line-height: 1.15; margin-bottom: 14px; }
+    /* ── Footer: kompakt; unten Platz für die Floating Buttons und den Cookie-Hinweis ── */
+    .footer { position: relative; padding-block: clamp(64px, 7vw, 96px) calc(120px + var(--cookie-h, 0px)); background: rgba(12, 18, 34, 0.82); border-top: 1px solid rgba(255, 255, 255, 0.07); }
+    .footer-grid { display: grid; grid-template-columns: minmax(0, 5fr) repeat(2, minmax(0, 2fr)); gap: clamp(32px, 5vw, 72px); }
+    .footer-logo { height: 20px; width: auto; margin-bottom: 26px; }
+    .footer-slogan { font-family: var(--serif); font-weight: 300; font-size: 2rem; line-height: 1.15; margin-bottom: 14px; }
     .footer-tagline { color: var(--a1); font-size: 0.9375rem; max-width: 42ch; }
-    .footer h2 { font-size: 0.9375rem; font-weight: 500; color: var(--a1); margin-bottom: 14px; }
-    .footer-links { display: flex; flex-direction: column; gap: 10px; }
-    .footer-links a { text-decoration: none; font-size: 0.9375rem; transition: color 180ms ease; }
+    .footer h2 { font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--a3); margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 4px; }
+    .footer-links a { display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; font-size: 0.9375rem; transition: color 180ms ease; }
     .footer-links a:hover { color: var(--accent-lt); }
     .footer-base {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       gap: 12px 32px;
-      margin-top: clamp(48px, 6vw, 80px);
+      margin-top: clamp(40px, 5vw, 64px);
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
       font-size: 0.8125rem;
       color: var(--a2);
     }
@@ -848,7 +1512,10 @@
       justify-content: space-between;
       gap: 12px 20px;
       padding: 16px var(--gutter);
-      background: var(--s2);
+      background: rgba(19, 27, 48, 0.9);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
     }
     .cookie p { flex: 1; min-width: 200px; font-size: 0.8125rem; line-height: 1.6; color: var(--a1); }
     .cookie a { color: var(--accent-lt); }
@@ -857,7 +1524,7 @@
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .js .reveal { opacity: 1; transform: none; transition: none; }
-      .hero-media img, .msg, .typing span { animation: none; }
+      .msg, .typing span, .film-cue::after, .ambient i, .ticker-bar i, .wave i, .flow::after { animation: none; }
       .btn, .chip, .faq-a, .faq-arrow { transition: none; }
     }
 
@@ -868,15 +1535,44 @@
   <!-- Vercel Web Analytics (cookiefrei, keine IP-Speicherung) -->
   <script defer src="/_vercel/insights/script.js"></script>
   <script defer src="/track.js"></script>
+  <!-- Scroll-Film: GSAP 3.15 + ScrollTrigger und Lenis 1.3 selbst gehostet, Engine in film.js -->
+  <script defer src="/vendor/gsap.min.js"></script>
+  <script defer src="/vendor/ScrollTrigger.min.js"></script>
+  <script defer src="/vendor/lenis.min.js"></script>
+  <script defer src="/film-manifest.js"></script>
+  <script defer src="/film.js"></script>
 </head>
 
 <body>
 
+<!-- Symbole (Lucide-Stil, 24er Raster), Kanäle ohne Markenlogos -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+    <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-lang" viewBox="0 0 24 24"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="i-handoff" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  </defs>
+</svg>
+
+<!-- Raumlicht hinter den Glasflächen -->
+<div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+
 <!-- ══════════════════════════════════════════════════════════
-     HEADER
+     HEADER: schwebende Glasleiste
 ══════════════════════════════════════════════════════════ -->
 <header id="nav" class="nav">
-  <div class="wrap nav-inner">
+  <div class="nav-inner glass">
     <a href="#top" class="nav-logo" aria-label="HYBOTE">
       <img src="/logo-mobile-white.png" width="2328" height="374" alt="HYBOTE" />
     </a>
@@ -894,12 +1590,12 @@
         <button type="button" id="btn-de" aria-pressed="false" onclick="setLang('de')">DE</button>
         <button type="button" id="btn-ar" aria-pressed="false" onclick="setLang('ar')">AR</button>
       </div>
-      <a href="#kontakt" class="btn btn--primary btn--small nav-cta" data-i18n="nav.cta">Book a call</a>
+      <a href="#kontakt" class="btn btn--primary btn--small nav-cta" data-i18n="hero.cta1">Free intro call</a>
       <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-panel" data-i18n="nav.menu">Menu</button>
     </div>
   </div>
 
-  <div class="nav-panel" id="nav-panel">
+  <div class="nav-panel glass glass--strong" id="nav-panel">
     <a href="#leistungen" data-i18n="nav.services">Services</a>
     <a href="#beispiele" data-i18n="nav.demo">Live example</a>
     <a href="#ueber-uns" data-i18n="nav.about">About</a>
@@ -912,28 +1608,152 @@
 <main>
 
 <!-- ══════════════════════════════════════════════════════════
-     HERO: Rezeption bei Nacht, das Licht ist an, niemand wartet
+     FILM: der HYBOTE-Concierge in einer Fünf-Sterne-Lobby, fünf Kapitel von der Anfrage
+     um 23:47 bis zum Morgen. Bildfolgen in /film (build/film-frames.mjs), Steuerung film.js.
 ══════════════════════════════════════════════════════════ -->
-<section id="top" class="hero">
-  <picture class="hero-media">
-    <source media="(max-width: 700px)" type="image/webp" srcset="/media/hero-lobby-mobile.webp" />
-    <source media="(max-width: 700px)" srcset="/media/hero-lobby-mobile.jpg" />
-    <source type="image/webp" srcset="/media/hero-lobby-1600.webp 1600w, /media/hero-lobby-2560.webp 2560w" sizes="100vw" />
-    <img src="/media/hero-lobby-1600.jpg" srcset="/media/hero-lobby-1600.jpg 1600w, /media/hero-lobby-2560.jpg 2560w" sizes="100vw" width="1600" height="678" fetchpriority="high" decoding="async" alt="Empty hotel reception at night, a smartphone glowing on the counter" data-i18n-alt="hero.alt" />
-  </picture>
-
-  <div class="hero-copy">
-    <h1 class="display reveal" data-i18n="hero.h1">The future runs<br/>on its own.</h1>
-    <p class="hero-sub reveal" data-i18n="hero.sub">AI agents that answer every customer enquiry on WhatsApp, phone, email and Instagram. Around the clock, to a five-star service standard.</p>
-    <div class="hero-actions reveal">
-      <a href="#kontakt" class="btn btn--primary" data-i18n="hero.cta1">Free intro call</a>
-      <a href="#beispiele" class="btn btn--secondary" data-i18n="hero.cta2">See it live</a>
+<section id="top" class="film-scene" aria-labelledby="hero-title">
+  <div class="film-stage">
+    <div class="film-frame" aria-hidden="true">
+      <picture>
+        <source media="(max-aspect-ratio: 1/1)" srcset="/film/loops/hero-phone.webp?v=2e3b0d5c" width="900" height="1200" />
+        <img class="film-poster" src="/film/loops/hero.webp?v=b17f944f" width="1920" height="1080" alt="" fetchpriority="high" decoding="async" />
+      </picture>
+      <div class="film-loop-wrap"><video class="film-loop" muted playsinline loop preload="none"></video></div>
+      <canvas class="film-canvas"></canvas>
     </div>
-    <ul class="hero-trust reveal">
-      <li data-i18n="hero.trust1">Verified Meta Tech Provider</li>
-      <li data-i18n="hero.trust2">GDPR Compliant</li>
-      <li data-i18n="hero.trust3">Over 50 languages</li>
-    </ul>
+
+    <div class="hero-copy">
+      <div class="hero-main">
+        <div class="hero-head">
+          <p class="eyebrow" data-i18n="hero.eyebrow">AI agents for customer enquiries</p>
+          <h1 id="hero-title" class="hero-title mask"><span data-i18n="hero.h1">Every enquiry answered. Day and night.</span></h1>
+        </div>
+        <div class="hero-foot">
+          <p class="hero-sub" data-i18n="hero.sub">AI agents that answer every customer enquiry on WhatsApp, phone, email and Instagram. Around the clock, to a five-star service standard.</p>
+          <div class="hero-ctas">
+            <a href="#kontakt" class="btn btn--primary" data-i18n="hero.cta1">Free intro call</a>
+            <a href="#beispiele" class="btn btn--glass" data-i18n="hero.cta2">See it live</a>
+          </div>
+          <ul class="hero-trust">
+            <li data-i18n="hero.trust1">Verified Meta Tech Provider</li>
+            <li data-i18n="hero.trust2">GDPR Compliant</li>
+            <li data-i18n="hero.trust3">Over 50 languages</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Ticker: eine Nacht am Empfang (Beispiele, keine Live-Daten) -->
+      <div class="ticker glass" id="ticker" aria-hidden="true">
+        <div class="ticker-top"><span data-i18n="ticker.label">A night at the front desk</span><time id="ticker-time">23:47:12</time></div>
+        <div class="ticker-item" id="ticker-item">
+          <p class="ticker-chan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg><span id="ticker-chan" data-i18n="svc.ch.wa">WhatsApp</span></p>
+          <p class="ticker-q" id="ticker-q" data-i18n="ticker.q1">Is the apartment still available?</p>
+          <p class="ticker-a" id="ticker-a">Answered in 6 seconds</p>
+        </div>
+        <div class="ticker-bar"><i></i></div>
+      </div>
+    </div>
+    <p class="film-cue" aria-hidden="true"><span data-i18n="film.cue">What happens at 23:47</span></p>
+    <div class="film-rail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+    <ol class="beats">
+      <li class="beat beat--1">
+        <img class="beat-still" src="/film/stills/lit.webp?v=736f9d12" width="1200" height="900" loading="lazy" decoding="async" alt="" />
+        <div class="beat-head ch-left">
+          <p class="beat-label mask"><span><b>23:47:12</b><span data-i18n="film.b1.l">Enquiry received</span></span></p>
+          <h2 class="beat-title mask"><span data-i18n="film.b1.h">Your office is closed. A customer writes.</span></h2>
+          <p class="beat-body" data-i18n="film.b1.p">The enquiry arrives on WhatsApp, by phone, by email or on Instagram. Usually it waits until the morning.</p>
+        </div>
+      </li>
+
+      <li class="beat beat--2">
+        <img class="beat-still" src="/film/stills/turned.webp?v=933648fe" width="1200" height="900" loading="lazy" decoding="async" alt="" />
+        <span class="pulse" data-anchor data-shot="turn" data-x="0.8" data-y="0.3" data-at="0.42" aria-hidden="true"></span>
+        <div class="beat-head ch-left">
+          <p class="beat-label mask"><span><b>23:47:18</b><span data-i18n="film.b2.l">Answered</span></span></p>
+          <h2 class="beat-title mask"><span data-i18n="film.b2.h">Answered in six seconds.</span></h2>
+        </div>
+        <div class="beat-side ch-right">
+          <div class="bubbles">
+            <p class="bubble bubble--in" data-in="0.16"><span data-i18n="film.b2.q">Hello, is the apartment on Harbour Terrace still available?</span><time>23:47:12</time></p>
+            <p class="bubble bubble--out" data-in="0.44"><span data-i18n="film.b2.a">Good evening. Yes, it is still available. Would you like to see it this weekend?</span><time>23:47:18</time></p>
+          </div>
+          <p class="beat-body" data-i18n="film.b2.p">In the customer's language and in the tone of your business. Nobody on your team has to get up.</p>
+        </div>
+      </li>
+
+      <li class="beat beat--3">
+        <img class="beat-still" src="/film/stills/open.webp?v=b670be97" width="1200" height="900" loading="lazy" decoding="async" alt="" />
+        <ul class="chans">
+          <li class="chan" data-anchor data-shot="open" data-side="before" data-x="0.71" data-y="0.38" data-in="0.6"><i class="chan-line"></i><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-phone"/></svg><b data-i18n="svc.ch.phone">Phone</b></span></li>
+          <li class="chan" data-anchor data-shot="open" data-side="before" data-x="0.7" data-y="0.48" data-in="0.64"><i class="chan-line"></i><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chat"/></svg><b data-i18n="svc.ch.wa">WhatsApp</b></span></li>
+          <li class="chan" data-anchor data-shot="open" data-side="before" data-x="0.7" data-y="0.58" data-in="0.68"><i class="chan-line"></i><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-mail"/></svg><b data-i18n="svc.ch.mail">Email</b></span></li>
+          <li class="chan" data-anchor data-shot="open" data-side="before" data-x="0.71" data-y="0.68" data-in="0.72"><i class="chan-line"></i><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-send"/></svg><b data-i18n="svc.ch.ig">Instagram</b></span></li>
+        </ul>
+        <div class="beat-head ch-left">
+          <p class="beat-label mask"><span><b>24/7</b><span data-i18n="film.b3.l">Every channel</span></span></p>
+          <h2 class="beat-title mask"><span data-i18n="film.b3.h">One front desk for every channel.</span></h2>
+        </div>
+        <div class="beat-side ch-right">
+          <p class="beat-body" data-i18n="film.b3.p">Phone, WhatsApp, email and Instagram are answered by the same front desk, to the same standard.</p>
+        </div>
+      </li>
+
+      <li class="beat beat--4">
+        <img class="beat-still" src="/film/stills/book.webp?v=39df7aa8" width="1200" height="900" loading="lazy" decoding="async" alt="" />
+        <div class="beat-head ch-left">
+          <p class="beat-label mask"><span><b>23:49:02</b><span data-i18n="film.b4.l">Booked</span></span></p>
+          <h2 class="beat-title mask"><span data-i18n="film.b4.h">Qualified and booked.</span></h2>
+        </div>
+        <div class="beat-side ch-right">
+          <div class="booking glass" data-in="0.4">
+            <p class="booking-title" data-i18n="film.b4.card">Viewing booked</p>
+            <p class="booking-slot" data-i18n="demo.s1">Saturday, 11:00</p>
+            <p class="booking-note" data-i18n="film.b4.note">Summary sent to your team</p>
+          </div>
+          <p class="beat-body" data-i18n="film.b4.p">Budget, need and timing are clarified. The appointment goes into your calendar, and your team receives a short summary.</p>
+        </div>
+      </li>
+
+      <li class="beat beat--5">
+        <img class="beat-still" src="/film/stills/bell.webp?v=de6972d8" width="1200" height="900" loading="lazy" decoding="async" alt="" />
+        <div class="beat-head ch-left">
+          <p class="beat-label mask"><span><b>50+</b><span data-i18n="film.b5.l">Languages</span></span></p>
+          <h2 class="beat-title mask"><span data-i18n="film.b5.h">In over 50 languages.</span></h2>
+          <p class="greet"><span lang="en">Good evening</span><span lang="de">Guten Abend</span><span lang="ar" dir="rtl">مساء الخير</span><span lang="fr">Bonsoir</span><span lang="es">Buenas noches</span><span lang="tr">İyi akşamlar</span></p>
+        </div>
+        <div class="beat-side ch-right">
+          <p class="beat-body" data-i18n="film.b5.p">Every customer is welcomed in their own language, as at the front desk of a great hotel.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="film-end">
+      <p class="film-slogan" data-i18n="footer.slogan">The future runs on its own.</p>
+      <a href="#kontakt" class="btn btn--primary" data-i18n="hero.cta1">Free intro call</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     BENCHMARK: die eigene Studie als Beleg direkt nach dem Film, Link auf /benchmark/
+══════════════════════════════════════════════════════════ -->
+<section class="band" aria-labelledby="band-title">
+  <div class="wrap">
+    <div class="band-card glass reveal">
+      <p class="band-num" dir="ltr"><span data-count="63">63</span><small>%</small></p>
+      <div class="band-copy">
+        <p class="eyebrow" data-i18n="band.eyebrow">Benchmark</p>
+        <h2 id="band-title" class="band-title" data-i18n="band.h2">of 144 buyer enquiries to real estate brokerages in the GCC never received a reply.</h2>
+        <p class="band-sub" data-i18n="band.sub">The median first reply took 9.4 hours. We sent the enquiries anonymously and recorded what happened next.</p>
+        <ul class="band-facts">
+          <li><b dir="ltr">144</b><span data-i18n="band.f1">enquiries sent</span></li>
+          <li><b data-i18n="band.f2v">9.4 h</b><span data-i18n="band.f2">median first reply</span></li>
+        </ul>
+        <a class="text-link" href="/benchmark/" data-i18n="band.link">Read the benchmark</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -947,7 +1767,8 @@
     <div class="demo-grid">
 
       <div class="demo-copy">
-        <h2 class="h2 reveal" data-i18n="demo.h2">One enquiry at 23:47.</h2>
+        <p class="eyebrow reveal" data-i18n="nav.demo">Live example</p>
+        <h2 class="h2 reveal" data-i18n="demo.h2">Now reply yourself.</h2>
         <p class="lead reveal" data-i18n="demo.sub">A buyer writes about an apartment while your office is closed. Reply as the buyer and watch the agent answer: within seconds, in the buyer's language, to a five-star standard.</p>
         <ul class="outcomes reveal" id="demo-outcomes">
           <li><span class="mark" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span data-i18n="demo.o1">Answered within seconds, at 23:47</span></li>
@@ -960,42 +1781,44 @@
       <div class="demo-stage reveal">
         <div class="demo-langs">
           <span class="demo-langs-label" id="demo-langs-label" data-i18n="demo.lang">The buyer writes in</span>
-          <div class="demo-langs-btns" role="group" aria-labelledby="demo-langs-label">
+          <div class="demo-langs-btns glass" role="group" aria-labelledby="demo-langs-label">
             <button type="button" lang="de" data-demo-lang="de" aria-pressed="false">Deutsch</button>
             <button type="button" lang="en" data-demo-lang="en" aria-pressed="true">English</button>
             <button type="button" lang="ar" data-demo-lang="ar" aria-pressed="false">العربية</button>
           </div>
         </div>
 
-        <div class="phone" data-ui>
-          <div class="phone-top">
-            <span class="phone-avatar" aria-hidden="true">H</span>
-            <div>
-              <div class="phone-name" id="demo-firm">Harbour Estates</div>
-              <div class="phone-status" id="demo-online">online</div>
+        <div class="phone glass" data-ui>
+          <div class="phone-screen">
+            <div class="phone-top">
+              <span class="phone-avatar" aria-hidden="true">H</span>
+              <div>
+                <div class="phone-name" id="demo-firm">Harbour Estates</div>
+                <div class="phone-status" id="demo-online">online</div>
+              </div>
             </div>
+            <!-- Ohne JavaScript bleibt dieses Transkript stehen; das Skript spielt es interaktiv ab. -->
+            <div class="chat" id="demo-chat" role="log" aria-live="polite" lang="en">
+              <div class="msg msg--buyer">Hello, I saw the 3-bedroom apartment on Harbour Terrace. Is it still available?<time>23:47</time></div>
+              <div class="msg msg--agent">Good evening, and thank you for your message. Yes, the apartment on Harbour Terrace is still available. So I can send you the right details, what budget do you have in mind?<time>23:47</time></div>
+              <div class="msg msg--buyer">Up to 1.5 million<time>23:47</time></div>
+              <div class="msg msg--agent">Thank you, that fits this apartment well. Are you planning to live in it yourself or to invest?<time>23:48</time></div>
+              <div class="msg msg--buyer">To live in<time>23:48</time></div>
+              <div class="msg msg--agent">Lovely. The bedrooms face the quiet courtyard and the living room looks out over the harbour. When would you like to see it?<time>23:48</time></div>
+              <div class="msg msg--buyer">This weekend<time>23:49</time></div>
+              <div class="msg msg--agent">Saturday at 11:00 or Sunday at 16:00 are still free. Which suits you better?<time>23:49</time></div>
+              <div class="msg msg--buyer">Saturday, 11:00<time>23:49</time></div>
+              <div class="msg msg--agent">Your viewing is booked for Saturday, 11:00. The confirmation and floor plan will follow here in a moment, and Sara from our team will meet you at the entrance. Have a pleasant evening.<time>23:49</time></div>
+            </div>
+            <div class="chips" id="demo-chips"></div>
           </div>
-          <!-- Ohne JavaScript bleibt dieses Transkript stehen; das Skript spielt es interaktiv ab. -->
-          <div class="chat" id="demo-chat" role="log" aria-live="polite" lang="en">
-            <div class="msg msg--buyer">Hello, I saw the 3-bedroom apartment on Harbour Terrace. Is it still available?<time>23:47</time></div>
-            <div class="msg msg--agent">Good evening, and thank you for your message. Yes, the apartment on Harbour Terrace is still available. So I can send you the right details, what budget do you have in mind?<time>23:47</time></div>
-            <div class="msg msg--buyer">Up to 1.5 million<time>23:47</time></div>
-            <div class="msg msg--agent">Thank you, that fits this apartment well. Are you planning to live in it yourself or to invest?<time>23:48</time></div>
-            <div class="msg msg--buyer">To live in<time>23:48</time></div>
-            <div class="msg msg--agent">Lovely. The bedrooms face the quiet courtyard and the living room looks out over the harbour. When would you like to see it?<time>23:48</time></div>
-            <div class="msg msg--buyer">This weekend<time>23:49</time></div>
-            <div class="msg msg--agent">Saturday at 11:00 or Sunday at 16:00 are still free. Which suits you better?<time>23:49</time></div>
-            <div class="msg msg--buyer">Saturday, 11:00<time>23:49</time></div>
-            <div class="msg msg--agent">Your viewing is booked for Saturday, 11:00. The confirmation and floor plan will follow here in a moment, and Sara from our team will meet you at the entrance. Have a pleasant evening.<time>23:49</time></div>
-          </div>
-          <div class="chips" id="demo-chips"></div>
         </div>
       </div>
 
     </div>
 
-    <div class="video-row" id="video">
-      <div class="video-frame reveal">
+    <div class="video-row glass reveal" id="video">
+      <div class="video-frame">
         <video id="explainer-video" preload="none" playsinline width="1920" height="1080" poster="/media/hybote-explainer-poster.jpg" aria-label="HYBOTE explainer video" data-i18n-aria="video.title">
           <source src="/media/hybote-explainer-en.mp4" type="video/mp4" />
         </video>
@@ -1008,9 +1831,10 @@
         </button>
       </div>
       <div class="video-copy">
-        <h3 class="video-title reveal" data-i18n="video.h2">HYBOTE in 77 seconds.</h3>
-        <p class="reveal" data-i18n="video.sub">What happens when a customer calls or writes at 2&nbsp;AM, and why nobody on your team has to be awake for it.</p>
-        <p class="small reveal" data-i18n="video.caption">Video in English, 1:17</p>
+        <p class="eyebrow" data-i18n="video.eyebrow">Explainer video</p>
+        <h3 class="video-title" data-i18n="video.h2">HYBOTE in 77 seconds.</h3>
+        <p class="small" data-i18n="video.sub">What happens when a customer calls or writes at 2&nbsp;AM, and why nobody on your team has to be awake for it.</p>
+        <p class="small" data-i18n="video.caption">Video in English, 1:17</p>
       </div>
     </div>
   </div>
@@ -1040,62 +1864,105 @@
 
 
 <!-- ══════════════════════════════════════════════════════════
-     LEISTUNGEN: KI-Agenten als Kern, drei Ergänzungen
+     LEISTUNGEN: KI-Agenten als Kern, drei Ergänzungen. Bento aus Glaskarten,
+     jede Karte zeigt als kleine Oberfläche, was die Leistung tut (Ablauf im Skript).
 ══════════════════════════════════════════════════════════ -->
 <section id="leistungen" class="section">
   <div class="wrap">
-    <div class="svc-head">
-      <h2 class="h2 reveal" data-i18n="svc.h2">What we build.</h2>
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow reveal" data-i18n="nav.services">Services</p>
+        <h2 class="h2 reveal" data-i18n="svc.h2">What we build.</h2>
+      </div>
       <p class="lead reveal" data-i18n="svc.sub">AI agents are our core. Around them we build the automations, AI solutions and software that make them work in your business.</p>
     </div>
 
-    <div class="svc-grid">
-      <article class="card svc--agents reveal">
-        <div class="svc">
-          <h3 class="h3" data-i18n="svc.agents.title">AI agents</h3>
-          <p data-i18n="svc.agents.body">Your first answer on every channel. They reply in seconds, qualify enquiries, book appointments and hand over to your team when a person is needed.</p>
+    <div class="bento">
+      <article class="svc svc--agents glass spot reveal" data-svc="agents">
+        <div class="svc-ui" aria-hidden="true">
+          <ul class="inbox">
+            <li>
+              <span class="inbox-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg></span>
+              <span class="inbox-txt"><b data-i18n="svc.ch.wa">WhatsApp</b><span data-i18n="ticker.q1">Is the apartment still available?</span></span>
+              <span class="inbox-st" data-i18n="inbox.done">Answered</span>
+            </li>
+            <li>
+              <span class="inbox-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-phone"/></svg></span>
+              <span class="inbox-txt"><b><span data-i18n="svc.ch.phone">Phone</span><span class="wave"><i></i><i></i><i></i><i></i><i></i></span></b><span data-i18n="ticker.q2">Can I book a test drive for Saturday?</span></span>
+              <span class="inbox-st" data-i18n="inbox.done">Answered</span>
+            </li>
+            <li>
+              <span class="inbox-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-mail"/></svg></span>
+              <span class="inbox-txt"><b data-i18n="svc.ch.mail">Email</b><span data-i18n="ticker.q3">Do you have an appointment this week?</span></span>
+              <span class="inbox-st" data-i18n="inbox.done">Answered</span>
+            </li>
+            <li>
+              <span class="inbox-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-send"/></svg></span>
+              <span class="inbox-txt"><b data-i18n="svc.ch.ig">Instagram</b><span data-i18n="ticker.q4">Do you also translate documents into Arabic?</span></span>
+              <span class="inbox-st" data-i18n="inbox.done">Answered</span>
+            </li>
+          </ul>
+        </div>
+        <div class="svc-body">
+          <p class="svc-num">01</p>
+          <h3 class="svc-name" data-i18n="svc.agents.title">AI agents</h3>
+          <p class="svc-text" data-i18n="svc.agents.body">Your first answer on every channel. They reply in seconds, qualify enquiries, book appointments and hand over to your team when a person is needed.</p>
           <p class="proof" data-i18n="svc.agents.proof">In use at <strong>Tim Sprachendienste</strong>: phone agent Nora has been taking interpreting and translation enquiries in German, English, French and Arabic since September 2026.</p>
         </div>
-        <ul class="inbox" data-ui>
-          <li><span data-i18n="svc.ch.wa">WhatsApp</span><span class="inbox-st"><span data-i18n="svc.ch.done">answered</span>&nbsp;23:47</span></li>
-          <li><span data-i18n="svc.ch.phone">Phone</span><span class="inbox-st"><span data-i18n="svc.ch.done">answered</span>&nbsp;07:58</span></li>
-          <li><span data-i18n="svc.ch.mail">Email</span><span class="inbox-st"><span data-i18n="svc.ch.done">answered</span>&nbsp;12:30</span></li>
-          <li><span data-i18n="svc.ch.ig">Instagram</span><span class="inbox-st"><span data-i18n="svc.ch.done">answered</span>&nbsp;21:15</span></li>
-        </ul>
       </article>
 
-      <article class="card svc svc--auto reveal">
-        <h3 class="h3" data-i18n="svc.auto.title">Automations</h3>
-        <p data-i18n="svc.auto.body">Processes that run on their own: from the enquiry to the CRM, the quote and the follow-up. Built on n8n and connected to the tools you already use.</p>
-        <ol class="flow" data-ui>
-          <li data-i18n="svc.flow.1">Enquiry received</li>
-          <li data-i18n="svc.flow.2">Contact saved in the CRM</li>
-          <li data-i18n="svc.flow.3">Quote sent</li>
-          <li data-i18n="svc.flow.4">Follow-up scheduled</li>
-        </ol>
-      </article>
-
-      <article class="card svc svc--ai reveal">
-        <h3 class="h3" data-i18n="svc.ai.title">Custom AI solutions</h3>
-        <p data-i18n="svc.ai.body">When standard tools are not enough: AI built around your own data and processes, from document checks to internal assistants for your team.</p>
-        <ul class="doccheck" data-ui>
-          <li><span data-i18n="svc.doc.1">Payslips</span><span class="ok" data-i18n="svc.doc.ok">complete</span></li>
-          <li><span data-i18n="svc.doc.2">Proof of identity</span><span class="ok" data-i18n="svc.doc.ok">complete</span></li>
-          <li><span data-i18n="svc.doc.3">Bank statements</span><span class="open" data-i18n="svc.doc.open">one month missing</span></li>
-        </ul>
-      </article>
-
-      <article class="card svc svc--dev reveal">
-        <div class="svc">
-          <h3 class="h3" data-i18n="svc.dev.title">Software development</h3>
-          <p data-i18n="svc.dev.body">Websites, web apps and portals, for when your processes need more than an agent.</p>
+      <article class="svc svc--auto glass spot reveal" data-svc="auto">
+        <div class="svc-ui" aria-hidden="true">
+          <ol class="flow">
+            <li><span class="flow-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-inbox"/></svg></span><span class="flow-txt"><span data-i18n="auto.n1">New enquiry</span><small dir="ltr">23:47</small></span></li>
+            <li><span class="flow-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-db"/></svg></span><span class="flow-txt"><span data-i18n="auto.n2">Saved to the CRM</span><small dir="ltr">23:47</small></span></li>
+            <li><span class="flow-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-doc"/></svg></span><span class="flow-txt"><span data-i18n="auto.n3">Quote sent</span><small dir="ltr">23:51</small></span></li>
+            <li><span class="flow-node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-repeat"/></svg></span><span class="flow-txt"><span data-i18n="auto.n4">Follow-up scheduled</span><small data-i18n="auto.t4">in 3 days</small></span></li>
+          </ol>
         </div>
-        <div>
-          <p class="projects-lead" data-i18n="svc.dev.lead">Built for clients</p>
-          <ul class="projects">
-            <li data-i18n="svc.dev.p1"><strong>Bucan Automobile</strong>: website with vehicle management</li>
-            <li data-i18n="svc.dev.p2"><strong>Finanztime</strong>: website with a document checklist</li>
+        <div class="svc-body">
+          <p class="svc-num">02</p>
+          <h3 class="svc-name" data-i18n="svc.auto.title">Automations</h3>
+          <p class="svc-text" data-i18n="svc.auto.body">Processes that run on their own: from the enquiry to the CRM, the quote and the follow-up. Built on n8n and connected to the tools you already use.</p>
+        </div>
+      </article>
+
+      <article class="svc svc--ai glass spot reveal" data-svc="ai">
+        <div class="svc-ui" aria-hidden="true">
+          <ul class="docs">
+            <li><svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-doc"/></svg><span class="doc-name" data-i18n="ai.d1">Passport</span><span class="doc-st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg></span></li>
+            <li><svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-doc"/></svg><span class="doc-name" data-i18n="ai.d2">Payslips</span><span class="doc-st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg></span></li>
+            <li><svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-doc"/></svg><span class="doc-name" data-i18n="ai.d3">Bank statements</span><span class="doc-st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg></span></li>
+            <li data-miss><svg class="doc-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-doc"/></svg><span class="doc-name" data-i18n="ai.d4">Proof of address</span><span class="doc-st" data-i18n="ai.req">Requested</span></li>
           </ul>
+          <p class="docs-sum" style="--done:100%"><i></i><span id="docs-sum">3 / 3</span></p>
+          <span class="doc-scan"></span>
+        </div>
+        <div class="svc-body">
+          <p class="svc-num">03</p>
+          <h3 class="svc-name" data-i18n="svc.ai.title">Custom AI solutions</h3>
+          <p class="svc-text" data-i18n="svc.ai.body">When standard tools are not enough: AI built around your own data and processes, from document checks to internal assistants for your team.</p>
+        </div>
+      </article>
+
+      <article class="svc svc--dev glass spot reveal" data-svc="dev">
+        <div class="svc-ui">
+          <div class="browser">
+            <div class="browser-bar" aria-hidden="true">
+              <span class="browser-dots"><i></i><i></i><i></i></span>
+              <span class="browser-url" id="browser-url">bucan-automobile.de</span>
+            </div>
+            <div class="browser-view">
+              <img class="is-on" src="/media/work-bucan.webp" width="1200" height="750" loading="lazy" decoding="async" data-url="bucan-automobile.de" alt="Website of Bucan Automobile" data-i18n-alt="dev.alt1" />
+              <img src="/media/work-finanztime.webp" width="1200" height="750" loading="lazy" decoding="async" data-url="finanztime.com" alt="Website of Finanztime" data-i18n-alt="dev.alt2" />
+            </div>
+          </div>
+        </div>
+        <div class="svc-body">
+          <p class="svc-num">04</p>
+          <h3 class="svc-name" data-i18n="svc.dev.title">Software development</h3>
+          <p class="svc-text" data-i18n="svc.dev.body">Websites, web apps and portals, for when your processes need more than an agent.</p>
+          <p class="proof"><span data-i18n="svc.dev.lead">Built for clients</span>: <span data-i18n="svc.dev.p1"><strong>Bucan Automobile</strong>: website with vehicle management</span>, <span data-i18n="svc.dev.p2"><strong>Finanztime</strong>: website with a document checklist</span></p>
         </div>
       </article>
     </div>
@@ -1109,38 +1976,45 @@
 <section id="ueber-uns" class="section">
   <div class="wrap">
     <div class="founder-grid">
-      <figure class="founder-photo reveal">
-        <img src="/media/founder-mohamed-erassas.jpg" width="899" height="1246" loading="lazy" decoding="async" alt="Mohamed Erassas, founder of HYBOTE" data-i18n-alt="founder.alt" />
-      </figure>
-
-      <div class="founder-copy">
-        <h2 class="h2 reveal" data-i18n="founder.h2">Five-star service.<br/>In every industry.</h2>
-        <p class="lead reveal" data-i18n="founder.p1">For over a decade, I worked in upscale and renowned hotels. There, nobody waits for an answer. You notice what a guest needs before they ask, and you reply in their language and in the right tone, at any hour.</p>
-        <p class="reveal" data-i18n="founder.p2">That standard is not a technical skill. It is trained every day, with discretion as a given. My enthusiasm for AI came later, and with it one question: why should this level of service exist only at a hotel front desk?</p>
-        <p class="reveal" data-i18n="founder.p3">HYBOTE is my answer. We bring the discipline of five-star hospitality into AI agents that answer every call and every message, 24/7, in over 50 languages. For everyone.</p>
-        <div class="founder-sign reveal">
+      <div class="founder-media">
+        <figure class="founder-photo" data-shutter>
+          <img src="/media/founder-mohamed-erassas.jpg" width="899" height="1246" loading="lazy" decoding="async" alt="Mohamed Erassas, founder of HYBOTE" data-i18n-alt="founder.alt" />
+        </figure>
+        <div class="founder-card glass reveal">
           <span class="founder-name">Mohamed Erassas</span>
           <span class="small" data-i18n="founder.role">Founder, HYBOTE</span>
         </div>
       </div>
+
+      <div class="founder-copy">
+        <p class="eyebrow reveal" data-i18n="nav.about">About</p>
+        <h2 class="h2 reveal" data-i18n="founder.h2">Five-star service.<br/>In every industry.</h2>
+        <p class="lead reveal" data-fill data-i18n="founder.p1">For over a decade, I worked in upscale and renowned hotels. There, nobody waits for an answer. You notice what a guest needs before they ask, and you reply in their language and in the right tone, at any hour.</p>
+        <p class="reveal" data-i18n="founder.p2">That standard is not a technical skill. It is trained every day, with discretion as a given. My enthusiasm for AI came later, and with it one question: why should this level of service exist only at a hotel front desk?</p>
+        <p class="reveal" data-i18n="founder.p3">HYBOTE is my answer. We bring the discipline of five-star hospitality into AI agents that answer every call and every message, 24/7, in over 50 languages. For everyone.</p>
+      </div>
     </div>
 
-    <div class="principles card reveal">
-      <h3 class="h3" data-i18n="founder.band.lead">What hospitality taught me:</h3>
+    <div class="principles">
+      <h3 class="principles-head reveal" data-i18n="founder.band.lead">What hospitality taught me:</h3>
       <dl class="principles-grid">
-        <div>
+        <div class="principle glass spot reveal">
+          <div class="principle-top"><span class="principle-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-clock"/></svg></span><span class="principle-num">01</span></div>
           <dt data-i18n="founder.band.1.title">Nobody waits</dt>
           <dd data-i18n="founder.band.1.body">In a luxury hotel, no guest waits for an answer. With HYBOTE, neither do your customers, at 3&nbsp;PM or at 3&nbsp;AM.</dd>
         </div>
-        <div>
+        <div class="principle glass spot reveal">
+          <div class="principle-top"><span class="principle-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-lang"/></svg></span><span class="principle-num">02</span></div>
           <dt data-i18n="founder.band.2.title">Every guest in their language</dt>
           <dd data-i18n="founder.band.2.body">Guests arrive from all over the world and are answered in their language and tone. HYBOTE speaks over 50 languages.</dd>
         </div>
-        <div>
+        <div class="principle glass spot reveal">
+          <div class="principle-top"><span class="principle-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-shield"/></svg></span><span class="principle-num">03</span></div>
           <dt data-i18n="founder.band.3.title">Discretion as standard</dt>
           <dd data-i18n="founder.band.3.body">What a guest shares stays protected. Your customer data is kept separate and never shared.</dd>
         </div>
-        <div>
+        <div class="principle glass spot reveal">
+          <div class="principle-top"><span class="principle-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-handoff"/></svg></span><span class="principle-num">04</span></div>
           <dt data-i18n="founder.band.4.title">Knowing when a person takes over</dt>
           <dd data-i18n="founder.band.4.body">A good concierge knows the limits of the role. Our agents hand over to your team with a short summary as soon as a person is needed.</dd>
         </div>
@@ -1151,53 +2025,109 @@
 
 
 <!-- ══════════════════════════════════════════════════════════
+     KUNDENSTIMMEN: freigegebener Wortlaut der Kunden (DE original, EN/AR übersetzt),
+     ohne Sterne; Trustpilot-Link erst, wenn die Bewertungen dort sichtbar sind
+══════════════════════════════════════════════════════════ -->
+<section id="kunden" class="section" aria-labelledby="kunden-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow reveal" data-i18n="kunden.eyebrow">Client voices</p>
+        <h2 id="kunden-title" class="h2 reveal" data-i18n="kunden.h2">In their own words.</h2>
+      </div>
+      <p class="lead reveal" data-i18n="kunden.sub">A few of our client voices, unabridged and linked to each company.</p>
+    </div>
+    <div class="voices">
+      <figure class="voice voice--lead glass spot reveal">
+        <blockquote class="voice-quote">
+          <span class="voice-mark" aria-hidden="true">&ldquo;</span>
+          <p class="voice-title" data-i18n="kunden.1.title">Linguistically and technically top class</p>
+          <p class="voice-text" data-i18n="kunden.1.text">As one of the larger language service providers in Germany, we are naturally quite critical when it comes to language quality. HYBOTE built a voice agent for us that now answers our incoming calls. Honestly, the system responds like a real employee. It handles the entire phone reception and enquiry processing completely on its own, which saves our team an enormous amount of time every day.</p>
+        </blockquote>
+        <div class="voice-foot">
+          <figcaption class="voice-by"><img class="voice-logo" src="/media/kunden/tim.webp" width="153" height="120" alt="" loading="lazy" decoding="async" /><span class="voice-firm"><b>Tim Sprachendienste</b><span data-i18n="kunden.1.who">Language service provider</span><a class="voice-site" href="https://timsys.de" target="_blank" rel="noopener">timsys.de<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></span><span class="proof-chip" data-i18n="kunden.1.meta">Voice agent · September 2026</span></figcaption>
+          <p class="voice-tr" data-i18n="kunden.tr">Translated from German</p>
+        </div>
+      </figure>
+      <figure class="voice glass spot reveal">
+        <blockquote class="voice-quote">
+          <span class="voice-mark" aria-hidden="true">&ldquo;</span>
+          <p class="voice-title" data-i18n="kunden.2.title">Excellent advice on AI and finally the right website</p>
+          <p class="voice-text" data-i18n="kunden.2.text">For years we worked purely through referrals and had no website of our own, even though we are well established in the region. When we wanted to change that, we also asked ourselves where AI could sensibly support our internal processes. HYBOTE built a modern website for us from scratch and gave us practical advice on these possibilities. Our requirements were understood and reliably implemented. We felt in good hands throughout the entire collaboration and would recommend HYBOTE at any time.</p>
+        </blockquote>
+        <div class="voice-foot">
+          <figcaption class="voice-by"><img class="voice-logo" src="/media/kunden/finanztime.webp" width="188" height="120" alt="" loading="lazy" decoding="async" /><span class="voice-firm"><b>Finanztime</b><span data-i18n="kunden.2.who">Mortgage brokerage</span><a class="voice-site" href="https://www.finanztime.com" target="_blank" rel="noopener">finanztime.com<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></span><span class="proof-chip" data-i18n="kunden.2.meta">Website and AI consulting · August 2026</span></figcaption>
+          <p class="voice-tr" data-i18n="kunden.tr">Translated from German</p>
+        </div>
+      </figure>
+      <figure class="voice glass spot reveal">
+        <blockquote class="voice-quote">
+          <span class="voice-mark" aria-hidden="true">&ldquo;</span>
+          <p class="voice-title" data-i18n="kunden.3.title">Our own solution, lower monthly costs</p>
+          <p class="voice-text" data-i18n="kunden.3.text">Before working with HYBOTE, we spent a lot of money every month on external platforms. HYBOTE developed our own AI solution and built a new website for us. Especially when handling enquiries, we demonstrably save many hours. At the same time, we have demonstrably reduced our running costs and can focus more on our customers again. For us, the collaboration has definitely paid off.</p>
+        </blockquote>
+        <div class="voice-foot">
+          <figcaption class="voice-by"><img class="voice-logo" src="/media/kunden/bucan.webp" width="183" height="120" alt="" loading="lazy" decoding="async" /><span class="voice-firm"><b>Bucan Automobile</b><span data-i18n="kunden.3.who">Used car dealership</span><a class="voice-site" href="https://www.bucan-automobile.de" target="_blank" rel="noopener">bucan-automobile.de<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></span><span class="proof-chip" data-i18n="kunden.3.meta">AI solution and website · September 2026</span></figcaption>
+          <p class="voice-tr" data-i18n="kunden.tr">Translated from German</p>
+        </div>
+      </figure>
+    </div>
+    <p class="voices-note reveal" data-i18n="kunden.note">All voices come from companies HYBOTE has delivered projects for. Each company approved the wording and agreed to its publication.</p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
      FAQ (toggleFaq arbeitet nach DOM-Reihenfolge, JSON-LD unten mitziehen)
 ══════════════════════════════════════════════════════════ -->
 <section id="faq" class="section">
   <div class="wrap faq-grid">
     <div class="faq-side">
+      <p class="eyebrow reveal" data-i18n="nav.faq">FAQ</p>
       <h2 class="h2 reveal" data-i18n="faq.h2">Questions,<br/>answered.</h2>
-      <p class="reveal" data-i18n="faq.sub">Anything else? Ask us directly in the intro call.</p>
-      <a href="#kontakt" class="btn btn--secondary reveal" data-i18n="hero.cta1">Free intro call</a>
+      <div class="faq-cta glass reveal">
+        <p data-i18n="faq.sub">Anything else? Ask us directly in the intro call.</p>
+        <a href="#kontakt" class="btn btn--primary" data-i18n="hero.cta1">Free intro call</a>
+      </div>
     </div>
 
     <div class="faq-list">
-      <div class="faq-item reveal">
+      <div class="faq-item glass reveal">
         <button type="button" class="faq-q" onclick="toggleFaq(0)" aria-expanded="false" aria-controls="faq-a-0">
           <span data-i18n="faq.q1">What exactly does HYBOTE do?</span>
           <span class="faq-arrow" aria-hidden="true"></span>
         </button>
         <div class="faq-a" id="faq-a-0"><div class="faq-a-inner" data-i18n="faq.a1">HYBOTE builds AI agents that answer enquiries on WhatsApp, phone, email and social media, qualify prospects and book appointments. Around them we build automations, custom AI solutions and software.</div></div>
       </div>
-      <div class="faq-item reveal">
+      <div class="faq-item glass reveal">
         <button type="button" class="faq-q" onclick="toggleFaq(1)" aria-expanded="false" aria-controls="faq-a-1">
           <span data-i18n="faq.q4">How fast do we see results?</span>
           <span class="faq-arrow" aria-hidden="true"></span>
         </button>
         <div class="faq-a" id="faq-a-1"><div class="faq-a-inner" data-i18n="faq.a4">First automations typically go live within a few days. We set the exact timeline once we have mapped your processes.</div></div>
       </div>
-      <div class="faq-item reveal">
+      <div class="faq-item glass reveal">
         <button type="button" class="faq-q" onclick="toggleFaq(2)" aria-expanded="false" aria-controls="faq-a-2">
           <span data-i18n="faq.q6">Which channels and languages are supported?</span>
           <span class="faq-arrow" aria-hidden="true"></span>
         </button>
         <div class="faq-a" id="faq-a-2"><div class="faq-a-inner" data-i18n="faq.a6">WhatsApp, voice calls, email, website and social media, in over 50 languages and in your company's voice.</div></div>
       </div>
-      <div class="faq-item reveal">
+      <div class="faq-item glass reveal">
         <button type="button" class="faq-q" onclick="toggleFaq(3)" aria-expanded="false" aria-controls="faq-a-3">
           <span data-i18n="faq.q5">What about our data and privacy?</span>
           <span class="faq-arrow" aria-hidden="true"></span>
         </button>
         <div class="faq-a" id="faq-a-3"><div class="faq-a-inner" data-i18n="faq.a5">Your data stays yours. We work GDPR-compliant and on a data-minimisation principle, keep every client's data strictly separate and never share or sell it.</div></div>
       </div>
-      <div class="faq-item reveal">
+      <div class="faq-item glass reveal">
         <button type="button" class="faq-q" onclick="toggleFaq(4)" aria-expanded="false" aria-controls="faq-a-4">
           <span data-i18n="faq.q7">What does it cost?</span>
           <span class="faq-arrow" aria-hidden="true"></span>
         </button>
         <div class="faq-a" id="faq-a-4"><div class="faq-a-inner" data-i18n="faq.a7">It depends on scope. We start with a free intro call and give you a concrete proposal afterwards.</div></div>
       </div>
-      <div class="faq-item reveal">
+      <div class="faq-item glass reveal">
         <button type="button" class="faq-q" onclick="toggleFaq(5)" aria-expanded="false" aria-controls="faq-a-5">
           <span data-i18n="faq.q8">Does HYBOTE use the official WhatsApp Business API?</span>
           <span class="faq-arrow" aria-hidden="true"></span>
@@ -1229,33 +2159,41 @@
      KONTAKT: Calendly zuerst, Formular als Zweitoption
 ══════════════════════════════════════════════════════════ -->
 <section id="kontakt" class="section">
+  <div class="contact-bg" aria-hidden="true"><img src="/film/stills/dawn.webp?v=7245ab36" width="1600" height="900" loading="lazy" decoding="async" alt="" /></div>
   <div class="wrap contact-grid">
 
     <div class="contact-copy">
+      <p class="eyebrow reveal" data-i18n="footer.contact">Contact</p>
       <h2 class="h2 reveal" data-i18n="contact.h2">Book a free<br/>intro call.</h2>
       <p class="lead reveal" data-i18n="contact.sub">We'll show you in 20 minutes where the biggest lever sits in your business. No commitment, free of charge.</p>
 
       <ol class="steps reveal" aria-label="How it works" data-i18n-aria="contact.steps">
-        <li>
+        <li class="glass">
+          <div>
           <h3 data-i18n="contact.s1.t">A 20-minute call</h3>
           <p data-i18n="contact.s1.b">We look at your enquiries and channels together and show you where an agent helps most.</p>
+          </div>
         </li>
-        <li>
+        <li class="glass">
+          <div>
           <h3 data-i18n="contact.s2.t">Proposal and setup</h3>
           <p data-i18n="contact.s2.b">You receive a concrete proposal. Once you agree, we build and connect everything, often live within a few days.</p>
+          </div>
         </li>
-        <li>
+        <li class="glass">
+          <div>
           <h3 data-i18n="contact.s3.t">Live, and looked after</h3>
           <p data-i18n="contact.s3.b">After go-live we stay with you and refine the agent based on real conversations.</p>
+          </div>
         </li>
       </ol>
 
       <div class="direct reveal">
         <p class="direct-label" data-i18n="contact.direct">Or directly:</p>
         <div class="direct-links">
-          <a class="btn btn--secondary btn--small" href="https://wa.me/12134234114" target="_blank" rel="noopener">WhatsApp</a>
-          <a class="btn btn--secondary btn--small" href="tel:+16505146359" dir="ltr">+1 650 514 6359</a>
-          <a class="btn btn--secondary btn--small" href="mailto:contact@hybote.ai">contact@hybote.ai</a>
+          <a class="btn btn--glass btn--small" href="https://wa.me/12134234114" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="btn btn--glass btn--small" href="tel:+16505146359" dir="ltr">+1 650 514 6359</a>
+          <a class="btn btn--glass btn--small" href="mailto:contact@hybote.ai">contact@hybote.ai</a>
         </div>
       </div>
     </div>
@@ -1289,7 +2227,7 @@
       <script id="calendly-widget-script" src="https://assets.calendly.com/assets/external/widget.js" defer></script>
 
       <!-- Formular: Zweitoption, aufklappbar -->
-      <div class="form-card reveal">
+      <div class="form-card glass reveal">
         <button type="button" class="form-toggle" id="form-toggle" aria-expanded="false" aria-controls="form-body">
           <span data-i18n="contact.form.alt">Prefer to write? Send a request</span>
           <span class="faq-arrow" aria-hidden="true"></span>
@@ -1425,10 +2363,14 @@
     trackedFallback.searchParams.set('utm_content', tracking.content);
     if (fallback) fallback.href = trackedFallback.toString();
 
+    // Ab ~900px Breite zeigt Calendly Kalender und Uhrzeiten nebeneinander: feste Höhe, kein Mitwachsen.
+    // Schmaler stehen die Uhrzeiten untereinander, dann wächst das iframe mit (resize).
+    const wide = parent.offsetWidth >= 900;
+    parent.classList.toggle('is-fixed', wide);
     window.Calendly.initInlineWidget({
       url: CALENDLY_EVENT_URL + '?hide_event_type_details=1&hide_gdpr_banner=1',
       parentElement: parent,
-      resize: true,
+      resize: !wide,
       utm: {
         utmSource: 'hybote.ai',
         utmMedium: 'website',
@@ -1450,6 +2392,16 @@
     if (event.origin !== 'https://calendly.com' || !event.data || event.data.event !== 'calendly.event_type_viewed') return;
     const status = document.getElementById('calendly-status');
     if (status) status.hidden = true;
+  });
+
+  // Termin im eingebetteten Kalender gebucht: kurz die Bestätigung von Calendly zeigen (und track.js das Ereignis
+  // calendly_booked senden lassen), dann auf die Dankesseite. Der direkte Calendly-Link leitet über die Einstellung
+  // „Bestätigungsseite: Weiterleitung“ des Termintyps ebenfalls dorthin.
+  window.addEventListener('message', function (event) {
+    if (event.origin !== 'https://calendly.com' || !event.data || event.data.event !== 'calendly.event_scheduled') return;
+    setTimeout(function () {
+      window.location.href = '/danke.html?via=calendly' + (currentLang !== 'en' ? '&lang=' + currentLang : '');
+    }, 1600);
   });
 
   // Formular als Zweitoption auf- und zuklappen
@@ -1509,10 +2461,9 @@
 ══════════════════════════════════════════════════════════ -->
 <footer class="footer">
   <div class="wrap">
-    <img class="footer-mark" src="/logo-mobile-white.png" width="2328" height="374" alt="HYBOTE" loading="lazy" decoding="async" />
-
     <div class="footer-grid">
       <div class="footer-about">
+        <img class="footer-logo" src="/logo-mobile-white.png" width="2328" height="374" alt="HYBOTE" loading="lazy" decoding="async" />
         <p class="footer-slogan" data-i18n="footer.slogan">The future runs on its own.</p>
         <p class="footer-tagline" data-i18n="footer.tagline">We make sure every customer enquiry gets an answer. Instantly, on every channel, at any hour.</p>
       </div>
@@ -1555,19 +2506,16 @@ const T = {
     "nav.about": "About",
     "nav.faq": "FAQ",
     "nav.lang": "Language",
-    "nav.cta": "Book a call",
     "nav.menu": "Menu",
     "wa.tooltip": "Chat on WhatsApp",
     "call.tooltip": "Call us",
-    "hero.h1": "The future runs<br/>on its own.",
+    "hero.h1": "Every enquiry answered. Day and night.",
     "hero.sub": "AI agents that answer every customer enquiry on WhatsApp, phone, email and Instagram. Around the clock, to a five-star service standard.",
     "hero.cta1": "Free intro call",
-    "hero.cta2": "See it live",
     "hero.trust1": "Verified Meta Tech Provider",
     "hero.trust2": "GDPR Compliant",
     "hero.trust3": "Over 50 languages",
-    "hero.alt": "Empty hotel reception at night, a smartphone glowing on the counter",
-    "demo.h2": "One enquiry at 23:47.",
+    "demo.h2": "Now reply yourself.",
     "demo.sub": "A buyer writes about an apartment while your office is closed. Reply as the buyer and watch the agent answer: within seconds, in the buyer's language, to a five-star standard.",
     "demo.o1": "Answered within seconds, at 23:47",
     "demo.o2": "Budget, purpose and timing clarified",
@@ -1615,20 +2563,10 @@ const T = {
     "svc.ch.phone": "Phone",
     "svc.ch.mail": "Email",
     "svc.ch.ig": "Instagram",
-    "svc.ch.done": "answered",
     "svc.auto.title": "Automations",
     "svc.auto.body": "Processes that run on their own: from the enquiry to the CRM, the quote and the follow-up. Built on n8n and connected to the tools you already use.",
-    "svc.flow.1": "Enquiry received",
-    "svc.flow.2": "Contact saved in the CRM",
-    "svc.flow.3": "Quote sent",
-    "svc.flow.4": "Follow-up scheduled",
     "svc.ai.title": "Custom AI solutions",
     "svc.ai.body": "When standard tools are not enough: AI built around your own data and processes, from document checks to internal assistants for your team.",
-    "svc.doc.1": "Payslips",
-    "svc.doc.2": "Proof of identity",
-    "svc.doc.3": "Bank statements",
-    "svc.doc.ok": "complete",
-    "svc.doc.open": "one month missing",
     "svc.dev.title": "Software development",
     "svc.dev.body": "Websites, web apps and portals, for when your processes need more than an agent.",
     "svc.dev.lead": "Built for clients",
@@ -1710,6 +2648,73 @@ const T = {
     "cookie.notice": "Calendly is loaded immediately for appointment booking and may process booking and technical data in the USA.",
     "cookie.link": "Details in our Privacy Policy",
     "cookie.dismiss": "Got it",
+    "film.cue": "What happens at 23:47",
+    "film.b1.l": "Enquiry received",
+    "film.b1.h": "Your office is closed. A customer writes.",
+    "film.b1.p": "The enquiry arrives on WhatsApp, by phone, by email or on Instagram. Usually it waits until the morning.",
+    "film.b2.l": "Answered",
+    "film.b2.h": "Answered in six seconds.",
+    "film.b2.p": "In the customer's language and in the tone of your business. Nobody on your team has to get up.",
+    "film.b2.q": "Hello, is the apartment on Harbour Terrace still available?",
+    "film.b2.a": "Good evening. Yes, it is still available. Would you like to see it this weekend?",
+    "film.b3.l": "Every channel",
+    "film.b3.h": "One front desk for every channel.",
+    "film.b3.p": "Phone, WhatsApp, email and Instagram are answered by the same front desk, to the same standard.",
+    "film.b4.l": "Booked",
+    "film.b4.h": "Qualified and booked.",
+    "film.b4.p": "Budget, need and timing are clarified. The appointment goes into your calendar, and your team receives a short summary.",
+    "film.b4.card": "Viewing booked",
+    "film.b4.note": "Summary sent to your team",
+    "film.b5.l": "Languages",
+    "film.b5.h": "In over 50 languages.",
+    "film.b5.p": "Every customer is welcomed in their own language, as at the front desk of a great hotel.",
+    "band.h2": "of 144 buyer enquiries to real estate brokerages in the GCC never received a reply.",
+    "band.sub": "The median first reply took 9.4 hours. We sent the enquiries anonymously and recorded what happened next.",
+    "band.link": "Read the benchmark",
+    "hero.eyebrow": "AI agents for customer enquiries",
+    "hero.cta2": "See it live",
+    "ticker.label": "A night at the front desk",
+    "ticker.q1": "Is the apartment still available?",
+    "ticker.q2": "Can I book a test drive for Saturday?",
+    "ticker.q3": "Do you have an appointment this week?",
+    "ticker.q4": "Do you also translate documents into Arabic?",
+    "ticker.a": "Answered in {s} seconds",
+    "ticker.a2": "Answered on the first ring",
+    "band.eyebrow": "Benchmark",
+    "band.f1": "enquiries sent",
+    "band.f2v": "9.4 h",
+    "band.f2": "median first reply",
+    "video.eyebrow": "Explainer video",
+    "inbox.done": "Answered",
+    "auto.n1": "New enquiry",
+    "auto.n2": "Saved to the CRM",
+    "auto.n3": "Quote sent",
+    "auto.n4": "Follow-up scheduled",
+    "auto.t4": "in 3 days",
+    "ai.d1": "Passport",
+    "ai.d2": "Payslips",
+    "ai.d3": "Bank statements",
+    "ai.d4": "Proof of address",
+    "ai.req": "Requested",
+    "dev.alt1": "Website of Bucan Automobile",
+    "dev.alt2": "Website of Finanztime",
+    "kunden.eyebrow": "Client voices",
+    "kunden.h2": "In their own words.",
+    "kunden.sub": "A few of our client voices, unabridged and linked to each company.",
+    "kunden.tr": "Translated from German",
+    "kunden.note": "All voices come from companies HYBOTE has delivered projects for. Each company approved the wording and agreed to its publication.",
+    "kunden.1.title": "Linguistically and technically top class",
+    "kunden.1.text": "As one of the larger language service providers in Germany, we are naturally quite critical when it comes to language quality. HYBOTE built a voice agent for us that now answers our incoming calls. Honestly, the system responds like a real employee. It handles the entire phone reception and enquiry processing completely on its own, which saves our team an enormous amount of time every day.",
+    "kunden.1.who": "Language service provider",
+    "kunden.1.meta": "Voice agent · September 2026",
+    "kunden.2.title": "Excellent advice on AI and finally the right website",
+    "kunden.2.text": "For years we worked purely through referrals and had no website of our own, even though we are well established in the region. When we wanted to change that, we also asked ourselves where AI could sensibly support our internal processes. HYBOTE built a modern website for us from scratch and gave us practical advice on these possibilities. Our requirements were understood and reliably implemented. We felt in good hands throughout the entire collaboration and would recommend HYBOTE at any time.",
+    "kunden.2.who": "Mortgage brokerage",
+    "kunden.2.meta": "Website and AI consulting · August 2026",
+    "kunden.3.title": "Our own solution, lower monthly costs",
+    "kunden.3.text": "Before working with HYBOTE, we spent a lot of money every month on external platforms. HYBOTE developed our own AI solution and built a new website for us. Especially when handling enquiries, we demonstrably save many hours. At the same time, we have demonstrably reduced our running costs and can focus more on our customers again. For us, the collaboration has definitely paid off.",
+    "kunden.3.who": "Used car dealership",
+    "kunden.3.meta": "AI solution and website · September 2026",
   },
   de: {
     "nav.services": "Leistungen",
@@ -1717,19 +2722,16 @@ const T = {
     "nav.about": "Über uns",
     "nav.faq": "FAQ",
     "nav.lang": "Sprache",
-    "nav.cta": "Gespräch buchen",
     "nav.menu": "Menü",
     "wa.tooltip": "Auf WhatsApp schreiben",
     "call.tooltip": "Direkt anrufen",
-    "hero.h1": "Die Zukunft läuft<br/>von selbst.",
+    "hero.h1": "Jede Anfrage beantwortet. Tag und Nacht.",
     "hero.sub": "KI-Agenten, die jede Kundenanfrage beantworten: auf WhatsApp, am Telefon, per E-Mail und auf Instagram. Rund um die Uhr, mit Fünf-Sterne-Service.",
     "hero.cta1": "Kostenloses Kennenlerngespräch",
-    "hero.cta2": "Live ansehen",
     "hero.trust1": "Verifizierter Meta Tech Provider",
     "hero.trust2": "DSGVO-konform",
     "hero.trust3": "Über 50 Sprachen",
-    "hero.alt": "Leere Hotelrezeption bei Nacht, auf dem Tresen leuchtet ein Smartphone",
-    "demo.h2": "Eine Anfrage um 23:47.",
+    "demo.h2": "Jetzt antworten Sie selbst.",
     "demo.sub": "Ein Kaufinteressent schreibt zu einer Wohnung, während Ihr Büro geschlossen ist. Antworten Sie als Interessent und sehen Sie, wie der Agent reagiert: in Sekunden, in der Sprache des Kunden, auf Fünf-Sterne-Niveau.",
     "demo.o1": "Beantwortet in Sekunden, um 23:47",
     "demo.o2": "Budget, Zweck und Zeitraum geklärt",
@@ -1777,20 +2779,10 @@ const T = {
     "svc.ch.phone": "Telefon",
     "svc.ch.mail": "E-Mail",
     "svc.ch.ig": "Instagram",
-    "svc.ch.done": "beantwortet",
     "svc.auto.title": "Automationen",
     "svc.auto.body": "Abläufe, die von selbst laufen: von der Anfrage ins CRM, zum Angebot und zum Nachfassen. Gebaut auf n8n und verbunden mit den Werkzeugen, die Sie schon nutzen.",
-    "svc.flow.1": "Anfrage eingegangen",
-    "svc.flow.2": "Kontakt im CRM angelegt",
-    "svc.flow.3": "Angebot versendet",
-    "svc.flow.4": "Nachfassen geplant",
     "svc.ai.title": "Maßgeschneiderte KI-Lösungen",
     "svc.ai.body": "Wenn Standardwerkzeuge nicht reichen: KI, die um Ihre eigenen Daten und Prozesse herum gebaut ist, von der Dokumentenprüfung bis zum internen Assistenten für Ihr Team.",
-    "svc.doc.1": "Gehaltsnachweise",
-    "svc.doc.2": "Ausweis",
-    "svc.doc.3": "Kontoauszüge",
-    "svc.doc.ok": "vollständig",
-    "svc.doc.open": "ein Monat fehlt",
     "svc.dev.title": "Software-Entwicklung",
     "svc.dev.body": "Websites, Web-Apps und Portale, wenn Ihre Prozesse mehr brauchen als einen Agenten.",
     "svc.dev.lead": "Für Kunden gebaut",
@@ -1872,6 +2864,73 @@ const T = {
     "cookie.notice": "Calendly wird für die Terminbuchung sofort geladen und kann Buchungs- sowie technische Daten in den USA verarbeiten.",
     "cookie.link": "Mehr in der Datenschutzerklärung",
     "cookie.dismiss": "Verstanden",
+    "film.cue": "Was um 23:47 passiert",
+    "film.b1.l": "Anfrage geht ein",
+    "film.b1.h": "Ihr Büro ist geschlossen. Ein Kunde schreibt.",
+    "film.b1.p": "Die Anfrage kommt per WhatsApp, Telefon, E-Mail oder Instagram. Meist wartet sie bis zum nächsten Morgen.",
+    "film.b2.l": "Beantwortet",
+    "film.b2.h": "In sechs Sekunden beantwortet.",
+    "film.b2.p": "In der Sprache des Kunden und im Ton Ihres Unternehmens. Niemand aus Ihrem Team muss dafür aufstehen.",
+    "film.b2.q": "Hallo, ist die Wohnung an der Harbour Terrace noch frei?",
+    "film.b2.a": "Guten Abend. Ja, die Wohnung ist noch verfügbar. Möchten Sie sie am Wochenende besichtigen?",
+    "film.b3.l": "Jeder Kanal",
+    "film.b3.h": "Ein Empfang für jeden Kanal.",
+    "film.b3.p": "Telefon, WhatsApp, E-Mail und Instagram beantwortet derselbe Empfang, mit demselben Anspruch.",
+    "film.b4.l": "Gebucht",
+    "film.b4.h": "Qualifiziert und gebucht.",
+    "film.b4.p": "Budget, Bedarf und Zeitpunkt sind geklärt. Der Termin steht in Ihrem Kalender, Ihr Team erhält eine kurze Zusammenfassung.",
+    "film.b4.card": "Besichtigung gebucht",
+    "film.b4.note": "Zusammenfassung an Ihr Team gesendet",
+    "film.b5.l": "Sprachen",
+    "film.b5.h": "In über 50 Sprachen.",
+    "film.b5.p": "Jeder Kunde wird in seiner Sprache empfangen, wie an der Rezeption eines großen Hotels.",
+    "band.h2": "von 144 Kaufanfragen an Immobilienmakler in den Golfstaaten blieben ohne Antwort.",
+    "band.sub": "Die erste Antwort kam im Median nach 9,4 Stunden. Wir haben die Anfragen anonym gestellt und festgehalten, was danach geschah.",
+    "band.link": "Zum Benchmark (Englisch)",
+    "hero.eyebrow": "KI-Agenten für Kundenanfragen",
+    "hero.cta2": "Live ansehen",
+    "ticker.label": "Eine Nacht am Empfang",
+    "ticker.q1": "Ist die Wohnung noch frei?",
+    "ticker.q2": "Kann ich für Samstag eine Probefahrt buchen?",
+    "ticker.q3": "Haben Sie diese Woche noch einen Termin?",
+    "ticker.q4": "Übersetzen Sie auch Dokumente ins Arabische?",
+    "ticker.a": "Beantwortet in {s} Sekunden",
+    "ticker.a2": "Beim ersten Klingeln angenommen",
+    "band.eyebrow": "Studie",
+    "band.f1": "Anfragen gesendet",
+    "band.f2v": "9,4 Std.",
+    "band.f2": "erste Antwort im Median",
+    "video.eyebrow": "Erklärvideo",
+    "inbox.done": "Beantwortet",
+    "auto.n1": "Neue Anfrage",
+    "auto.n2": "Im CRM angelegt",
+    "auto.n3": "Angebot verschickt",
+    "auto.n4": "Nachfassen geplant",
+    "auto.t4": "in 3 Tagen",
+    "ai.d1": "Reisepass",
+    "ai.d2": "Gehaltsnachweise",
+    "ai.d3": "Kontoauszüge",
+    "ai.d4": "Meldebescheinigung",
+    "ai.req": "Angefordert",
+    "dev.alt1": "Webseite von Bucan Automobile",
+    "dev.alt2": "Webseite von Finanztime",
+    "kunden.eyebrow": "Kundenstimmen",
+    "kunden.h2": "In ihren Worten.",
+    "kunden.sub": "Ein paar unserer Kundenstimmen, ungekürzt und mit Link zum jeweiligen Unternehmen.",
+    "kunden.tr": "Aus dem Deutschen übersetzt",
+    "kunden.note": "Alle Stimmen stammen von Unternehmen, für die HYBOTE Projekte umgesetzt hat. Jedes Unternehmen hat den Wortlaut freigegeben und der Veröffentlichung zugestimmt.",
+    "kunden.1.title": "Sprachlich und technisch auf absolutem Top-Niveau",
+    "kunden.1.text": "Als einer der größeren Sprachdienstleister in Deutschland sind wir naturgemäß ziemlich kritisch, was Sprachqualität angeht. HYBOTE hat für uns einen Voice Agent gebaut, der jetzt unsere eingehenden Telefonate annimmt. Ehrlich gesagt reagiert das System wie ein echter Mitarbeiter. Es übernimmt die komplette Telefonannahme und Anfragenbearbeitung völlig selbstständig, was unserem Team im Alltag extrem viel Zeit spart.",
+    "kunden.1.who": "Sprachdienstleister",
+    "kunden.1.meta": "Voice Agent · September 2026",
+    "kunden.2.title": "Top Beratung beim Thema KI und endlich eine passende Webseite",
+    "kunden.2.text": "Wir haben jahrelang ausschließlich über Empfehlungen gearbeitet und hatten keine eigene Webseite, obwohl wir in der Region fest etabliert sind. Als wir das ändern wollten, haben wir uns zugleich gefragt, wo KI unsere internen Abläufe sinnvoll unterstützen kann. HYBOTE hat für uns von Grund auf eine moderne Webseite erstellt und uns praxisnah zu diesen Möglichkeiten beraten. Unsere Anforderungen wurden verstanden und zuverlässig umgesetzt. Wir haben uns während der gesamten Zusammenarbeit gut aufgehoben gefühlt und würden HYBOTE jederzeit weiterempfehlen.",
+    "kunden.2.who": "Baufinanzierung",
+    "kunden.2.meta": "Webseite und KI-Beratung · August 2026",
+    "kunden.3.title": "Eigene Lösung, weniger monatliche Kosten",
+    "kunden.3.text": "Vor der Zusammenarbeit mit HYBOTE haben wir jeden Monat viel Geld für externe Plattformen ausgegeben. HYBOTE hat für uns eine eigene KI-Lösung entwickelt und eine neue Webseite erstellt. Gerade bei der Bearbeitung von Anfragen sparen wir nachweislich viele Stunden. Gleichzeitig konnten wir unsere laufenden Kosten nachweislich senken und können uns wieder mehr auf unsere Kunden konzentrieren. Für uns hat sich die Zusammenarbeit definitiv gelohnt.",
+    "kunden.3.who": "Gebrauchtwagenhandel",
+    "kunden.3.meta": "KI-Lösung und Webseite · September 2026",
   },
   ar: {
     "nav.services": "خدماتنا",
@@ -1879,19 +2938,16 @@ const T = {
     "nav.about": "من نحن",
     "nav.faq": "الأسئلة الشائعة",
     "nav.lang": "اللغة",
-    "nav.cta": "احجز مكالمة",
     "nav.menu": "القائمة",
     "wa.tooltip": "تواصل عبر واتساب",
     "call.tooltip": "اتصل بنا",
-    "hero.h1": "المستقبل يعمل<br/>من تلقاء نفسه.",
+    "hero.h1": "كل استفسار يجد ردًا. ليلًا ونهارًا.",
     "hero.sub": "وكلاء ذكاء اصطناعي يجيبون عن كل استفسار من عملائك عبر واتساب والهاتف والبريد الإلكتروني وإنستغرام. على مدار الساعة، وبمعيار خدمة الخمس نجوم.",
     "hero.cta1": "مكالمة تعارف مجانية",
-    "hero.cta2": "شاهده مباشرة",
     "hero.trust1": "مزود تقني معتمد لدى Meta",
     "hero.trust2": "متوافق مع GDPR",
     "hero.trust3": "أكثر من 50 لغة",
-    "hero.alt": "مكتب استقبال فندقي خالٍ ليلًا، وعلى سطحه هاتف ذكي مضاء",
-    "demo.h2": "استفسار في الساعة 23:47.",
+    "demo.h2": "والآن جرّب الرد بنفسك.",
     "demo.sub": "يكتب مشترٍ مهتم عن شقة بينما مكتبك مغلق. أجب بصفتك المشتري وشاهد كيف يرد الوكيل: خلال ثوانٍ، بلغة العميل، وبمعيار الخمس نجوم.",
     "demo.o1": "تم الرد خلال ثوانٍ، في الساعة 23:47",
     "demo.o2": "تم توضيح الميزانية والغرض والتوقيت",
@@ -1939,20 +2995,10 @@ const T = {
     "svc.ch.phone": "الهاتف",
     "svc.ch.mail": "البريد الإلكتروني",
     "svc.ch.ig": "إنستغرام",
-    "svc.ch.done": "تم الرد",
     "svc.auto.title": "الأتمتة",
     "svc.auto.body": "عمليات تسير من تلقاء نفسها: من الاستفسار إلى نظام إدارة العملاء، ثم العرض والمتابعة. مبنية على n8n ومتصلة بالأدوات التي تستخدمها بالفعل.",
-    "svc.flow.1": "تم استلام الاستفسار",
-    "svc.flow.2": "حُفظت جهة الاتصال في نظام العملاء",
-    "svc.flow.3": "أُرسل العرض",
-    "svc.flow.4": "جُدولت المتابعة",
     "svc.ai.title": "حلول ذكاء اصطناعي مخصّصة",
     "svc.ai.body": "حين لا تكفي الأدوات الجاهزة: ذكاء اصطناعي مبني حول بياناتك وعملياتك الخاصة، من تدقيق المستندات إلى مساعدين داخليين لفريقك.",
-    "svc.doc.1": "إثباتات الراتب",
-    "svc.doc.2": "إثبات الهوية",
-    "svc.doc.3": "كشوف الحساب",
-    "svc.doc.ok": "مكتمل",
-    "svc.doc.open": "ينقص شهر واحد",
     "svc.dev.title": "تطوير البرمجيات",
     "svc.dev.body": "مواقع إلكترونية وتطبيقات ويب وبوابات، حين تحتاج عملياتك إلى أكثر من وكيل.",
     "svc.dev.lead": "نُفّذ لعملائنا",
@@ -2034,6 +3080,73 @@ const T = {
     "cookie.notice": "يتم تحميل Calendly فوراً لحجز المواعيد، وقد يعالج بيانات الحجز والبيانات التقنية في الولايات المتحدة.",
     "cookie.link": "التفاصيل في سياسة الخصوصية",
     "cookie.dismiss": "فهمت",
+    "film.cue": "ماذا يحدث في الساعة 23:47",
+    "film.b1.l": "وصول الاستفسار",
+    "film.b1.h": "مكتبك مغلق. وعميل يكتب.",
+    "film.b1.p": "يصل الاستفسار عبر واتساب أو الهاتف أو البريد الإلكتروني أو إنستغرام. وغالبًا ما ينتظر حتى الصباح.",
+    "film.b2.l": "تم الرد",
+    "film.b2.h": "الرد خلال ست ثوانٍ.",
+    "film.b2.p": "بلغة العميل وبأسلوب شركتك. ولا يحتاج أحد من فريقك إلى الاستيقاظ.",
+    "film.b2.q": "مرحبًا، هل الشقة في هاربور تيراس ما زالت متاحة؟",
+    "film.b2.a": "مساء الخير. نعم، ما زالت متاحة. هل تودّ معاينتها في عطلة نهاية الأسبوع؟",
+    "film.b3.l": "كل القنوات",
+    "film.b3.h": "استقبال واحد لكل القنوات.",
+    "film.b3.p": "الهاتف وواتساب والبريد الإلكتروني وإنستغرام، يجيب عنها الاستقبال نفسه وبالمعيار نفسه.",
+    "film.b4.l": "تم الحجز",
+    "film.b4.h": "تأهيل ثم حجز.",
+    "film.b4.p": "تتضح الميزانية والحاجة والتوقيت. يُسجَّل الموعد في تقويمك، ويتلقى فريقك ملخصًا قصيرًا.",
+    "film.b4.card": "تم حجز المعاينة",
+    "film.b4.note": "أُرسل الملخص إلى فريقك",
+    "film.b5.l": "لغات",
+    "film.b5.h": "بأكثر من 50 لغة.",
+    "film.b5.p": "يُستقبَل كل عميل بلغته، كما في استقبال فندق كبير.",
+    "band.h2": "من 144 استفسار شراء أُرسلت إلى وسطاء عقاريين في دول الخليج لم تتلقَّ أي رد.",
+    "band.sub": "جاء الرد الأول بعد 9.4 ساعات (الوسيط). أرسلنا الاستفسارات دون الكشف عن هويتنا وسجّلنا ما حدث بعدها.",
+    "band.link": "اقرأ الدراسة (بالإنجليزية)",
+    "hero.eyebrow": "وكلاء ذكاء اصطناعي لاستفسارات العملاء",
+    "hero.cta2": "شاهده مباشرة",
+    "ticker.label": "ليلة في مكتب الاستقبال",
+    "ticker.q1": "هل الشقة ما زالت متاحة؟",
+    "ticker.q2": "هل يمكنني حجز تجربة قيادة يوم السبت؟",
+    "ticker.q3": "هل لديكم موعد متاح هذا الأسبوع؟",
+    "ticker.q4": "هل تترجمون المستندات إلى العربية أيضًا؟",
+    "ticker.a": "تم الرد خلال {s} ثوانٍ",
+    "ticker.a2": "تم الرد من الرنة الأولى",
+    "band.eyebrow": "دراسة",
+    "band.f1": "استفسارًا مُرسَلًا",
+    "band.f2v": "9.4 ساعات",
+    "band.f2": "الوسيط لأول رد",
+    "video.eyebrow": "فيديو تعريفي",
+    "inbox.done": "تم الرد",
+    "auto.n1": "استفسار جديد",
+    "auto.n2": "حُفظ في نظام CRM",
+    "auto.n3": "أُرسل العرض",
+    "auto.n4": "جُدولت المتابعة",
+    "auto.t4": "بعد 3 أيام",
+    "ai.d1": "جواز السفر",
+    "ai.d2": "إثباتات الدخل",
+    "ai.d3": "كشوف الحساب البنكي",
+    "ai.d4": "إثبات العنوان",
+    "ai.req": "طُلب",
+    "dev.alt1": "موقع Bucan Automobile",
+    "dev.alt2": "موقع Finanztime",
+    "kunden.eyebrow": "آراء العملاء",
+    "kunden.h2": "بكلماتهم.",
+    "kunden.sub": "بعض آراء عملائنا، كاملة ومع رابط إلى موقع كل شركة.",
+    "kunden.tr": "مترجم من الألمانية",
+    "kunden.note": "جميع الآراء صادرة عن شركات نفّذت HYBOTE مشاريع لها. وقد وافقت كل شركة على النص وعلى نشره.",
+    "kunden.1.title": "لغويًا وتقنيًا في أعلى مستوى",
+    "kunden.1.text": "بصفتنا أحد أكبر مقدمي الخدمات اللغوية في ألمانيا، نحن بطبيعة الحال دقيقون جدًا فيما يخص جودة اللغة. بنت HYBOTE لنا وكيلًا صوتيًا يتولى الآن الرد على مكالماتنا الواردة. بصراحة، يتفاعل النظام كموظف حقيقي. فهو يتولى استقبال المكالمات ومعالجة الاستفسارات بالكامل وبشكل مستقل تمامًا، ما يوفر على فريقنا وقتًا كبيرًا جدًا في العمل اليومي.",
+    "kunden.1.who": "مقدم خدمات لغوية",
+    "kunden.1.meta": "وكيل صوتي · سبتمبر 2026",
+    "kunden.2.title": "استشارة ممتازة في الذكاء الاصطناعي وموقع مناسب أخيرًا",
+    "kunden.2.text": "عملنا لسنوات طويلة عبر التوصيات فقط ولم يكن لدينا موقع إلكتروني خاص بنا، رغم أننا راسخون في منطقتنا. وعندما أردنا تغيير ذلك، تساءلنا في الوقت نفسه أين يمكن للذكاء الاصطناعي أن يدعم عملياتنا الداخلية بشكل مفيد. أنشأت HYBOTE لنا موقعًا حديثًا من الصفر وقدمت لنا استشارة عملية حول هذه الإمكانات. فُهمت متطلباتنا ونُفّذت بموثوقية. شعرنا بالاطمئنان طوال فترة التعاون، ونوصي بـ HYBOTE في أي وقت.",
+    "kunden.2.who": "تمويل عقاري",
+    "kunden.2.meta": "موقع إلكتروني واستشارات ذكاء اصطناعي · أغسطس 2026",
+    "kunden.3.title": "حل خاص بنا وتكاليف شهرية أقل",
+    "kunden.3.text": "قبل التعاون مع HYBOTE كنا ننفق كل شهر الكثير من المال على منصات خارجية. طوّرت HYBOTE لنا حلًا خاصًا بالذكاء الاصطناعي وأنشأت لنا موقعًا إلكترونيًا جديدًا. ونوفّر بشكل ملموس ساعات كثيرة، خاصة في معالجة الاستفسارات. وفي الوقت نفسه تمكّنا من خفض تكاليفنا الجارية بشكل ملموس، وأصبح بإمكاننا التركيز مجددًا على عملائنا. بالنسبة لنا، كان التعاون مجديًا بلا شك.",
+    "kunden.3.who": "تجارة السيارات المستعملة",
+    "kunden.3.meta": "حل ذكاء اصطناعي وموقع إلكتروني · سبتمبر 2026",
   },
 };
 
@@ -2121,11 +3234,212 @@ function setLang(lang) {
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   items.forEach(el => obs.observe(el));
-  // Der Hero erscheint sofort beim Laden
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    document.querySelectorAll('.hero .reveal').forEach(el => el.classList.add('in'));
+  // Rollladen: per clip-path unsichtbar zählt nicht als sichtbar, deshalb den Rahmen beobachten
+  const shutters = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.querySelectorAll('[data-shutter]').forEach(s => s.classList.add('is-in'));
+      shutters.unobserve(e.target);
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('[data-shutter]').forEach(s => shutters.observe(s.parentElement));
+})();
+
+/* ── Floating Buttons: aus, solange der Film läuft oder der Footer zu sehen ist ── */
+(function () {
+  const html = document.documentElement;
+  const film = document.querySelector('.film-scene');
+  const footer = document.querySelector('.footer');
+  if (!film || !footer || !('IntersectionObserver' in window)) return;
+  const seen = { film: false, footer: false };
+  const apply = () => html.classList.toggle('fabs-off', (seen.film && film.classList.contains('is-live')) || seen.footer);
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { seen[e.target === footer ? 'footer' : 'film'] = e.isIntersecting; });
+    apply();
+  });
+  io.observe(film);
+  io.observe(footer);
+  document.addEventListener('hybote:film', apply);
+})();
+
+/* ── Hero-Ticker: eine Nacht am Empfang, vier Beispiel-Anfragen lösen einander ab ── */
+(function () {
+  const box = document.getElementById('ticker');
+  if (!box) return;
+  const time = document.getElementById('ticker-time');
+  const item = document.getElementById('ticker-item');
+  const chan = document.getElementById('ticker-chan');
+  const q = document.getElementById('ticker-q');
+  const a = document.getElementById('ticker-a');
+  const icon = item.querySelector('use');
+  const bar = box.querySelector('.ticker-bar i');
+  const ROWS = [
+    { t: '23:47:12', ch: 'svc.ch.wa', ico: '#i-chat', q: 'ticker.q1', a: 'ticker.a', s: 6 },
+    { t: '23:58:40', ch: 'svc.ch.phone', ico: '#i-phone', q: 'ticker.q2', a: 'ticker.a2' },
+    { t: '00:21:05', ch: 'svc.ch.mail', ico: '#i-mail', q: 'ticker.q3', a: 'ticker.a', s: 9 },
+    { t: '02:14:33', ch: 'svc.ch.ig', ico: '#i-send', q: 'ticker.q4', a: 'ticker.a', s: 4 },
+  ];
+  let i = 0;
+  const render = () => {
+    const r = ROWS[i];
+    const L = T[currentLang] || T.en;
+    time.textContent = r.t;
+    // data-i18n mitführen, damit setLang die gerade gezeigte Zeile übersetzt
+    chan.dataset.i18n = r.ch;
+    chan.innerHTML = L[r.ch];
+    q.dataset.i18n = r.q;
+    q.innerHTML = L[r.q];
+    a.textContent = L[r.a].replace('{s}', String(r.s));
+    icon.setAttribute('href', r.ico);
+  };
+  render();
+  document.addEventListener('hybote:lang', render);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  box.classList.add('is-run');
+  setInterval(() => {
+    // nur oben auf der Seite und im sichtbaren Tab
+    if (document.hidden || window.scrollY > window.innerHeight * 0.6) return;
+    i = (i + 1) % ROWS.length;
+    item.classList.remove('is-swap');
+    bar.style.animation = 'none';
+    void item.offsetWidth;
+    item.classList.add('is-swap');
+    bar.style.animation = '';
+    render();
+  }, 4200);
+})();
+
+/* ── Leistungen: die kleinen Oberflächen laufen, solange ihre Karte im Bild ist.
+      Ohne Skript oder bei reduzierter Bewegung steht der Endzustand (alles beantwortet, geprüft). ── */
+(function () {
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STEP = 1100;
+  const plays = {
+    // 01: die vier Anfragen werden nacheinander beantwortet, dann kurz Pause, dann von vorn
+    agents(card) {
+      const rows = Array.from(card.querySelectorAll('.inbox li'));
+      return (k) => rows.forEach((r, j) => r.classList.toggle('is-done', j < k % (rows.length + 3)));
+    },
+    // 02: der Lichtpunkt läuft per CSS; hier nur die Strecke vom ersten zum letzten Knoten
+    auto(card) {
+      const flow = card.querySelector('.flow');
+      const nodes = flow.querySelectorAll('li');
+      const measure = () => flow.style.setProperty('--flow-h', (nodes[nodes.length - 1].offsetTop - nodes[0].offsetTop) + 'px');
+      measure();
+      window.addEventListener('resize', measure);
+      return null;
+    },
+    // 03: Häkchen nacheinander, das letzte Dokument fehlt und wird nachgefordert; der Rahmen wandert mit
+    ai(card) {
+      const rows = Array.from(card.querySelectorAll('.docs li'));
+      const scan = card.querySelector('.doc-scan');
+      const sum = card.querySelector('#docs-sum');
+      const bar = card.querySelector('.docs-sum');
+      return (k) => {
+        const n = k % (rows.length + 3);
+        rows.forEach((r, j) => {
+          const reached = j < n;
+          r.classList.toggle('is-ok', reached && !r.hasAttribute('data-miss'));
+          r.classList.toggle('is-miss', reached && r.hasAttribute('data-miss'));
+        });
+        const at = rows[Math.min(n, rows.length - 1)];
+        scan.style.transform = 'translateY(' + (at.offsetTop - rows[0].offsetTop) + 'px)';
+        scan.style.opacity = n >= rows.length ? '0' : '';
+        const ok = Math.min(n, rows.length - 1);
+        sum.textContent = ok + ' / ' + (rows.length - 1);
+        bar.style.setProperty('--done', (ok / (rows.length - 1)) * 100 + '%');
+      };
+    },
+    // 04: die Kundenprojekte wechseln im Browserrahmen
+    dev(card) {
+      const imgs = Array.from(card.querySelectorAll('.browser-view img'));
+      const url = card.querySelector('#browser-url');
+      return (k) => {
+        if (k % 3) return;
+        const on = (k / 3) % imgs.length;
+        imgs.forEach((img, j) => img.classList.toggle('is-on', j === on));
+        url.textContent = imgs[on].dataset.url;
+      };
+    },
+  };
+  document.querySelectorAll('.svc[data-svc]').forEach(card => {
+    const step = plays[card.dataset.svc] && plays[card.dataset.svc](card);
+    if (still || !('IntersectionObserver' in window)) return;
+    let k = 0;
+    let timer = 0;
+    if (step) step(0);
+    new IntersectionObserver(([e]) => {
+      card.classList.toggle('is-run', e.isIntersecting);
+      clearInterval(timer);
+      if (e.isIntersecting && step) timer = setInterval(() => step(++k), STEP);
+    }, { threshold: 0.35 }).observe(card);
+  });
+})();
+
+/* ── Glaskarten: Lichtkante folgt dem Zeiger (nur mit Maus) ── */
+(function () {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll('.spot').forEach(el => el.addEventListener('pointermove', e => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    el.style.setProperty('--my', (e.clientY - r.top) + 'px');
   }));
 })();
+
+/* ── Gründertext: die Wörter des ersten Absatzes füllen sich beim Scrollen mit Farbe ── */
+(function () {
+  const el = document.querySelector('[data-fill]');
+  if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let words = [];
+  let queued = false;
+  const update = () => {
+    queued = false;
+    const r = el.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.3)));
+    const n = Math.round(p * words.length);
+    words.forEach((w, i) => w.classList.toggle('on', i < n));
+  };
+  const split = () => {
+    const text = el.textContent;
+    el.textContent = '';
+    text.split(/(\s+)/).forEach(part => {
+      if (!part.trim()) { el.append(part); return; }
+      const w = document.createElement('span');
+      w.className = 'w';
+      w.textContent = part;
+      el.append(w);
+    });
+    words = Array.from(el.querySelectorAll('.w'));
+    el.classList.add('is-filling');
+    update();
+  };
+  split();
+  window.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
+  // setLang schreibt den Absatz neu: danach wieder in Wörter teilen
+  document.addEventListener('hybote:lang', () => requestAnimationFrame(split));
+})();
+
+/* ── Benchmark-Band: die Zahl zählt einmal hoch, sobald sie ins Bild kommt ── */
+(function () {
+  const el = document.querySelector('[data-count]');
+  if (!el || !('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const to = Number(el.dataset.count);
+  el.textContent = '0';
+  const io = new IntersectionObserver(entries => {
+    if (!entries.some(e => e.isIntersecting)) return;
+    io.disconnect();
+    const t0 = performance.now();
+    const tick = now => {
+      const p = Math.min(1, (now - t0) / 1600);
+      el.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, { threshold: 0.5 });
+  io.observe(el);
+})();
+
 
 /* ── Erklärvideo: nur das Poster lädt mit der Seite, das MP4 erst beim Klick.
       Auf Deutsch läuft die deutsche Fassung. ── */
@@ -2411,14 +3725,24 @@ function setLang(lang) {
   <button type="button" class="btn btn--primary btn--small" onclick="dismissCookieNotice()" data-i18n="cookie.dismiss">Got it</button>
 </div>
 <script>
+  // Höhe des Hinweises als --cookie-h: Footer und Hero-Knopf rücken frei, nichts liegt darunter
+  function cookieHeight() {
+    const b = document.getElementById('cookie-banner');
+    const h = b && b.style.display !== 'none' ? b.offsetHeight : 0;
+    document.documentElement.style.setProperty('--cookie-h', h + 'px');
+  }
   (function () {
     let seen = false;
     try { seen = !!localStorage.getItem('calendly_notice_v1'); } catch (e) {}
     if (!seen) document.getElementById('cookie-banner').style.display = 'flex';
+    cookieHeight();
+    window.addEventListener('resize', cookieHeight);
+    document.addEventListener('hybote:lang', () => requestAnimationFrame(cookieHeight));
   })();
   function dismissCookieNotice() {
     try { localStorage.setItem('calendly_notice_v1', '1'); } catch (e) {}
     document.getElementById('cookie-banner').style.display = 'none';
+    cookieHeight();
   }
 </script>
 
@@ -2439,9 +3763,12 @@ function setLang(lang) {
     justify-content: center;
     text-decoration: none;
     z-index: 200;
-    transition: transform 200ms cubic-bezier(0.34,1.56,0.64,1);
+    transition: transform 200ms cubic-bezier(0.34,1.56,0.64,1), opacity 250ms ease, visibility 250ms;
     cursor: pointer;
   }
+  /* aus, solange der Film läuft oder der Footer zu sehen ist */
+  html.fabs-off .wa-btn,
+  html.fabs-off .call-btn { opacity: 0; visibility: hidden; pointer-events: none; }
   .wa-btn { right: 28px; }
   .call-btn { left: 28px; }
   .wa-btn:hover,
@@ -2567,13 +3894,7 @@ function setLang(lang) {
         callButton.setAttribute('aria-label', T[lang]['call.tooltip'] + ': +1 650 514 6359');
       }
     }
-    const _setLang = window.setLang;
-    if (typeof _setLang === 'function') {
-      window.setLang = function(lang) {
-        _setLang(lang);
-        updateContactLang(lang);
-      };
-    }
+    document.addEventListener('hybote:lang', e => updateContactLang(e.detail));
     updateContactLang(typeof currentLang !== 'undefined' ? currentLang : 'en');
   })();
 </script>

@@ -26,12 +26,13 @@ const mime = {
   '.mp4':  'video/mp4',
 };
 
-// Nur für lokale Screenshots: ?dev=1 schaltet die Scroll-Reveal-Animation ab und
+// Nur für lokale Screenshots: ?dev=1 schaltet die Einblendungen ab (Reveal, Hero-Einstieg,
+// Rollladen am Porträt, Scroll-Hinweis) und
 // ?y=<px> springt hart an eine Scrollposition. Headless Chrome löst den
 // IntersectionObserver sonst nie aus und fotografiert eine leere Seite.
 // Diese Datei ist in .gitignore, geht also nie live.
 const DEV_PATCH = `
-<style>.reveal{opacity:1!important;transform:none!important}html{scroll-behavior:auto!important}</style>
+<style>.reveal{opacity:1!important;transform:none!important}html{scroll-behavior:auto!important}.js .hero-title>span,.js .hero-foot>*,.js .hero-head .eyebrow,.js .ticker{animation:none!important;opacity:1!important;transform:none!important}.js [data-shutter]{clip-path:none!important}.js [data-shutter] img{transform:none!important}.film-cue::after{animation:none!important}</style>
 <script>addEventListener('DOMContentLoaded',function(){
   var y=new URLSearchParams(location.search).get('y');
   if(y)addEventListener('load',function(){scrollTo(0,+y)});
