@@ -269,7 +269,8 @@
   });
   $('imap-back').addEventListener('click', () => renderProviders());
 
-  // Server aus der Adresse ableiten (31.10.2026): füllt nur Felder, die leer sind oder schon von hier stammen.
+  // Server aus der Adresse ableiten (31.10.2026): füllt nur Felder, die leer sind, noch den Vorgabewert haben
+  // (Ports 993/465) oder schon von hier stammen.
   const autoFilled = {};
   async function detectMailbox() {
     const note = $('imap-detect'); note.hidden = true;
@@ -280,7 +281,7 @@
     if (payload.use === 'microsoft') { note.textContent = t('detectMicrosoft'); note.hidden = false; return; }
     const fill = (id, value) => {
       const current = $(id).value.trim();
-      if (current && current !== autoFilled[id]) return;
+      if (current && current !== autoFilled[id] && current !== $(id).defaultValue) return;
       $(id).value = String(value); autoFilled[id] = String(value);
     };
     $('imap-tls').checked = true;
