@@ -1,5 +1,10 @@
 // Eingangstor fuer alle Meta/WhatsApp-Callbacks.
 //
+// Seit 31.10.2026 auch fuer Instagram-DMs (Business Login for Instagram):
+// object === 'instagram' geht an N8N_INSTAGRAM_WEBHOOK_URL, alles andere wie
+// bisher an WhatsApp. Der WhatsApp-Pfad ist dabei unveraendert – gleiche
+// Reihenfolge, gleiches Secret, gleiche Antworten.
+//
 // Warum hier und nicht in n8n: Auf der Produktivinstanz darf ein Code-Node
 // weder Umgebungsvariablen lesen ("access to env vars denied") noch
 // require('crypto') benutzen ("Module 'crypto' is disallowed"). Eine
@@ -150,13 +155,29 @@ function verifySignature(rawBody, headerValue, appSecret) {
   return safeEqual(provided, expected);
 }
 
+/** Nur das Feld object der bereits geprueften Nutzlast, '' wenn sie kein JSON ist.
+ *  Geparst wird ausschliesslich, um das Ziel zu waehlen – weitergereicht werden
+ *  immer die Rohbytes. */
+function eventObject(rawBody) {
+  try {
+    const parsed = JSON.parse(rawBody.toString('utf8'));
+    return parsed && typeof parsed.object === 'string' ? parsed.object : '';
+  } catch (_error) {
+    return '';
+  }
+}
+
 function webhookConfig() {
   return {
     appSecret: process.env.META_APP_SECRET || '',
     verifyToken: process.env.META_WEBHOOK_VERIFY_TOKEN || '',
     webhookUrl: process.env.N8N_WHATSAPP_WEBHOOK_URL || '',
     authHeader: process.env.N8N_WEBHOOK_AUTH_HEADER || 'X-Hybote-Webhook-Token',
-    authValue: process.env.N8N_WEBHOOK_AUTH_VALUE || ''
+    authValue: process.env.N8N_WEBHOOK_AUTH_VALUE || '',
+    // Instagram ist optional: fehlt etwas davon, laeuft WhatsApp unveraendert weiter.
+    igAppSecret: process.env.IG_APP_SECRET || '',
+    igVerifyToken: process.env.IG_WEBHOOK_VERIFY_TOKEN || '',
+    igWebhookUrl: process.env.N8N_INSTAGRAM_WEBHOOK_URL || ''
   };
 }
 
@@ -173,8 +194,8 @@ function misconfigured(config) {
   return missing;
 }
 
-async function forwardToN8n(rawBody, signatureHeader, deliveryId, config) {
-  const forwarded = await fetchWithTimeout(config.webhookUrl, {
+async function forwardToN8n(targetUrl, rawBody, signatureHeader, deliveryId, config) {
+  const forwarded = await fetchWithTimeout(targetUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -206,7 +227,10 @@ function handleVerification(request, response) {
   const token = url.searchParams.get('hub.verify_token') || '';
   const challenge = url.searchParams.get('hub.challenge') || '';
 
-  if (mode !== 'subscribe' || !safeEqual(token, config.verifyToken)) {
+  // Der Instagram-Webhook wird im Meta-Dashboard mit eigenem Token verifiziert.
+  const tokenValid = safeEqual(token, config.verifyToken) ||
+    (config.igVerifyToken.length >= 32 && safeEqual(token, config.igVerifyToken));
+  if (mode !== 'subscribe' || !tokenValid) {
     rateLimited(clientFingerprint(request));
     return response.status(403).json({ ok: false, code: 'VERIFY_TOKEN_INVALID' });
   }
@@ -255,7 +279,16 @@ async function handleDelivery(request, response) {
 
   const deliveryId = crypto.createHash('sha256').update(rawBody).digest('hex').slice(0, 32);
 
-  if (!verifySignature(rawBody, signatureHeader, config.appSecret)) {
+  // Zuerst wie bisher mit META_APP_SECRET. Metas Doku sagt nicht eindeutig,
+  // welches Secret Instagram-Login-Webhooks signiert, deshalb als zweiter Versuch
+  // IG_APP_SECRET – das gilt aber nur fuer Instagram-Events: was an WhatsApp
+  // geht, muss wie bisher mit META_APP_SECRET signiert sein.
+  const metaSigned = verifySignature(rawBody, signatureHeader, config.appSecret);
+  const igSigned = !metaSigned && config.igAppSecret !== '' &&
+    verifySignature(rawBody, signatureHeader, config.igAppSecret) &&
+    eventObject(rawBody) === 'instagram';
+
+  if (!metaSigned && !igSigned) {
     rateLimited(clientFingerprint(request));
     // Nie den Body loggen – nur, was zur Diagnose eines falschen App Secrets reicht.
     console.warn('meta_webhook signature_invalid raw_len=%d content_length=%s',
@@ -270,21 +303,40 @@ async function handleDelivery(request, response) {
     return response.status(401).json({ ok: false, code: 'SIGNATURE_INVALID' });
   }
 
+  // Erst nach der Pruefung geparst. Nicht parsebar → wie bisher an WhatsApp.
+  const instagram = igSigned || eventObject(rawBody) === 'instagram';
+  const targetUrl = instagram ? config.igWebhookUrl : config.webhookUrl;
+  const logPrefix = instagram ? 'meta_webhook instagram' : 'meta_webhook';
+
+  if (instagram && !targetUrl.startsWith('https://')) {
+    console.error('meta_webhook instagram_not_configured delivery=%s missing=N8N_INSTAGRAM_WEBHOOK_URL', deliveryId);
+    await writeFailureRow({
+      event_id: deliveryId,
+      at: new Date().toISOString(),
+      ip_hash: clientFingerprint(request),
+      outcome: 'INSTAGRAM_NOT_CONFIGURED',
+      detail: 'missing=N8N_INSTAGRAM_WEBHOOK_URL'
+    });
+    // 503 wie bei WEBHOOK_NOT_CONFIGURED: Meta soll wiederholen, statt dass
+    // DMs stillschweigend verschwinden.
+    return response.status(503).json({ ok: false, code: 'INSTAGRAM_NOT_CONFIGURED' });
+  }
+
   let forwarded;
   try {
-    forwarded = await forwardToN8n(rawBody, signatureHeader, deliveryId, config);
+    forwarded = await forwardToN8n(targetUrl, rawBody, signatureHeader, deliveryId, config);
   } catch (error) {
     forwarded = { ok: false, status: 0, detail: String(error.name || error.message) };
   }
 
   if (!forwarded.ok) {
-    console.error('meta_webhook forward_failed delivery=%s n8n_status=%s', deliveryId, String(forwarded.status));
+    console.error(`${logPrefix} forward_failed delivery=%s n8n_status=%s`, deliveryId, String(forwarded.status));
     await writeFailureRow({
       event_id: deliveryId,
       at: new Date().toISOString(),
       ip_hash: clientFingerprint(request),
       outcome: 'FORWARD_FAILED',
-      detail: `n8n_status=${forwarded.status}${forwarded.detail ? `:${forwarded.detail}` : ''}`
+      detail: `${instagram ? 'instagram ' : ''}n8n_status=${forwarded.status}${forwarded.detail ? `:${forwarded.detail}` : ''}`
     });
     // 502 statt 200: eingehende WhatsApp-Nachrichten sind nicht reproduzierbar,
     // Meta ist die einzige Quelle. Metas At-least-once-Retry ist damit unsere
@@ -292,7 +344,7 @@ async function handleDelivery(request, response) {
     return response.status(502).json({ ok: false, code: 'FORWARD_FAILED' });
   }
 
-  console.log('meta_webhook ok delivery=%s raw_len=%d content_length=%s n8n_status=%s',
+  console.log(`${logPrefix} ok delivery=%s raw_len=%d content_length=%s n8n_status=%s`,
     deliveryId, rawBody.length, String(request.headers['content-length'] || ''), String(forwarded.status));
   return response.status(200).json({ ok: true });
 }

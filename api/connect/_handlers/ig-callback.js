@@ -1,5 +1,6 @@
-// Instagram-Callback (31.10.2026): Code → Kurz-Token → Langzeit-Token (etwa 60 Tage, verlaengerbar) → Profil lesen
-// → n8n-Credential (httpHeaderAuth) → Zeile in ig_tenants → zurueck zur Kundenseite. Der Token verlaesst n8n nie.
+// Instagram-Callback (31.10.2026): Code → Kurz-Token → Langzeit-Token (etwa 60 Tage, verlaengerbar) → Nachrichten-Abo
+// (subscribed_apps) → Profil lesen → n8n-Credential (httpHeaderAuth) → Zeile in ig_tenants → zurueck zur Kundenseite.
+// Der Token verlaesst n8n nie.
 const { verifyInviteToken } = require('../../meta/_invite.js');
 const { verifyState, parseCookies, safeEqual, redirectToPage, clientFingerprint, queryOf, baseUrl } = require('../_state.js');
 const { configured, ensureCredential } = require('../_n8n.js');
@@ -8,10 +9,10 @@ const { SCOPE } = require('./ig-start.js');
 
 const GRAPH = 'https://graph.instagram.com';
 
-async function json(res) {
+async function json(res, code = 'IG_TOKEN_FAILED') {
   const payload = await res.json().catch(() => ({}));
   if (!res.ok || payload.error || payload.error_type) {
-    const e = new Error('IG_TOKEN_FAILED');
+    const e = new Error(code);
     e.detail = String((payload.error && (payload.error.message || payload.error)) || payload.error_message || res.status).slice(0, 200);
     throw e;
   }
@@ -41,6 +42,9 @@ module.exports = async function handler(request, response) {
       body: new URLSearchParams({ client_id: process.env.IG_APP_ID, client_secret: process.env.IG_APP_SECRET, grant_type: 'authorization_code', redirect_uri: `${baseUrl()}/api/connect/ig/callback`, code }).toString()
     }));
     const long = await json(await fetch(`${GRAPH}/access_token?${new URLSearchParams({ grant_type: 'ig_exchange_token', client_secret: process.env.IG_APP_SECRET, access_token: short.access_token })}`));
+    // Ohne Abo schickt Meta keine DMs an den Webhook. Scheitert es, lieber Fehler (Kunde versucht es erneut) als still "verbunden".
+    const subscription = await json(await fetch(`${GRAPH}/v24.0/me/subscribed_apps?${new URLSearchParams({ subscribed_fields: 'messages', access_token: long.access_token })}`, { method: 'POST', headers: { Accept: 'application/json' } }), 'IG_SUBSCRIBE_FAILED');
+    if (subscription.success !== true) { const e = new Error('IG_SUBSCRIBE_FAILED'); e.detail = 'success!=true'; throw e; }
     const profile = await json(await fetch(`${GRAPH}/me?${new URLSearchParams({ fields: 'user_id,username,account_type', access_token: long.access_token })}`));
     const igUserId = String(profile.user_id || short.user_id || '');
     const username = String(profile.username || '');

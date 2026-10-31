@@ -12,12 +12,18 @@ const APP_SECRET = 'test-app-secret';
 const VERIFY_TOKEN = 'v'.repeat(64);
 const AUTH_VALUE = 'w'.repeat(64);
 const WEBHOOK_URL = 'https://flow.example.test/webhook/meta-inbound';
+const IG_APP_SECRET = 'test-ig-app-secret';
+const IG_VERIFY_TOKEN = 'i'.repeat(64);
+const IG_WEBHOOK_URL = 'https://flow.example.test/webhook/meta/instagram';
 
 // Absichtlich krumm: unregelmaessiger Whitespace, Unicode-Escapes statt
 // Literale, Zahlen mit Leerzeichen. Genau das reproduziert JSON.stringify
 // nach einem Reparse NICHT – daran haengt die ganze Signaturpruefung.
 const RAW = '{"object":"whatsapp_business_account",  "entry":[{"id":"1","t":"gr\\u00fc\\u00dfe","y":[1, 2]}]}';
+const IG_RAW = '{"object":"instagram", "entry":[{"time":1761930000,"id":"17841400000000000","messaging":[{"sender":{"id":"1"},"recipient":{"id":"17841400000000000"},"message":{"mid":"m1","text":"gr\\u00fc\\u00dfe"}}]}]}';
 
+// Die Instagram-Variablen sind in allen Tests gesetzt, wie spaeter in
+// Produktion: die WhatsApp-Faelle belegen damit, dass sie nichts veraendern.
 function configureEnvironment() {
   process.env.META_APP_SECRET = APP_SECRET;
   process.env.META_WEBHOOK_VERIFY_TOKEN = VERIFY_TOKEN;
@@ -26,6 +32,9 @@ function configureEnvironment() {
   process.env.N8N_WEBHOOK_AUTH_VALUE = AUTH_VALUE;
   process.env.N8N_BASE_URL = 'https://n8n.example.test';
   process.env.N8N_API_KEY = 'test-n8n-key';
+  process.env.IG_APP_SECRET = IG_APP_SECRET;
+  process.env.IG_WEBHOOK_VERIFY_TOKEN = IG_VERIFY_TOKEN;
+  process.env.N8N_INSTAGRAM_WEBHOOK_URL = IG_WEBHOOK_URL;
   delete process.env.N8N_WEBHOOK_LOG_TABLE_ID;
 }
 
@@ -69,7 +78,7 @@ function installFetchMock({ forwardStatus = 200, throwOnForward = false } = {}) 
   const calls = [];
   global.fetch = async (url, options = {}) => {
     calls.push({ url: String(url), options });
-    if (String(url) === WEBHOOK_URL) {
+    if (String(url) === WEBHOOK_URL || String(url) === IG_WEBHOOK_URL) {
       if (throwOnForward) throw new Error('ECONNREFUSED');
       return {
         ok: forwardStatus >= 200 && forwardStatus < 300,
@@ -85,8 +94,8 @@ function installFetchMock({ forwardStatus = 200, throwOnForward = false } = {}) 
   return calls;
 }
 
-function forwardCalls(calls) {
-  return calls.filter((call) => call.url === WEBHOOK_URL);
+function forwardCalls(calls, url = WEBHOOK_URL) {
+  return calls.filter((call) => call.url === url);
 }
 
 test.beforeEach(configureEnvironment);
@@ -229,4 +238,140 @@ test('answers 405 for any other method', async () => {
 
   assert.equal(response.statusCode, 405);
   assert.equal(response.headers.Allow, 'GET, POST');
+});
+
+/* ── Instagram ─────────────────────────────────────────────────────────────── */
+
+test('the Instagram test payload cannot be reproduced by re-serialising either', () => {
+  assert.notEqual(JSON.stringify(JSON.parse(IG_RAW)), IG_RAW);
+});
+
+test('forwards an Instagram event signed with the Instagram secret to the Instagram webhook', async () => {
+  const calls = installFetchMock();
+  const response = createResponse();
+  await handler(createRequest({ raw: IG_RAW, headers: { 'x-hub-signature-256': sign(IG_RAW, IG_APP_SECRET) } }), response);
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.ok, true);
+  const forwarded = forwardCalls(calls, IG_WEBHOOK_URL);
+  assert.equal(forwarded.length, 1);
+  assert.equal(forwarded[0].options.body.toString('utf8'), IG_RAW);
+  assert.equal(forwarded[0].options.headers['X-Hybote-Webhook-Token'], AUTH_VALUE);
+  assert.match(String(forwarded[0].options.headers['X-Hybote-Delivery']), /^[0-9a-f]{32}$/);
+  assert.equal(forwardCalls(calls).length, 0);
+});
+
+test('forwards an Instagram event signed with the Meta app secret to the Instagram webhook', async () => {
+  const calls = installFetchMock();
+  const response = createResponse();
+  await handler(createRequest({ raw: IG_RAW, headers: { 'x-hub-signature-256': sign(IG_RAW) } }), response);
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(forwardCalls(calls, IG_WEBHOOK_URL).length, 1);
+  assert.equal(forwardCalls(calls).length, 0);
+});
+
+test('rejects an Instagram event with a wrong signature', async () => {
+  const calls = installFetchMock();
+  const response = createResponse();
+  await handler(createRequest({ raw: IG_RAW, headers: { 'x-hub-signature-256': sign(IG_RAW, 'wrong-secret') } }), response);
+
+  assert.equal(response.statusCode, 401);
+  assert.equal(response.body.code, 'SIGNATURE_INVALID');
+  assert.equal(calls.length, 0);
+});
+
+test('ignores the Instagram secret when it is not configured', async () => {
+  delete process.env.IG_APP_SECRET;
+  const calls = installFetchMock();
+  const response = createResponse();
+  await handler(createRequest({ raw: IG_RAW, headers: { 'x-hub-signature-256': sign(IG_RAW, IG_APP_SECRET) } }), response);
+
+  assert.equal(response.statusCode, 401);
+  assert.equal(calls.length, 0);
+});
+
+test('never lets the Instagram secret open the WhatsApp path', async () => {
+  // WhatsApp bleibt beim bisherigen Secret: eine mit IG_APP_SECRET signierte
+  // WhatsApp-Nutzlast wird abgewiesen wie vor dem Instagram-Umbau.
+  const calls = installFetchMock();
+  const response = createResponse();
+  await handler(createRequest({ raw: RAW, headers: { 'x-hub-signature-256': sign(RAW, IG_APP_SECRET) } }), response);
+
+  assert.equal(response.statusCode, 401);
+  assert.equal(response.body.code, 'SIGNATURE_INVALID');
+  assert.equal(calls.length, 0);
+});
+
+test('keeps sending WhatsApp events to the WhatsApp webhook with Instagram configured', async () => {
+  const calls = installFetchMock();
+  const response = createResponse();
+  await handler(createRequest({ raw: RAW, headers: { 'x-hub-signature-256': sign(RAW) } }), response);
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(forwardCalls(calls).length, 1);
+  assert.equal(forwardCalls(calls)[0].options.body.toString('utf8'), RAW);
+  assert.equal(forwardCalls(calls, IG_WEBHOOK_URL).length, 0);
+});
+
+test('sends a validly signed body that is not JSON to WhatsApp as before', async () => {
+  const raw = 'not json {"object":"instagram"';
+  const calls = installFetchMock();
+  const response = createResponse();
+  await handler(createRequest({ raw, headers: { 'x-hub-signature-256': sign(raw) } }), response);
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(forwardCalls(calls).length, 1);
+  assert.equal(forwardCalls(calls, IG_WEBHOOK_URL).length, 0);
+});
+
+test('reports 503 so Meta retries when the Instagram webhook is not configured', async () => {
+  delete process.env.N8N_INSTAGRAM_WEBHOOK_URL;
+  process.env.N8N_WEBHOOK_LOG_TABLE_ID = 'webhook-log-1';
+  const calls = installFetchMock();
+  const response = createResponse();
+  await handler(createRequest({ raw: IG_RAW, headers: { 'x-hub-signature-256': sign(IG_RAW, IG_APP_SECRET) } }), response);
+
+  assert.equal(response.statusCode, 503);
+  assert.equal(response.body.code, 'INSTAGRAM_NOT_CONFIGURED');
+  assert.equal(forwardCalls(calls).length, 0);
+  const auditCall = calls.find((call) => call.url.includes('/rows/upsert'));
+  assert.ok(auditCall, 'eine fehlende Instagram-URL muss protokolliert werden');
+  assert.equal(JSON.parse(auditCall.options.body).data.outcome, 'INSTAGRAM_NOT_CONFIGURED');
+  assert.equal(auditCall.options.body.includes('17841400000000000'), false);
+});
+
+test('answers 502 so Meta retries when the Instagram webhook is down', async () => {
+  const calls = installFetchMock({ forwardStatus: 500 });
+  const response = createResponse();
+  await handler(createRequest({ raw: IG_RAW, headers: { 'x-hub-signature-256': sign(IG_RAW, IG_APP_SECRET) } }), response);
+
+  assert.equal(response.statusCode, 502);
+  assert.equal(response.body.code, 'FORWARD_FAILED');
+  assert.equal(forwardCalls(calls, IG_WEBHOOK_URL).length, 1);
+});
+
+test('answers the verification handshake with the Instagram verify token', async () => {
+  const calls = installFetchMock();
+  const response = createResponse();
+  await handler(createRequest({
+    method: 'GET',
+    url: `/api/meta/webhook?hub.mode=subscribe&hub.verify_token=${IG_VERIFY_TOKEN}&hub.challenge=987654321`
+  }), response);
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body, '987654321');
+  assert.equal(calls.length, 0);
+});
+
+test('ignores an Instagram verify token shorter than 32 characters', async () => {
+  process.env.IG_WEBHOOK_VERIFY_TOKEN = 'short-token';
+  const response = createResponse();
+  await handler(createRequest({
+    method: 'GET',
+    url: '/api/meta/webhook?hub.mode=subscribe&hub.verify_token=short-token&hub.challenge=987654321'
+  }), response);
+
+  assert.equal(response.statusCode, 403);
+  assert.equal(response.body.code, 'VERIFY_TOKEN_INVALID');
 });
