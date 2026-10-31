@@ -9,6 +9,9 @@ const routes = {
   'google/start': require('./_handlers/google-start.js'),
   'google/callback': require('./_handlers/google-callback.js'),
   'imap/verify': require('./_handlers/imap-verify.js'),
+  // Instagram (31.10.2026): Business Login for Instagram statt Facebook-Konfiguration; ig/complete bleibt als 410.
+  'ig/start': require('./_handlers/ig-start.js'),
+  'ig/callback': require('./_handlers/ig-callback.js'),
   'ig/complete': require('./_handlers/ig-complete.js'),
   // Video-Aufrufe aus den Erstmails des Sales Pilot (16.10.2026), Seite /v/<code>.
   'video-view': require('./_handlers/video-view.js')

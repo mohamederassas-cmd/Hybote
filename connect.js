@@ -3,11 +3,9 @@
 
   // Kundenseite fuer Instagram + E-Mail (26.09.2026). WhatsApp bleibt auf meta-connect.html;
   // der Kanal steckt signiert im Einladungs-Token und wird ueber /api/connect/invite gelesen.
-  // Instagram: IG_CONFIG_ID nach Meta-Freigabe eintragen (Facebook-Login-for-Business-Konfiguration
-  // fuer Instagram bzw. Instagram Login for Business). Scopes je Variante: instagram_basic,
-  // instagram_manage_messages, pages_show_list, pages_manage_metadata  ODER  instagram_business_basic,
-  // instagram_business_manage_messages. Bis dahin schaltet INSTAGRAM_SIGNUP_ENABLED (Vercel) die Ansicht.
-  const IG_CONFIG_ID = '';
+  // Instagram (31.10.2026): Business Login for Instagram ueber /api/connect/ig/start, kein Facebook-Konto noetig.
+  // INSTAGRAM_SIGNUP_ENABLED=1 plus IG_APP_ID/IG_APP_SECRET (Vercel) schalten die Ansicht frei; bis zum App Review
+  // gehen nur eigene Konten und Instagram-Tester.
 
   const translations = {
     en: {
@@ -298,11 +296,10 @@
     }
   });
 
-  $('ig-button').addEventListener('click', async () => {
+  $('ig-button').addEventListener('click', () => {
     const errorBox = $('ig-error'); clearError(errorBox);
-    if (!IG_CONFIG_ID) { showError(errorBox, 'INSTAGRAM_NOT_ENABLED'); return; }
-    const { ok, payload } = await fetchJson('/api/connect/ig/complete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ inviteToken }) });
-    if (!ok || !payload.ok) showError(errorBox, payload.code || 'SERVER_ERROR');
+    if (!state.flags.instagramEnabled) { showError(errorBox, 'INSTAGRAM_NOT_ENABLED'); return; }
+    window.location.assign(`/api/connect/ig/start?invite=${encodeURIComponent(inviteToken)}`);
   });
 
   document.querySelectorAll('[data-set-lang]').forEach((buttonElement) => {
@@ -330,7 +327,12 @@
       // Sicherheitsnetz: WhatsApp-Links gehoeren auf die Meta-Seite.
       const next = new URLSearchParams(window.location.search); window.location.replace(`/meta-connect.html?${next.toString()}`); return;
     }
-    if (invite.channel === 'instagram') { showView(state.flags.instagramEnabled && IG_CONFIG_ID ? 'instagram-view' : 'instagram-pending-view'); return; }
+    if (invite.channel === 'instagram') {
+      if (params.get('result') === 'ok') { showSuccess({}, false); return; }
+      showView(state.flags.instagramEnabled ? 'instagram-view' : 'instagram-pending-view');
+      if (params.get('error')) showError($('ig-error'), params.get('error'));
+      return;
+    }
     // E-Mail: erst Verbindungsstand (Redirect-Ergebnis oder Wiederbesuch), dann Anbieterwahl.
     const status = await loadStatus();
     if (status && status.connected) { showSuccess(status, params.get('result') !== 'ok'); return; }
