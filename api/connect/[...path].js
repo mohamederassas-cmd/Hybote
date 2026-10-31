@@ -20,6 +20,11 @@ const routes = {
 module.exports = async function handler(request, response) {
   const url = new URL(request.url || '/', 'https://hybote.ai');
   let path = url.pathname.replace(/^\/api\/connect\/?/, '').replace(/\/+$/, '');
+  // Zweiteilige Pfade (ms/start, google/callback, ig/start …) kommen per Rewrite aus vercel.json als
+  // /api/connect/route?__connect=a/b an (31.10.2026: Vercel leitete nur einteilige Pfade an diese Datei, alles
+  // andere war 404). Je nach Laufzeit steht in request.url der Original- oder der Zielpfad; beides geht.
+  const forced = url.searchParams.get('__connect') || (request.query && request.query.__connect ? [].concat(request.query.__connect)[0] : '');
+  if (forced && (!routes[path] || path === 'route')) path = String(forced).replace(/^\/+|\/+$/g, '');
   if (!path && request.query && request.query.path) path = [].concat(request.query.path).join('/');
   const route = routes[path];
   if (!route) {
