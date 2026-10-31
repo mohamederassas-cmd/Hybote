@@ -399,15 +399,23 @@ module.exports = async function handler(request, response) {
       graphJson(`${phoneNumberId}?fields=id,display_phone_number,verified_name,status,platform_type,code_verification_status,quality_rating`, accessToken)
     ]);
 
-    await graphJson(`${wabaId}/subscribed_apps`, accessToken, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: '{}'
-    });
+    // Sandbox (31.10.2026, Testlabor): Metas Sandbox-Konto des App-Admins prueft nur den Ablauf (Dialog,
+    // Code-Tausch, Token, n8n). Die Nummer kann weder senden noch empfangen: keine Registrierung, kein Sync,
+    // ein fehlschlagendes Abo bricht nicht ab.
+    const sandbox = invite.sandbox === true;
+    try {
+      await graphJson(`${wabaId}/subscribed_apps`, accessToken, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}'
+      });
+    } catch (error) {
+      if (!sandbox) throw error;
+    }
 
     let registration;
     try {
-      registration = await registerIfNeeded(accessToken, phoneNumberId, phone);
+      registration = sandbox ? { registered: false, reason: 'SANDBOX' } : await registerIfNeeded(accessToken, phoneNumberId, phone);
     } catch (error) {
       const map = { 133005: 'PIN_CONFLICT', 133016: 'REGISTRATION_RATE_LIMITED', 133006: 'NUMBER_NOT_VERIFIED' };
       const clientCode = map[error.metaCode] || 'REGISTRATION_FAILED';
@@ -415,7 +423,10 @@ module.exports = async function handler(request, response) {
       return response.status(409).json({ ok: false, code: clientCode });
     }
 
-    const coexistence = await syncCoexistenceData(accessToken, phoneNumberId);
+    // Neue Nummer (wa_mode=cloud) und Sandbox haben keinen App-Verlauf: kein Coexistence-Sync.
+    const coexistence = sandbox
+      ? { coexistence: false, detail: 'SANDBOX' }
+      : invite.waMode === 'cloud' ? { coexistence: false, detail: 'CLOUD_MODE' } : await syncCoexistenceData(accessToken, phoneNumberId);
 
     const credentialName = `WA · ${invite.company.slice(0, 54)} · ${phoneNumberId}`;
     const credential = await ensureWhatsAppCredential({
@@ -447,7 +458,7 @@ module.exports = async function handler(request, response) {
         workflow_id: '',
         status: 'connected_pending_provisioning',
         token_expires_at: expiresAt ? expiresAt.toISOString() : '',
-        platform_type: String(phone.platform_type || ''),
+        platform_type: sandbox ? 'SANDBOX' : String(phone.platform_type || ''),
         display_phone_number: String(phone.display_phone_number || ''),
         coexistence: coexistence.coexistence ? 'true' : 'false',
         registered_at: registration.registered ? obtainedAt.toISOString() : '',

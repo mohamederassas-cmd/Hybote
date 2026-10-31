@@ -30,6 +30,8 @@ module.exports = async function handler(request, response) {
       language: invite.language,
       channel: invite.channel,
       providers: invite.providers,
+      waMode: invite.waMode,
+      sandbox: invite.sandbox,
       expiresAt: invite.expiresAt
     }
   });

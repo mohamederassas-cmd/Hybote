@@ -78,6 +78,10 @@ function verifyInviteToken(token) {
       customerReference,
       tenantKey,
       language: normalizeLanguage(data.lang),
+      // WhatsApp-Modus (31.10.2026): coexistence (Standard, alte Links) oder cloud (neue Nummer); sandbox = Metas
+      // Sandbox-Konto fuer den Ablauftest (nur Testkunden, signiert vom Sales Pilot).
+      waMode: channel === 'whatsapp' && data.wa_mode === 'cloud' ? 'cloud' : 'coexistence',
+      sandbox: channel === 'whatsapp' && data.sandbox === true,
       expiresAt: new Date(data.exp * 1000).toISOString()
     };
   } catch (_error) {
@@ -87,14 +91,15 @@ function verifyInviteToken(token) {
 
 /** Nur fuer Tests und das Erzeugen von Reviewer-Links per Skript. Im Regelbetrieb
  *  signiert der Sales Pilot, nicht Vercel. */
-function signInviteToken({ company, email, customerReference = '', tenantKey = '', language = 'en', inviteId = '', ttlSeconds = 14 * 24 * 3600, channel = 'whatsapp', providers }) {
+function signInviteToken({ company, email, customerReference = '', tenantKey = '', language = 'en', inviteId = '', ttlSeconds = 14 * 24 * 3600, channel = 'whatsapp', providers, waMode, sandbox }) {
   const secret = process.env.META_INVITE_SECRET || '';
   if (secret.length < 32) throw new Error('META_INVITE_SECRET fehlt oder ist zu kurz');
   const now = Math.floor(Date.now() / 1000);
   const payload = b64url(Buffer.from(JSON.stringify({
     company, email, ref: customerReference, tenant_key: tenantKey || customerReference,
     lang: normalizeLanguage(language), jti: inviteId, iat: now, exp: now + ttlSeconds,
-    channel: normalizeChannel(channel), ...(normalizeChannel(channel) === 'email' ? { providers: normalizeProviders(providers) } : {})
+    channel: normalizeChannel(channel), ...(normalizeChannel(channel) === 'email' ? { providers: normalizeProviders(providers) } : {}),
+    ...(normalizeChannel(channel) === 'whatsapp' ? { wa_mode: waMode === 'cloud' ? 'cloud' : 'coexistence', ...(sandbox ? { sandbox: true } : {}) } : {})
   })));
   const signature = b64url(crypto.createHmac('sha256', secret).update(payload).digest());
   return `${payload}.${signature}`;

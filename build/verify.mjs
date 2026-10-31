@@ -369,6 +369,11 @@ console.log('\nWeitere Dateien');
     'Coexistence-Feature-Typ an genau einer Stelle definiert':
       connectJs.includes("const COEXISTENCE_FEATURE_TYPE = 'whatsapp_business_app_onboarding'") &&
       connectJs.includes('featureType: COEXISTENCE_FEATURE_TYPE'),
+    // 31.10.2026: Coexistence ist Standard (auch alte Links ohne wa_mode), nur cloud/Sandbox lassen es weg.
+    'Coexistence nur bei wa_mode=cloud oder Sandbox abgeschaltet':
+      connectJs.includes("invite.waMode !== 'cloud' && !invite.sandbox") &&
+      connectJs.includes('...(useCoexistence() ? { featureType: COEXISTENCE_FEATURE_TYPE } : {})'),
+    'Sandbox ueberspringt Registrierung und Coexistence-Sync': (() => { const c = readFileSync(join(ROOT, 'api/meta/complete.js'), 'utf8'); return c.includes("reason: 'SANDBOX'") && c.includes("detail: 'CLOUD_MODE'") })(),
     'Coexistence-Abschlussevent wird verarbeitet': connectJs.includes("'FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING'"),
     'Vorbefuellung aus dem Einladungs-Token': connectJs.includes('setup: {') && connectJs.includes('business: {'),
     'fuenf Sprachen mit identischem Schluesselumfang':

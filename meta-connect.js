@@ -28,6 +28,11 @@
       prereq1: 'WhatsApp Business app version 2.24.17 or newer',
       prereq2: 'The number has been in use in that app for at least 7 days',
       prereq3: 'A phone with a camera, to scan the QR code',
+      // Neue Nummer (Cloud API, 31.10.2026): Texte fuer Links mit wa_mode=cloud.
+      step2TitleCloud: 'Choose your number', step2BodyCloud: 'Select or add the phone number HYBOTE should answer on. It must not be active in the WhatsApp app at the same time.',
+      prereq1Cloud: 'A phone number that can receive an SMS or a call for verification',
+      prereq2Cloud: 'The number is not used in the WhatsApp or WhatsApp Business app (or you give it up there)',
+      prereq3Cloud: 'Admin access to your Meta Business Portfolio',
       gateTitle: 'Please use your personal invitation link',
       gateBody: 'This page can only be opened through the personal link HYBOTE sent you. If your link has expired, we will gladly send you a new one.',
       gateAction: 'Request a new link',
@@ -69,6 +74,10 @@
       prereq1: 'تطبيق WhatsApp Business بإصدار 2.24.17 أو أحدث',
       prereq2: 'الرقم مستخدم في التطبيق منذ 7 أيام على الأقل',
       prereq3: 'هاتف مزوّد بكاميرا لمسح رمز QR',
+      step2TitleCloud: 'اختر رقمك', step2BodyCloud: 'اختر أو أضف رقم الهاتف الذي يرد عليه HYBOTE. يجب ألا يكون مستخدماً في تطبيق واتساب في الوقت نفسه.',
+      prereq1Cloud: 'رقم هاتف يمكنه استقبال رسالة SMS أو مكالمة للتحقق',
+      prereq2Cloud: 'الرقم غير مستخدم في تطبيق واتساب أو واتساب للأعمال (أو تتخلى عنه هناك)',
+      prereq3Cloud: 'صلاحية مسؤول في حافظة أعمال Meta الخاصة بك',
       gateTitle: 'يرجى استخدام رابط الدعوة الخاص بك',
       gateBody: 'لا يمكن فتح هذه الصفحة إلا عبر الرابط الشخصي الذي أرسلته لك HYBOTE. إذا انتهت صلاحية الرابط، سنرسل لك رابطاً جديداً بكل سرور.',
       gateAction: 'اطلب رابطاً جديداً',
@@ -110,6 +119,10 @@
       prereq1: 'WhatsApp Business App ab Version 2.24.17',
       prereq2: 'Die Nummer wird seit mindestens 7 Tagen in dieser App genutzt',
       prereq3: 'Ein Handy mit Kamera für den QR-Code',
+      step2TitleCloud: 'Nummer wählen', step2BodyCloud: 'Wählen oder ergänzen Sie die Telefonnummer, auf der HYBOTE antworten soll. Sie darf nicht gleichzeitig in der WhatsApp-App laufen.',
+      prereq1Cloud: 'Eine Telefonnummer, die zur Bestätigung eine SMS oder einen Anruf empfangen kann',
+      prereq2Cloud: 'Die Nummer läuft nicht in der WhatsApp- oder WhatsApp-Business-App (oder Sie geben sie dort auf)',
+      prereq3Cloud: 'Admin-Zugriff auf Ihr Meta-Business-Portfolio',
       gateTitle: 'Bitte nutzen Sie Ihren persönlichen Einladungslink',
       gateBody: 'Diese Seite lässt sich nur über den persönlichen Link öffnen, den HYBOTE Ihnen geschickt hat. Ist Ihr Link abgelaufen, senden wir Ihnen gerne einen neuen.',
       gateAction: 'Neuen Link anfordern',
@@ -151,6 +164,10 @@
       prereq1: 'Приложение WhatsApp Business версии 2.24.17 или новее',
       prereq2: 'Номер используется в этом приложении не менее 7 дней',
       prereq3: 'Телефон с камерой для сканирования QR-кода',
+      step2TitleCloud: 'Выберите номер', step2BodyCloud: 'Выберите или добавьте номер телефона, на котором будет отвечать HYBOTE. Он не должен одновременно работать в приложении WhatsApp.',
+      prereq1Cloud: 'Номер телефона, на который можно получить SMS или звонок для подтверждения',
+      prereq2Cloud: 'Номер не используется в WhatsApp или WhatsApp Business (или вы отказываетесь от него там)',
+      prereq3Cloud: 'Права администратора в вашем бизнес-портфолио Meta',
       gateTitle: 'Пожалуйста, используйте персональную ссылку-приглашение',
       gateBody: 'Эту страницу можно открыть только по персональной ссылке, которую вам отправила HYBOTE. Если срок ссылки истёк, мы с радостью отправим новую.',
       gateAction: 'Запросить новую ссылку',
@@ -192,6 +209,10 @@
       prereq1: 'Application WhatsApp Business version 2.24.17 ou plus récente',
       prereq2: 'Le numéro est utilisé dans cette application depuis au moins 7 jours',
       prereq3: 'Un téléphone avec caméra pour scanner le code QR',
+      step2TitleCloud: 'Choisissez votre numéro', step2BodyCloud: 'Sélectionnez ou ajoutez le numéro sur lequel HYBOTE doit répondre. Il ne doit pas être actif en même temps dans l’application WhatsApp.',
+      prereq1Cloud: 'Un numéro pouvant recevoir un SMS ou un appel de vérification',
+      prereq2Cloud: 'Le numéro n’est pas utilisé dans WhatsApp ou WhatsApp Business (ou vous y renoncez)',
+      prereq3Cloud: 'Un accès administrateur à votre portefeuille Meta Business',
       gateTitle: "Veuillez utiliser votre lien d'invitation personnel",
       gateBody: "Cette page ne peut être ouverte que via le lien personnel que HYBOTE vous a envoyé. Si votre lien a expiré, nous vous en enverrons volontiers un nouveau.",
       gateAction: 'Demander un nouveau lien',
@@ -252,6 +273,22 @@
 
   function t(key) {
     return translations[state.language][key] || translations.en[key] || key;
+  }
+
+  /** Modus aus dem signierten Link (31.10.2026): fehlt wa_mode, bleibt es beim Coexistence-Onboarding. */
+  function useCoexistence() {
+    const invite = state.invite || {};
+    return invite.waMode !== 'cloud' && !invite.sandbox;
+  }
+
+  /** Neue Nummer statt Coexistence: Schritt 2 und die Voraussetzungen tauschen ihre Texte. */
+  function applyWaMode() {
+    if (useCoexistence()) return;
+    const swap = { step2Title: 'step2TitleCloud', step2Body: 'step2BodyCloud', prereq1: 'prereq1Cloud', prereq2: 'prereq2Cloud', prereq3: 'prereq3Cloud' };
+    Object.entries(swap).forEach(([from, to]) => {
+      document.querySelectorAll(`[data-i18n="${from}"]`).forEach((element) => { element.dataset.i18n = to; });
+    });
+    applyLanguage(state.language);
   }
 
   function applyLanguage(language) {
@@ -462,7 +499,9 @@
               email: (state.invite && state.invite.email) || ''
             }
           },
-          featureType: COEXISTENCE_FEATURE_TYPE
+          // Coexistence nur, wenn der Link es verlangt (Standard, auch fuer alte Links ohne wa_mode). Bei
+          // wa_mode=cloud (neue Nummer) und beim Sandbox-Ablauftest laeuft der klassische Embedded Signup.
+          ...(useCoexistence() ? { featureType: COEXISTENCE_FEATURE_TYPE } : {})
         }
       });
     } catch (_error) {
@@ -510,6 +549,7 @@
       return;
     }
     state.invite = invite;
+    applyWaMode();
     document.getElementById('company-name').value = invite.company;
     document.getElementById('work-email').value = invite.email;
     if (invite.customerReference) {
