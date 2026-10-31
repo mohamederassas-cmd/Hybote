@@ -27,6 +27,7 @@
       addressLabel: 'Mailbox address', userLabel: 'Username', userHint: '(usually the address)', passwordLabel: 'Password / app password', imapHostLabel: 'IMAP server', imapPortLabel: 'IMAP port', smtpHostLabel: 'SMTP server', smtpPortLabel: 'SMTP port', tlsLabel: 'Encrypted connection (SSL/TLS, recommended)',
       authority: 'I am authorized to connect this mailbox for the company named above.', privacyPrefix: 'I accept the', privacyLink: 'Privacy Policy', privacySuffix: 'and the processing of the connection data.',
       connectImap: 'Check and connect', connecting: 'Connecting …', backToProviders: 'Back to provider selection',
+      detectFound: 'Server settings for {label} filled in. Please check them briefly.', detectAppPassword: 'This provider requires an app password from your account settings, not your normal password.', detectMicrosoft: 'This mailbox runs on Microsoft. Please go back and choose “Microsoft 365 / Outlook” – no app password needed there.',
       igPendingTitle: 'Instagram connection is being enabled', igPendingBody: 'Meta is currently approving the Instagram permissions for HYBOTE. Your personal link stays valid: as soon as the approval is in place, this page will guide you through the connection. We will let you know.',
       igTitle: 'Connect Instagram', igIntro: 'Authorize HYBOTE for the Instagram professional account of your business.', igConnectButton: 'Connect with Instagram',
       igStep1Title: 'Start the connection', igStep1Body: 'Click “Connect with Instagram” on this page.', igStep2Title: 'Sign in with Instagram', igStep2Body: 'You sign in directly at Instagram with the professional account of your business and allow access. No Facebook account needed.', igPrereq1: 'An Instagram professional account (business or creator)', igPrereq2: 'The login details of this Instagram account', igPrereq3: 'No Facebook account or Facebook page required',
@@ -57,6 +58,7 @@
       addressLabel: 'Postfachadresse', userLabel: 'Benutzername', userHint: '(meist die Adresse)', passwordLabel: 'Passwort / App-Passwort', imapHostLabel: 'IMAP-Server', imapPortLabel: 'IMAP-Port', smtpHostLabel: 'SMTP-Server', smtpPortLabel: 'SMTP-Port', tlsLabel: 'Verschlüsselte Verbindung (SSL/TLS, empfohlen)',
       authority: 'Ich bin berechtigt, dieses Postfach für das oben genannte Unternehmen zu verbinden.', privacyPrefix: 'Ich akzeptiere die', privacyLink: 'Datenschutzerklärung', privacySuffix: 'und die Verarbeitung der Verbindungsdaten.',
       connectImap: 'Prüfen und verbinden', connecting: 'Verbinde …', backToProviders: 'Zurück zur Anbieterwahl',
+      detectFound: 'Servereinstellungen für {label} eingetragen. Bitte kurz prüfen.', detectAppPassword: 'Dieser Anbieter verlangt ein App-Passwort aus Ihren Kontoeinstellungen, nicht Ihr normales Passwort.', detectMicrosoft: 'Dieses Postfach läuft über Microsoft. Bitte zurück und „Microsoft 365 / Outlook“ wählen – dort ohne App-Passwort.',
       igPendingTitle: 'Instagram-Anbindung wird freigeschaltet', igPendingBody: 'Meta prüft derzeit die Instagram-Berechtigungen für HYBOTE. Ihr persönlicher Link bleibt gültig: Sobald die Freigabe vorliegt, führt Sie diese Seite durch die Verbindung. Wir melden uns.',
       igTitle: 'Instagram verbinden', igIntro: 'Autorisieren Sie HYBOTE für das Instagram-Professional-Konto Ihres Unternehmens.', igConnectButton: 'Mit Instagram verbinden',
       igStep1Title: 'Verbindung starten', igStep1Body: 'Auf dieser Seite auf „Mit Instagram verbinden“ klicken.', igStep2Title: 'Bei Instagram anmelden', igStep2Body: 'Sie melden sich direkt bei Instagram mit dem Profi-Konto Ihres Unternehmens an und erlauben den Zugriff. Ein Facebook-Konto ist nicht nötig.', igPrereq1: 'Ein Instagram-Professional-Konto (Unternehmen oder Creator)', igPrereq2: 'Die Anmeldedaten dieses Instagram-Kontos', igPrereq3: 'Kein Facebook-Konto und keine Facebook-Seite nötig',
@@ -87,6 +89,7 @@
       addressLabel: 'عنوان صندوق البريد', userLabel: 'اسم المستخدم', userHint: '(عادةً العنوان)', passwordLabel: 'كلمة المرور / كلمة مرور التطبيق', imapHostLabel: 'خادم IMAP', imapPortLabel: 'منفذ IMAP', smtpHostLabel: 'خادم SMTP', smtpPortLabel: 'منفذ SMTP', tlsLabel: 'اتصال مشفر (SSL/TLS، موصى به)',
       authority: 'أنا مخوّل بربط هذا الصندوق للشركة المذكورة أعلاه.', privacyPrefix: 'أوافق على', privacyLink: 'سياسة الخصوصية', privacySuffix: 'ومعالجة بيانات الربط.',
       connectImap: 'التحقق والربط', connecting: 'جارٍ الربط …', backToProviders: 'العودة إلى اختيار المزود',
+      detectFound: 'تم إدخال إعدادات الخادم الخاصة بـ {label}. يرجى مراجعتها سريعًا.', detectAppPassword: 'يتطلب هذا المزود كلمة مرور تطبيق من إعدادات حسابك، وليس كلمة مرورك العادية.', detectMicrosoft: 'يعمل هذا البريد عبر Microsoft. يرجى الرجوع واختيار «Microsoft 365 / Outlook» – دون الحاجة إلى كلمة مرور تطبيق.',
       igPendingTitle: 'يتم تفعيل ربط إنستغرام', igPendingBody: 'تقوم Meta حالياً بمراجعة صلاحيات إنستغرام لـ HYBOTE. يبقى رابطكم الشخصي صالحاً: بمجرد توفر الموافقة سترشدكم هذه الصفحة خلال الربط. سنتواصل معكم.',
       igTitle: 'ربط إنستغرام', igIntro: 'فوّضوا HYBOTE لحساب إنستغرام الاحترافي الخاص بشركتكم.', igConnectButton: 'الربط مع إنستغرام',
       igStep1Title: 'بدء الربط', igStep1Body: 'اضغطوا على «الربط مع إنستغرام» في هذه الصفحة.', igStep2Title: 'تسجيل الدخول في إنستغرام', igStep2Body: 'تسجلون الدخول مباشرة في إنستغرام بالحساب الاحترافي لشركتكم وتمنحون الصلاحية. لا حاجة إلى حساب فيسبوك.', igPrereq1: 'حساب إنستغرام احترافي (أعمال أو صانع محتوى)', igPrereq2: 'بيانات تسجيل الدخول لهذا الحساب على إنستغرام', igPrereq3: 'لا حاجة إلى حساب أو صفحة على فيسبوك',
@@ -117,6 +120,7 @@
       addressLabel: 'Адрес почтового ящика', userLabel: 'Имя пользователя', userHint: '(обычно адрес)', passwordLabel: 'Пароль / пароль приложения', imapHostLabel: 'Сервер IMAP', imapPortLabel: 'Порт IMAP', smtpHostLabel: 'Сервер SMTP', smtpPortLabel: 'Порт SMTP', tlsLabel: 'Зашифрованное соединение (SSL/TLS, рекомендуется)',
       authority: 'Я уполномочен(а) подключить этот почтовый ящик для указанной выше компании.', privacyPrefix: 'Я принимаю', privacyLink: 'Политику конфиденциальности', privacySuffix: 'и обработку данных подключения.',
       connectImap: 'Проверить и подключить', connecting: 'Подключение …', backToProviders: 'Назад к выбору провайдера',
+      detectFound: 'Настройки сервера для {label} заполнены. Пожалуйста, коротко проверьте их.', detectAppPassword: 'Этот провайдер требует пароль приложения из настроек аккаунта, а не ваш обычный пароль.', detectMicrosoft: 'Этот почтовый ящик работает на Microsoft. Вернитесь назад и выберите «Microsoft 365 / Outlook» – там пароль приложения не нужен.',
       igPendingTitle: 'Подключение Instagram активируется', igPendingBody: 'Meta в настоящее время проверяет разрешения Instagram для HYBOTE. Ваша персональная ссылка остаётся действительной: как только одобрение будет получено, эта страница проведёт вас через подключение. Мы сообщим вам.',
       igTitle: 'Подключить Instagram', igIntro: 'Авторизуйте HYBOTE для профессионального аккаунта Instagram вашей компании.', igConnectButton: 'Подключить через Instagram',
       igStep1Title: 'Начните подключение', igStep1Body: 'Нажмите на этой странице «Подключить через Instagram».', igStep2Title: 'Войдите в Instagram', igStep2Body: 'Вы входите напрямую в Instagram с профессиональным аккаунтом вашей компании и разрешаете доступ. Аккаунт Facebook не нужен.', igPrereq1: 'Профессиональный аккаунт Instagram (бизнес или автор)', igPrereq2: 'Данные для входа в этот аккаунт Instagram', igPrereq3: 'Аккаунт и страница Facebook не нужны',
@@ -147,6 +151,7 @@
       addressLabel: 'Adresse de la boîte', userLabel: 'Nom d’utilisateur', userHint: '(généralement l’adresse)', passwordLabel: 'Mot de passe / mot de passe d’application', imapHostLabel: 'Serveur IMAP', imapPortLabel: 'Port IMAP', smtpHostLabel: 'Serveur SMTP', smtpPortLabel: 'Port SMTP', tlsLabel: 'Connexion chiffrée (SSL/TLS, recommandé)',
       authority: 'Je suis autorisé(e) à connecter cette boîte mail pour l’entreprise indiquée ci-dessus.', privacyPrefix: 'J’accepte la', privacyLink: 'Politique de confidentialité', privacySuffix: 'et le traitement des données de connexion.',
       connectImap: 'Vérifier et connecter', connecting: 'Connexion …', backToProviders: 'Retour au choix du fournisseur',
+      detectFound: 'Paramètres du serveur pour {label} renseignés. Veuillez les vérifier rapidement.', detectAppPassword: 'Ce fournisseur exige un mot de passe d’application issu des paramètres de votre compte, pas votre mot de passe habituel.', detectMicrosoft: 'Cette boîte fonctionne avec Microsoft. Revenez en arrière et choisissez « Microsoft 365 / Outlook » – sans mot de passe d’application.',
       igPendingTitle: 'La connexion Instagram est en cours d’activation', igPendingBody: 'Meta examine actuellement les autorisations Instagram pour HYBOTE. Votre lien personnel reste valable : dès que l’autorisation sera accordée, cette page vous guidera dans la connexion. Nous vous tiendrons informé.',
       igTitle: 'Connecter Instagram', igIntro: 'Autorisez HYBOTE pour le compte Instagram professionnel de votre entreprise.', igConnectButton: 'Se connecter avec Instagram',
       igStep1Title: 'Lancer la connexion', igStep1Body: 'Cliquez sur « Se connecter avec Instagram » sur cette page.', igStep2Title: 'Se connecter à Instagram', igStep2Body: 'Vous vous connectez directement sur Instagram avec le compte professionnel de votre entreprise et autorisez l’accès. Aucun compte Facebook n’est nécessaire.', igPrereq1: 'Un compte Instagram professionnel (entreprise ou créateur)', igPrereq2: 'Les identifiants de ce compte Instagram', igPrereq3: 'Aucun compte ni page Facebook nécessaire',
@@ -258,11 +263,33 @@
   document.querySelectorAll('.provider-button').forEach((button) => {
     button.addEventListener('click', () => {
       const provider = button.dataset.provider;
-      if (provider === 'imap') { $('imap-address').value = state.invite.email || ''; clearError($('imap-error')); showView('imap-view'); return; }
+      if (provider === 'imap') { $('imap-address').value = state.invite.email || ''; clearError($('imap-error')); showView('imap-view'); detectMailbox(); return; }
       window.location.assign(`/api/connect/${provider === 'microsoft' ? 'ms' : 'google'}/start?invite=${encodeURIComponent(inviteToken)}`);
     });
   });
   $('imap-back').addEventListener('click', () => renderProviders());
+
+  // Server aus der Adresse ableiten (31.10.2026): füllt nur Felder, die leer sind oder schon von hier stammen.
+  const autoFilled = {};
+  async function detectMailbox() {
+    const note = $('imap-detect'); note.hidden = true;
+    const domain = ($('imap-address').value.split('@')[1] || '').trim().toLowerCase();
+    if (!domain.includes('.')) return;
+    const { ok, payload } = await fetchJson(`/api/connect/mail-detect?domain=${encodeURIComponent(domain)}`).catch(() => ({ ok: false, payload: {} }));
+    if (!ok || !payload.use) return;
+    if (payload.use === 'microsoft') { note.textContent = t('detectMicrosoft'); note.hidden = false; return; }
+    const fill = (id, value) => {
+      const current = $(id).value.trim();
+      if (current && current !== autoFilled[id]) return;
+      $(id).value = String(value); autoFilled[id] = String(value);
+    };
+    $('imap-tls').checked = true;
+    fill('imap-host', payload.imapHost); fill('imap-port', payload.imapPort);
+    fill('smtp-host', payload.smtpHost); fill('smtp-port', payload.smtpPort);
+    note.textContent = t('detectFound').replace('{label}', payload.label) + (payload.appPassword ? ` ${t('detectAppPassword')}` : '');
+    note.hidden = false;
+  }
+  $('imap-address').addEventListener('change', detectMailbox);
 
   $('imap-tls').addEventListener('change', (event) => {
     if ($('imap-port').value === '993' || $('imap-port').value === '143') $('imap-port').value = event.target.checked ? '993' : '143';
@@ -293,7 +320,8 @@
         headers: { 'Content-Type': 'application/json', 'X-HYBOTE-CSRF': state.csrfToken },
         body: JSON.stringify({
           inviteToken, address, user: $('imap-user').value.trim() || address, password,
-          imapHost, imapPort: $('imap-port').value.trim(), imapSecure: secure, smtpHost, smtpPort: $('smtp-port').value.trim(), smtpSecure: secure,
+          // Port 587 heißt STARTTLS: dort startet die Verbindung unverschlüsselt und wird dann hochgestuft.
+          imapHost, imapPort: $('imap-port').value.trim(), imapSecure: secure, smtpHost, smtpPort: $('smtp-port').value.trim(), smtpSecure: secure && $('smtp-port').value.trim() !== '587',
           authorityAccepted: true, privacyAccepted: true
         })
       });

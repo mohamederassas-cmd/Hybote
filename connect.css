@@ -16,3 +16,4 @@ input[type="password"]:focus { border-color: rgba(56, 189, 248, 0.75); box-shado
 .back-link { justify-self: center; border: 0; background: none; cursor: pointer; }
 .provider-badge { display: inline-block; margin-top: 8px; padding: 4px 9px; border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 99px; color: var(--muted); font-size: 10px; letter-spacing: 0.04em; }
 @media (max-width: 480px) { .field-grid { grid-template-columns: 1fr; } }
+.message.info { border: 1px solid rgba(56, 189, 248, 0.3); color: #bae6fd; background: rgba(56, 189, 248, 0.07); }

@@ -9,6 +9,8 @@ const routes = {
   'google/start': require('./_handlers/google-start.js'),
   'google/callback': require('./_handlers/google-callback.js'),
   'imap/verify': require('./_handlers/imap-verify.js'),
+  // Server aus der Postfach-Domain ableiten (31.10.2026), einteilig, damit kein Rewrite noetig ist.
+  'mail-detect': require('./_handlers/mail-detect.js'),
   // Instagram (31.10.2026): Business Login for Instagram statt Facebook-Konfiguration; ig/complete bleibt als 410.
   'ig/start': require('./_handlers/ig-start.js'),
   'ig/callback': require('./_handlers/ig-callback.js'),
