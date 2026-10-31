@@ -29,6 +29,7 @@
       connectImap: 'Check and connect', connecting: 'Connecting …', backToProviders: 'Back to provider selection',
       igPendingTitle: 'Instagram connection is being enabled', igPendingBody: 'Meta is currently approving the Instagram permissions for HYBOTE. Your personal link stays valid: as soon as the approval is in place, this page will guide you through the connection. We will let you know.',
       igTitle: 'Connect Instagram', igIntro: 'Authorize HYBOTE for the Instagram professional account of your business.', igConnectButton: 'Connect with Instagram',
+      igStep1Title: 'Start the connection', igStep1Body: 'Click “Connect with Instagram” on this page.', igStep2Title: 'Sign in with Instagram', igStep2Body: 'You sign in directly at Instagram with the professional account of your business and allow access. No Facebook account needed.', igPrereq1: 'An Instagram professional account (business or creator)', igPrereq2: 'The login details of this Instagram account', igPrereq3: 'No Facebook account or Facebook page required',
       successTitle: 'Mailbox connected', successBody: 'The access permission was securely delivered to HYBOTE. We will now complete the technical activation.', alreadyConnected: 'This mailbox is already connected to HYBOTE. Nothing else to do.',
       provider: 'Provider', address: 'Mailbox', connectedAt: 'Connected', backHome: 'Back to HYBOTE', support: 'Need help?', terms: 'Terms', deletion: 'Data deletion',
       invalidForm: 'Please fill in all fields and accept both confirmations.', sessionFailed: 'The secure session could not be started. Please reload the page.',
@@ -58,6 +59,7 @@
       connectImap: 'Prüfen und verbinden', connecting: 'Verbinde …', backToProviders: 'Zurück zur Anbieterwahl',
       igPendingTitle: 'Instagram-Anbindung wird freigeschaltet', igPendingBody: 'Meta prüft derzeit die Instagram-Berechtigungen für HYBOTE. Ihr persönlicher Link bleibt gültig: Sobald die Freigabe vorliegt, führt Sie diese Seite durch die Verbindung. Wir melden uns.',
       igTitle: 'Instagram verbinden', igIntro: 'Autorisieren Sie HYBOTE für das Instagram-Professional-Konto Ihres Unternehmens.', igConnectButton: 'Mit Instagram verbinden',
+      igStep1Title: 'Verbindung starten', igStep1Body: 'Auf dieser Seite auf „Mit Instagram verbinden“ klicken.', igStep2Title: 'Bei Instagram anmelden', igStep2Body: 'Sie melden sich direkt bei Instagram mit dem Profi-Konto Ihres Unternehmens an und erlauben den Zugriff. Ein Facebook-Konto ist nicht nötig.', igPrereq1: 'Ein Instagram-Professional-Konto (Unternehmen oder Creator)', igPrereq2: 'Die Anmeldedaten dieses Instagram-Kontos', igPrereq3: 'Kein Facebook-Konto und keine Facebook-Seite nötig',
       successTitle: 'Postfach verbunden', successBody: 'Die Zugriffsberechtigung wurde sicher an HYBOTE übermittelt. Wir übernehmen jetzt die technische Einrichtung.', alreadyConnected: 'Dieses Postfach ist bereits mit HYBOTE verbunden. Es ist nichts weiter zu tun.',
       provider: 'Anbieter', address: 'Postfach', connectedAt: 'Verbunden', backHome: 'Zurück zu HYBOTE', support: 'Brauchen Sie Hilfe?', terms: 'AGB', deletion: 'Datenlöschung',
       invalidForm: 'Bitte alle Felder ausfüllen und beide Bestätigungen setzen.', sessionFailed: 'Die sichere Sitzung konnte nicht gestartet werden. Bitte Seite neu laden.',
@@ -87,6 +89,7 @@
       connectImap: 'التحقق والربط', connecting: 'جارٍ الربط …', backToProviders: 'العودة إلى اختيار المزود',
       igPendingTitle: 'يتم تفعيل ربط إنستغرام', igPendingBody: 'تقوم Meta حالياً بمراجعة صلاحيات إنستغرام لـ HYBOTE. يبقى رابطكم الشخصي صالحاً: بمجرد توفر الموافقة سترشدكم هذه الصفحة خلال الربط. سنتواصل معكم.',
       igTitle: 'ربط إنستغرام', igIntro: 'فوّضوا HYBOTE لحساب إنستغرام الاحترافي الخاص بشركتكم.', igConnectButton: 'الربط مع إنستغرام',
+      igStep1Title: 'بدء الربط', igStep1Body: 'اضغطوا على «الربط مع إنستغرام» في هذه الصفحة.', igStep2Title: 'تسجيل الدخول في إنستغرام', igStep2Body: 'تسجلون الدخول مباشرة في إنستغرام بالحساب الاحترافي لشركتكم وتمنحون الصلاحية. لا حاجة إلى حساب فيسبوك.', igPrereq1: 'حساب إنستغرام احترافي (أعمال أو صانع محتوى)', igPrereq2: 'بيانات تسجيل الدخول لهذا الحساب على إنستغرام', igPrereq3: 'لا حاجة إلى حساب أو صفحة على فيسبوك',
       successTitle: 'تم ربط صندوق البريد', successBody: 'تم إرسال صلاحية الوصول بأمان إلى HYBOTE. سنتولى الآن التفعيل التقني.', alreadyConnected: 'هذا الصندوق مرتبط بالفعل مع HYBOTE. لا حاجة لأي إجراء إضافي.',
       provider: 'المزود', address: 'صندوق البريد', connectedAt: 'تم الربط', backHome: 'العودة إلى HYBOTE', support: 'هل تحتاجون مساعدة؟', terms: 'الشروط', deletion: 'حذف البيانات',
       invalidForm: 'يرجى تعبئة جميع الحقول والموافقة على التأكيدين.', sessionFailed: 'تعذر بدء الجلسة الآمنة. يرجى إعادة تحميل الصفحة.',
@@ -116,6 +119,7 @@
       connectImap: 'Проверить и подключить', connecting: 'Подключение …', backToProviders: 'Назад к выбору провайдера',
       igPendingTitle: 'Подключение Instagram активируется', igPendingBody: 'Meta в настоящее время проверяет разрешения Instagram для HYBOTE. Ваша персональная ссылка остаётся действительной: как только одобрение будет получено, эта страница проведёт вас через подключение. Мы сообщим вам.',
       igTitle: 'Подключить Instagram', igIntro: 'Авторизуйте HYBOTE для профессионального аккаунта Instagram вашей компании.', igConnectButton: 'Подключить через Instagram',
+      igStep1Title: 'Начните подключение', igStep1Body: 'Нажмите на этой странице «Подключить через Instagram».', igStep2Title: 'Войдите в Instagram', igStep2Body: 'Вы входите напрямую в Instagram с профессиональным аккаунтом вашей компании и разрешаете доступ. Аккаунт Facebook не нужен.', igPrereq1: 'Профессиональный аккаунт Instagram (бизнес или автор)', igPrereq2: 'Данные для входа в этот аккаунт Instagram', igPrereq3: 'Аккаунт и страница Facebook не нужны',
       successTitle: 'Почтовый ящик подключён', successBody: 'Разрешение на доступ безопасно передано HYBOTE. Теперь мы выполним техническую активацию.', alreadyConnected: 'Этот почтовый ящик уже подключён к HYBOTE. Больше ничего делать не нужно.',
       provider: 'Провайдер', address: 'Почтовый ящик', connectedAt: 'Подключено', backHome: 'Назад к HYBOTE', support: 'Нужна помощь?', terms: 'Условия', deletion: 'Удаление данных',
       invalidForm: 'Пожалуйста, заполните все поля и подтвердите оба пункта.', sessionFailed: 'Не удалось начать защищённую сессию. Пожалуйста, перезагрузите страницу.',
@@ -145,6 +149,7 @@
       connectImap: 'Vérifier et connecter', connecting: 'Connexion …', backToProviders: 'Retour au choix du fournisseur',
       igPendingTitle: 'La connexion Instagram est en cours d’activation', igPendingBody: 'Meta examine actuellement les autorisations Instagram pour HYBOTE. Votre lien personnel reste valable : dès que l’autorisation sera accordée, cette page vous guidera dans la connexion. Nous vous tiendrons informé.',
       igTitle: 'Connecter Instagram', igIntro: 'Autorisez HYBOTE pour le compte Instagram professionnel de votre entreprise.', igConnectButton: 'Se connecter avec Instagram',
+      igStep1Title: 'Lancer la connexion', igStep1Body: 'Cliquez sur « Se connecter avec Instagram » sur cette page.', igStep2Title: 'Se connecter à Instagram', igStep2Body: 'Vous vous connectez directement sur Instagram avec le compte professionnel de votre entreprise et autorisez l’accès. Aucun compte Facebook n’est nécessaire.', igPrereq1: 'Un compte Instagram professionnel (entreprise ou créateur)', igPrereq2: 'Les identifiants de ce compte Instagram', igPrereq3: 'Aucun compte ni page Facebook nécessaire',
       successTitle: 'Boîte mail connectée', successBody: 'L’autorisation d’accès a été transmise en toute sécurité à HYBOTE. Nous finalisons maintenant l’activation technique.', alreadyConnected: 'Cette boîte mail est déjà connectée à HYBOTE. Rien d’autre à faire.',
       provider: 'Fournisseur', address: 'Boîte mail', connectedAt: 'Connecté', backHome: 'Retour à HYBOTE', support: 'Besoin d’aide ?', terms: 'CGV', deletion: 'Suppression des données',
       invalidForm: 'Veuillez remplir tous les champs et cocher les deux confirmations.', sessionFailed: 'La session sécurisée n’a pas pu démarrer. Veuillez recharger la page.',
@@ -186,7 +191,13 @@
   function applyChannelTexts() {
     const channel = state.invite ? state.invite.channel : '';
     if (channel === 'email') { $('page-title').textContent = t('titleEmail'); document.querySelector('.intro-copy').textContent = t('introEmail'); }
-    else if (channel === 'instagram') { $('page-title').textContent = t('titleInstagram'); document.querySelector('.intro-copy').textContent = t('introInstagram'); }
+    else if (channel === 'instagram') {
+      $('page-title').textContent = t('titleInstagram'); document.querySelector('.intro-copy').textContent = t('introInstagram');
+      // Schritte und Voraussetzungen der Seitenspalte gelten sonst dem Postfach (31.10.2026).
+      ['step1Title', 'step1Body', 'step2Title', 'step2Body', 'prereq1', 'prereq2', 'prereq3'].forEach((key) => {
+        document.querySelectorAll(`[data-i18n="${key}"]`).forEach((el) => { el.textContent = t(`ig${key[0].toUpperCase()}${key.slice(1)}`); });
+      });
+    }
   }
 
   function showView(id) {
