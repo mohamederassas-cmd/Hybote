@@ -301,8 +301,9 @@ console.log('\nRechtstextseiten');
     'Sprachwahl meldet aktiven Zustand barrierearm':
       legalPages.every((h) => h.includes("setAttribute('aria-pressed'")),
     'AGB in allen drei Sprachen vollständig': (terms.match(/<h2>/g) || []).length === 30,
+    // 14 Abschnitte je Sprache seit 31.10.2026 (neu: 6. Verbundene Geschäftskonten, Instagram und E-Mail).
     'Datenschutz in allen drei Sprachen vollständig':
-      (privacy.match(/<h2>/g) || []).length === 39,
+      (privacy.match(/<h2>/g) || []).length === 42,
   });
 }
 

@@ -29,7 +29,7 @@
       connectImap: 'Check and connect', connecting: 'Connecting …', backToProviders: 'Back to provider selection',
       detectFound: 'Server settings for {label} filled in. Please check them briefly.', detectAppPassword: 'This provider requires an app password from your account settings, not your normal password.', detectMicrosoft: 'This mailbox runs on Microsoft. Please go back and choose “Microsoft 365 / Outlook” – no app password needed there.',
       igPendingTitle: 'Instagram connection is being enabled', igPendingBody: 'Meta is currently approving the Instagram permissions for HYBOTE. Your personal link stays valid: as soon as the approval is in place, this page will guide you through the connection. We will let you know.',
-      igTitle: 'Connect Instagram', igIntro: 'Authorize HYBOTE for the Instagram professional account of your business.', igConnectButton: 'Connect with Instagram', igSuccessTitle: 'Instagram connected', igSuccessBody: 'Your Instagram account is securely connected to HYBOTE. We will now complete the technical activation.',
+      igTitle: 'Connect Instagram', igIntro: 'Authorize HYBOTE for the Instagram professional account of your business.', igConnectButton: 'Connect with Instagram', igAccountLabel: 'Instagram account', igSuccessTitle: 'Instagram connected', igSuccessBody: 'Your Instagram account is securely connected to HYBOTE. We will now complete the technical activation.',
       igStep1Title: 'Start the connection', igStep1Body: 'Click “Connect with Instagram” on this page.', igStep2Title: 'Sign in with Instagram', igStep2Body: 'You sign in directly at Instagram with the professional account of your business and allow access. No Facebook account needed.', igPrereq1: 'An Instagram professional account (business or creator)', igPrereq2: 'The login details of this Instagram account', igPrereq3: 'No Facebook account or Facebook page required',
       successTitle: 'Mailbox connected', successBody: 'The access permission was securely delivered to HYBOTE. We will now complete the technical activation.', alreadyConnected: 'This mailbox is already connected to HYBOTE. Nothing else to do.',
       provider: 'Provider', address: 'Mailbox', connectedAt: 'Connected', backHome: 'Back to HYBOTE', support: 'Need help?', terms: 'Terms', deletion: 'Data deletion',
@@ -60,7 +60,7 @@
       connectImap: 'Prüfen und verbinden', connecting: 'Verbinde …', backToProviders: 'Zurück zur Anbieterwahl',
       detectFound: 'Servereinstellungen für {label} eingetragen. Bitte kurz prüfen.', detectAppPassword: 'Dieser Anbieter verlangt ein App-Passwort aus Ihren Kontoeinstellungen, nicht Ihr normales Passwort.', detectMicrosoft: 'Dieses Postfach läuft über Microsoft. Bitte zurück und „Microsoft 365 / Outlook“ wählen – dort ohne App-Passwort.',
       igPendingTitle: 'Instagram-Anbindung wird freigeschaltet', igPendingBody: 'Meta prüft derzeit die Instagram-Berechtigungen für HYBOTE. Ihr persönlicher Link bleibt gültig: Sobald die Freigabe vorliegt, führt Sie diese Seite durch die Verbindung. Wir melden uns.',
-      igTitle: 'Instagram verbinden', igIntro: 'Autorisieren Sie HYBOTE für das Instagram-Professional-Konto Ihres Unternehmens.', igConnectButton: 'Mit Instagram verbinden', igSuccessTitle: 'Instagram verbunden', igSuccessBody: 'Ihr Instagram-Konto ist sicher mit HYBOTE verbunden. Wir übernehmen jetzt die technische Einrichtung.',
+      igTitle: 'Instagram verbinden', igIntro: 'Autorisieren Sie HYBOTE für das Instagram-Professional-Konto Ihres Unternehmens.', igConnectButton: 'Mit Instagram verbinden', igAccountLabel: 'Instagram-Konto', igSuccessTitle: 'Instagram verbunden', igSuccessBody: 'Ihr Instagram-Konto ist sicher mit HYBOTE verbunden. Wir übernehmen jetzt die technische Einrichtung.',
       igStep1Title: 'Verbindung starten', igStep1Body: 'Auf dieser Seite auf „Mit Instagram verbinden“ klicken.', igStep2Title: 'Bei Instagram anmelden', igStep2Body: 'Sie melden sich direkt bei Instagram mit dem Profi-Konto Ihres Unternehmens an und erlauben den Zugriff. Ein Facebook-Konto ist nicht nötig.', igPrereq1: 'Ein Instagram-Professional-Konto (Unternehmen oder Creator)', igPrereq2: 'Die Anmeldedaten dieses Instagram-Kontos', igPrereq3: 'Kein Facebook-Konto und keine Facebook-Seite nötig',
       successTitle: 'Postfach verbunden', successBody: 'Die Zugriffsberechtigung wurde sicher an HYBOTE übermittelt. Wir übernehmen jetzt die technische Einrichtung.', alreadyConnected: 'Dieses Postfach ist bereits mit HYBOTE verbunden. Es ist nichts weiter zu tun.',
       provider: 'Anbieter', address: 'Postfach', connectedAt: 'Verbunden', backHome: 'Zurück zu HYBOTE', support: 'Brauchen Sie Hilfe?', terms: 'AGB', deletion: 'Datenlöschung',
@@ -91,7 +91,7 @@
       connectImap: 'التحقق والربط', connecting: 'جارٍ الربط …', backToProviders: 'العودة إلى اختيار المزود',
       detectFound: 'تم إدخال إعدادات الخادم الخاصة بـ {label}. يرجى مراجعتها سريعًا.', detectAppPassword: 'يتطلب هذا المزود كلمة مرور تطبيق من إعدادات حسابك، وليس كلمة مرورك العادية.', detectMicrosoft: 'يعمل هذا البريد عبر Microsoft. يرجى الرجوع واختيار «Microsoft 365 / Outlook» – دون الحاجة إلى كلمة مرور تطبيق.',
       igPendingTitle: 'يتم تفعيل ربط إنستغرام', igPendingBody: 'تقوم Meta حالياً بمراجعة صلاحيات إنستغرام لـ HYBOTE. يبقى رابطكم الشخصي صالحاً: بمجرد توفر الموافقة سترشدكم هذه الصفحة خلال الربط. سنتواصل معكم.',
-      igTitle: 'ربط إنستغرام', igIntro: 'فوّضوا HYBOTE لحساب إنستغرام الاحترافي الخاص بشركتكم.', igConnectButton: 'الربط مع إنستغرام', igSuccessTitle: 'تم ربط إنستغرام', igSuccessBody: 'تم ربط حسابك على إنستغرام بأمان مع HYBOTE. سنتولى الآن التفعيل التقني.',
+      igTitle: 'ربط إنستغرام', igIntro: 'فوّضوا HYBOTE لحساب إنستغرام الاحترافي الخاص بشركتكم.', igConnectButton: 'الربط مع إنستغرام', igAccountLabel: 'حساب إنستغرام', igSuccessTitle: 'تم ربط إنستغرام', igSuccessBody: 'تم ربط حسابك على إنستغرام بأمان مع HYBOTE. سنتولى الآن التفعيل التقني.',
       igStep1Title: 'بدء الربط', igStep1Body: 'اضغطوا على «الربط مع إنستغرام» في هذه الصفحة.', igStep2Title: 'تسجيل الدخول في إنستغرام', igStep2Body: 'تسجلون الدخول مباشرة في إنستغرام بالحساب الاحترافي لشركتكم وتمنحون الصلاحية. لا حاجة إلى حساب فيسبوك.', igPrereq1: 'حساب إنستغرام احترافي (أعمال أو صانع محتوى)', igPrereq2: 'بيانات تسجيل الدخول لهذا الحساب على إنستغرام', igPrereq3: 'لا حاجة إلى حساب أو صفحة على فيسبوك',
       successTitle: 'تم ربط صندوق البريد', successBody: 'تم إرسال صلاحية الوصول بأمان إلى HYBOTE. سنتولى الآن التفعيل التقني.', alreadyConnected: 'هذا الصندوق مرتبط بالفعل مع HYBOTE. لا حاجة لأي إجراء إضافي.',
       provider: 'المزود', address: 'صندوق البريد', connectedAt: 'تم الربط', backHome: 'العودة إلى HYBOTE', support: 'هل تحتاجون مساعدة؟', terms: 'الشروط', deletion: 'حذف البيانات',
@@ -122,7 +122,7 @@
       connectImap: 'Проверить и подключить', connecting: 'Подключение …', backToProviders: 'Назад к выбору провайдера',
       detectFound: 'Настройки сервера для {label} заполнены. Пожалуйста, коротко проверьте их.', detectAppPassword: 'Этот провайдер требует пароль приложения из настроек аккаунта, а не ваш обычный пароль.', detectMicrosoft: 'Этот почтовый ящик работает на Microsoft. Вернитесь назад и выберите «Microsoft 365 / Outlook» – там пароль приложения не нужен.',
       igPendingTitle: 'Подключение Instagram активируется', igPendingBody: 'Meta в настоящее время проверяет разрешения Instagram для HYBOTE. Ваша персональная ссылка остаётся действительной: как только одобрение будет получено, эта страница проведёт вас через подключение. Мы сообщим вам.',
-      igTitle: 'Подключить Instagram', igIntro: 'Авторизуйте HYBOTE для профессионального аккаунта Instagram вашей компании.', igConnectButton: 'Подключить через Instagram', igSuccessTitle: 'Instagram подключён', igSuccessBody: 'Ваш аккаунт Instagram надёжно подключён к HYBOTE. Теперь мы выполним техническую активацию.',
+      igTitle: 'Подключить Instagram', igIntro: 'Авторизуйте HYBOTE для профессионального аккаунта Instagram вашей компании.', igConnectButton: 'Подключить через Instagram', igAccountLabel: 'Аккаунт Instagram', igSuccessTitle: 'Instagram подключён', igSuccessBody: 'Ваш аккаунт Instagram надёжно подключён к HYBOTE. Теперь мы выполним техническую активацию.',
       igStep1Title: 'Начните подключение', igStep1Body: 'Нажмите на этой странице «Подключить через Instagram».', igStep2Title: 'Войдите в Instagram', igStep2Body: 'Вы входите напрямую в Instagram с профессиональным аккаунтом вашей компании и разрешаете доступ. Аккаунт Facebook не нужен.', igPrereq1: 'Профессиональный аккаунт Instagram (бизнес или автор)', igPrereq2: 'Данные для входа в этот аккаунт Instagram', igPrereq3: 'Аккаунт и страница Facebook не нужны',
       successTitle: 'Почтовый ящик подключён', successBody: 'Разрешение на доступ безопасно передано HYBOTE. Теперь мы выполним техническую активацию.', alreadyConnected: 'Этот почтовый ящик уже подключён к HYBOTE. Больше ничего делать не нужно.',
       provider: 'Провайдер', address: 'Почтовый ящик', connectedAt: 'Подключено', backHome: 'Назад к HYBOTE', support: 'Нужна помощь?', terms: 'Условия', deletion: 'Удаление данных',
@@ -153,7 +153,7 @@
       connectImap: 'Vérifier et connecter', connecting: 'Connexion …', backToProviders: 'Retour au choix du fournisseur',
       detectFound: 'Paramètres du serveur pour {label} renseignés. Veuillez les vérifier rapidement.', detectAppPassword: 'Ce fournisseur exige un mot de passe d’application issu des paramètres de votre compte, pas votre mot de passe habituel.', detectMicrosoft: 'Cette boîte fonctionne avec Microsoft. Revenez en arrière et choisissez « Microsoft 365 / Outlook » – sans mot de passe d’application.',
       igPendingTitle: 'La connexion Instagram est en cours d’activation', igPendingBody: 'Meta examine actuellement les autorisations Instagram pour HYBOTE. Votre lien personnel reste valable : dès que l’autorisation sera accordée, cette page vous guidera dans la connexion. Nous vous tiendrons informé.',
-      igTitle: 'Connecter Instagram', igIntro: 'Autorisez HYBOTE pour le compte Instagram professionnel de votre entreprise.', igConnectButton: 'Se connecter avec Instagram', igSuccessTitle: 'Instagram connecté', igSuccessBody: 'Votre compte Instagram est connecté en toute sécurité à HYBOTE. Nous finalisons maintenant l’activation technique.',
+      igTitle: 'Connecter Instagram', igIntro: 'Autorisez HYBOTE pour le compte Instagram professionnel de votre entreprise.', igConnectButton: 'Se connecter avec Instagram', igAccountLabel: 'Compte Instagram', igSuccessTitle: 'Instagram connecté', igSuccessBody: 'Votre compte Instagram est connecté en toute sécurité à HYBOTE. Nous finalisons maintenant l’activation technique.',
       igStep1Title: 'Lancer la connexion', igStep1Body: 'Cliquez sur « Se connecter avec Instagram » sur cette page.', igStep2Title: 'Se connecter à Instagram', igStep2Body: 'Vous vous connectez directement sur Instagram avec le compte professionnel de votre entreprise et autorisez l’accès. Aucun compte Facebook n’est nécessaire.', igPrereq1: 'Un compte Instagram professionnel (entreprise ou créateur)', igPrereq2: 'Les identifiants de ce compte Instagram', igPrereq3: 'Aucun compte ni page Facebook nécessaire',
       successTitle: 'Boîte mail connectée', successBody: 'L’autorisation d’accès a été transmise en toute sécurité à HYBOTE. Nous finalisons maintenant l’activation technique.', alreadyConnected: 'Cette boîte mail est déjà connectée à HYBOTE. Rien d’autre à faire.',
       provider: 'Fournisseur', address: 'Boîte mail', connectedAt: 'Connecté', backHome: 'Retour à HYBOTE', support: 'Besoin d’aide ?', terms: 'CGV', deletion: 'Suppression des données',
@@ -172,6 +172,7 @@
     INVALID_FORM: 'invalidForm', CSRF_VALIDATION_FAILED: 'sessionFailed', SESSION_FAILED: 'sessionFailed', INSTAGRAM_NOT_ENABLED: 'igNotEnabled', METHOD_NOT_ALLOWED: 'serverError'
   };
   const PROVIDER_LABELS = { microsoft: 'provMicrosoft', google: 'provGoogle', imap: 'provImap' };
+  const IG_TYPE_LABELS = { BUSINESS: 'Business', MEDIA_CREATOR: 'Creator' };
 
   const params = new URLSearchParams(window.location.search);
   const inviteToken = params.get('invite') || '';
@@ -233,6 +234,7 @@
   function showSuccess(status, already) {
     const summary = $('connection-summary');
     const rows = [];
+    if (status && status.igAccount) rows.push([t('igAccountLabel'), `@${status.igAccount}${status.igType ? ` (${IG_TYPE_LABELS[status.igType] || status.igType})` : ''}`, 'ltr']);
     if (status && status.provider) rows.push([t('provider'), t(PROVIDER_LABELS[status.provider] || 'provImap'), 'auto']);
     if (status && status.address) rows.push([t('address'), status.address, 'ltr']);
     if (status && status.connectedAt) rows.push([t('connectedAt'), new Intl.DateTimeFormat(state.language, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(status.connectedAt)), 'auto']);
@@ -370,7 +372,7 @@
       const next = new URLSearchParams(window.location.search); window.location.replace(`/meta-connect.html?${next.toString()}`); return;
     }
     if (invite.channel === 'instagram') {
-      if (params.get('result') === 'ok') { showSuccess({}, false); return; }
+      if (params.get('result') === 'ok') { showSuccess({ igAccount: params.get('account') || '', igType: params.get('type') || '', connectedAt: new Date().toISOString() }, false); return; }
       showView(state.flags.instagramEnabled ? 'instagram-view' : 'instagram-pending-view');
       if (params.get('error')) showError($('ig-error'), params.get('error'));
       return;

@@ -55,7 +55,8 @@ module.exports = async function handler(request, response) {
       data: { name: 'Authorization', value: `Bearer ${long.access_token}` }
     });
     await connectInstagram({ invite, igUserId, username, accountType: profile.account_type, credentialId: credential.id, scopes: Array.isArray(short.permissions) ? short.permissions.join(',') : SCOPE, expiresAt, fingerprint });
-    return redirectToPage(response, inviteToken, { result: 'ok' });
+    // Benutzername und Kontotyp zeigt die Erfolgsseite (Nutzung von instagram_business_basic, sichtbar fuer das App Review).
+    return redirectToPage(response, inviteToken, { result: 'ok', account: username, type: String(profile.account_type || '') });
   } catch (error) {
     await failInstagram({ invite, detail: `${error.message}:${error.detail || error.status || ''}`, fingerprint });
     return fail(error.message === 'N8N_API_ERROR' || error.message === 'IG_TABLE_MISSING' ? 'SERVER_ERROR' : 'OAUTH_FAILED');
