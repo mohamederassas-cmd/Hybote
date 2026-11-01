@@ -205,7 +205,7 @@ Ereignisart (`message`, `echo`, `history_import`, `status`, `account`), sucht de
 ruft den Workflow aus `workflow_id` auf – **nur** bei `status = live`. Kein oder nicht-liver
 Mandant ⇒ Telegram-Alarm, nie stiller Verlust. Status-Updates außer `failed` werden verworfen.
 
-Der Kundenagent (Vorlage: `Layla v2 – WhatsApp Agent (HYBOTE)`) liest Tabellen-IDs und
+Der Kundenagent (Vorlage: `Hadi – WhatsApp-Agent (HYBOTE)`) liest Tabellen-IDs und
 `tenant_key` aus `tenant`, Persona, Leistungswissen und Termin-Playbook aus `wa_tenant_config`.
 Inhaber-Echos (`smb_message_echoes`) werden als Rolle `owner` gespeichert, ohne Antwort; der
 Coexistence-Verlauf (`history`) wird je Thread einmalig importiert.

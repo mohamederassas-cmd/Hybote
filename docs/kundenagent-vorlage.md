@@ -1,6 +1,6 @@
 # Kundenagent (Vorlage) – Bereitstellung eines Mandanten
 
-Stand: 02.09.2026 (Stufe C). Die Vorlage ist der Workflow **Layla v2 – WhatsApp Agent (HYBOTE)**
+Stand: 02.09.2026 (Stufe C). Die Vorlage ist der Workflow **Hadi – WhatsApp-Agent (HYBOTE)**
 (`rdQR5UIcZ5ogOT5X`) bzw. dessen Klon **Kundenagent (Vorlage)**. Jeder Kunde bekommt einen Klon,
 ein eigenes Tabellenpaar und eine eigene Konfigurationszeile. Das Gateway `WhatsApp Gateway v2
 (HYBOTE)` (`x4G3WQPN8nmquEh4`) verteilt über `wa_tenants`.

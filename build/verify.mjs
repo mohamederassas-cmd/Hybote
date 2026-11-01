@@ -310,14 +310,15 @@ console.log('\nRechtstextseiten');
 /* ── WhatsApp-Selbsttest (Paket 3f, 26.10.2026) ────────────────────────── */
 console.log('\nWhatsApp-Selbsttest');
 {
-  // Layla antwortet auf +1 213 423 4114. Die 650er-Nummer ist der Telefon-Agent und kann kein WhatsApp.
+  // Seit 01.11.2026 beantwortet Hadi Anrufe und WhatsApp auf +1 650 514 6359. Die 213er ist Demo-Nummer
+  // (ohne Demo antwortet dort auch Hadi) und gehört nicht in die Werbung.
   // wa.me kennt keine UTM, deshalb nennt der vorausgefüllte Text die Quelle.
   for (const [name, source] of [['links/index.html', 'Instagram'], ['benchmark/index.html', 'Benchmark']]) {
     const h = readFileSync(join(ROOT, name), 'utf8');
     report(name, {
       'Knopf zeigt auf die WhatsApp-Nummer, Quelle im Text':
-        h.includes(`href="https://wa.me/12134234114?text=Hi%20HYBOTE%20(${source})"`),
-      'nie die Nummer des Telefon-Agenten': !h.includes('16505146359') && !/wa\.me\/1?650/.test(h),
+        h.includes(`href="https://wa.me/16505146359?text=Hi%20HYBOTE%20(${source})"`),
+      'nie die Demo-Nummer': !h.includes('12134234114') && !/wa\.me\/1?213/.test(h),
     });
   }
 }
