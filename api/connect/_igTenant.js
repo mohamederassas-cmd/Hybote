@@ -1,6 +1,6 @@
 // Instagram-Anbindung (31.10.2026, Plan „warm-shamir“ Paket I): Business Login for Instagram braucht kein
 // Facebook-Konto. Ergebnis je Mandant eine Zeile in der n8n-Tabelle ig_tenants (Zuordnung + Status); der
-// Langzeit-Token liegt nur als n8n-Credential (httpHeaderAuth „Authorization: Bearer …“). Die Tabellen-ID kommt
+// Langzeit-Token liegt nur als n8n-Credential (httpQueryAuth, Parameter access_token). Die Tabellen-ID kommt
 // aus N8N_IG_TENANT_TABLE_ID oder wird per Name gesucht (der Control Tower legt die Tabelle an).
 const crypto = require('node:crypto');
 const { n8nJson, writeAuditRow } = require('./_n8n.js');

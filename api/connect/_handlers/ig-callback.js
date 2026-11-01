@@ -1,6 +1,7 @@
 // Instagram-Callback (31.10.2026): Code → Kurz-Token → Langzeit-Token (etwa 60 Tage, verlaengerbar) → Nachrichten-Abo
-// (subscribed_apps) → Profil lesen → n8n-Credential (httpHeaderAuth) → Zeile in ig_tenants → zurueck zur Kundenseite.
-// Der Token verlaesst n8n nie.
+// (subscribed_apps) → Profil lesen → n8n-Credential (httpQueryAuth) → Zeile in ig_tenants → zurueck zur Kundenseite.
+// Der Token verlaesst n8n nie. Query Auth statt Bearer-Header (01.11.2026): refresh_access_token nimmt den Token nur
+// als Parameter access_token, sonst scheitert die woechentliche Verlaengerung im Tower-Workflow.
 const { verifyInviteToken } = require('../../meta/_invite.js');
 const { verifyState, parseCookies, safeEqual, redirectToPage, clientFingerprint, queryOf, baseUrl } = require('../_state.js');
 const { configured, ensureCredential } = require('../_n8n.js');
@@ -50,9 +51,9 @@ module.exports = async function handler(request, response) {
     const username = String(profile.username || '');
     const expiresAt = long.expires_in ? new Date(Date.now() + Number(long.expires_in) * 1000) : null;
     const credential = await ensureCredential({
-      type: 'httpHeaderAuth',
+      type: 'httpQueryAuth',
       name: `IG · ${String(invite.company || '').slice(0, 50)} · ${igUserId}`,
-      data: { name: 'Authorization', value: `Bearer ${long.access_token}` }
+      data: { name: 'access_token', value: long.access_token }
     });
     await connectInstagram({ invite, igUserId, username, accountType: profile.account_type, credentialId: credential.id, scopes: Array.isArray(short.permissions) ? short.permissions.join(',') : SCOPE, expiresAt, fingerprint });
     // Benutzername und Kontotyp zeigt die Erfolgsseite (Nutzung von instagram_business_basic, sichtbar fuer das App Review).
