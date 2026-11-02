@@ -79,12 +79,22 @@ if (existsSync(manifestPath)) {
   if (m) manifest = { ...JSON.parse(m[1]), order: config.shots, fps: config.fps };
 }
 
+/** Rohclip aus dem Ordner der Fassung (`raw` in der Config, sonst raw/); fehlt er dort, mit Warnung aus raw/ */
+const rawFile = (dir, name) => {
+  for (const d of dir ? [dir, "raw"] : ["raw"]) {
+    const file = join(src, d, name);
+    if (!existsSync(file)) { console.warn("· fehlt", `${d}/${name}`); continue; }
+    return file;
+  }
+  return null;
+};
+
 // ---------- Bildfolgen ----------
 for (const shot of config.shots) {
   if (!want(shot)) continue;
-  const file = join(src, "raw", `${shot}.mp4`);
-  if (!existsSync(file)) { console.warn("· fehlt", `raw/${shot}.mp4`); continue; }
   for (const [variant, v] of Object.entries(config.variants)) {
+    const file = rawFile(v.raw, `${shot}.mp4`);
+    if (!file) continue;
     const dir = join(out, shot, variant);
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir, { recursive: true });
@@ -113,8 +123,9 @@ for (const f of loopFiles) {
     if (!want(base) && !want(name)) continue;
     const dir = join(out, "loops");
     mkdirSync(dir, { recursive: true });
-    const file = join(rawDir, f);
-    const { width, crf, crop: c, sharpen: sh } = { width: config.loops.width, crf: config.loops.crf, ...config.loops.sizes?.[name] };
+    const { width, crf, crop: c, sharpen: sh, raw } = { width: config.loops.width, crf: config.loops.crf, ...config.loops.sizes?.[name] };
+    const file = rawFile(raw, f);
+    if (!file) continue;
     const vf = `${crop(c)}scale=${width}:-2:flags=lanczos,${sharpen(sh)}${grade},split[a][b];[b]reverse[r];[a][r]concat=n=2:v=1:a=0,format=yuv420p`;
     run("ffmpeg", ["-loglevel", "error", "-y", "-i", file, "-an", "-filter_complex", vf, "-c:v", "libx264", "-preset", "slow", "-crf", String(crf), "-movflags", "+faststart", join(dir, `${name}.mp4`)]);
     const poster = join(tmpdir(), `poster-${name}.png`);
