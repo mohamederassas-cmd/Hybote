@@ -54,6 +54,9 @@
   const KEEP = 2;
   /** Überblendet wird zwischen fertigen Bildern, die höchstens so weit auseinanderliegen */
   const MAX_GAP = 6;
+  /** Ab diesem Filmtempo (Bilder/s) wird zwischen Nachbarbildern linear überblendet; das Tempo klingt mit TEMPO_TAU (s) ab */
+  const TEMPO_FULL = 6;
+  const TEMPO_TAU = 0.25;
 
   const stats = { decodeMs: 0, decoded: 0, dropped: 0 };
   const noteDecode = (ms) => {
@@ -178,6 +181,9 @@ self.onmessage = async ({ data: m }) => {
       this.ahead = AHEAD;
       this.behind = BEHIND;
       this.showing = [];
+      this.tempo = 0;
+      this.lastF = -1;
+      this.lastAt = 0;
     }
 
     url(i) { return `${this.spec.base}/${String(i + 1).padStart(3, '0')}.webp?v=${this.spec.v}`; }
@@ -201,6 +207,7 @@ self.onmessage = async ({ data: m }) => {
     /** Bildpaar für Fortschritt p (0–1): überblendet zwischen den fertigen Bildern darunter und darüber */
     pair(p) {
       const f = this.pos(p);
+      this.track(f);
       this.focus(Math.round(f), true);
       let lo = -1;
       let hi = -1;
@@ -208,9 +215,14 @@ self.onmessage = async ({ data: m }) => {
       for (let k = Math.ceil(f); k < this.spec.count && k <= f + MAX_GAP; k++) if (this.frames.has(k)) { hi = k; break; }
       if (lo >= 0 && hi >= 0 && hi - lo <= MAX_GAP) {
         let t = hi === lo ? 0 : (f - lo) / (hi - lo);
-        // Nachbarbilder: jedes Bild steht ein Viertel der Strecke an beiden Enden scharf, überblendet wird nur in der
-        // Mitte. Sonst zeigt langsames Scrollen fast immer ein halbtransparentes Doppelbild (wirkt unscharf).
-        if (hi - lo === 1) { t = Math.min(1, Math.max(0, (t - 0.25) / 0.5)); t = t * t * (3 - 2 * t); }
+        // Nachbarbilder: in Bewegung linear überblenden (gleichmäßiger Lauf ohne Halten-Springen-Takt). Wird der Film
+        // langsamer, wächst an beiden Enden eine Zone, in der ein Bild scharf steht; im Stillstand rastet er weich auf
+        // dem nächsten Bild ein, ein halbtransparentes Doppelbild bleibt nie stehen (wirkt unscharf).
+        if (hi - lo === 1) {
+          const hold = 0.5 * Math.max(0, 1 - this.tempo / TEMPO_FULL);
+          t = hold >= 0.499 ? (t < 0.5 ? 0 : 1) : Math.min(1, Math.max(0, (t - hold) / (1 - 2 * hold)));
+          t += (t * t * (3 - 2 * t) - t) * 2 * hold;
+        }
         this.showing = t <= 0.02 ? [lo] : t >= 0.98 ? [hi] : [lo, hi];
         if (t <= 0.02) return { a: this.frames.get(lo), b: null, t: 0, shown: lo, want: f };
         if (t >= 0.98) return { a: this.frames.get(hi), b: null, t: 0, shown: hi, want: f };
@@ -224,12 +236,24 @@ self.onmessage = async ({ data: m }) => {
     /** Nur die Bilder um p bereithalten (Nachbar-Clip an der Nahtstelle), ohne zu zeichnen */
     prime(p) { this.focus(Math.round(this.pos(p)), false); }
 
+    /** Filmtempo in Bildern/s aus der stetigen Position: springt auf jeden höheren Wert, klingt sonst mit TEMPO_TAU ab */
+    track(f) {
+      const now = performance.now();
+      const dt = (now - this.lastAt) / 1000;
+      if (this.lastF < 0 || dt > 0.25) this.tempo = 0;
+      else if (dt > 0) this.tempo = Math.max(Math.abs(f - this.lastF) / dt, this.tempo * Math.exp(-dt / TEMPO_TAU));
+      this.lastF = f;
+      this.lastAt = now;
+    }
+
     trim() {
       this.frames.forEach(release);
       this.frames.clear();
       this.showing = [];
       this.focusAt = -1;
       this.speed = 0;
+      this.tempo = 0;
+      this.lastF = -1;
     }
 
     nearest(want) {
@@ -408,6 +432,9 @@ self.onmessage = async ({ data: m }) => {
   };
   // Handy: Hochformat-Ausschnitt aus der Bildmitte, der Concierge steht etwas über der Mitte
   const FOCUS = { desktop: { fx: 0.5, fy: 0.5 }, phone: { fx: 0.5, fy: 0.45 } };
+  // Höchste Pixeldichte des Canvas: am Handy wird das Bild stark vergrößert, bei 1,5 käme eine zweite Vergrößerung
+  // durch den Browser dazu (unscharf)
+  const DPR_MAX = { desktop: 1.5, phone: 2 };
   const smoothstep = (x) => { const t = Math.min(1, Math.max(0, x)); return t * t * (3 - 2 * t); };
   function look(shot, p) {
     const [a, b] = ZOOM[variant][shot] || [1, 1];
@@ -478,7 +505,7 @@ self.onmessage = async ({ data: m }) => {
       }
     };
     const ro = new ResizeObserver(([e]) => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const dpr = Math.min(window.devicePixelRatio || 1, DPR_MAX[variant]);
       cw = Math.round(e.contentRect.width * dpr);
       ch = Math.round(e.contentRect.height * dpr);
       if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
@@ -615,6 +642,9 @@ self.onmessage = async ({ data: m }) => {
   const B0 = 0.05;
   const SLICE = 0.165;
   const END = B0 + LAST * SLICE;
+  // Anteil des Kapitels, in dem sein Clip läuft; danach steht das End-Bild. Am Handy länger: die Bühne ist niedriger,
+  // bei 60 % käme beim Wischen in jedem Takt ein Sprung über mehrere Bilder
+  const FILM_SHARE = { desktop: 0.6, phone: 0.85 };
 
   function build(tl, phone) {
     const q = (sel) => Array.from(root.querySelectorAll(sel));
@@ -627,8 +657,8 @@ self.onmessage = async ({ data: m }) => {
     beats.forEach((beat, k) => {
       const at = B0 + k * SLICE;
       const sub = (sel) => Array.from(beat.querySelectorAll(sel));
-      // Film: der Clip des Kapitels läuft in den ersten 60 %, danach steht sein End-Bild
-      tl.fromTo(clock, { film: k }, { film: k + 1, duration: SLICE * 0.6, ease: 'power1.inOut', immediateRender: false }, at);
+      // Film: der Clip des Kapitels läuft im ersten Teil (FILM_SHARE), danach steht sein End-Bild
+      tl.fromTo(clock, { film: k }, { film: k + 1, duration: SLICE * FILM_SHARE[phone ? 'phone' : 'desktop'], ease: 'power1.inOut', immediateRender: false }, at);
       tl.set(beat, { autoAlpha: 1 }, at)
         // y: 0 ausdrücklich, sonst übernimmt GSAP den CSS-Startwert (translateY 110 %) zusätzlich als Pixel
         .fromTo(sub('.mask > span'), { yPercent: 110, y: 0 }, { yPercent: 0, y: 0, duration: SLICE * 0.24, stagger: SLICE * 0.04, ease: 'power3.out' }, at + SLICE * 0.03)

@@ -58,6 +58,7 @@ const f3 = (v) => (v / 255).toFixed(4);
 const [si, gi] = [config.source.map(f3), config.ground.map(f3)];
 const grade = `colorlevels=rimin=${si[0]}:gimin=${si[1]}:bimin=${si[2]}:romin=${gi[0]}:gomin=${gi[1]}:bomin=${gi[2]}`;
 const crop = (c) => (c ? `crop=${c},` : "");
+const sharpen = (s) => (s ? `unsharp=${s},` : "");
 
 const size = (file) => {
   const [w, h] = run("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", file]).trim().split(",").map(Number);
@@ -89,7 +90,7 @@ for (const shot of config.shots) {
     mkdirSync(dir, { recursive: true });
     const tmp = join(tmpdir(), `film-${shot}-${variant}-${process.pid}`);
     mkdirSync(tmp, { recursive: true });
-    run("ffmpeg", ["-loglevel", "error", "-y", "-i", file, "-vf", `fps=${config.fps},${crop(v.crop)}scale=${v.width}:-2:flags=lanczos,${grade}`, join(tmp, "%03d.png")]);
+    run("ffmpeg", ["-loglevel", "error", "-y", "-i", file, "-vf", `fps=${config.fps},${crop(v.crop)}scale=${v.width}:-2:flags=lanczos,${sharpen(v.sharpen)}${grade}`, join(tmp, "%03d.png")]);
     const pngs = readdirSync(tmp).filter((f) => f.endsWith(".png")).sort();
     await pool(pngs, Math.max(2, cpus().length - 1), (f) =>
       spawnP("cwebp", ["-quiet", "-q", String(v.quality), "-m", "6", "-sharp_yuv", join(tmp, f), "-o", join(dir, f.replace(".png", ".webp"))])
@@ -113,11 +114,11 @@ for (const f of loopFiles) {
     const dir = join(out, "loops");
     mkdirSync(dir, { recursive: true });
     const file = join(rawDir, f);
-    const { width, crf, crop: c } = { width: config.loops.width, crf: config.loops.crf, ...config.loops.sizes?.[name] };
-    const vf = `${crop(c)}scale=${width}:-2:flags=lanczos,${grade},split[a][b];[b]reverse[r];[a][r]concat=n=2:v=1:a=0,format=yuv420p`;
+    const { width, crf, crop: c, sharpen: sh } = { width: config.loops.width, crf: config.loops.crf, ...config.loops.sizes?.[name] };
+    const vf = `${crop(c)}scale=${width}:-2:flags=lanczos,${sharpen(sh)}${grade},split[a][b];[b]reverse[r];[a][r]concat=n=2:v=1:a=0,format=yuv420p`;
     run("ffmpeg", ["-loglevel", "error", "-y", "-i", file, "-an", "-filter_complex", vf, "-c:v", "libx264", "-preset", "slow", "-crf", String(crf), "-movflags", "+faststart", join(dir, `${name}.mp4`)]);
     const poster = join(tmpdir(), `poster-${name}.png`);
-    run("ffmpeg", ["-loglevel", "error", "-y", "-i", file, "-frames:v", "1", "-vf", `${crop(c)}scale=${width}:-2:flags=lanczos,${grade}`, poster]);
+    run("ffmpeg", ["-loglevel", "error", "-y", "-i", file, "-frames:v", "1", "-vf", `${crop(c)}scale=${width}:-2:flags=lanczos,${sharpen(sh)}${grade}`, poster]);
     run("cwebp", ["-quiet", "-q", "72", "-m", "6", poster, "-o", join(dir, `${name}.webp`)]);
     const { w, h } = size(poster);
     rmSync(poster);

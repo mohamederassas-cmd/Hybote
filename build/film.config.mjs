@@ -7,17 +7,23 @@
 const CX = 0.78;
 /** Hochformat 3:4 aus dem 16:9-Clip, volle Höhe, Mitte bei CX */
 const PHONE_CROP = `ih*3/4:ih:iw*${CX}-ih*3/8:0`;
+/**
+ * Handy: Der Ausschnitt hat nur ~807×1076 echte Pixel und wird am iPhone fast dreifach vergrößert. Deshalb 1080 breit
+ * (Lanczos statt Bilinear im Browser), leicht nachgeschärft (ffmpeg unsharp) und mit mehr Qualität als am Desktop.
+ */
+const PHONE_WIDTH = 1080;
+const PHONE_SHARPEN = "5:5:0.6:5:5:0";
 
 export default {
   /** Scroll-Kapitel in Filmreihenfolge: raw/<name>.mp4 → film/<name>/<variant>/NNN.webp */
   shots: ["light", "turn", "open", "book", "bell"],
   /**
    * Desktop: ganzes 16:9-Bild, bildfüllend (film.js: cover). Handy: Hochformat-Ausschnitt um den Concierge;
-   * `cx` landet im Manifest, damit film.js die Anker (data-x) in den Ausschnitt umrechnen kann.
+   * `cx` landet im Manifest, damit film.js die Anker (data-x) in den Ausschnitt umrechnen kann. `sharpen` = unsharp-Werte.
    */
   variants: {
     desktop: { width: 1920, quality: 66 },
-    phone: { width: 900, quality: 62, crop: PHONE_CROP, cx: CX },
+    phone: { width: PHONE_WIDTH, quality: 72, sharpen: PHONE_SHARPEN, crop: PHONE_CROP, cx: CX },
   },
   /** Bilder pro Sekunde fürs Scrubbing (5-s-Clip → 75 Frames; bei 10 lagen die Bilder für langsames Scrollen zu weit auseinander) */
   fps: 15,
@@ -28,7 +34,7 @@ export default {
   source: [4, 8, 11],
   ground: [7, 11, 22],
   /** Endlos-Loops: raw/loop-<name>.mp4 → film/loops/<name>.mp4 (vor + zurück) + Poster */
-  loops: { width: 1920, crf: 27, sizes: { "hero-phone": { width: 900, crf: 26, crop: PHONE_CROP } } },
+  loops: { width: 1920, crf: 27, sizes: { "hero-phone": { width: PHONE_WIDTH, crf: 26, crop: PHONE_CROP, sharpen: PHONE_SHARPEN } } },
   /** Standbilder (ohne Bewegung) aus Schlüsselbildern: aspect = Ausschnitt, fx/fy = Fokus (0–1) */
   stills: [
     { name: "lit", src: "keys/k1-light.png", aspect: "4:3", fx: 1, width: 1200 },
