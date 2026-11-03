@@ -10,6 +10,7 @@ Website von hybote.ai: statische HTML-Seiten ohne Build-Schritt plus Vercel Serv
 node serve.mjs                        # lokaler Server, Port aus PORT, sonst 3000 (.claude/launch.json: "hybote", autoPort)
 node build/verify.mjs                 # statische Prüfung aller Seiten, vor jedem Deploy
 node --test build/*.test.cjs          # Unit-Tests der Meta-Functions (node:test, kein Framework)
+node --test build/demo-page.test.mjs  # Demo-Seite /v/<10-Zeichen-Code>, Vorschaubild und video-view (nicht im cjs-Glob)
 node --test build/meta-webhook.test.cjs --test-name-pattern="handshake"   # einzelner Test
 node build/film-frames.mjs [kapitel]  # Scroll-Film aus dem Rohmaterial bauen (ffmpeg + cwebp, brew install ffmpeg webp)
 ```
@@ -44,7 +45,8 @@ node build/film-frames.mjs [kapitel]  # Scroll-Film aus dem Rohmaterial bauen (f
   - `meta-connect.*`: WhatsApp Embedded Signup (Meta SDK v4, Coexistence), fünf Sprachen (en/de/ar/ru/fr) im `translations`-Objekt von `meta-connect.js`.
   - `connect.*`: Instagram- und E-Mail-Postfach-Anbindung (Microsoft, Google, IMAP); WhatsApp-Links leitet sie auf `meta-connect.html` um.
   - `angebot.*`: Online-Annahme von Angeboten.
-  - `v/index.html`: persönliche Videolinks `/v/<code>` (Rewrite in `vercel.json`).
+  - `v/index.html`: persönliche Videolinks `/v/<code>` (Rewrite in `vercel.json`), nur 8-Zeichen-Codes der Erstmails.
+  - Demo-Seiten `/v/<10-Zeichen-Code>` (seit 03.11.2026, Plan „Demo zuerst“): kein statisches HTML, sondern serverseitig gerendert von `api/connect/_handlers/demo-page.js` (Rewrites in `vercel.json` stehen vor `/v/:code`, Reihenfolge zählt), Vorschaubild `/v/<code>/og.jpg` aus `demo-og.js`. Daten kommen aus der n8n-Tabelle `demo_pages`, die der Control Tower schreibt (`api/connect/_demoPages.js`, Tabelle per Name oder `N8N_DEMO_PAGES_TABLE_ID`, 60-s-Cache). Loom lädt erst nach Klick, Ereignisse gehen an `video-view`.
 - Rechtstexte (`agb.html`, `datenschutz.html`, `data-deletion.html`) teilen `legal.css` (seit 26.10.2026 wie die Startseite: schwebende Glasleiste mit weißer Wortmarke, Raumlicht `.ambient`, Text in einer Glaskarte). `datenschutz.html` hat drei Sprachblöcke; neue Dienste in allen drei nachtragen.
 - `danke.html` (noindex) hat zwei Fassungen: `?via=calendly` nach einer Buchung (`calendly-popup.js` leitet 1,6 s nach `calendly.event_scheduled` dorthin, damit `track.js` `calendly_booked` noch sendet), sonst nach dem Kontaktformular. Hintergrund `media/danke-dawn*.webp` (eigene Kopie, nicht an den Film-Hash gekoppelt). Die Weiterleitung im Termintyp selbst („Redirect to an external site“) ist im kostenlosen Calendly-Tarif gesperrt (PRO). Deshalb öffnen alle Calendly-Links auf hybote.ai, `/benchmark/` und `/links/` mit `data-cal-popup` ein Calendly-Fenster auf unserer Seite (`calendly-popup.js`, lädt widget.js erst beim Klick; ohne JavaScript, bei Strg/Cmd-Klick oder wenn Calendly nicht lädt, gilt der normale Link). Neue Calendly-Links auf eigenen Seiten bekommen `data-cal-popup` und binden `/calendly-popup.js` ein. Links in E-Mails und im PDF enden weiter auf Calendlys eigener Bestätigung.
 - Schriften liegen selbst gehostet in `fonts/` (`fonts.css`). Die `*-latin-ext.woff2`-Dateien enthalten **kein** Basis-Alphabet; wer sie als Latin einbindet, lässt die Seite auf Times/Arial fallen, obwohl `document.fonts` "loaded" meldet.

@@ -16,7 +16,11 @@ const routes = {
   'ig/callback': require('./_handlers/ig-callback.js'),
   'ig/complete': require('./_handlers/ig-complete.js'),
   // Video-Aufrufe aus den Erstmails des Sales Pilot (16.10.2026), Seite /v/<code>.
-  'video-view': require('./_handlers/video-view.js')
+  'video-view': require('./_handlers/video-view.js'),
+  // Demo-Seiten /v/<10-Zeichen-Code> und ihr Vorschaubild (03.11.2026, Plan „Demo zuerst“). Kommen nur per Rewrite aus
+  // vercel.json als /api/connect/route?__connect=demo-page|demo-og&code=<code> an.
+  'demo-page': require('./_handlers/demo-page.js'),
+  'demo-og': require('./_handlers/demo-og.js')
 };
 
 module.exports = async function handler(request, response) {

@@ -5,7 +5,8 @@
 // Pfade, Meta-Angaben, i18n-Vollständigkeit und die FAQ-Nummerierung.
 // Läuft in Sekunden und lohnt sich vor jedem Deploy.
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -321,6 +322,70 @@ console.log('\nWhatsApp-Selbsttest');
       'nie die Demo-Nummer': !h.includes('12134234114') && !/wa\.me\/1?213/.test(h),
     });
   }
+}
+
+/* ── Demo-Seite /v/<10-Zeichen-Code> (Plan „Demo zuerst“, 03.11.2026) ─── */
+console.log('\nDemo-Seite');
+{
+  const vercel = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
+  const rewrites = vercel.rewrites || [];
+  const at = (source) => rewrites.findIndex((r) => r.source === source);
+  const iOg = at('/v/:code([a-z2-9]{10})/og.jpg');
+  const iPage = at('/v/:code([a-z2-9]{10})');
+  const iVideo = at('/v/:code');
+  const vHeaders = (vercel.headers || []).find((h) => h.source === '/v/(.*)');
+  const router = readFileSync(join(ROOT, 'api/connect/[...path].js'), 'utf8');
+  const videoView = readFileSync(join(ROOT, 'api/connect/_handlers/video-view.js'), 'utf8');
+  const videoPage = readFileSync(join(ROOT, 'v/index.html'), 'utf8');
+  const pageSource = readFileSync(join(ROOT, 'api/connect/_handlers/demo-page.js'), 'utf8');
+  const ds = readFileSync(join(ROOT, 'datenschutz.html'), 'utf8');
+  const demoParagraphs = ['de', 'en', 'ar'].map((l) => (new RegExp(`<p id="demo-${l}">[\\s\\S]*?</p>`).exec(ds) || [''])[0]);
+  const { TEXTS } = createRequire(import.meta.url)('../api/connect/_handlers/demo-page.js');
+  const copy = ['de', 'en'].flatMap((l) => Object.values(TEXTS[l] || {}));
+  // Vercel Hobby: höchstens 12 Functions je Deployment; Dateien und Ordner mit Unterstrich zählen nicht.
+  const functions = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(join(ROOT, dir), { withFileTypes: true })) {
+      if (entry.name.startsWith('_') || entry.name.startsWith('.')) continue;
+      if (entry.isDirectory()) walk(join(dir, entry.name));
+      else if (/\.(c|m)?js$/.test(entry.name)) functions.push(join(dir, entry.name));
+    }
+  };
+  walk('api');
+  report('vercel.json + api/connect + datenschutz.html', {
+    // Reihenfolge zählt: der erste passende Rewrite gewinnt, /v/:code würde die Demo-Codes sonst schlucken.
+    'Rewrites für 10-Zeichen-Codes stehen vor /v/:code':
+      iOg !== -1 && iPage !== -1 && iVideo !== -1 && iOg < iVideo && iPage < iVideo,
+    'Demo-Rewrites gehen an den connect-Router (keine neue Function)':
+      rewrites[iOg].destination === '/api/connect/route?__connect=demo-og&code=:code' &&
+      rewrites[iPage].destination === '/api/connect/route?__connect=demo-page&code=:code',
+    'E-Mail-Video-Seite bleibt bei den 8-Zeichen-Codes':
+      rewrites[iVideo] && rewrites[iVideo].destination === '/v/index.html' && videoPage.includes('/^[a-z2-9]{8}$/'),
+    '/v/ bleibt noindex': !!vHeaders && vHeaders.headers.some((h) => h.key === 'X-Robots-Tag' && /noindex/.test(h.value)),
+    'demo-page und demo-og im Router registriert':
+      router.includes("'demo-page': require('./_handlers/demo-page.js')") &&
+      router.includes("'demo-og': require('./_handlers/demo-og.js')") &&
+      existsSync(join(ROOT, 'api/connect/_handlers/demo-og.js')),
+    'höchstens 12 Functions (Vercel Hobby)': functions.length > 0 && functions.length <= 12,
+    'video-view nimmt 10-Zeichen-Codes mit den vier Demo-Ereignissen':
+      videoView.includes('/^[a-z2-9]{10}$/') && videoView.includes('/^[a-z2-9]{8}$/') &&
+      ['demo_open', 'demo_play', 'demo_try', 'demo_book'].every((e) => videoView.includes(`'${e}'`)),
+    'Loom erst nach Klick, Seite rendert serverseitig mit Nonce':
+      pageSource.includes('data-embed=') && !/<iframe/.test(pageSource) && pageSource.includes("'nonce-${nonce}'"),
+    'Ausprobieren standardmäßig bei Hadi, nie die Demo-Nummer':
+      pageSource.includes("DEFAULT_TRY_WA = '16505146359'") && !pageSource.includes('12134234114'),
+    'Demo-Abschnitte im Datenschutz in allen drei Sprachen':
+      ['de', 'en', 'ar'].every((l) => (ds.match(new RegExp(`id="demo-${l}"`, 'g')) || []).length === 1) &&
+      demoParagraphs.every((p) => p.includes('Loom') && p.includes('atlassian.com/legal/privacy-policy')),
+    'Demo-Abschnitte ohne Gedankenstriche und Ausrufezeichen': demoParagraphs.every((p) => p && !/[—–!]/.test(p)),
+    'Demo-Seite verlinkt die passenden Datenschutz-Anker':
+      TEXTS.de.privacyHref === '/datenschutz.html?lang=de#demo-de' && TEXTS.en.privacyHref === '/datenschutz.html?lang=en#demo-en',
+    'Wörterbuch DE und EN mit gleichen Schlüsseln':
+      Object.keys(TEXTS.de).sort().join() === Object.keys(TEXTS.en).sort().join(),
+    'Wörterbuch ohne Gedankenstriche': copy.length > 0 && !copy.some((v) => /[—–]/.test(v)),
+    'Wörterbuch ohne Ausrufezeichen': !copy.some((v) => v.includes('!')),
+    'Wörterbuch ohne Emojis': !copy.some((v) => /\p{Emoji_Presentation}/u.test(v)),
+  });
 }
 
 /* ── Sitemap, Redirects und Datenschutz ────────────────────────────────────────────── */

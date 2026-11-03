@@ -2,8 +2,15 @@
 // Die Seite meldet sich erst nach Play und mindestens 5 Sekunden Wiedergabe. Dieser Handler schreibt eine Zeile in die
 // n8n-Tabelle video_views (Muster mail_tenants in ../_n8n.js); der Sales Pilot holt sie ab (videoViews.ts) und legt
 // „Video angesehen – heute anrufen“ an. Antwortet immer still mit 204, damit die Seite nie hängt oder Fehler zeigt.
+//
+// Seit 03.11.2026 (Plan „Demo zuerst“) zusätzlich die Demo-Seiten mit 10-Zeichen-Codes (demo-page.js). Die melden vier
+// Ereignisse, je höchstens einmal je Seitenaufruf: demo_open (Seite 2 s sichtbar), demo_play (Klick aufs Vorschaubild),
+// demo_try (Selbst ausprobieren), demo_book (Termin buchen). Der Tower unterscheidet an der Codelänge (importVideoViewRow).
+// 8-Zeichen-Codes verhalten sich wie bisher: Ereignis ist immer play5, gezählt erst ab 5 Sekunden Wiedergabe.
 const N8N_TIMEOUT_MS = 8000;
 const CODE = /^[a-z2-9]{8}$/;
+const DEMO_CODE = /^[a-z2-9]{10}$/;
+const DEMO_EVENTS = new Set(['demo_open', 'demo_play', 'demo_try', 'demo_book']);
 const EVENT_ID = /^[A-Za-z0-9-]{8,80}$/;
 // Link-Scanner und Vorschau-Bots (Safelinks, Mimecast, Headless-Browser) starten kein Video, falls doch: nicht zählen.
 const BOT_UA = /bot|crawler|spider|safelinks|headlesschrome|preview|scanner|proofpoint|mimecast|barracuda|curl\/|wget|python|axios|okhttp|go-http-client|apache-httpclient/i;
@@ -41,16 +48,23 @@ module.exports = async function handler(request, response) {
   response.setHeader('Cache-Control', 'no-store, max-age=0');
   if (request.method !== 'POST') { response.setHeader('Allow', 'POST'); return response.status(405).json({ ok: false, code: 'METHOD_NOT_ALLOWED' }); }
   let body;
-  try { body = typeof request.body === 'string' ? JSON.parse(request.body || '{}') : (request.body || {}); } catch (_error) { return response.status(400).json({ ok: false, code: 'INVALID_JSON' }); }
+  // navigator.sendBeacon der Demo-Seite schickt text/plain, das kommt als String (oder Buffer) statt als Objekt an.
+  const raw = Buffer.isBuffer(request.body) ? request.body.toString('utf8') : request.body;
+  try { body = typeof raw === 'string' ? JSON.parse(raw || '{}') : (raw || {}); } catch (_error) { return response.status(400).json({ ok: false, code: 'INVALID_JSON' }); }
+  if (!body || typeof body !== 'object') return response.status(400).json({ ok: false, code: 'INVALID_JSON' });
   const code = String(body.code || '').trim().toLowerCase();
   const eventId = String(body.event_id || '').trim();
-  if (!CODE.test(code) || !EVENT_ID.test(eventId)) return response.status(400).json({ ok: false, code: 'INVALID_INPUT' });
+  if (!EVENT_ID.test(eventId)) return response.status(400).json({ ok: false, code: 'INVALID_INPUT' });
+  let event;
+  if (CODE.test(code)) event = 'play5';
+  else if (DEMO_CODE.test(code) && DEMO_EVENTS.has(String(body.event || ''))) event = String(body.event);
+  else return response.status(400).json({ ok: false, code: 'INVALID_INPUT' });
   const userAgent = String(request.headers['user-agent'] || '').slice(0, 300);
-  const watched = Math.max(0, Math.min(3600, Math.round(Number(body.watched_s) || 0)));
-  if (BOT_UA.test(userAgent) || watched < 5) return response.status(204).end();
+  const watched = event === 'play5' ? Math.max(0, Math.min(3600, Math.round(Number(body.watched_s) || 0))) : 0;
+  if (BOT_UA.test(userAgent) || (event === 'play5' && watched < 5)) return response.status(204).end();
   try {
     await upsertView({
-      event_id: eventId, code, event: 'play5', watched_seconds: watched,
+      event_id: eventId, code, event, watched_seconds: watched,
       lang: body.lang === 'de' ? 'de' : 'en', user_agent: userAgent,
       occurred_at: new Date().toISOString(), synced: false
     });

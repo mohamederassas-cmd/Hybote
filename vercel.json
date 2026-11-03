@@ -5,6 +5,8 @@
     { "source": "/medical-practices", "destination": "/#beispiele", "permanent": true }
   ],
   "rewrites": [
+    { "source": "/v/:code([a-z2-9]{10})/og.jpg", "destination": "/api/connect/route?__connect=demo-og&code=:code" },
+    { "source": "/v/:code([a-z2-9]{10})", "destination": "/api/connect/route?__connect=demo-page&code=:code" },
     { "source": "/v/:code", "destination": "/v/index.html" },
     { "source": "/api/connect/:first/:second", "destination": "/api/connect/route?__connect=:first/:second" }
   ],
