@@ -337,6 +337,7 @@ console.log('\nWeiterleitung /hadi/');
     'Vorschaubild mit absoluter Adresse und Datei vorhanden':
       h.includes('<meta property="og:image" content="https://hybote.ai/hadi/og.jpg" />') && existsSync(join(ROOT, 'hadi/og.jpg')),
     'noindex': h.includes('<meta name="robots" content="noindex, follow" />'),
+    'ohne canonical und og:url (sonst verliert LinkedIn ?src=)': !h.includes('rel="canonical"') && !h.includes('og:url'),
     'keine Gedankenstriche, keine Ausrufezeichen im Text': !/[—–]/.test(h) && !/!/.test(text.replace(/<!DOCTYPE html>/i, '')),
   });
 }
