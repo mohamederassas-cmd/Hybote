@@ -30,7 +30,7 @@ const TEXTS = {
     loomNote: 'Das Video lädt erst nach Ihrem Klick von Loom.',
     try: 'Selbst ausprobieren',
     tryNoteWa: 'Öffnet WhatsApp mit einer vorbereiteten Nachricht an Hadi, unseren Assistenten.',
-    tryNoteUrl: 'Öffnet Ihren Assistenten in einem neuen Fenster.',
+    tryNoteUrl: 'Eine Minute im Browser: Bitten Sie Ihren Assistenten, eine Besichtigung zu buchen.',
     tryText: 'Hallo Hadi, ich habe gerade die Demo für {company} gesehen und habe eine Frage.',
     tryTextPlain: 'Hallo Hadi, ich habe gerade die Demo gesehen und habe eine Frage.',
     book: 'Termin buchen',
@@ -59,7 +59,7 @@ const TEXTS = {
     loomNote: 'The video loads from Loom only after you click.',
     try: 'Try it yourself',
     tryNoteWa: 'Opens WhatsApp with a prepared message to Hadi, our assistant.',
-    tryNoteUrl: 'Opens your assistant in a new window.',
+    tryNoteUrl: 'One minute in your browser: ask your concierge to book a viewing.',
     tryText: 'Hi Hadi, I just watched the demo for {company} and have a question.',
     tryTextPlain: 'Hi Hadi, I just watched the demo and have a question.',
     book: 'Book a call',
@@ -419,11 +419,11 @@ ${preview ? `  <p class="band" role="status">${escapeHtml(T.preview)}</p>\n` : '
     <p class="hint">${escapeHtml(T.loomNote)}</p>
     <div class="actions">
       <div class="action">
-        <a class="btn btn-primary" id="demo-try" href="${escapeHtml(tryHref)}" target="_blank" rel="noopener">${escapeHtml(T.try)}</a>
-        <p class="try-note">${escapeHtml(tryNote)}</p>
+        <a class="btn btn-primary" id="demo-book" href="${escapeHtml(bookHref)}"${bookPopup ? ' data-cal-popup' : ' target="_blank" rel="noopener"'}>${escapeHtml(T.book)}</a>
       </div>
       <div class="action">
-        <a class="btn btn-ghost" id="demo-book" href="${escapeHtml(bookHref)}"${bookPopup ? ' data-cal-popup' : ' target="_blank" rel="noopener"'}>${escapeHtml(T.book)}</a>
+        <a class="btn btn-ghost" id="demo-try" href="${escapeHtml(tryHref)}" target="_blank" rel="noopener">${escapeHtml(T.try)}</a>
+        <p class="try-note">${escapeHtml(tryNote)}</p>
       </div>
     </div>
 ${contactHref ? `    <p class="contact"><a id="demo-contact" href="${escapeHtml(contactHref)}" target="_blank" rel="noopener">${escapeHtml(T.contact)}</a></p>\n` : ''}  </main>

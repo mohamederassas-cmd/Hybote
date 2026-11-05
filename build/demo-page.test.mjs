@@ -174,7 +174,15 @@ test('test_url nur mit https, sonst gilt der WhatsApp-Link', () => {
   assert.equal(a.href, 'https://demo.hybote.ai/keller?x=1&y=2');
   assert.equal(a.target, '_blank');
   assert.equal(a.rel, 'noopener');
-  assert.ok(good.html.includes('neuen Fenster'));
+  assert.ok(good.html.includes('eine Besichtigung zu buchen'), 'geführter Kurztest im Hinweis');
+});
+
+test('Termin buchen ist der Hauptknopf, Ausprobieren der zweite (05.11.2026)', () => {
+  const { html } = render({ test_url: 'https://luxury-cockpit.vercel.app/call/abc' });
+  assert.ok(html.indexOf('id="demo-book"') < html.indexOf('id="demo-try"'), 'Buchen steht vorn');
+  assert.match(attrsOf(html, 'demo-book').class, /btn-primary/);
+  assert.match(attrsOf(html, 'demo-try').class, /btn-ghost/);
+  assert.ok(render({ lang: 'en', test_url: 'https://luxury-cockpit.vercel.app/call/abc' }).html.includes('ask your concierge to book a viewing'));
 });
 
 test('Termin buchen: Calendly im Fenster, ohne https der Standardlink, kleiner WhatsApp-Link nur mit Nummer', () => {
