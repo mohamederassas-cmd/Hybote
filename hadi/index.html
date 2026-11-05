@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Try Hadi, our digital concierge, on WhatsApp · HYBOTE</title>
+  <meta name="description" content="Send a message and see how fast a five-star front desk answers. Day and night, in 50+ languages." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://hybote.ai/hadi/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="HYBOTE" />
+  <meta property="og:url" content="https://hybote.ai/hadi/" />
+  <meta property="og:title" content="Try Hadi, our digital concierge, on WhatsApp" />
+  <meta property="og:description" content="Send a message and see how fast a five-star front desk answers. Day and night, in 50+ languages." />
+  <meta property="og:image" content="https://hybote.ai/hadi/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="627" />
+  <meta property="og:image:alt" content="Hadi, the HYBOTE digital concierge, a robot in a white dinner jacket with a gold bow tie" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Try Hadi, our digital concierge, on WhatsApp" />
+  <meta name="twitter:description" content="Send a message and see how fast a five-star front desk answers. Day and night, in 50+ languages." />
+  <meta name="twitter:image" content="https://hybote.ai/hadi/og.jpg" />
+  <link rel="icon" href="/logo.png" />
+  <link rel="preload" href="/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link href="/fonts/fonts.css" rel="stylesheet" />
+  <style>
+    /* Weiterleitung zu Hadi auf WhatsApp (05.11.2026). Zweck: Link-Vorschau mit Hadi-Bild für LinkedIn „Im Fokus“,
+       YouTube, Signatur usw., weil LinkedIn für wa.me keine Vorschau laden kann. Die Seite liefert Open-Graph-Daten
+       und leitet nach kurzer Pause zu wa.me weiter; die Quelle steht im vorausgefüllten Text (wa.me kennt keine UTM).
+       CI v3: Cyan nur auf der Hauptaktion, kein Gold als CSS-Farbe. */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg: #070b16; --s1: #0c1222; --s2: #131b30; --s3: #1c2740; --fg: #f5f1eb; --a2: #b0a898; --a3: #8b95aa; --a4: #566070; --accent: #38BDF8; }
+    html { overflow-x: clip; }
+    body { background: var(--bg); color: var(--fg); font-family: 'Montserrat', system-ui, sans-serif; font-weight: 400; min-height: 100vh; display: flex; justify-content: center; -webkit-font-smoothing: antialiased; }
+    main { width: 100%; max-width: 480px; padding: 56px 16px 40px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .logo { height: 26px; width: auto; opacity: .92; }
+    .hadi { width: 160px; height: 160px; border-radius: 50%; margin-top: 40px; background: var(--s1); }
+    h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: 36px; line-height: 1.12; margin: 28px 0 14px; }
+    p.bio { color: var(--a2); font-size: 15px; line-height: 1.6; max-width: 36ch; }
+    a.primary { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 32px; padding: 18px 22px; border-radius: 12px; background: var(--accent); text-decoration: none; }
+    a.primary b { font-weight: 500; font-size: 16px; color: var(--bg); }
+    a.primary span { font-size: 13px; color: var(--s3); }
+    p.note { margin-top: 18px; font-size: 13px; color: var(--a3); }
+    footer { margin-top: 48px; font-size: 12px; color: var(--a4); }
+    footer a { color: inherit; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="/" aria-label="HYBOTE home"><img class="logo" src="/logo-mobile-white.png" alt="HYBOTE" width="162" height="26" /></a>
+    <img class="hadi" src="/hadi/hadi.jpg" alt="Hadi, the HYBOTE digital concierge" width="160" height="160" />
+    <h1>Hadi is ready on WhatsApp</h1>
+    <p class="bio">Our digital concierge answers in seconds, day and night, in over 50 languages. He tells you that he is digital and hands over to a person when you need one.</p>
+    <a class="primary" data-wa href="https://wa.me/16505146359?text=Hi%20Hadi%20(Website)" target="_blank" rel="noopener"><b>Open WhatsApp</b><span>+1 650 514 6359</span></a>
+    <p class="note" id="note">Opening WhatsApp in a moment.</p>
+    <footer>HYBOTE AI Systems · <a href="/datenschutz.html">Privacy</a></footer>
+  </main>
+  <script>
+    // Quelle aus ?src= oder ?utm_source= (nur bekannte Werte), dann nach kurzer Pause weiter zu WhatsApp.
+    // Die Pause lässt Vercel Web Analytics den Aufruf und das Ereignis whatsapp_click noch senden. ?dev=1 bleibt stehen (Prüfen, Screenshots).
+    (function () {
+      var q = new URLSearchParams(location.search);
+      var raw = (q.get('src') || q.get('utm_source') || '').toLowerCase();
+      var labels = { linkedin: 'LinkedIn', instagram: 'Instagram', youtube: 'YouTube', facebook: 'Facebook', email: 'Email', signature: 'Email', press: 'Press', loom: 'Loom' };
+      var label = labels[raw] || 'Website';
+      var url = 'https://wa.me/16505146359?text=' + encodeURIComponent('Hi Hadi (' + label + ')');
+      var a = document.querySelector('a[data-wa]');
+      if (a) a.setAttribute('href', url);
+      if (q.get('dev') === '1') { document.getElementById('note').textContent = 'Preview mode, no redirect.'; return; }
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+      try { window.va('event', { name: 'whatsapp_click', data: { page: '/hadi/', source: label } }); } catch (e) { /* Messung ist optional */ }
+      setTimeout(function () { location.replace(url); }, 900);
+    })();
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/track.js"></script>
+</body>
+</html>

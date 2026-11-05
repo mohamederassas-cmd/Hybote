@@ -324,6 +324,23 @@ console.log('\nWhatsApp-Selbsttest');
   }
 }
 
+/* ── Weiterleitung /hadi/ (LinkedIn „Im Fokus“, 05.11.2026) ─────────────── */
+console.log('\nWeiterleitung /hadi/');
+{
+  // LinkedIn lädt für wa.me keine Vorschau; /hadi/ liefert Open Graph mit Hadi-Bild und leitet zu WhatsApp weiter.
+  const h = readFileSync(join(ROOT, 'hadi/index.html'), 'utf8');
+  const text = h.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '');
+  report('hadi/index.html', {
+    'Knopf zeigt auf Hadis WhatsApp-Nummer, Quelle im Text':
+      h.includes('href="https://wa.me/16505146359?text=Hi%20Hadi%20(Website)"') && h.includes("'Hi Hadi (' + label + ')'"),
+    'nie die Demo-Nummer': !h.includes('12134234114') && !/wa\.me\/1?213/.test(h),
+    'Vorschaubild mit absoluter Adresse und Datei vorhanden':
+      h.includes('<meta property="og:image" content="https://hybote.ai/hadi/og.jpg" />') && existsSync(join(ROOT, 'hadi/og.jpg')),
+    'noindex': h.includes('<meta name="robots" content="noindex, follow" />'),
+    'keine Gedankenstriche, keine Ausrufezeichen im Text': !/[—–]/.test(h) && !/!/.test(text.replace(/<!DOCTYPE html>/i, '')),
+  });
+}
+
 /* ── Demo-Seite /v/<10-Zeichen-Code> (Plan „Demo zuerst“, 03.11.2026) ─── */
 console.log('\nDemo-Seite');
 {
