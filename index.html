@@ -165,6 +165,11 @@
     @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
       .glass, .glass--strong { background: linear-gradient(var(--s1), var(--s1)) padding-box, linear-gradient(var(--s3), var(--s3)) border-box; }
     }
+    /* Karten im Inhalt: Fläche und helle Kante bleiben, die echte Unschärfe nicht. Hinter ihnen liegt nur das weiche
+       Raumlicht, die Unschärfe sah man kaum, sie kostete aber bei jedem Scrollschritt Rechenzeit (Apple: Glas gehört
+       auf schwebende Bedienelemente, nicht in den Inhalt). Navigation, Menü, Knöpfe, Cookie-Hinweis und die
+       Einblendungen im Film behalten echtes Glas. Die Fläche ist dafür etwas dichter. */
+    main > section:not(.film-scene) { --glass-blur: none; --glass: rgba(16, 23, 41, 0.72); }
     /* Lichtkante folgt dem Zeiger (nur mit Maus, Skript setzt --mx/--my) */
     .spot::after {
       content: '';
@@ -347,8 +352,8 @@
     .nav-right { display: flex; align-items: center; gap: 10px; }
     .lang { display: flex; align-items: center; gap: 2px; }
     .lang button {
-      min-width: 40px;
-      height: 40px;
+      min-width: 44px;
+      height: 44px;
       padding: 0 8px;
       border: 0;
       border-radius: var(--pill);
@@ -375,11 +380,20 @@
       cursor: pointer;
     }
     .nav-panel { display: none; }
+    /* Schmale Handys: Sprachknöpfe bleiben 44 px hoch (Apple: mindestens 44 pt Tippfläche), werden aber etwas
+       schmaler, damit Logo, Sprachen und Menü in eine Zeile passen; unter 340 px ist 36 die Untergrenze */
     @media (max-width: 400px) {
-      .nav-inner { gap: 10px; padding-inline: 18px 6px; }
+      .nav-inner { gap: 8px; padding-inline: 14px 4px; }
       .nav-right { gap: 4px; }
-      .lang button { min-width: 34px; padding: 0 6px; }
+      .lang button { min-width: 40px; padding: 0 6px; }
+      .nav-toggle { padding: 0 12px; }
       .nav-logo img { height: 15px; }
+    }
+    @media (max-width: 339px) {
+      .nav-inner { gap: 6px; padding-inline: 12px 4px; }
+      .lang button { min-width: 36px; padding: 0 4px; }
+      .nav-toggle { padding: 0 10px; }
+      .nav-logo img { height: 14px; }
     }
     @media (max-width: 899px) {
       .nav { inset-block-start: 10px; }
@@ -413,7 +427,8 @@
        film.js setzt .is-live, dann steht die Bühne (sticky) und der Scroll treibt Film und Texte. */
     .film-scene { position: relative; background: var(--bg); --glass-blur: blur(8px) saturate(130%); --film-blur: blur(8px); }
     .film-stage { position: relative; }
-    .film-frame { position: relative; height: 100svh; min-height: 560px; overflow: hidden; background: var(--bg); }
+    /* isolation: Ebenen im Bild (Clips, Loop, Verlauf) bleiben unter Text und Karten der Kapitel */
+    .film-frame { position: relative; height: 100svh; min-height: 560px; overflow: hidden; background: var(--bg); isolation: isolate; }
     /* Poster = erstes Filmbild, bildfüllend wie im Canvas (film.js: cover, Handy: Hochformat 3:4) */
     .film-poster {
       position: absolute;
@@ -424,10 +439,24 @@
       object-fit: cover;
     }
     .film-loop-wrap, .film-canvas { position: absolute; inset: 0; }
+    /* Die Hero-Schleife liegt über dem Canvas (der deckt sonst alles ab, sobald er sein erstes Bild zeichnet);
+       die Timeline blendet sie beim ersten Scrollen aus */
+    .film-loop-wrap { z-index: 1; }
     .film-loop { position: absolute; max-width: none; opacity: 0; transition: opacity 800ms ease; }
     .film-loop.is-on { opacity: 1; }
     .film-canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 500ms ease; }
     html.film-ready .film-canvas { opacity: 1; }
+    /* Hochkant: Kapitel-Videos über zwei Standbildern (film.js: startClips setzt Lage und Überblendzeiten) */
+    .film-clips { position: absolute; z-index: 0; }
+    .film-clips > * { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: fill; opacity: 0; transition: opacity 220ms ease; pointer-events: none; }
+    .film-clips .film-clip { z-index: 3; }
+    .film-clips .is-warm { opacity: 0.01; }
+    .film-clips .is-on { opacity: 1; }
+    .film-clip::-webkit-media-controls-start-playback-button { display: none; }
+    .film-scene.is-clips .film-canvas { display: none; }
+    /* Schlussfenster (nur Clips): fester Zuschnitt, film.js blendet es ein und die Bühne aus */
+    .film-window { position: absolute; inset: 0 0 auto; height: 100lvh; overflow: hidden; visibility: hidden; opacity: 0; pointer-events: none; }
+    .film-window img { position: absolute; max-width: none; }
     /* Lesbarkeit: links und unten dunkler, rechts die Glaskarten; unten läuft das Bild in den Seitengrund */
     .film-frame::after {
       content: '';
@@ -440,20 +469,15 @@
         linear-gradient(90deg, rgba(7, 11, 22, 0.86) 0%, rgba(7, 11, 22, 0.62) 30%, rgba(7, 11, 22, 0) 54%, rgba(7, 11, 22, 0) 80%, rgba(7, 11, 22, 0.3) 100%),
         linear-gradient(180deg, rgba(7, 11, 22, 0.5) 0%, rgba(7, 11, 22, 0) 18%); /* taste-skill-ignore: Lesbarkeit über dem Film */
     }
-    html[dir="rtl"] .film-frame::after {
-      background:
-        linear-gradient(0deg, var(--bg) 0%, rgba(7, 11, 22, 0.55) 16%, rgba(7, 11, 22, 0) 38%),
-        linear-gradient(270deg, rgba(7, 11, 22, 0.86) 0%, rgba(7, 11, 22, 0.62) 30%, rgba(7, 11, 22, 0) 54%, rgba(7, 11, 22, 0) 80%, rgba(7, 11, 22, 0.3) 100%),
-        linear-gradient(180deg, rgba(7, 11, 22, 0.5) 0%, rgba(7, 11, 22, 0) 18%); /* taste-skill-ignore: Lesbarkeit über dem Film */
-    }
 
     html.js .film-scene.is-live { height: calc((var(--hold, 6) + 1) * 100svh); }
     html.js .film-scene.is-live > .film-stage { position: sticky; top: 0; height: 100svh; overflow-x: clip; }
     .film-scene.is-live .film-frame { position: absolute; inset: 0 0 auto; height: 100lvh; min-height: 0; }
 
     /* Kapitelraster: der Concierge steht rechts der Mitte, alles Lesbare links in einer Spalte, oben die
-       Überschrift, unten Glaskarten und Text (RTL gespiegelt, dann steht er links) */
-    .ch-left, .ch-right { position: absolute; z-index: 2; inset-inline-start: var(--gutter); }
+       Überschrift, unten Glaskarten und Text. Auf Arabisch wird das Filmbild nicht gespiegelt (das Namensschild stünde
+       spiegelverkehrt): die Spalte bleibt links (physische Abstände), der Text darin läuft von rechts nach links. */
+    .ch-left, .ch-right { position: absolute; z-index: 2; left: var(--gutter); }
     .ch-left { top: clamp(112px, 17svh, 190px); width: min(42vw, 660px); }
     .ch-right { bottom: clamp(64px, 12svh, 132px); width: min(32vw, 440px); }
     .mask { overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
@@ -464,7 +488,7 @@
     .hero-copy a, .hero-copy button { pointer-events: auto; }
     .hero-main {
       position: absolute;
-      inset-inline-start: var(--gutter);
+      left: var(--gutter);
       bottom: calc(clamp(72px, 13svh, 140px) + var(--cookie-h, 0px) * 0.5);
       width: min(46vw, 760px);
     }
@@ -502,7 +526,7 @@
        Er schwebt links neben dem Kopf des Concierge (Kopf bei ~82 % der Bildbreite), wie eine eintreffende Nachricht. */
     .ticker {
       position: absolute;
-      inset-inline-end: 27vw;
+      right: 27vw;
       top: 20svh;
       width: min(21vw, 320px);
       padding: 18px 20px 18px;
@@ -666,8 +690,7 @@
       unicode-bidi: plaintext;
     }
     .chan svg { width: 18px; height: 18px; flex-shrink: 0; }
-    /* Arabisch: Bild gespiegelt; .is-before setzt film.js, wenn die Beschriftung vor dem Punkt steht (Linie zeigt auf den Concierge) */
-    html[dir="rtl"] .film-poster, html[dir="rtl"] .film-canvas { transform: scaleX(-1); }
+    /* .is-before setzt film.js, wenn die Beschriftung vor dem Punkt steht (Linie zeigt auf den Concierge) */
     .chan.is-before { flex-direction: row-reverse; }
     .chan.is-before .chan-line { transform-origin: right center; background: linear-gradient(270deg, var(--accent), rgba(56, 189, 248, 0.2)); } /* taste-skill-ignore: Kanal-Linie */
 
@@ -684,19 +707,58 @@
     html[dir="rtl"] .film-scene.is-live .greet > span { left: auto; right: 0; }
     .film-scene:not(.is-live) .greet > span + span::before { content: ' · '; color: var(--a3); }
 
-    /* Fortschritt: fünf Segmente, das laufende Kapitel leuchtet (film.js setzt data-beat) */
-    .film-rail { display: none; }
-    .film-scene.is-live .film-rail {
+    /* Fortschritt: fünf Segmente, das laufende Kapitel leuchtet (film.js setzt data-beat). Daneben „Film
+       überspringen“: wer den Film nicht sehen will, springt direkt zum Benchmark (Apple: Agency, jeder geführte
+       Ablauf lässt sich überspringen). Ohne laufenden Film gibt es nichts zu überspringen. */
+    .film-nav { display: none; }
+    .film-scene.is-live .film-nav {
       position: absolute;
       z-index: 3;
-      inset-inline-start: var(--gutter);
+      left: var(--gutter);
       bottom: max(22px, 3svh);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .film-scene.is-live .film-rail {
       display: flex;
       gap: 6px;
       opacity: 0;
       transition: opacity 400ms ease;
       pointer-events: none;
     }
+    .film-skip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      font-size: 0.8125rem;
+      letter-spacing: 0.04em;
+      color: var(--a1);
+      text-decoration: underline;
+      text-decoration-color: rgba(255, 255, 255, 0.3);
+      text-underline-offset: 4px;
+      transition: color 180ms ease, text-decoration-color 180ms ease;
+    }
+    .film-skip:hover { color: var(--fg); text-decoration-color: var(--accent); }
+    #benchmark { scroll-margin-top: 72px; }
+    #benchmark:focus, main:focus { outline: none; }
+    /* Sprunglink: erst sichtbar, wenn er per Tastatur den Fokus bekommt */
+    .skip-link {
+      position: fixed;
+      inset-inline-start: 12px;
+      top: 12px;
+      z-index: 400;
+      padding: 12px 18px;
+      border-radius: var(--pill);
+      background: var(--fg);
+      color: var(--bg);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      text-decoration: none;
+      transform: translateY(-160%);
+      transition: transform 200ms var(--ease);
+    }
+    .skip-link:focus { transform: none; }
     .film-rail i { width: 34px; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, 0.18); transition: background-color 400ms ease, width 400ms var(--ease); }
     .film-scene.is-live:is([data-beat="0"], [data-beat="1"], [data-beat="2"], [data-beat="3"], [data-beat="4"]) .film-rail { opacity: 1; }
     .film-scene[data-beat="0"] .film-rail i:nth-child(-n+1),
@@ -721,7 +783,7 @@
     .film-scene.is-live .film-end a { pointer-events: auto; }
     /* Desktop: das Schlussfenster liegt beim Concierge, Slogan und Knopf links daneben (film.js: windowed) */
     @media (min-width: 768px) {
-      .film-scene.is-live .film-end { inset-inline: var(--gutter) auto; top: 50%; bottom: auto; width: min(32vw, 480px); padding: 0; transform: translateY(-50%); align-items: flex-start; text-align: start; }
+      .film-scene.is-live .film-end { left: var(--gutter); right: auto; top: 50%; bottom: auto; width: min(32vw, 480px); padding: 0; transform: translateY(-50%); align-items: flex-start; text-align: start; }
     }
     /* Startzustände: GSAP überschreibt sie inline, solange es die Elemente bewegt. Nach einem Refresh setzt
        ScrollTrigger Inline-Werte zurück; dann greift wieder dieser Ausgangszustand. */
@@ -770,8 +832,7 @@
       .ticker { display: none; }
     }
     @media (max-width: 767px) {
-      .film-frame::after,
-      html[dir="rtl"] .film-frame::after {
+      .film-frame::after {
         background: linear-gradient(180deg, rgba(7, 11, 22, 0.7) 0%, rgba(7, 11, 22, 0) 16%, rgba(7, 11, 22, 0) 38%, rgba(7, 11, 22, 0.72) 58%, rgba(7, 11, 22, 0.94) 80%, var(--bg) 100%); /* taste-skill-ignore: Lesbarkeit über dem Film */
       }
       .film-scene.is-live .beat { display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; padding: 0 var(--gutter) calc(max(22px, 3svh) + var(--cookie-h, 0px)); }
@@ -788,9 +849,11 @@
       .hero-ctas .btn { flex: 1 1 auto; }
       .hero-sub { font-size: 0.9375rem; }
       .hero-trust, .film-cue, .ticker { display: none; }
-      .film-scene.is-live .film-rail { inset-inline: var(--gutter) auto; top: calc(82px + 1svh); bottom: auto; }
-      .film-rail i { width: 22px; }
-      .film-scene[data-beat] .film-rail i:is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5)) { width: 22px; }
+      /* Handy: oben links unter der Leiste (der Kopf des Concierge steht rechts, unten der Kapiteltext) */
+      .film-scene.is-live .film-nav { left: var(--gutter); right: auto; top: calc(70px + 1svh); bottom: auto; gap: 10px; }
+      .film-scene.is-live .film-rail { gap: 4px; }
+      .film-rail i { width: 14px; }
+      .film-scene[data-beat] .film-rail i:is(:nth-child(1), :nth-child(2), :nth-child(3), :nth-child(4), :nth-child(5)) { width: 14px; }
       .beat-label { margin-bottom: 12px; }
       .beat-title { font-size: clamp(2.1rem, 9vw, 2.9rem); }
       .beat-body { margin-top: 12px; font-size: 0.9375rem; }
@@ -888,7 +951,7 @@
     .demo-langs-label { font-size: 0.8125rem; color: var(--a1); }
     .demo-langs-btns { display: flex; gap: 4px; padding: 4px; border-radius: var(--pill); }
     .demo-langs-btns button {
-      min-height: 36px;
+      min-height: 44px;
       padding: 0 14px;
       border: 0;
       border-radius: var(--pill);
@@ -1224,7 +1287,7 @@
     .voice-firm { display: grid; gap: 1px; }
     .voice-firm b { font-weight: 500; }
     .voice-firm > span { color: var(--a3); font-size: 0.875rem; }
-    .voice-site { display: inline-flex; align-items: center; gap: 5px; justify-self: start; min-height: 24px; color: var(--accent-lt); font-size: 0.875rem; text-decoration: none; direction: ltr; transition: color 180ms ease; }
+    .voice-site { display: inline-flex; align-items: center; gap: 5px; justify-self: start; min-height: 44px; color: var(--accent-lt); font-size: 0.875rem; text-decoration: none; direction: ltr; transition: color 180ms ease; }
     .voice-site:hover { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
     .voice-tr { font-size: 0.8125rem; color: var(--a3); }
     html[lang="de"] .voice-tr { display: none; }
@@ -1288,7 +1351,9 @@
     }
     .faq-q[aria-expanded="true"] .faq-arrow,
     .form-toggle[aria-expanded="true"] .faq-arrow { transform: rotate(180deg); background: rgba(56, 189, 248, 0.16); }
-    .faq-a { overflow: hidden; max-height: 0; transition: max-height 350ms cubic-bezier(0.4, 0, 0.2, 1); }
+    /* Geschlossen auch für Screenreader und Tab-Taste verborgen (visibility schaltet erst nach dem Zuklappen) */
+    .faq-a { overflow: hidden; max-height: 0; visibility: hidden; transition: max-height 350ms cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 350ms; }
+    .faq-q[aria-expanded="true"] + .faq-a { visibility: visible; transition-delay: 0s; }
     .faq-a-inner { padding: 0 26px 26px; color: var(--a1); max-width: 64ch; }
     @media (max-width: 859px) { .faq-grid { grid-template-columns: minmax(0, 1fr); } .faq-side { position: static; } }
 
@@ -1458,12 +1523,13 @@
       appearance: none;
     }
     input:focus, textarea:focus, select:focus { border-color: var(--accent); }
-    input::placeholder, textarea::placeholder { color: var(--a4); }
+    /* --a3 statt --a4: 6,2:1 statt 3,0:1 auf dem Eingabefeld */
+    input::placeholder, textarea::placeholder { color: var(--a3); }
     input[type="checkbox"] {
       -webkit-appearance: checkbox;
       appearance: checkbox;
-      width: 18px;
-      height: 18px;
+      width: 22px;
+      height: 22px;
       padding: 0;
       margin-top: 2px;
       flex-shrink: 0;
@@ -1472,8 +1538,9 @@
     }
     select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b95aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; cursor: pointer; }
     html[dir="rtl"] select { background-position: left 16px center; padding-right: 16px; padding-left: 40px; }
-    .consent { display: flex; align-items: flex-start; gap: 12px; }
-    .consent label { margin: 0; font-weight: 400; line-height: 1.6; cursor: pointer; }
+    /* Kästchen und Text bilden eine zusammenhängende Tippfläche (kein toter Spalt dazwischen) */
+    .consent { display: flex; align-items: flex-start; min-height: 44px; }
+    .consent label { margin: 0; padding-inline-start: 12px; font-weight: 400; line-height: 1.6; cursor: pointer; }
     .consent a { color: var(--fg); }
     .form-err { display: none; padding: 12px 16px; border-radius: 10px; background: var(--s2); color: #f2a7a7; font-size: 0.9375rem; }
     .form-err a { color: inherit; }
@@ -1486,7 +1553,7 @@
     .footer-tagline { color: var(--a1); font-size: 0.9375rem; max-width: 42ch; }
     .footer h2 { font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--a3); margin-bottom: 16px; }
     .footer-links { display: flex; flex-direction: column; gap: 4px; }
-    .footer-links a { display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; font-size: 0.9375rem; transition: color 180ms ease; }
+    .footer-links a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; font-size: 0.9375rem; transition: color 180ms ease; }
     .footer-links a:hover { color: var(--accent-lt); }
     .footer-base {
       display: flex;
@@ -1545,6 +1612,8 @@
 </head>
 
 <body>
+
+<a class="skip-link" href="#inhalt" data-i18n="a11y.skip">Skip to content</a>
 
 <!-- Symbole (Lucide-Stil, 24er Raster), Kanäle ohne Markenlogos -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -1606,7 +1675,7 @@
 </header>
 
 
-<main>
+<main id="inhalt" tabindex="-1">
 
 <!-- ══════════════════════════════════════════════════════════
      FILM: der HYBOTE-Concierge in einer Fünf-Sterne-Lobby, fünf Kapitel von der Anfrage
@@ -1619,6 +1688,7 @@
         <source media="(max-aspect-ratio: 1/1)" srcset="/film/loops/hero-phone.webp?v=2a4f287b" width="1440" height="1920" />
         <img class="film-poster" src="/film/loops/hero.webp?v=b17f944f" width="1920" height="1080" alt="" fetchpriority="high" decoding="async" />
       </picture>
+      <div class="film-clips"><video class="film-clip" muted playsinline preload="none" disableremoteplayback></video><video class="film-clip" muted playsinline preload="none" disableremoteplayback></video></div>
       <div class="film-loop-wrap"><video class="film-loop" muted playsinline loop preload="none"></video></div>
       <canvas class="film-canvas"></canvas>
     </div>
@@ -1655,7 +1725,10 @@
       </div>
     </div>
     <p class="film-cue" aria-hidden="true"><span data-i18n="film.cue">What happens at 23:47</span></p>
-    <div class="film-rail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="film-nav">
+      <a class="film-skip" href="#benchmark" data-i18n="film.skip">Skip the film</a>
+      <div class="film-rail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
 
     <ol class="beats">
       <li class="beat beat--1">
@@ -1740,7 +1813,7 @@
 <!-- ══════════════════════════════════════════════════════════
      BENCHMARK: die eigene Studie als Beleg direkt nach dem Film, Link auf /benchmark/
 ══════════════════════════════════════════════════════════ -->
-<section class="band" aria-labelledby="band-title">
+<section id="benchmark" class="band" tabindex="-1" aria-labelledby="band-title">
   <div class="wrap">
     <div class="band-card glass reveal">
       <p class="band-num" dir="ltr"><span data-count="63">63</span><small>%</small></p>
@@ -2643,6 +2716,8 @@ const T = {
     "cookie.link": "Details in our Privacy Policy",
     "cookie.dismiss": "Got it",
     "film.cue": "What happens at 23:47",
+    "film.skip": "Skip the film",
+    "a11y.skip": "Skip to content",
     "film.b1.l": "Enquiry received",
     "film.b1.h": "Your office is closed. A customer writes.",
     "film.b1.p": "The enquiry arrives on WhatsApp, by phone, by email or on Instagram. Usually it waits until the morning.",
@@ -2859,6 +2934,8 @@ const T = {
     "cookie.link": "Mehr in der Datenschutzerklärung",
     "cookie.dismiss": "Verstanden",
     "film.cue": "Was um 23:47 passiert",
+    "film.skip": "Film überspringen",
+    "a11y.skip": "Zum Inhalt springen",
     "film.b1.l": "Anfrage geht ein",
     "film.b1.h": "Ihr Büro ist geschlossen. Ein Kunde schreibt.",
     "film.b1.p": "Die Anfrage kommt per WhatsApp, Telefon, E-Mail oder Instagram. Meist wartet sie bis zum nächsten Morgen.",
@@ -3075,6 +3152,8 @@ const T = {
     "cookie.link": "التفاصيل في سياسة الخصوصية",
     "cookie.dismiss": "فهمت",
     "film.cue": "ماذا يحدث في الساعة 23:47",
+    "film.skip": "تخطي الفيلم",
+    "a11y.skip": "تخطَّ إلى المحتوى",
     "film.b1.l": "وصول الاستفسار",
     "film.b1.h": "مكتبك مغلق. وعميل يكتب.",
     "film.b1.p": "يصل الاستفسار عبر واتساب أو الهاتف أو البريد الإلكتروني أو إنستغرام. وغالبًا ما ينتظر حتى الصباح.",
@@ -3797,9 +3876,9 @@ function setLang(lang) {
     background: var(--fg);
     color: var(--bg);
     font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: 0.7rem;
-    letter-spacing: 0.04em;
+    font-weight: 400;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
     white-space: nowrap;
     padding: 6px 12px;
     pointer-events: none;

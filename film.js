@@ -2,9 +2,16 @@
  * Scroll-Film der Startseite (25.10.2026, nach dem Vorbild Bugal Immobilien).
  *
  * Der HYBOTE-Concierge in einer Fünf-Sterne-Lobby erzählt in fünf Kapiteln, wie aus einer Anfrage um 23:47 ein Termin wird.
- * Jedes Kapitel ist ein Higgsfield-Clip als WebP-Bildfolge (build/film-frames.mjs); das End-Bild eines Clips ist das
- * Start-Bild des nächsten. Die Szene `.film-scene` ist ein hoher Abschnitt mit stehender Bühne (position: sticky),
- * eine GSAP-Timeline wird vom Scroll gescrubbt und treibt die Filmuhr (0 → 5) und die Texte.
+ * Jedes Kapitel ist ein Higgsfield-Clip (build/film-frames.mjs); das End-Bild eines Clips ist das Start-Bild des
+ * nächsten. Die Szene `.film-scene` ist ein hoher Abschnitt mit stehender Bühne (position: sticky), eine
+ * GSAP-Timeline wird vom Scroll gescrubbt.
+ *
+ * Zwei Wege (seit 15.11.2026):
+ * - quer (Desktop, iPad quer): WebP-Bildfolgen im Canvas, die Timeline treibt die Filmuhr (0 → 5), Überblendung nur
+ *   zwischen direkten Nachbarbildern, höchstens MAX_LIVE dekodierte Bilder.
+ * - hochkant (Handy, iPad hochkant): je Kapitel ein Video (film/clips), das beim Betreten des Kapitels von vorn läuft
+ *   und auf seinem letzten Bild stehen bleibt; die Texte laufen dann auf eigener Zeitleiste in Sekunden mit. Die
+ *   früheren Handy-Bildfolgen (1440×1920, im Skript dekodiert) ruckelten am iPhone; den Videochip nicht.
  *
  * Portiert aus Bugal: lib/film/sequence.ts (Laden, Worker-Dekodierung, Überblendung), components/film/FilmCanvas.tsx
  * (Zeichnen, Touch-Glättung), lib/scenes/stage.ts (Bühne, Lenis), components/home/HomeMotion.tsx (Timeline).
@@ -48,12 +55,15 @@
   const DECODE_CONCURRENCY = 4;
   /** Dekodierfenster: mindestens so viele Bilder in Scrollrichtung voraus, so viele zurück */
   const AHEAD = 6;
-  const AHEAD_MAX = 18;
+  const AHEAD_MAX = 12;
   const BEHIND = 2;
   /** Puffer beim Freigeben: knapp außerhalb des Fensters bleiben Bilder noch liegen */
   const KEEP = 2;
-  /** Überblendet wird zwischen fertigen Bildern, die höchstens so weit auseinanderliegen */
-  const MAX_GAP = 6;
+  /**
+   * Höchstens so viele dekodierte Bilder über alle Clips (plus laufende Dekodierungen). Ein Desktop-Bild belegt
+   * 1920×1072×4 Byte ≈ 8 MB; ohne Grenze lagen bis zu 35 im Speicher, Safari räumt dann selbst auf und ruckelt.
+   */
+  const MAX_LIVE = 20;
   /** Ab diesem Filmtempo (Bilder/s) wird zwischen Nachbarbildern linear überblendet; das Tempo klingt mit TEMPO_TAU (s) ab */
   const TEMPO_FULL = 6;
   const TEMPO_TAU = 0.25;
@@ -151,9 +161,35 @@ self.onmessage = async ({ data: m }) => {
   /**
    * Ein Clip als Bildfolge. Alle Clips teilen sich eine Ladeschlange: der mit dem kleinsten Rang (der laufende, dann
    * der nächste) bekommt die Verbindungen zuerst. Dekodiert wird nur ein Fenster um die aktuelle Position, das mit
-   * der Scrollgeschwindigkeit wächst; fehlen Bilder zwischen zwei fertigen, wird über die Lücke überblendet.
+   * der Scrollgeschwindigkeit wächst. Überblendet wird nur zwischen direkten Nachbarbildern; fehlt eines, steht das
+   * nächste fertige Bild (über eine Lücke überblendet entstand beim Kopfdrehen ein Geisterbild).
    */
   class FrameSequence {
+    /** Dekodierte und gerade dekodierende Bilder aller Clips zusammen */
+    static used() {
+      let n = 0;
+      FrameSequence.all.forEach((s) => { n += s.frames.size + s.decoding.size; });
+      return n;
+    }
+
+    /**
+     * Platz für Bild i von `seq` schaffen: freigegeben wird das Bild, das am weitesten vom Blick entfernt ist, Bilder
+     * anderer Clips zuerst. Nie ein gezeigtes und nie eines, das näher liegt als das gewünschte (sonst Pendeln).
+     */
+    static evictFor(seq, i) {
+      const need = Math.abs(i - seq.focusAt);
+      let worst = null;
+      let score = -1;
+      FrameSequence.all.forEach((s) => s.frames.forEach((_, j) => {
+        if (s.showing.indexOf(j) >= 0) return;
+        const d = s === seq ? Math.abs(j - s.focusAt) : 1000 + Math.abs(j - Math.max(0, s.focusAt));
+        if (d > score) { score = d; worst = [s, j]; }
+      }));
+      if (!worst || score <= need) return false;
+      worst[0].drop(worst[1]);
+      return true;
+    }
+
     static pumpFetches() {
       const slots = fetchSlots();
       while (FrameSequence.active < slots) {
@@ -184,6 +220,12 @@ self.onmessage = async ({ data: m }) => {
       this.tempo = 0;
       this.lastF = -1;
       this.lastAt = 0;
+      FrameSequence.all.add(this);
+    }
+
+    drop(i) {
+      release(this.frames.get(i));
+      this.frames.delete(i);
     }
 
     url(i) { return `${this.spec.base}/${String(i + 1).padStart(3, '0')}.webp?v=${this.spec.v}`; }
@@ -204,16 +246,14 @@ self.onmessage = async ({ data: m }) => {
     get ready() { return this.have[0]; }
     pos(p) { return Math.min(1, Math.max(0, p)) * (this.spec.count - 1); }
 
-    /** Bildpaar für Fortschritt p (0–1): überblendet zwischen den fertigen Bildern darunter und darüber */
+    /** Bildpaar für Fortschritt p (0–1): überblendet zwischen den beiden Nachbarbildern, wenn beide fertig sind */
     pair(p) {
       const f = this.pos(p);
       this.track(f);
       this.focus(Math.round(f), true);
-      let lo = -1;
-      let hi = -1;
-      for (let k = Math.floor(f); k >= 0 && k >= f - MAX_GAP; k--) if (this.frames.has(k)) { lo = k; break; }
-      for (let k = Math.ceil(f); k < this.spec.count && k <= f + MAX_GAP; k++) if (this.frames.has(k)) { hi = k; break; }
-      if (lo >= 0 && hi >= 0 && hi - lo <= MAX_GAP) {
+      const lo = Math.floor(f);
+      const hi = Math.ceil(f);
+      if (this.frames.has(lo) && this.frames.has(hi)) {
         let t = hi === lo ? 0 : (f - lo) / (hi - lo);
         // Nachbarbilder: in Bewegung linear überblenden (gleichmäßiger Lauf ohne Halten-Springen-Takt). Wird der Film
         // langsamer, wächst an beiden Enden eine Zone, in der ein Bild scharf steht; im Stillstand rastet er weich auf
@@ -286,8 +326,8 @@ self.onmessage = async ({ data: m }) => {
       }
       if (want === this.focusAt && !this.decoding.size && this.frames.has(want)) return;
       this.focusAt = want;
-      this.frames.forEach((f, i) => {
-        if (!this.inWindow(i) && this.showing.indexOf(i) < 0) { release(f); this.frames.delete(i); }
+      this.frames.forEach((_, i) => {
+        if (!this.inWindow(i) && this.showing.indexOf(i) < 0) this.drop(i);
       });
       this.pump();
     }
@@ -315,6 +355,8 @@ self.onmessage = async ({ data: m }) => {
       for (const i of this.wanted()) {
         if (this.decoding.size >= DECODE_CONCURRENCY) return;
         if (!this.have[i] || this.frames.has(i) || this.decoding.has(i)) continue;
+        // Wanted() ist nach Nähe sortiert: ist kein Platz frei, bekommt auch kein weiter entferntes Bild welchen
+        if (FrameSequence.used() >= MAX_LIVE && !FrameSequence.evictFor(this, i)) return;
         this.decoding.add(i);
         decode(this.blobs[i]).then(
           (frame) => {
@@ -346,6 +388,7 @@ self.onmessage = async ({ data: m }) => {
   }
   FrameSequence.loading = new Set();
   FrameSequence.active = 0;
+  FrameSequence.all = new Set();
 
   /* ---------- Zeichnen ---------- */
 
@@ -410,34 +453,33 @@ self.onmessage = async ({ data: m }) => {
   /* ---------- Film ---------- */
 
   const variant = pickVariant();
+  /** Hochkant laufen Kapitel-Videos (der Videochip spielt sie flüssig ab), quer werden Bildfolgen gescrubbt */
+  let mode = variant === 'phone' ? 'clips' : 'canvas';
   const SHOTS = M.order;
   const LAST = SHOTS.length;
   const touch = mq('(pointer: coarse)');
   const html = document.documentElement;
-  const stage = root.querySelector('.film-stage');
+  const frameEl = root.querySelector('.film-frame');
   const canvas = root.querySelector('.film-canvas');
   const poster = root.querySelector('.film-poster');
   const loop = root.querySelector('.film-loop');
+  const clipsBox = root.querySelector('.film-clips');
   const beats = Array.from(root.querySelectorAll('.beat'));
   const clock = { film: 0 };
 
   /**
-   * Bildausschnitt je Kapitel: [Start, Ende] als Zoom über „cover“. Die Lobby füllt immer die ganze Bühne (1 = randlos),
-   * die Kamerafahrten stecken in den Clips selbst; der Zoom gibt nur eine leichte Fahrt dazu.
+   * Bildausschnitt je Kapitel (nur Bildfolgen): [Start, Ende] als Zoom über „cover“. Die Lobby füllt immer die ganze
+   * Bühne (1 = randlos), die Kamerafahrten stecken in den Clips selbst; der Zoom gibt nur eine leichte Fahrt dazu.
+   * Nahtstellen: das Ende eines Kapitels hat denselben Wert wie der Anfang des nächsten, sonst springt das Bild.
    */
-  // Nahtstellen: das Ende eines Kapitels hat denselben Wert wie der Anfang des nächsten, sonst springt das Bild
-  const ZOOM = {
-    desktop: { light: [1, 1.03], turn: [1.03, 1.03], open: [1.03, 1], book: [1, 1.02], bell: [1.02, 1] },
-    phone: { light: [1, 1.03], turn: [1.03, 1.03], open: [1.03, 1], book: [1, 1.02], bell: [1.02, 1] },
-  };
-  // Handy: Hochformat-Ausschnitt aus der Bildmitte, der Concierge steht etwas über der Mitte
+  const ZOOM = { light: [1, 1.03], turn: [1.03, 1.03], open: [1.03, 1], book: [1, 1.02], bell: [1.02, 1] };
+  // Hochkant: Ausschnitt aus der Bildmitte, der Concierge steht etwas über der Mitte
   const FOCUS = { desktop: { fx: 0.5, fy: 0.5 }, phone: { fx: 0.5, fy: 0.45 } };
-  // Höchste Pixeldichte des Canvas: am Handy wird das Bild stark vergrößert, bei 1,5 käme eine zweite Vergrößerung
-  // durch den Browser dazu (unscharf)
-  const DPR_MAX = { desktop: 1.5, phone: 2 };
+  /** Höchste Pixeldichte des Canvas: mehr kostet jedes Bild, ohne dass man es sieht */
+  const DPR_MAX = 1.5;
   const smoothstep = (x) => { const t = Math.min(1, Math.max(0, x)); return t * t * (3 - 2 * t); };
   function look(shot, p) {
-    const [a, b] = ZOOM[variant][shot] || [1, 1];
+    const [a, b] = mode === 'clips' ? [1, 1] : ZOOM[shot] || [1, 1];
     return { fit: 'cover', zoom: a + (b - a) * smoothstep(p), ...FOCUS[variant] };
   }
 
@@ -446,13 +488,93 @@ self.onmessage = async ({ data: m }) => {
   /** Dämpfung der Filmposition am Touch-Gerät (Zeitkonstante in s); am Desktop glättet Lenis */
   const FOLLOW_TAU = 0.12;
 
+  /* ---------- Poster, Loop, Anker ---------- */
+
+  const loopName = variant === 'phone' ? 'hero-phone' : 'hero';
+  const loopSize = M.loops[loopName] || { w: 1600, h: 904 };
+  /** Bildgröße eines Kapitels: Clip (hochkant) oder Bildfolge (quer) */
+  const sizeOf = (shot) => (mode === 'clips' ? (M.clips || {})[shot] : (M.shots[shot] || {}).desktop);
+  const onPlace = [];
+
+  // Impuls und Kanal-Beschriftungen hängen an Punkten im Bild (data-x/-y, Anteile des 16:9-Clips). Der Hochkant-Clip
+  // ist ein Ausschnitt um den Concierge (Mitte bei `cx`, volle Höhe), deshalb wird x dafür umgerechnet. Das Filmbild
+  // wird auf Arabisch nicht gespiegelt (das Namensschild stünde sonst spiegelverkehrt), die Anker also auch nicht.
+  const anchors = Array.from(root.querySelectorAll('[data-anchor]'));
+  function placeAnchors(bw, bh) {
+    for (const el of anchors) {
+      const shot = el.dataset.shot;
+      const size = sizeOf(shot);
+      if (!size) continue;
+      let u = Number(el.dataset.x);
+      if (mode === 'clips') {
+        const part = (size.w / size.h) / (16 / 9);
+        u = (u - ((size.cx ?? 0.5) - part / 2)) / part;
+      }
+      const r = rect(size.w, size.h, bw, bh, look(shot, 1));
+      let left = r.x + u * r.w;
+      // Kanal-Chips: data-side="before" heißt, die Beschriftung steht vor dem Punkt und die Linie zeigt auf den
+      // Concierge. Beschriftungen bleiben im Fenster.
+      if (el.classList.contains('chan')) {
+        const before = el.dataset.side === 'before';
+        el.classList.toggle('is-before', before);
+        left = before ? Math.max(10, left - el.offsetWidth) : Math.min(left, bw - el.offsetWidth - 10);
+      }
+      el.style.left = `${left}px`;
+      el.style.top = `${r.y + Number(el.dataset.y) * r.h}px`;
+    }
+  }
+
+  /** Poster und Loop liegen exakt dort, wo das erste Filmbild liegt (dieselbe Rechnung wie Canvas und Clips) */
+  function placeMedia() {
+    if (!frameEl) return;
+    const box = frameEl.getBoundingClientRect();
+    if (!box.width || !box.height) return;
+    const r = rect(loopSize.w, loopSize.h, box.width, box.height, look(SHOTS[0], 0));
+    for (const el of [poster, loop]) {
+      if (!el) continue;
+      el.style.cssText = `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;right:auto;bottom:auto;object-fit:fill`;
+    }
+    onPlace.forEach((fn) => fn(box.width, box.height));
+    placeAnchors(box.width, box.height);
+  }
+  document.addEventListener('hybote:lang', () => requestAnimationFrame(placeMedia));
+
+  /**
+   * Hero-Schleife vor dem ersten Scroll: läuft nur ganz oben. `armWhen(arm)` bestimmt, wann sie lädt; `probe` erfährt,
+   * ob iOS Video abspielen lässt (im Stromsparmodus lehnt Safari play() ab).
+   */
+  function heroLoop(armWhen, probe) {
+    if (!loop) return;
+    const src = `/film/loops/${loopName}.mp4?v=${loopSize.v || ''}`;
+    let armed = false;
+    const sync = () => {
+      if (!armed) return;
+      const top = window.scrollY < window.innerHeight * 0.1 && !(Number(root.dataset.beat) >= 0);
+      if (top && loop.paused) {
+        loop.play().then(
+          () => { loop.classList.add('is-on'); if (probe) probe(null); },
+          (e) => { if (probe) probe(e); }
+        );
+      } else if (!top && !loop.paused) loop.pause();
+    };
+    const arm = () => {
+      if (armed) return;
+      armed = true;
+      loop.src = src;
+      sync();
+    };
+    window.addEventListener('scroll', sync, { passive: true });
+    armWhen(arm);
+  }
+
+  /* ---------- Quer: Bildfolgen im Canvas ---------- */
+
   function startFilm() {
     const ctx = canvas && canvas.getContext('2d', { alpha: false });
     if (!ctx) return null;
     const seqs = SHOTS.map((shot) => {
-      const sizes = M.shots[shot] || {};
-      const v = sizes[variant] ? variant : sizes.desktop ? 'desktop' : null;
-      return v ? new FrameSequence({ base: `/film/${shot}/${v}`, ...sizes[v] }) : null;
+      const spec = (M.shots[shot] || {}).desktop;
+      return spec ? new FrameSequence({ base: `/film/${shot}/desktop`, ...spec }) : null;
     });
     if (!seqs[0]) return null;
     const rankAll = (at) => seqs.forEach((s, k) => s && s.load(rankFor(k, at)));
@@ -462,50 +584,8 @@ self.onmessage = async ({ data: m }) => {
     let cw = 0;
     let ch = 0;
     let dirty = true;
-    const loopName = variant === 'phone' ? 'hero-phone' : 'hero';
-    const loopSize = M.loops[loopName] || { w: 1600, h: 904 };
-    // Arabisch: das Bild wird gespiegelt (CSS), damit der Concierge auf der anderen Seite der Textspalte steht
-    const rtl = () => document.documentElement.dir === 'rtl';
-    // Poster und Loop liegen exakt dort, wo der Canvas das erste Bild zeichnet
-    const placeMedia = () => {
-      const box = canvas.getBoundingClientRect();
-      const r = rect(loopSize.w, loopSize.h, box.width, box.height, look(SHOTS[0], 0));
-      for (const el of [poster, loop]) {
-        if (!el) continue;
-        el.style.cssText = `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;right:auto;bottom:auto;transform:${rtl() ? 'scaleX(-1)' : 'none'};object-fit:fill`;
-      }
-      placeAnchors(box.width, box.height);
-    };
-    // Impuls und Kanal-Beschriftungen hängen an Punkten im Bild (data-x/-y, Anteile des 16:9-Clips). Die Handy-Fassung
-    // ist ein Hochformat-Ausschnitt um den Concierge (Mitte bei `cx`, volle Höhe), deshalb wird x dafür umgerechnet.
-    const anchors = Array.from(root.querySelectorAll('[data-anchor]'));
-    const placeAnchors = (bw, bh) => {
-      for (const el of anchors) {
-        const shot = el.dataset.shot;
-        const sizes = M.shots[shot] || {};
-        const size = sizes[variant] || sizes.desktop;
-        if (!size) continue;
-        let u = Number(el.dataset.x);
-        if (variant === 'phone' && sizes.phone && sizes.desktop) {
-          const part = (sizes.phone.w / sizes.phone.h) / (sizes.desktop.w / sizes.desktop.h);
-          u = (u - ((sizes.phone.cx ?? 0.5) - part / 2)) / part;
-        }
-        const r = rect(size.w, size.h, bw, bh, look(shot, 1));
-        let left = r.x + u * r.w;
-        if (rtl()) left = bw - left;
-        // Kanal-Chips: data-side="before" heißt, die Beschriftung steht vor dem Punkt und die Linie zeigt auf den
-        // Concierge; im gespiegelten Bild (Arabisch) dreht sich das um. Beschriftungen bleiben im Fenster.
-        if (el.classList.contains('chan')) {
-          const before = (el.dataset.side === 'before') !== rtl();
-          el.classList.toggle('is-before', before);
-          left = before ? Math.max(10, left - el.offsetWidth) : Math.min(left, bw - el.offsetWidth - 10);
-        }
-        el.style.left = `${left}px`;
-        el.style.top = `${r.y + Number(el.dataset.y) * r.h}px`;
-      }
-    };
     const ro = new ResizeObserver(([e]) => {
-      const dpr = Math.min(window.devicePixelRatio || 1, DPR_MAX[variant]);
+      const dpr = Math.min(window.devicePixelRatio || 1, DPR_MAX);
       cw = Math.round(e.contentRect.width * dpr);
       ch = Math.round(e.contentRect.height * dpr);
       if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
@@ -513,7 +593,6 @@ self.onmessage = async ({ data: m }) => {
       dirty = true;
     });
     ro.observe(canvas);
-    document.addEventListener('hybote:lang', () => requestAnimationFrame(placeMedia));
 
     // Lage der Szene, gemessen nach jedem Refresh: im Takt wird nur scrollY gelesen (kein Layout pro Frame)
     let geo = { top: 0, h: 0 };
@@ -527,27 +606,12 @@ self.onmessage = async ({ data: m }) => {
     measure();
     ScrollTrigger.addEventListener('refresh', measure);
 
-    // Loop vor dem ersten Scroll: startet, wenn das erste Kapitel geladen ist (oder nach 6 s), läuft nur ganz oben
-    if (loop) {
-      const src = `/film/loops/${loopName}.mp4?v=${loopSize.v || ''}`;
-      let armed = false;
-      const arm = () => {
-        if (armed) return;
-        armed = true;
-        loop.src = src;
-        sync();
-      };
-      const sync = () => {
-        if (!armed) return;
-        const top = window.scrollY < vh * 0.1;
-        if (top && loop.paused) loop.play().then(() => loop.classList.add('is-on'), () => {});
-        else if (!top && !loop.paused) loop.pause();
-      };
-      window.addEventListener('scroll', sync, { passive: true });
+    // Loop: startet, wenn das erste Kapitel geladen ist (oder nach 6 s), damit er dem Film keine Leitung wegnimmt
+    heroLoop((arm) => {
       setTimeout(arm, 6000);
       const waitFirst = () => (seqs[0].complete ? arm() : setTimeout(waitFirst, 250));
       waitFirst();
-    }
+    });
 
     const hud = params.get('film') === 'hud' ? createHud() : null;
     const stat = { frames: 0, worst: 0, lag: 0, since: performance.now(), last: performance.now() };
@@ -617,8 +681,8 @@ self.onmessage = async ({ data: m }) => {
         now ? `${SHOTS[now.k]} ${now.pair ? now.pair.want.toFixed(1) : '-'} → ${now.pair ? now.pair.shown.toFixed(1) : '-'}` : 'kein Clip',
         `Verzug max ${stat.lag.toFixed(1)} Bilder`,
         now ? `geladen ${now.seq.loaded}/${now.seq.spec.count}` : '',
-        `dekodieren ${stats.decodeMs.toFixed(1)} ms · verworfen ${stats.dropped}`,
-        `${variant} ${cw}×${ch} · ${touch ? 'touch' : 'maus'}`,
+        `dekodieren ${stats.decodeMs.toFixed(1)} ms · verworfen ${stats.dropped} · im Speicher ${FrameSequence.used()}/${MAX_LIVE}`,
+        `canvas ${cw}×${ch} · ${touch ? 'touch' : 'maus'}`,
       ].filter(Boolean).join('\n');
       stat.frames = 0;
       stat.worst = 0;
@@ -626,6 +690,253 @@ self.onmessage = async ({ data: m }) => {
       stat.since = at;
     });
     return { seqs };
+  }
+
+  /* ---------- Hochkant: Kapitel-Videos ---------- */
+
+  /** Ruhe nach dem Kapitelwechsel, bevor der Clip startet: beim schnellen Wischen startet nur das Zielkapitel */
+  const SETTLE_MS = 140;
+  /** Überblendungen der Standbilder (ms): vorwärts, rückwärts, ohne Video (Stromsparmodus) */
+  const FADE_IN = 220;
+  const FADE_BACK = 350;
+  const FADE_STILLS = 900;
+
+  /**
+   * Hochkant: je Kapitel ein Video (film/clips), das beim Hineinscrollen von vorn läuft und auf seinem letzten Bild
+   * stehen bleibt. Der Videochip dekodiert es, das bleibt am iPhone flüssig und scharf; die früheren Bildfolgen
+   * (1440×1920 je Bild, im Skript dekodiert) ruckelten. Unter den Videos liegen erstes und letztes Bild als
+   * Standbild: sie überbrücken das Laden, decken das Rückwärtsscrollen ab (Videos laufen nie rückwärts) und ersetzen
+   * das Video, wenn iOS kein Abspielen erlaubt (Stromsparmodus); dann blenden die Standbilder ineinander über.
+   * Zwei Video-Elemente wechseln sich ab: eines zeigt, das andere lädt das nächste Kapitel vor.
+   */
+  function startClips() {
+    const C = M.clips || {};
+    if (!clipsBox || !SHOTS.every((s) => C[s])) return null;
+    const players = Array.from(clipsBox.querySelectorAll('.film-clip'));
+    if (players.length < 2) return null;
+    root.classList.add('is-clips');
+    const url = (k, kind) => {
+      const shot = SHOTS[k];
+      return kind === 'v' ? `/film/clips/${shot}.mp4?v=${C[shot].v}` : `/film/clips/${shot}-${kind}.webp?v=${C[shot][kind]}`;
+    };
+    const info = { latency: 0, waiting: 0, stillsOnly: false };
+
+    // Zwei Standbilder zum Überblenden; das obere (z 2) ist das zuletzt gezeigte
+    const stills = [0, 1].map(() => {
+      const img = document.createElement('img');
+      img.className = 'film-still';
+      img.alt = '';
+      img.decoding = 'async';
+      clipsBox.insertBefore(img, players[0]);
+      return img;
+    });
+    let front = 0;
+    let shownStill = '';
+    let stillGen = 0;
+    const showStill = (src, ms) => {
+      if (src === shownStill) return;
+      shownStill = src;
+      const g = ++stillGen;
+      const next = stills[1 - front];
+      const prev = stills[front];
+      next.src = src;
+      const ready = typeof next.decode === 'function' ? next.decode().catch(() => undefined) : Promise.resolve();
+      ready.then(() => {
+        if (g !== stillGen) return;
+        // Erst unsichtbar machen (liegt noch unter dem oberen Bild), dann oben einblenden
+        next.style.transitionDuration = '0ms';
+        next.classList.remove('is-on');
+        void next.offsetWidth;
+        next.style.transitionDuration = `${ms}ms`;
+        next.style.zIndex = '2';
+        prev.style.zIndex = '1';
+        next.classList.add('is-on');
+        front = 1 - front;
+        setTimeout(() => { if (g === stillGen) prev.classList.remove('is-on'); }, ms + 60);
+      });
+    };
+    const hideStills = (ms) => {
+      shownStill = '';
+      stillGen++;
+      for (const s of stills) { s.style.transitionDuration = `${ms}ms`; s.classList.remove('is-on'); }
+    };
+
+    const vids = players.map((el) => {
+      el.muted = true;
+      el.defaultMuted = true;
+      el.playsInline = true;
+      el.setAttribute('webkit-playsinline', '');
+      el.disableRemotePlayback = true;
+      const v = { el, k: -1 };
+      el.addEventListener('waiting', () => { info.waiting++; });
+      // Am Ende bleibt das Video auf seinem letzten Bild stehen; darunter dasselbe Bild als Standbild
+      el.addEventListener('ended', () => { if (active === v) showStill(url(v.k, 'z'), 0); });
+      // In-App-Browser ohne Inline-Wiedergabe öffnen Videos im Vollbild: dann nur noch Standbilder
+      el.addEventListener('webkitbeginfullscreen', () => {
+        if (typeof el.webkitExitFullscreen === 'function') el.webkitExitFullscreen();
+        noVideo();
+      });
+      return v;
+    });
+
+    let beat = -2; // -2 = noch keine Kapitelwahl, -1 = Hero
+    let gen = 0; // jede Kapitelwahl beginnt eine Runde; Rückmeldungen älterer Runden zählen nicht
+    let active = null; // Spieler des laufenden Kapitels
+    let lastShown = null; // Spieler, der zuletzt sichtbar war (wird nicht sofort neu beladen: er blendet noch aus)
+    let settle = 0;
+    let inScene = true;
+    let texts = []; // Zeitleisten der Kapiteltexte (build), je Kapitel eine
+
+    const hideVideos = (ms) => {
+      for (const v of vids) {
+        v.el.style.transitionDuration = `${ms}ms`;
+        v.el.classList.remove('is-on', 'is-warm');
+        if (!v.el.paused) v.el.pause();
+      }
+    };
+    const load = (v, k) => {
+      if (v.k === k) return;
+      v.k = k;
+      v.el.src = url(k, 'v');
+      v.el.preload = 'auto';
+      v.el.load();
+    };
+    const preloadNext = (k) => {
+      if (info.stillsOnly || k + 1 >= LAST) return;
+      const spare = vids.find((v) => v !== active && !v.el.classList.contains('is-on'));
+      if (spare) load(spare, k + 1);
+    };
+    function noVideo() {
+      info.stillsOnly = true;
+      hideVideos(FADE_BACK);
+      active = null;
+      if (beat >= 0) showStill(url(beat, 'z'), FADE_STILLS);
+    }
+
+    const play = (k, g) => {
+      if (info.stillsOnly) { showStill(url(k, 'z'), FADE_STILLS); return; }
+      const v = vids.find((x) => x.k === k) || vids.find((x) => x !== lastShown) || vids[0];
+      active = v;
+      load(v, k);
+      const el = v.el;
+      if (el.currentTime > 0.05) { try { el.currentTime = 0; } catch (e) { /* noch keine Metadaten */ } }
+      el.style.transitionDuration = '160ms';
+      el.classList.add('is-warm');
+      const t0 = performance.now();
+      const shown = () => {
+        if (g !== gen) return;
+        el.classList.add('is-on');
+        el.classList.remove('is-warm');
+        lastShown = v;
+        info.latency = Math.round(performance.now() - t0);
+        setTimeout(() => { if (g === gen) preloadNext(k); }, 400);
+      };
+      el.play().then(() => {
+        if (g !== gen) return;
+        if (typeof el.requestVideoFrameCallback === 'function') el.requestVideoFrameCallback(() => shown());
+        else requestAnimationFrame(() => requestAnimationFrame(shown));
+      }, (e) => {
+        if (g !== gen) return;
+        el.classList.remove('is-warm');
+        if (e && e.name === 'NotAllowedError') noVideo();
+        // Kein Video (Stromsparmodus, kein Netz): das Kapitel erzählen die Standbilder
+        else showStill(url(k, 'z'), FADE_STILLS);
+      });
+    };
+
+    // Schlussfenster: dasselbe letzte Bild in einem Fenster mit runden Ecken (fester Zuschnitt, nur die Deckkraft
+    // wird animiert; ein animierter clip-path auf der Bühne kostet Safari bei jedem Scrollschritt ein Neuzeichnen)
+    const win = document.createElement('div');
+    win.className = 'film-window';
+    win.setAttribute('aria-hidden', 'true');
+    const winImg = document.createElement('img');
+    winImg.alt = '';
+    winImg.decoding = 'async';
+    win.appendChild(winImg);
+    frameEl.after(win);
+
+    onPlace.push((bw, bh) => {
+      const c = C[SHOTS[0]];
+      const r = rect(c.w, c.h, bw, bh, look(SHOTS[0], 0));
+      const css = `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px`;
+      clipsBox.style.cssText = css;
+      winImg.style.cssText = css;
+    });
+    const ro = new ResizeObserver(() => placeMedia());
+    ro.observe(frameEl);
+
+    /** Kapitel k betreten (-1 = Hero). Vorwärts: Startbild, nach kurzer Ruhe läuft der Clip. Rückwärts: Endbild. */
+    const enter = (k) => {
+      if (k === beat) return;
+      const from = beat;
+      beat = k;
+      const g = ++gen;
+      clearTimeout(settle);
+      if (k >= LAST - 2 && !winImg.getAttribute('src')) winImg.src = url(LAST - 1, 'z');
+      if (k < 0) {
+        hideVideos(FADE_BACK);
+        hideStills(FADE_BACK);
+        active = null;
+        return;
+      }
+      // Erster Aufruf mitten im Film (Neuladen): Kapitel steht schon auf seinem Endbild, kein Start
+      const forward = from >= -1 && k > from;
+      // Texte: vorwärts laufen sie mit dem Clip an, rückwärts stehen sie fertig da
+      if (texts[k]) { if (forward) texts[k].restart(); else texts[k].progress(1); }
+      if (forward) {
+        showStill(url(k, 'a'), FADE_IN);
+        hideVideos(FADE_IN);
+        active = null;
+        settle = setTimeout(() => { if (g === gen && inScene) play(k, g); }, SETTLE_MS);
+      } else {
+        showStill(url(k, 'z'), FADE_BACK);
+        hideVideos(FADE_BACK);
+        active = null;
+        setTimeout(() => { if (g === gen) preloadNext(k); }, FADE_BACK + 60);
+      }
+    };
+    const leave = () => {
+      inScene = false;
+      if (active && !active.el.paused) active.el.pause();
+    };
+    const enterBack = () => {
+      inScene = true;
+      if (active && active.el.paused && !active.el.ended) active.el.play().catch(() => showStill(url(active.k, 'z'), FADE_BACK));
+    };
+    document.addEventListener('visibilitychange', () => {
+      if (!active) return;
+      if (document.hidden) active.el.pause();
+      else if (inScene && !active.el.ended) active.el.play().catch(() => showStill(url(active.k, 'z'), FADE_BACK));
+    });
+
+    // Hero-Schleife sofort laden (es gibt keine Bildfolge, der sie Leitung wegnähme); sie ist zugleich die Probe,
+    // ob iOS Video abspielen lässt
+    heroLoop((arm) => arm(), (e) => { if (e && e.name === 'NotAllowedError') noVideo(); });
+    html.classList.add('film-ready');
+
+    if (params.get('film') === 'hud') {
+      const hud = createHud();
+      setInterval(() => {
+        const el = active && active.el;
+        const q = el && typeof el.getVideoPlaybackQuality === 'function' ? el.getVideoPlaybackQuality() : null;
+        hud.textContent = [
+          `clips · Kapitel ${beat} · ${info.stillsOnly ? 'nur Standbilder' : 'Video'}`,
+          el ? `${SHOTS[active.k]} ${el.currentTime.toFixed(2)}/${C[SHOTS[active.k]].dur} s · bereit ${el.readyState}${el.ended ? ' · Ende' : el.paused ? ' · Pause' : ''}` : 'kein Video',
+          `Startverzug ${info.latency} ms · Hänger ${info.waiting}`,
+          q ? `Bilder ${q.totalVideoFrames} · verworfen ${q.droppedVideoFrames}` : '',
+          `Spieler ${vids.map((v) => (v.k >= 0 ? SHOTS[v.k] : '-')).join(' / ')}`,
+          `${Math.round(frameEl.clientWidth)}×${Math.round(frameEl.clientHeight)} · ${touch ? 'touch' : 'maus'}`,
+        ].filter(Boolean).join('\n');
+      }, 250);
+    }
+    return {
+      enter,
+      leave,
+      enterBack,
+      info,
+      // build() reicht die Text-Zeitleisten nach (bei jedem Wechsel der Breite neu); das laufende Kapitel steht fertig
+      texts(list) { texts = list; if (beat >= 0 && texts[beat]) texts[beat].progress(1); },
+    };
   }
 
   function createHud() {
@@ -638,15 +949,25 @@ self.onmessage = async ({ data: m }) => {
 
   /* ---------- Timeline ---------- */
 
-  // Anteile der Scrollstrecke: Hero geht, fünf Kapitel, am Ende schrumpft das Bild in ein Fenster
-  const B0 = 0.05;
-  const SLICE = 0.165;
-  const END = B0 + LAST * SLICE;
-  // Anteil des Kapitels, in dem sein Clip läuft; danach steht das End-Bild. Am Handy länger: die Bühne ist niedriger,
-  // bei 60 % käme beim Wischen in jedem Takt ein Sprung über mehrere Bilder
+  /**
+   * Anteile der Scrollstrecke: Hero geht, fünf Kapitel, am Ende schrumpft das Bild in ein Fenster. Mit Clips ist die
+   * Strecke kürzer (HOLD), die Kapitel bekommen etwas mehr von ihr.
+   */
+  const TIMING = { canvas: { B0: 0.05, SLICE: 0.165 }, clips: { B0: 0.06, SLICE: 0.16 } };
+  let B0 = TIMING.canvas.B0;
+  let SLICE = TIMING.canvas.SLICE;
+  let END = B0 + LAST * SLICE;
+  // Anteil des Kapitels, in dem sein Clip läuft (nur Bildfolgen); danach steht das End-Bild. Schmal länger: die Bühne
+  // ist niedriger, bei 60 % käme beim Wischen in jedem Takt ein Sprung über mehrere Bilder
   const FILM_SHARE = { desktop: 0.6, phone: 0.85 };
 
-  function build(tl, phone) {
+  /**
+   * Mit Clips: Sekunden, über die die Texte eines Kapitels erscheinen. Der Clip (5 s) entspricht dann wie früher
+   * 85 % des Kapitels, Antwort-Impuls und zweite Sprechblase kommen im selben Moment des Films wie vorher.
+   */
+  const TEXT_SPAN = 5.9;
+
+  function build(tl, phone, clips) {
     const q = (sel) => Array.from(root.querySelectorAll(sel));
     gsap.set(beats, { autoAlpha: 0 });
     // Ziele sind die inneren Hüllen: die äußeren (.ch-left/.ch-right) sind per transform positioniert
@@ -654,59 +975,87 @@ self.onmessage = async ({ data: m }) => {
       .to(q('.hero-head, .hero-foot, .ticker'), { yPercent: -24, autoAlpha: 0, duration: 0.045, stagger: 0.005 }, 0.004)
       .to(q('.film-cue'), { autoAlpha: 0, duration: 0.02 }, 0);
 
+    const texts = [];
     beats.forEach((beat, k) => {
       const at = B0 + k * SLICE;
       const sub = (sel) => Array.from(beat.querySelectorAll(sel));
-      // Film: der Clip des Kapitels läuft im ersten Teil (FILM_SHARE), danach steht sein End-Bild
-      tl.fromTo(clock, { film: k }, { film: k + 1, duration: SLICE * FILM_SHARE[phone ? 'phone' : 'desktop'], ease: 'power1.inOut', immediateRender: false }, at);
-      tl.set(beat, { autoAlpha: 1 }, at)
-        // y: 0 ausdrücklich, sonst übernimmt GSAP den CSS-Startwert (translateY 110 %) zusätzlich als Pixel
-        .fromTo(sub('.mask > span'), { yPercent: 110, y: 0 }, { yPercent: 0, y: 0, duration: SLICE * 0.24, stagger: SLICE * 0.04, ease: 'power3.out' }, at + SLICE * 0.03)
-        .fromTo(sub('.beat-body'), { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: SLICE * 0.2, ease: 'power2.out' }, at + SLICE * 0.12);
+      // Film (nur Bildfolgen): der Clip des Kapitels läuft im ersten Teil (FILM_SHARE), danach steht sein End-Bild.
+      // Clips laufen von selbst, sobald das Kapitel beginnt (startClips).
+      if (mode === 'canvas') {
+        tl.fromTo(clock, { film: k }, { film: k + 1, duration: SLICE * FILM_SHARE[phone ? 'phone' : 'desktop'], ease: 'power1.inOut', immediateRender: false }, at);
+      }
+      // Ob ein Kapitel zu sehen ist, entscheidet immer der Scroll. Seine Texte laufen bei Bildfolgen mit dem Scroll,
+      // bei Clips auf einer eigenen Zeitleiste in Sekunden, die startet, sobald das Kapitel beginnt: der Clip läuft ja
+      // auch von selbst, sonst stünden halb eingeblendete Überschriften neben dem laufenden Film.
+      tl.set(beat, { autoAlpha: 1 }, at);
+      const own = mode === 'clips' ? gsap.timeline({ paused: true }) : null;
+      const T = own || tl;
+      const pos = (x) => (own ? x * TEXT_SPAN : at + SLICE * x);
+      const len = (x) => (own ? x * TEXT_SPAN : SLICE * x);
+      if (own) texts[k] = own;
+      // y: 0 ausdrücklich, sonst übernimmt GSAP den CSS-Startwert (translateY 110 %) zusätzlich als Pixel
+      T.fromTo(sub('.mask > span'), { yPercent: 110, y: 0 }, { yPercent: 0, y: 0, duration: len(0.24), stagger: len(0.04), ease: 'power3.out' }, pos(0.03))
+        .fromTo(sub('.beat-body'), { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: len(0.2), ease: 'power2.out' }, pos(0.12));
       sub('[data-in]').forEach((el) => {
-        tl.fromTo(el, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: SLICE * 0.12, ease: 'power2.out' }, at + SLICE * parseFloat(el.dataset.in));
+        T.fromTo(el, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: len(0.12), ease: 'power2.out' }, pos(parseFloat(el.dataset.in)));
       });
       // Kapitel 2: der Cyan-Impuls im Moment der Antwort
       sub('.pulse').forEach((el) => {
-        tl.fromTo(el, { scale: 0.2, autoAlpha: 0.95 }, { scale: 2.8, autoAlpha: 0, duration: SLICE * 0.3, ease: 'power2.out' }, at + SLICE * parseFloat(el.dataset.at || '0.4'));
+        T.fromTo(el, { scale: 0.2, autoAlpha: 0.95 }, { scale: 2.8, autoAlpha: 0, duration: len(0.3), ease: 'power2.out' }, pos(parseFloat(el.dataset.at || '0.4')));
       });
       // Kapitel 3: die Kanal-Linien wachsen an die Ebenen heran
       sub('.chan-line').forEach((el, i) => {
-        tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: SLICE * 0.12, ease: 'power2.out' }, at + SLICE * (0.58 + i * 0.04));
+        T.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: len(0.12), ease: 'power2.out' }, pos(0.58 + i * 0.04));
       });
       // Kapitel 5: Begrüßungen in vielen Sprachen lösen einander ab, die letzte bleibt
       const words = sub('.greet > span');
       words.forEach((w, i) => {
-        const t0 = at + SLICE * (0.18 + i * 0.13);
-        tl.fromTo(w, { yPercent: 100, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: SLICE * 0.06, ease: 'power2.out' }, t0);
-        if (i < words.length - 1) tl.to(w, { yPercent: -100, autoAlpha: 0, duration: SLICE * 0.06, ease: 'power2.in' }, t0 + SLICE * 0.1);
+        const t0 = 0.18 + i * 0.13;
+        T.fromTo(w, { yPercent: 100, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: len(0.06), ease: 'power2.out' }, pos(t0));
+        if (i < words.length - 1) T.to(w, { yPercent: -100, autoAlpha: 0, duration: len(0.06), ease: 'power2.in' }, pos(t0 + 0.1));
       });
       if (k < LAST - 1) tl.to(beat, { autoAlpha: 0, duration: SLICE * 0.07 }, at + SLICE * 0.93);
     });
+    if (clips) clips.texts(texts);
 
-    // Schluss: das letzte Kapitel geht, der Slogan kommt, das Bild schrumpft in ein Fenster. Am Desktop liegt das
-    // Fenster auf der Seite des Concierge (im gespiegelten Bild links), der Slogan steht daneben.
-    // Funktionswert: GSAP liest ihn bei jedem Refresh neu (invalidateOnRefresh), also auch nach einem Sprachwechsel
-    const windowed = () => (phone ? 'inset(14% 6% 38% 6% round 12px)'
-      : document.documentElement.dir === 'rtl' ? 'inset(12% 40% 14% 5% round 12px)' : 'inset(12% 5% 14% 40% round 12px)');
+    // Schluss: das letzte Kapitel geht, der Slogan kommt, das Bild schrumpft in ein Fenster. Schmal liegt das Fenster
+    // oben, breit beim Concierge (rechts), der Slogan steht daneben.
+    const windowed = phone ? 'inset(14% 6% 38% 6% round 12px)' : 'inset(12% 5% 14% 40% round 12px)';
     tl.to(beats[LAST - 1], { autoAlpha: 0, duration: 0.03 }, END)
-      .fromTo(q('.film-frame'), { clipPath: 'inset(0% 0% 0% 0% round 0px)' }, { clipPath: windowed, duration: 0.1, ease: 'power1.inOut' }, END + 0.012)
-      .fromTo(q('.film-end > *'), { y: 26, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.05, stagger: 0.012, ease: 'power2.out' }, END + 0.04);
+      .to(q('.film-nav'), { autoAlpha: 0, duration: 0.02 }, END);
+    const win = root.querySelector('.film-window');
+    if (mode === 'clips' && win) {
+      // Fester Zuschnitt, animiert wird nur die Deckkraft: das Fenster kommt, die Bühne drumherum geht
+      win.style.clipPath = windowed;
+      win.style.webkitClipPath = windowed;
+      tl.fromTo(win, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.08, ease: 'power1.inOut' }, END + 0.012)
+        .fromTo(q('.film-frame'), { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.1, ease: 'power1.inOut' }, END + 0.012);
+    } else {
+      tl.fromTo(q('.film-frame'), { clipPath: 'inset(0% 0% 0% 0% round 0px)' }, { clipPath: windowed, duration: 0.1, ease: 'power1.inOut' }, END + 0.012);
+    }
+    tl.fromTo(q('.film-end > *'), { y: 26, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.05, stagger: 0.012, ease: 'power2.out' }, END + 0.04);
     if (tl.duration() < 1) tl.to({}, { duration: 1 - tl.duration() }, tl.duration());
   }
 
   /**
    * Szene: hoher Abschnitt, dessen Bühne stehen bleibt, während die Seite nativ daran vorbeiscrollt (keine
    * Wheel-Übernahme, die Scrollbar stimmt immer). Ohne .is-live ist sie ein normaler Abschnitt mit Standbildern.
+   * HOLD = Scrollstrecke in Bildschirmhöhen; mit Clips 3,5 (die Szene ist dann 4,5 Höhen hoch, vorher 7,5).
    */
-  const HOLD = { desktop: 6, phone: 6.5 };
-  function scene() {
+  const HOLD = { desktop: 6, phone: 6.5, clips: 3.5 };
+  function scene(clips) {
     const mm = gsap.matchMedia();
     // matchMedia ruft die Funktion nur, wenn mindestens eine Bedingung zutrifft: deshalb beide Breiten nennen
     mm.add({ phone: '(max-width: 767px)', wide: '(min-width: 768px)' }, (c) => {
       const phone = Boolean(c.conditions && c.conditions.phone);
       root.classList.add('is-live');
-      root.style.setProperty('--hold', String(HOLD[phone ? 'phone' : 'desktop']));
+      root.style.setProperty('--hold', String(mode === 'clips' ? HOLD.clips : HOLD[phone ? 'phone' : 'desktop']));
+      const sync = (self) => {
+        const k = Math.max(-1, Math.min(LAST - 1, Math.floor((self.progress - B0) / SLICE)));
+        const beat = String(k);
+        if (root.dataset.beat !== beat) root.dataset.beat = beat;
+        if (clips) clips.enter(k);
+      };
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
         scrollTrigger: {
@@ -715,13 +1064,13 @@ self.onmessage = async ({ data: m }) => {
           end: 'bottom bottom',
           scrub: true,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const beat = String(Math.max(-1, Math.min(LAST - 1, Math.floor((self.progress - B0) / SLICE))));
-            if (root.dataset.beat !== beat) root.dataset.beat = beat;
-          },
+          onUpdate: sync,
+          onRefresh: sync,
+          onLeave: () => clips && clips.leave(),
+          onEnterBack: () => clips && clips.enterBack(),
         },
       });
-      build(tl, phone);
+      build(tl, phone, clips);
       return () => {
         root.classList.remove('is-live');
         root.style.removeProperty('--hold');
@@ -731,11 +1080,27 @@ self.onmessage = async ({ data: m }) => {
   }
 
   if (!variant) return;
-  const film = startFilm();
-  if (!film) return;
+  let clips = null;
+  let film = null;
+  if (mode === 'clips') clips = startClips();
+  if (!clips) { mode = 'canvas'; film = startFilm(); }
+  if (!clips && !film) return;
+  ({ B0, SLICE } = TIMING[mode]);
+  END = B0 + LAST * SLICE;
   smooth();
-  scene();
-  // Sprachwechsel: Texthöhen und Schreibrichtung ändern sich, Schlussfenster und Anker neu berechnen
+  scene(clips);
+  // „Film überspringen“: sofort (ohne Gleiten durch den ganzen Film) zum Benchmark, Fokus dorthin
+  const skip = root.querySelector('.film-skip');
+  const after = document.getElementById('benchmark');
+  if (skip && after) {
+    skip.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (lenis) lenis.scrollTo(after, { immediate: true, offset: -72 });
+      else after.scrollIntoView({ behavior: 'instant', block: 'start' });
+      after.focus({ preventScroll: true });
+    });
+  }
+  // Sprachwechsel: Texthöhen ändern sich, Anker neu berechnen
   document.addEventListener('hybote:lang', () => requestAnimationFrame(() => ScrollTrigger.refresh()));
   document.dispatchEvent(new Event('hybote:film'));
 
@@ -743,5 +1108,5 @@ self.onmessage = async ({ data: m }) => {
   const refresh = () => ScrollTrigger.refresh();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
   window.addEventListener('load', refresh);
-  window.HyboteFilm = { clock, film, stats };
+  window.HyboteFilm = { clock, film, clips, stats, mode };
 })();

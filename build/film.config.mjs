@@ -20,16 +20,26 @@ export default {
   /** Scroll-Kapitel in Filmreihenfolge: raw/<name>.mp4 → film/<name>/<variant>/NNN.webp */
   shots: ["light", "turn", "open", "book", "bell"],
   /**
-   * Desktop: ganzes 16:9-Bild, bildfüllend (film.js: cover). Handy: Hochformat-Ausschnitt um den Concierge;
-   * `cx` landet im Manifest, damit film.js die Anker (data-x) in den Ausschnitt umrechnen kann. `raw` = Ordner der
-   * Rohclips (sonst raw/), `sharpen` = optionale unsharp-Werte.
+   * Bildfolgen fürs Scrubbing, nur noch quer (Desktop, iPad quer): ganzes 16:9-Bild, bildfüllend (film.js: cover).
+   * `raw` = Ordner der Rohclips (sonst raw/), `sharpen` = optionale unsharp-Werte. Hochkant laufen seit 11/2026
+   * Kapitel-Videos (`clips`), die Handy-Bildfolgen ruckelten am iPhone (1440×1920 je Bild, zu viel zum Dekodieren).
    */
   variants: {
     desktop: { width: 1920, quality: 66 },
-    phone: { width: PHONE_WIDTH, quality: 70, raw: PHONE_RAW, crop: PHONE_CROP, cx: CX },
   },
-  /** Bilder pro Sekunde fürs Scrubbing (5-s-Clip → 75 Frames; bei 10 lagen die Bilder für langsames Scrollen zu weit auseinander) */
-  fps: 15,
+  /**
+   * Jedes `step`-te Bild der 24-fps-Clips (121 Bilder): 2 → 61 Bilder je Kapitel, gleichmäßig 12 pro Sekunde.
+   * Früher `fps=15`: ffmpeg ließ dann abwechselnd ein und zwei Bilder aus, das ruckelte bei jedem Scrolltempo.
+   * Das letzte Bild (Nr. 121) bleibt dabei erhalten, die Nahtstellen zum nächsten Kapitel stimmen weiter.
+   */
+  sourceFps: 24,
+  step: 2,
+  /**
+   * Hochkant (Handy, iPad hochkant): je Kapitel ein H.264-Video, das der Videochip abspielt, plus erstes und letztes
+   * Bild als WebP (film.js zeigt sie, bis das Video läuft, und im Stromsparmodus). `width` 1440 wie die Hero-Schleife;
+   * wirkt der Start am iPhone träge, auf 1080 senken (Level dann 4.1). `cx` landet im Manifest für die Anker.
+   */
+  clips: { width: PHONE_WIDTH, crf: 23, level: "5.0", raw: PHONE_RAW, crop: PHONE_CROP, cx: CX },
   /**
    * Tiefstes Schwarz der Clips → Seitengrund #070b16, damit die Bühne unten nahtlos in die Seite übergeht.
    * Alles bis `source` wird exakt zum Seitengrund, darüber wird linear angehoben.

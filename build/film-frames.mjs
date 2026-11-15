@@ -7,7 +7,8 @@
  *   node build/film-frames.mjs turn     nur bestimmte Kapitel, Loops oder Standbilder
  *
  * Braucht ffmpeg und cwebp (brew install ffmpeg webp). Schreibt:
- *   film/<shot>/<variant>/NNN.webp   Bildfolgen fürs Scrubbing
+ *   film/<shot>/<variant>/NNN.webp   Bildfolgen fürs Scrubbing (quer)
+ *   film/clips/<shot>.mp4            Kapitel-Videos hochkant, dazu <shot>-a.webp / <shot>-z.webp (erstes, letztes Bild)
  *   film/loops/<name>.mp4 + .webp    nahtlose Loops (vor + zurück) mit Poster
  *   film/stills/<name>.webp          Standbilder
  *   film-manifest.js                 Größen, Bildanzahl und Versions-Hash für film.js
@@ -73,10 +74,15 @@ const hashDir = (dir) => {
 const hashFile = (file) => createHash("sha1").update(readFileSync(file)).digest("hex").slice(0, 8);
 
 // Bisheriges Manifest übernehmen, damit Teil-Builds nichts verlieren
-let manifest = { order: config.shots, fps: config.fps, shots: {}, loops: {}, stills: {} };
+const fps = config.sourceFps / config.step;
+let manifest = { order: config.shots, fps, shots: {}, clips: {}, loops: {}, stills: {} };
 if (existsSync(manifestPath)) {
   const m = readFileSync(manifestPath, "utf8").match(/window\.HYBOTE_FILM = (\{[\s\S]*\});/);
-  if (m) manifest = { ...JSON.parse(m[1]), order: config.shots, fps: config.fps };
+  if (m) manifest = { clips: {}, ...JSON.parse(m[1]), order: config.shots, fps };
+}
+// Fassungen, die es nicht mehr gibt (die Handy-Bildfolgen), aus dem Manifest nehmen
+for (const sizes of Object.values(manifest.shots)) {
+  for (const v of Object.keys(sizes)) if (!config.variants[v]) delete sizes[v];
 }
 
 /** Rohclip aus dem Ordner der Fassung (`raw` in der Config, sonst raw/); fehlt er dort, mit Warnung aus raw/ */
@@ -100,7 +106,9 @@ for (const shot of config.shots) {
     mkdirSync(dir, { recursive: true });
     const tmp = join(tmpdir(), `film-${shot}-${variant}-${process.pid}`);
     mkdirSync(tmp, { recursive: true });
-    run("ffmpeg", ["-loglevel", "error", "-y", "-i", file, "-vf", `fps=${config.fps},${crop(v.crop)}scale=${v.width}:-2:flags=lanczos,${sharpen(v.sharpen)}${grade}`, join(tmp, "%03d.png")]);
+    // Jedes step-te Quellbild, ohne Zeitraster (passthrough): gleiche Abstände, kein ausgelassenes oder doppeltes Bild
+    const pick = `select='not(mod(n\\,${config.step}))'`;
+    run("ffmpeg", ["-loglevel", "error", "-y", "-i", file, "-vf", `${pick},${crop(v.crop)}scale=${v.width}:-2:flags=lanczos,${sharpen(v.sharpen)}${grade}`, "-fps_mode", "passthrough", join(tmp, "%03d.png")]);
     const pngs = readdirSync(tmp).filter((f) => f.endsWith(".png")).sort();
     await pool(pngs, Math.max(2, cpus().length - 1), (f) =>
       spawnP("cwebp", ["-quiet", "-q", String(v.quality), "-m", "6", "-sharp_yuv", join(tmp, f), "-o", join(dir, f.replace(".png", ".webp"))])
@@ -110,6 +118,51 @@ for (const shot of config.shots) {
     manifest.shots[shot] ??= {};
     manifest.shots[shot][variant] = { count: pngs.length, w, h, v: hashDir(dir), ...(v.cx !== undefined && { cx: v.cx }) };
     console.log("✓", shot, variant, pngs.length, "Frames", `${w}×${h}`);
+  }
+}
+
+// ---------- Kapitel-Videos (hochkant) ----------
+// Das Rohmaterial hat keine Farbangabe: durchgehend BT.709 festlegen (setparams), damit ffmpeg beim Graden und beim
+// Herausziehen der Standbilder dieselbe Matrix nimmt wie Safari beim Abspielen. Sonst springt die Farbe, wenn das
+// Video das Standbild ablöst.
+const BT709 = "setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv";
+const still = (video, args, png, webp) => {
+  run("ffmpeg", ["-loglevel", "error", "-y", ...args, "-i", video, "-vf", `${BT709},format=rgb24`, "-frames:v", "1", "-update", "1", png]);
+  run("cwebp", ["-quiet", "-q", "80", "-m", "6", "-sharp_yuv", png, "-o", webp]);
+};
+const lastFrame = (video, png) => {
+  // -update überschreibt die Datei mit jedem Bild: übrig bleibt das letzte
+  run("ffmpeg", ["-loglevel", "error", "-y", "-sseof", "-1", "-i", video, "-vf", `${BT709},format=rgb24`, "-update", "1", png]);
+};
+if (config.clips) {
+  const c = config.clips;
+  const dir = join(out, "clips");
+  for (const shot of config.shots) {
+    if (!want(shot)) continue;
+    const file = rawFile(c.raw, `${shot}.mp4`);
+    if (!file) continue;
+    mkdirSync(dir, { recursive: true });
+    const mp4 = join(dir, `${shot}.mp4`);
+    const vf = `${BT709},${crop(c.crop)}scale=${c.width}:-2:flags=lanczos,${grade},format=yuv420p`;
+    run("ffmpeg", [
+      "-loglevel", "error", "-y", "-i", file, "-an", "-vf", vf,
+      "-c:v", "libx264", "-preset", "slow", "-crf", String(c.crf), "-profile:v", "high", "-level:v", c.level, "-pix_fmt", "yuv420p",
+      "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv",
+      "-movflags", "+faststart", mp4,
+    ]);
+    const a = join(dir, `${shot}-a.webp`);
+    const z = join(dir, `${shot}-z.webp`);
+    const pa = join(tmpdir(), `clip-${shot}-a.png`);
+    const pz = join(tmpdir(), `clip-${shot}-z.png`);
+    still(mp4, [], pa, a);
+    lastFrame(mp4, pz);
+    run("cwebp", ["-quiet", "-q", "80", "-m", "6", "-sharp_yuv", pz, "-o", z]);
+    rmSync(pa);
+    rmSync(pz);
+    const { w, h } = size(mp4);
+    const dur = Number(run("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", mp4]).trim());
+    manifest.clips[shot] = { w, h, dur: Math.round(dur * 1000) / 1000, v: hashFile(mp4), a: hashFile(a), z: hashFile(z), cx: c.cx };
+    console.log("✓ clip", shot, `${w}×${h}`, `${dur.toFixed(2)} s`);
   }
 }
 

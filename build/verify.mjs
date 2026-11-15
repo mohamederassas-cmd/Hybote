@@ -233,10 +233,25 @@ console.log('\nScroll-Film');
   try { new Function('window', readFileSync(join(ROOT, 'film-manifest.js'), 'utf8'))(win); } catch { /* unten als Fehler gemeldet */ }
   const M = win.HYBOTE_FILM;
   const frameDir = (shot, v) => join(ROOT, 'film', shot, v);
-  const framesOk = M && M.order.every((shot) => ['desktop', 'phone'].every((v) => {
+  const framesOk = M && M.order.every((shot) => ['desktop'].every((v) => {
     const spec = M.shots[shot] && M.shots[shot][v];
     return spec && Array.from({ length: spec.count }, (_, i) => String(i + 1).padStart(3, '0')).every((n) => existsSync(join(frameDir(shot, v), `${n}.webp`)));
   }));
+  // Hochkant: je Kapitel ein Video plus erstes und letztes Bild (seit 11/2026; die Handy-Bildfolgen ruckelten am iPhone)
+  const clipsOk = M && M.clips && M.order.every((shot) => {
+    const c = M.clips[shot];
+    return c && c.v && c.a && c.z && ['.mp4', '-a.webp', '-z.webp'].every((s) => existsSync(join(ROOT, 'film', 'clips', `${shot}${s}`)));
+  });
+  // iCloud legt beim Neubau Konfliktkopien an („001 2.webp“, „bell 2/“); sie gehören nicht ins Repo
+  const copies = [];
+  const walk = (dir) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      if (/ \d+(\.\w+)?$/.test(e.name)) copies.push(join(dir, e.name));
+      if (e.isDirectory()) walk(join(dir, e.name));
+    }
+  };
+  if (existsSync(join(ROOT, 'film'))) walk(join(ROOT, 'film'));
+  if (copies.length) console.log('     Konfliktkopien:', copies.slice(0, 5).join(', '));
   // Poster und Standbilder: Datei vorhanden, Hash wie im Manifest (sonst liefert der Jahres-Cache alte Bilder)
   const refs = [...h.matchAll(/\/film\/(loops|stills)\/([\w-]+)\.webp\?v=([0-9a-f]+)/g)];
   const refsOk = M && refs.length > 0 && refs.every(([, kind, name, v]) => {
@@ -246,7 +261,12 @@ console.log('\nScroll-Film');
   const cache = (vercel.headers || []).find((x) => x.source === '/film/(.*)');
   report('index.html + film.js', {
     'Film-Manifest lesbar, fünf Kapitel': !!M && M.order.length === 5,
-    'alle Bildfolgen (Desktop und Handy) vollständig': !!framesOk,
+    'alle Bildfolgen (quer) vollständig': !!framesOk,
+    'Kapitel-Videos (hochkant) mit Start- und Endbild': !!clipsOk,
+    'zwei Clip-Spieler, stumm, inline, ohne Vorladen':
+      (h.match(/<video class="film-clip" muted playsinline preload="none" disableremoteplayback><\/video>/g) || []).length === 2,
+    'keine Handy-Bildfolgen mehr': !!M && M.order.every((shot) => !existsSync(frameDir(shot, 'phone'))),
+    'keine iCloud-Konfliktkopien unter film/': copies.length === 0,
     'Hero-Loops vorhanden': !!M && ['hero', 'hero-phone'].every((n) => M.loops[n] && existsSync(join(ROOT, 'film', 'loops', `${n}.mp4`))),
     'Poster und Standbilder mit aktuellem Hash': !!refsOk,
     'GSAP, ScrollTrigger und Lenis selbst gehostet, kein CDN':
