@@ -454,6 +454,10 @@
     .film-clips .is-on { opacity: 1; }
     .film-clip::-webkit-media-controls-start-playback-button { display: none; }
     .film-scene.is-clips .film-canvas { display: none; }
+    /* Hochkant: Rastpunkte je Kapitel (film.js setzt sie); ein Wisch hält am nächsten Kapitel statt drei weiter.
+       proximity: außerhalb des Films gibt es keine Punkte, dort scrollt die Seite frei */
+    html.film-snap-on { scroll-snap-type: y proximity; }
+    .film-snap { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; scroll-snap-align: start; scroll-snap-stop: always; }
     /* Schlussfenster (nur Clips): fester Zuschnitt, film.js blendet es ein und die Bühne aus */
     .film-window { position: absolute; inset: 0 0 auto; height: 100lvh; overflow: hidden; visibility: hidden; opacity: 0; pointer-events: none; }
     .film-window img { position: absolute; max-width: none; }

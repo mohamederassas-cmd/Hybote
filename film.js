@@ -1040,9 +1040,16 @@ self.onmessage = async ({ data: m }) => {
   /**
    * Szene: hoher Abschnitt, dessen Bühne stehen bleibt, während die Seite nativ daran vorbeiscrollt (keine
    * Wheel-Übernahme, die Scrollbar stimmt immer). Ohne .is-live ist sie ein normaler Abschnitt mit Standbildern.
-   * HOLD = Scrollstrecke in Bildschirmhöhen; mit Clips 3,5 (die Szene ist dann 4,5 Höhen hoch, vorher 7,5).
+   * HOLD = Scrollstrecke in Bildschirmhöhen. Mit Clips 6 (Szene 7 Höhen, je Kapitel knapp eine Höhe): mit 3,5
+   * waren es je Kapitel nur ~450 px, ein Wisch am iPhone übersprang ein bis drei Kapitel (Abnahme 15.11.2026).
    */
-  const HOLD = { desktop: 6, phone: 6.5, clips: 3.5 };
+  const HOLD = { desktop: 6, phone: 6.5, clips: 6 };
+  /**
+   * Hochkant: Rastpunkte (CSS scroll-snap), an denen Safari das Scrollen anhält, einer je Kapitel kurz nach seinem
+   * Beginn, dazu Hero und Schlussbild. scroll-snap-stop: always lässt einen Wisch nicht über einen Punkt hinweg
+   * laufen: ein Wisch, ein Kapitel. Nur „proximity“, damit der Rest der Seite (keine Punkte) frei scrollt.
+   */
+  const SNAP_INTO = 0.3;
   function scene(clips) {
     const mm = gsap.matchMedia();
     // matchMedia ruft die Funktion nur, wenn mindestens eine Bedingung zutrifft: deshalb beide Breiten nennen
@@ -1071,10 +1078,36 @@ self.onmessage = async ({ data: m }) => {
         },
       });
       build(tl, phone, clips);
+      // Rastpunkte (nur Clips): Lage aus der tatsächlichen Scrollstrecke der Timeline, nach jedem Refresh neu
+      const snaps = [];
+      let placeSnaps = null;
+      if (mode === 'clips') {
+        // letzter Punkt erst, wenn das Schlussfenster ganz steht (Ausblendung endet bei END + 0,112)
+        const at = [0, ...beats.map((_, k) => B0 + SLICE * (k + SNAP_INTO)), Math.min(0.99, END + 0.125)];
+        for (let i = 0; i < at.length; i++) {
+          const d = document.createElement('div');
+          d.className = 'film-snap';
+          d.setAttribute('aria-hidden', 'true');
+          root.appendChild(d);
+          snaps.push(d);
+        }
+        placeSnaps = () => {
+          const st = tl.scrollTrigger;
+          if (!st) return;
+          const top = root.getBoundingClientRect().top + window.scrollY;
+          snaps.forEach((d, i) => { d.style.top = `${Math.round(st.start + (st.end - st.start) * at[i] - top)}px`; });
+        };
+        ScrollTrigger.addEventListener('refresh', placeSnaps);
+        placeSnaps();
+        html.classList.add('film-snap-on');
+      }
       return () => {
         root.classList.remove('is-live');
         root.style.removeProperty('--hold');
         gsap.set(beats, { clearProps: 'all' });
+        snaps.forEach((d) => d.remove());
+        if (placeSnaps) ScrollTrigger.removeEventListener('refresh', placeSnaps);
+        html.classList.remove('film-snap-on');
       };
     });
   }
