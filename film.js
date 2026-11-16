@@ -9,12 +9,11 @@
  * - quer (Desktop, iPad quer), `mode` `canvas`: die Szene `.film-scene` ist ein hoher Abschnitt mit stehender Bühne
  *   (position: sticky), eine GSAP-Timeline wird vom Scroll gescrubbt und treibt die Filmuhr (0 → 5). WebP-Bildfolgen
  *   im Canvas, Überblendung nur zwischen direkten Nachbarbildern, höchstens MAX_LIVE dekodierte Bilder.
- * - hochkant (Handy, iPad hochkant), `mode` `flow` (seit 16.11.2026): nichts hängt am Scroll. Die Seite scrollt
- *   nativ, die fünf Kapitel stehen als normale Blöcke untereinander (Aufbau der Fassung ohne Film), jedes mit seinem
- *   Video (film/clips), das von selbst einmal läuft, sobald es im Bild ist, und auf dem letzten Bild stehen bleibt.
- *   Vorher: Handy-Bildfolgen (1440×1920, im Skript dekodiert) ruckelten am iPhone; danach Kapitel-Videos auf
- *   stehender Bühne mit Rastpunkten: ein Wisch übersprang Kapitel, vor jedem Videostart stand das Bild (Abnahme
- *   16.11.2026). Am iPhone bleiben nur natives Scrollen und von selbst laufende Videos wirklich flüssig.
+ * - hochkant (Handy, iPad hochkant), `mode` `reel` (seit 16.11.2026): nichts hängt am Scroll. Unter dem Hero steht
+ *   ein Bildschirm mit EINEM Film aus allen fünf Kapiteln (film/clips/reel.mp4), der von selbst läuft, sobald er im
+ *   Bild ist; die Kapiteltexte laufen wie Untertitel mit (startReel). Verworfen am iPhone: Bildfolgen im Skript
+ *   (ruckelten), Kapitel-Videos auf stehender Bühne mit Rastpunkten (Kapitel sprangen, hing vor jedem Start), fünf
+ *   Videokarten im Seitenfluss (liefen flüssig, wirkten aber unprofessionell).
  *
  * Portiert aus Bugal: lib/film/sequence.ts (Laden, Worker-Dekodierung, Überblendung), components/film/FilmCanvas.tsx
  * (Zeichnen, Touch-Glättung), lib/scenes/stage.ts (Bühne, Lenis), components/home/HomeMotion.tsx (Timeline).
@@ -453,8 +452,8 @@ self.onmessage = async ({ data: m }) => {
   /* ---------- Film ---------- */
 
   const variant = pickVariant();
-  /** Hochkant stehen die Kapitel im Seitenfluss, ihre Videos laufen von selbst; quer werden Bildfolgen gescrubbt */
-  const mode = variant === 'phone' ? 'flow' : 'canvas';
+  /** Hochkant läuft ein Film von selbst (startReel), quer werden Bildfolgen gescrubbt */
+  const mode = variant === 'phone' ? 'reel' : 'canvas';
   const SHOTS = M.order;
   const LAST = SHOTS.length;
   const touch = mq('(pointer: coarse)');
@@ -495,7 +494,7 @@ self.onmessage = async ({ data: m }) => {
   const sizeOf = (shot) => (M.shots[shot] || {}).desktop;
 
   // Impuls und Kanal-Beschriftungen hängen an Punkten im Bild (data-x/-y, Anteile des 16:9-Clips); nur auf der
-  // stehenden Bühne (quer), im Seitenfluss stehen die Kanäle als Zeile unter dem Text. Das Filmbild wird auf Arabisch
+  // stehenden Bühne (quer), im Film hochkant stehen die Kanäle als Zeile über dem Text. Das Filmbild wird auf Arabisch
   // nicht gespiegelt (das Namensschild stünde sonst spiegelverkehrt), die Anker also auch nicht.
   const anchors = Array.from(root.querySelectorAll('[data-anchor]'));
   function placeAnchors(bw, bh) {
@@ -536,8 +535,8 @@ self.onmessage = async ({ data: m }) => {
   /**
    * Hero-Schleife. `armWhen(arm)` bestimmt, wann sie lädt; `probe` erfährt, ob iOS Video abspielen lässt (im
    * Stromsparmodus lehnt Safari play() ab). Auf der stehenden Bühne läuft sie nur ganz oben, vor dem ersten Scroll.
-   * Im Seitenfluss (`whileVisible`) läuft sie, solange der Hero zu sehen ist: er scrollt dort wie jeder Abschnitt aus
-   * dem Bild, ein früh angehaltenes Video stünde als Standbild auf dem Schirm.
+   * Hochkant (`whileVisible`) läuft sie, solange der Hero zu sehen ist: er scrollt dort wie jeder Abschnitt aus dem
+   * Bild, ein früh angehaltenes Video stünde als Standbild auf dem Schirm.
    */
   function heroLoop(armWhen, probe, whileVisible) {
     if (!loop) return;
@@ -694,210 +693,271 @@ self.onmessage = async ({ data: m }) => {
     return { seqs };
   }
 
-  /* ---------- Hochkant: Kapitel im Seitenfluss ---------- */
+  /* ---------- Hochkant: ein Film auf einem Bildschirm ---------- */
 
-  /** Sichtbarer Anteil der Videokarte, ab dem ihr Video läuft, und unter dem es anhält */
+  /** Sichtbarer Anteil des Films, ab dem er läuft, und unter dem er anhält */
   const PLAY_AT = 0.6;
   const STOP_AT = 0.25;
-  /** Ruhe im Bild, bevor ein Video startet (ms): beim schnellen Wischen lädt und startet keines */
+  /** Ruhe im Bild, bevor der Film startet (ms): beim schnellen Vorbeiwischen startet er nicht */
   const DWELL_MS = 160;
+  /** Sekunden, über die die Texte eines Kapitels erscheinen (der Clip dauert 5 s, wie früher 85 % des Kapitels) */
+  const TEXT_SPAN = 5.9;
+  /** Leichte Fahrt über den ganzen Film (nur transform), damit die Ruhe nach jedem Kapitel nicht wie ein Hänger wirkt */
+  const DRIFT = 1.06;
   const ICONS = {
     play: '<path d="M8.5 5.5v13l10-6.5z"/>',
     pause: '<path d="M9 6v12M15 6v12"/>',
     replay: '<path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M4.5 4.5V9H9"/>',
   };
-  // Beschriftung des Knopfs: aus dem Wörterbuch der Seite (index.html: hyboteText), sonst englisch
-  const LABELS = { play: 'Play video', pause: 'Pause video', replay: 'Play video again' };
+  // Beschriftungen aus dem Wörterbuch der Seite (index.html: hyboteText), sonst englisch
+  const LABELS = { play: 'Play video', pause: 'Pause video', replay: 'Play video again', chapter: 'Chapter {n} of 5', watch: 'Watch the film · {s} sec' };
   const say = (key) => (typeof window.hyboteText === 'function' && window.hyboteText(`film.${key}`)) || LABELS[key];
+  const icon = (key) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[key]}</svg>`;
 
   /**
-   * Hochkant: nichts hängt am Scroll. Die Szene bleibt ein normaler Abschnitt (kein .is-live, keine stehende Bühne,
-   * kein ScrollTrigger, keine Rastpunkte), die Seite scrollt nativ. Jedes Kapitel bekommt in seiner Karte
-   * `.beat-media` ein Video (film/clips) über dem ersten Bild des Clips als Poster. Ist die Karte zu PLAY_AT im Bild
-   * und steht kurz (DWELL_MS), läuft ihr Video einmal von vorn und bleibt auf dem letzten Bild stehen; scrollt sie
-   * hinaus, hält es an. Es läuft immer nur eines, geladen sind höchstens das laufende und seine Nachbarn. Der Knopf
-   * in der Karte hält an, setzt fort oder spielt noch einmal (Apple: kein Autoplay ohne Bedienung). Lehnt iOS play()
-   * ab (Stromsparmodus), bleibt das Poster stehen und der Knopf startet das Video per Antippen.
+   * Hochkant (Handy, iPad hochkant): ein Film (film/clips/reel.mp4, alle fünf Kapitel mit Ruhe zum Lesen dazwischen)
+   * auf einem einzigen Bildschirm unter dem Hero. Er läuft von selbst, sobald er zu PLAY_AT im Bild steht, und hält
+   * an, wenn man weiterscrollt. Nichts hängt am Scroll: die Seite scrollt nativ. Die Kapiteltexte laufen wie
+   * Untertitel auf einer GSAP-Zeitleiste in Sekunden, die der Videozeit folgt (Pause, Sprung und Wiederholen stimmen
+   * dadurch von selbst). Oben fünf Segmente (antippen springt ins Kapitel) und Pause/Weiter/Noch einmal; Tippen ins
+   * Bild links/rechts geht ein Kapitel zurück/vor. Am Ende stehen letztes Bild, Slogan und Knopf; kein Loop.
+   * Lehnt iOS play() ab (Stromsparmodus), steht das Poster mit dem ersten Kapitel und einem Knopf „Film ansehen“.
+   * Vorher: Bildfolgen im Skript (ruckelten), Kapitel-Videos auf stehender Bühne (sprangen), fünf Videokarten im
+   * Seitenfluss (liefen, wirkten aber unprofessionell; Abnahme 16.11.2026).
    */
-  function startFlow() {
-    const C = M.clips || {};
-    const stillEls = beats.map((beat) => beat.querySelector('.beat-still'));
-    if (!('IntersectionObserver' in window) || beats.length !== LAST || !SHOTS.every((s) => C[s]) || stillEls.some((s) => !s)) return null;
-    root.classList.add('is-flow');
-    const url = (k, kind) => {
-      const shot = SHOTS[k];
-      return kind === 'v' ? `/film/clips/${shot}.mp4?v=${C[shot].v}` : `/film/clips/${shot}-${kind}.webp?v=${C[shot][kind]}`;
-    };
-    const info = { latency: 0, waiting: 0, blocked: false };
-    const byBox = new Map();
-    let current = null; // Kapitel, dessen Video zuletzt gestartet wurde
-    let dwell = 0;
+  function startReel() {
+    const R = M.reel;
+    const list = root.querySelector('.beats');
+    const end = root.querySelector('.film-end');
+    if (!R || !R.marks || R.marks.length !== LAST || !gsap || !list || !end || beats.length !== LAST) return null;
+    if (!('IntersectionObserver' in window)) return null;
+    root.classList.add('is-reel');
+    const file = (kind) => (kind === 'v' ? `/film/clips/reel.mp4?v=${R.v}` : `/film/clips/reel-${kind}.webp?v=${R[kind]}`);
+    const make = (tag, cls) => { const el = document.createElement(tag); if (cls) el.className = cls; return el; };
+    const marks = R.marks;
+    const lenOf = (k) => (k < LAST - 1 ? marks[k + 1] : R.dur) - marks[k];
+    const info = { latency: 0, waiting: 0, blocked: false, state: 'idle' };
 
-    const busy = (it) => it.state === 'playing' || it.state === 'starting';
-    // Zustände: idle (Poster), starting, playing, paused, done (letztes Bild)
-    const setState = (it, state) => {
-      it.state = state;
-      const key = busy(it) ? 'pause' : state === 'done' ? 'replay' : 'play';
-      if (it.btn.dataset.icon === key) return;
-      it.btn.dataset.icon = key;
-      it.btn.dataset.i18nAria = `film.${key}`;
-      it.btn.setAttribute('aria-label', say(key));
-      it.btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[key]}</svg>`;
-    };
-    const attach = (it) => {
-      if (it.loaded) return;
-      it.loaded = true;
-      it.video.src = url(it.k, 'v');
-      it.video.preload = 'auto';
-      it.video.load();
-    };
-    /** Video freigeben: darunter steht das Poster (noch nicht gelaufen) oder das letzte Bild (gelaufen) */
-    const release = (it) => {
-      if (!it.loaded) return;
-      it.loaded = false;
-      it.gen++;
-      it.video.classList.remove('is-on');
-      it.video.removeAttribute('src');
-      it.video.load();
-      if (it.state !== 'done') setState(it, 'idle');
-    };
-    const halt = (it) => {
-      it.gen++;
-      if (!it.video.paused) it.video.pause();
-      if (it.state === 'playing') setState(it, 'paused');
-      else if (it.state === 'starting') setState(it, 'idle');
-    };
-    /** Läuft ein Kapitel, bleiben nur seine Nachbarn geladen; das nächste lädt vor */
-    const tidy = (it) => {
-      items.forEach((o) => { if (Math.abs(o.k - it.k) > 1) release(o); });
-      const next = items[it.k + 1];
-      if (next && !info.blocked) setTimeout(() => { if (current === it && next.state === 'idle') attach(next); }, 400);
-    };
-    const start = (it, byUser) => {
-      clearTimeout(dwell);
-      if (current && current !== it) halt(current);
-      current = it;
-      attach(it);
-      const el = it.video;
-      const again = it.state === 'done';
-      if (again || el.ended) { try { el.currentTime = 0; } catch (e) { /* noch keine Metadaten */ } }
-      if (byUser) it.userPaused = false;
-      const g = ++it.gen;
-      const t0 = performance.now();
-      setState(it, 'starting');
-      el.play().then(() => {
-        if (g !== it.gen) return;
-        setState(it, 'playing');
-        const shown = () => {
-          if (g !== it.gen) return;
-          el.classList.add('is-on');
-          info.latency = Math.round(performance.now() - t0);
-          tidy(it);
-        };
-        if (typeof el.requestVideoFrameCallback === 'function') el.requestVideoFrameCallback(shown);
-        else requestAnimationFrame(() => requestAnimationFrame(shown));
-      }, (e) => {
-        if (g !== it.gen) return;
-        // Stromsparmodus: kein Autoplay mehr versuchen, der Knopf startet per Antippen
-        if (e && e.name === 'NotAllowedError') info.blocked = true;
-        setState(it, again ? 'done' : 'idle');
+    // Aufbau: die vorhandenen Kapitel und der Schluss liegen über dem Video
+    const box = make('div', 'reel');
+    const move = make('div', 'reel-move');
+    const poster = make('img', 'reel-poster');
+    poster.alt = '';
+    poster.decoding = 'async';
+    poster.loading = 'lazy';
+    poster.width = R.w;
+    poster.height = R.h;
+    poster.src = file('a');
+    const video = make('video', 'reel-video');
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.preload = 'none';
+    video.disableRemotePlayback = true;
+    video.setAttribute('aria-hidden', 'true');
+    video.tabIndex = -1;
+    move.append(poster, video);
+    const bar = make('div', 'reel-bar');
+    const rail = make('div', 'reel-rail');
+    const segs = beats.map((_, k) => {
+      const b = make('button', 'reel-seg');
+      b.type = 'button';
+      const track = make('i');
+      track.appendChild(make('b'));
+      b.appendChild(track);
+      b.addEventListener('click', () => jump(k));
+      rail.appendChild(b);
+      return b;
+    });
+    // Füllung je Segment: die Zeitleiste skaliert sie von 0 auf 1, solange das Kapitel läuft
+    const fills = segs.map((b) => b.querySelector('b'));
+    const ctl = make('button', 'reel-ctl');
+    ctl.type = 'button';
+    bar.append(rail, ctl);
+    // Tippflächen im Bild (für Maus und Tastatur gibt es die Segmente)
+    const taps = ['prev', 'next'].map((dir) => {
+      const t = make('button', `reel-tap reel-tap--${dir}`);
+      t.type = 'button';
+      t.tabIndex = -1;
+      t.setAttribute('aria-hidden', 'true');
+      t.addEventListener('click', () => step(dir === 'next' ? 1 : -1));
+      return t;
+    });
+    const startBtn = make('button', 'reel-start btn btn--glass');
+    startBtn.type = 'button';
+    startBtn.addEventListener('click', () => start(true));
+    list.before(box);
+    box.append(move, list, end, ...taps, bar, startBtn);
+
+    const label = () => {
+      const secs = Math.round(R.dur / 5) * 5;
+      segs.forEach((b, k) => {
+        const name = beats[k].querySelector('.beat-label [data-i18n]');
+        b.setAttribute('aria-label', `${say('chapter').replace('{n}', k + 1)}${name ? `: ${name.textContent}` : ''}`);
       });
+      startBtn.innerHTML = `${icon('play')}<span>${say('watch').replace('{s}', secs)}</span>`;
+      setCtl(true);
     };
-    /** Welches Video soll laufen? Das erste noch nicht gelaufene, dessen Karte weit genug im Bild ist. */
+    let ctlKey = '';
+    const setCtl = (force) => {
+      const key = info.state === 'playing' ? 'pause' : info.state === 'done' ? 'replay' : 'play';
+      if (key === ctlKey && !force) return;
+      ctlKey = key;
+      ctl.setAttribute('aria-label', say(key));
+      ctl.innerHTML = icon(key);
+    };
+    const setState = (s) => {
+      info.state = s;
+      box.dataset.state = s;
+      setCtl();
+    };
+
+    // Zeitleiste der Texte in Sekunden; sie läuft mit dem Video und wird an seiner Zeit nachgeführt
+    const tl = gsap.timeline({ paused: true, defaults: { ease: 'none' } });
+    beats.forEach((beat, k) => {
+      const at = marks[k];
+      tl.set(beat, { opacity: 1 }, at);
+      beatTexts(tl, beat, (x) => at + TEXT_SPAN * x, (x) => TEXT_SPAN * x, 'opacity');
+      tl.fromTo(fills[k], { scaleX: 0 }, { scaleX: 1, duration: lenOf(k) }, at);
+    });
+    beats.slice(0, -1).forEach((beat, k) => tl.to(beat, { opacity: 0, duration: 0.35 }, marks[k + 1] - 0.35));
+    // Schluss: das letzte Kapitel geht, Slogan und Knopf kommen über dem letzten Bild
+    const endAt = marks[LAST - 1] + (R.moves ? R.moves[LAST - 1] : 5) + 0.6;
+    tl.to(beats[LAST - 1], { opacity: 0, duration: 0.4 }, endAt - 0.45)
+      .fromTo(Array.from(end.children), { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.15, ease: 'power2.out' }, endAt)
+      .fromTo(move, { scale: 1 }, { scale: DRIFT, duration: R.dur }, 0);
+    tl.time(0.001);
+
+    // Abspielen
+    let loaded = false;
+    let ratio = 0;
+    let dwell = 0;
+    let userPaused = false;
+    let t0 = 0;
+    const attach = () => {
+      if (loaded) return;
+      loaded = true;
+      video.src = file('v');
+      video.preload = 'auto';
+      video.load();
+    };
+    const seek = (t) => {
+      tl.time(Math.max(0.001, t));
+      attach();
+      if (video.readyState >= 1) video.currentTime = t;
+      else video.addEventListener('loadedmetadata', () => { video.currentTime = t; }, { once: true });
+    };
+    const halt = (byUser) => {
+      clearTimeout(dwell);
+      if (byUser) userPaused = true;
+      if (!video.paused) video.pause();
+      tl.pause();
+      if (info.state === 'playing') setState('paused');
+    };
+    function start(byUser) {
+      clearTimeout(dwell);
+      if (byUser) userPaused = false;
+      attach();
+      if (info.state === 'done' || video.ended) seek(0);
+      t0 = performance.now();
+      const p = video.play();
+      setState('playing');
+      (p && p.then ? p : Promise.resolve()).then(() => {
+        info.blocked = false;
+        box.classList.remove('is-blocked');
+      }, (e) => {
+        tl.pause();
+        setState(info.state === 'done' ? 'done' : 'paused');
+        if (e && e.name === 'NotAllowedError') blocked();
+      });
+    }
+    /** Stromsparmodus: kein Autoplay mehr, Poster mit dem ersten Kapitel und dem Startknopf */
+    function blocked() {
+      info.blocked = true;
+      box.classList.add('is-blocked');
+      if (info.state === 'idle' || tl.time() < 0.5) tl.time(TEXT_SPAN * 0.6);
+    }
+    const chapterAt = (t) => { let k = 0; marks.forEach((m, i) => { if (t >= m - 0.01) k = i; }); return k; };
+    function jump(k) {
+      userPaused = false;
+      seek(marks[k] + 0.001);
+      start(true);
+    }
+    function step(dir) {
+      const t = loaded ? video.currentTime : tl.time();
+      const k = chapterAt(t);
+      if (dir > 0) { if (k < LAST - 1) jump(k + 1); return; }
+      jump(t - marks[k] > 1.2 ? k : Math.max(0, k - 1));
+    }
+    ctl.addEventListener('click', () => {
+      if (info.state === 'playing') halt(true);
+      else start(true);
+    });
+
+    video.addEventListener('playing', () => {
+      tl.time(video.currentTime);
+      tl.play();
+      if (!video.classList.contains('is-on')) {
+        const shown = () => { video.classList.add('is-on'); info.latency = Math.round(performance.now() - t0); };
+        if (typeof video.requestVideoFrameCallback === 'function') video.requestVideoFrameCallback(shown);
+        else requestAnimationFrame(() => requestAnimationFrame(shown));
+      }
+    });
+    video.addEventListener('waiting', () => { info.waiting++; tl.pause(); });
+    video.addEventListener('pause', () => tl.pause());
+    video.addEventListener('seeked', () => tl.time(video.currentTime));
+    // Gegen Abdrift: die Zeitleiste läuft mit 60 Bildern/s, das Video gibt den Takt vor
+    video.addEventListener('timeupdate', () => {
+      if (!video.paused && Math.abs(tl.time() - video.currentTime) > 0.12) tl.time(video.currentTime);
+    });
+    video.addEventListener('ended', () => {
+      tl.time(R.dur);
+      tl.pause();
+      setState('done');
+    });
+    // In-App-Browser ohne Inline-Wiedergabe öffnen Videos im Vollbild: dann nur noch per Knopf
+    video.addEventListener('webkitbeginfullscreen', () => {
+      if (typeof video.webkitExitFullscreen === 'function') video.webkitExitFullscreen();
+      halt(false);
+      blocked();
+    });
+
+    /** Läuft der Film, wenn er weit genug im Bild ist; hält an, wenn er hinausscrollt */
     const pick = () => {
       clearTimeout(dwell);
-      items.forEach((it) => { if (busy(it) && it.ratio < STOP_AT) halt(it); });
-      if (info.blocked || document.hidden) return;
-      if (current && busy(current) && current.ratio >= PLAY_AT) return;
-      const next = items.find((it) => it.ratio >= PLAY_AT && !it.userPaused && !busy(it) && it.state !== 'done');
-      if (!next) return;
-      dwell = setTimeout(() => { if (next.ratio >= PLAY_AT && !document.hidden) start(next, false); }, DWELL_MS);
+      if (ratio < STOP_AT || document.hidden) { if (info.state === 'playing') halt(false); return; }
+      if (ratio < PLAY_AT || info.state === 'playing' || info.state === 'done' || userPaused || info.blocked) return;
+      dwell = setTimeout(() => { if (ratio >= PLAY_AT && !document.hidden) start(false); }, DWELL_MS);
     };
-
-    const items = beats.map((beat, k) => {
-      const still = stillEls[k];
-      const box = document.createElement('div');
-      box.className = 'beat-media';
-      still.before(box);
-      box.appendChild(still);
-      // Poster = erstes Bild des Clips (aus dem fertigen Video gezogen): beim Start springt nichts
-      still.width = C[SHOTS[k]].w;
-      still.height = C[SHOTS[k]].h;
-      still.src = url(k, 'a');
-      const video = document.createElement('video');
-      video.className = 'beat-clip';
-      video.muted = true;
-      video.defaultMuted = true;
-      video.playsInline = true;
-      video.setAttribute('playsinline', '');
-      video.setAttribute('webkit-playsinline', '');
-      video.preload = 'none';
-      video.disableRemotePlayback = true;
-      video.setAttribute('aria-hidden', 'true');
-      video.tabIndex = -1;
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'beat-ctl';
-      box.append(video, btn);
-      const it = { k, box, still, video, btn, state: 'idle', ratio: 0, gen: 0, loaded: false, userPaused: false };
-      setState(it, 'idle');
-      video.addEventListener('waiting', () => { info.waiting++; });
-      // Am Ende bleibt das Video auf seinem letzten Bild stehen; darunter liegt dann dasselbe Bild als Standbild
-      video.addEventListener('ended', () => {
-        still.src = url(k, 'z');
-        setState(it, 'done');
-        pick();
-      });
-      // In-App-Browser ohne Inline-Wiedergabe öffnen Videos im Vollbild: dann nur noch per Knopf
-      video.addEventListener('webkitbeginfullscreen', () => {
-        if (typeof video.webkitExitFullscreen === 'function') video.webkitExitFullscreen();
-        info.blocked = true;
-        halt(it);
-      });
-      btn.addEventListener('click', () => {
-        if (busy(it)) { it.userPaused = true; halt(it); } else start(it, true);
-      });
-      byBox.set(box, it);
-      return it;
-    });
-
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        const it = byBox.get(e.target);
-        if (it) it.ratio = e.isIntersecting ? e.intersectionRatio : 0;
-      });
-      pick();
-    }, { threshold: [0, STOP_AT, PLAY_AT] });
-    items.forEach((it) => io.observe(it.box));
-    // Weit weg von den Kapiteln (Rest der Seite) bleibt kein Video geladen
-    const list = root.querySelector('.beats');
-    if (list) new IntersectionObserver(([e]) => { if (!e.isIntersecting) items.forEach(release); }).observe(list);
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) pick();
-      else if (current) halt(current);
-    });
+    new IntersectionObserver(([e]) => { ratio = e.isIntersecting ? e.intersectionRatio : 0; pick(); }, { threshold: [0, STOP_AT, PLAY_AT] }).observe(box);
+    // Laden, sobald der Hero zu einem Drittel hinausgescrollt ist
+    new IntersectionObserver(([e]) => { if (e.isIntersecting) attach(); }, { rootMargin: '0px 0px -33% 0px' }).observe(box);
+    document.addEventListener('visibilitychange', pick);
+    document.addEventListener('hybote:lang', label);
+    label();
+    setState('idle');
 
     // Hero: Poster und Schleife wie auf der Bühne ausgerichtet; die Schleife ist zugleich die Probe, ob iOS Video
     // abspielen lässt
     new ResizeObserver(() => placeMedia()).observe(frameEl);
-    heroLoop((arm) => arm(), (e) => { if (e && e.name === 'NotAllowedError') info.blocked = true; }, true);
+    heroLoop((arm) => arm(), (e) => { if (e && e.name === 'NotAllowedError') blocked(); }, true);
 
     if (params.get('film') === 'hud') {
       const hud = createHud();
       setInterval(() => {
-        const el = current && current.video;
-        const q = el && typeof el.getVideoPlaybackQuality === 'function' ? el.getVideoPlaybackQuality() : null;
+        const q = typeof video.getVideoPlaybackQuality === 'function' ? video.getVideoPlaybackQuality() : null;
         hud.textContent = [
-          `flow · ${info.blocked ? 'Autoplay gesperrt' : 'Video'}`,
-          current ? `${SHOTS[current.k]} ${current.state} ${el.currentTime.toFixed(2)}/${C[SHOTS[current.k]].dur} s · bereit ${el.readyState}` : 'kein Video',
-          `Startverzug ${info.latency} ms · Hänger ${info.waiting}`,
+          `reel · ${info.state}${info.blocked ? ' · Autoplay gesperrt' : ''}`,
+          `Zeit ${video.currentTime.toFixed(2)}/${R.dur} s · Texte ${tl.time().toFixed(2)} · Kapitel ${chapterAt(video.currentTime) + 1}`,
+          `bereit ${video.readyState} · Startverzug ${info.latency} ms · Hänger ${info.waiting}`,
           q ? `Bilder ${q.totalVideoFrames} · verworfen ${q.droppedVideoFrames}` : '',
-          `geladen ${items.filter((it) => it.loaded).map((it) => SHOTS[it.k]).join(' / ') || '-'}`,
-          `sichtbar ${items.map((it) => it.ratio.toFixed(2)).join(' ')}`,
+          `sichtbar ${ratio.toFixed(2)}`,
         ].filter(Boolean).join('\n');
       }, 250);
     }
-    return { items, info };
+    return { box, video, tl, info };
   }
 
   function createHud() {
@@ -906,6 +966,39 @@ self.onmessage = async ({ data: m }) => {
     el.style.cssText = 'position:fixed;left:8px;top:84px;z-index:300;pointer-events:none;white-space:pre;font:11px/1.35 ui-monospace,Menlo,monospace;color:#f5f1eb;background:rgba(7,11,22,.85);padding:6px 8px;border-radius:6px';
     document.body.appendChild(el);
     return el;
+  }
+
+  /* ---------- Kapiteltexte ---------- */
+
+  /**
+   * Einblendungen eines Kapitels auf Zeitleiste `T`. `pos(x)`/`len(x)` rechnen den Anteil x (0–1) des Kapitels in
+   * Zeitleisten-Einheiten um: quer Anteile der Scrollstrecke, hochkant Sekunden des Films. `A` ist die Deckkraft-
+   * Eigenschaft: quer `autoAlpha` (unsichtbare Kapitel kosten nichts), hochkant `opacity` (Texte bleiben für
+   * Screenreader lesbar, der Film läuft ja ohne Zutun weiter).
+   */
+  function beatTexts(T, beat, pos, len, A) {
+    const sub = (sel) => Array.from(beat.querySelectorAll(sel));
+    // y: 0 ausdrücklich, sonst übernimmt GSAP den CSS-Startwert (translateY 110 %) zusätzlich als Pixel
+    T.fromTo(sub('.mask > span'), { yPercent: 110, y: 0 }, { yPercent: 0, y: 0, duration: len(0.24), stagger: len(0.04), ease: 'power3.out' }, pos(0.03))
+      .fromTo(sub('.beat-body'), { y: 24, [A]: 0 }, { y: 0, [A]: 1, duration: len(0.2), ease: 'power2.out' }, pos(0.12));
+    sub('[data-in]').forEach((el) => {
+      T.fromTo(el, { y: 14, [A]: 0 }, { y: 0, [A]: 1, duration: len(0.12), ease: 'power2.out' }, pos(parseFloat(el.dataset.in)));
+    });
+    // Kapitel 2: der Cyan-Impuls im Moment der Antwort
+    sub('.pulse').forEach((el) => {
+      T.fromTo(el, { scale: 0.2, [A]: 0.95 }, { scale: 2.8, [A]: 0, duration: len(0.3), ease: 'power2.out' }, pos(parseFloat(el.dataset.at || '0.4')));
+    });
+    // Kapitel 3: die Kanal-Linien wachsen an die Ebenen heran
+    sub('.chan-line').forEach((el, i) => {
+      T.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: len(0.12), ease: 'power2.out' }, pos(0.58 + i * 0.04));
+    });
+    // Kapitel 5: Begrüßungen in vielen Sprachen lösen einander ab, die letzte bleibt
+    const words = sub('.greet > span');
+    words.forEach((w, i) => {
+      const t0 = 0.18 + i * 0.13;
+      T.fromTo(w, { yPercent: 100, [A]: 0 }, { yPercent: 0, [A]: 1, duration: len(0.06), ease: 'power2.out' }, pos(t0));
+      if (i < words.length - 1) T.to(w, { yPercent: -100, [A]: 0, duration: len(0.06), ease: 'power2.in' }, pos(t0 + 0.1));
+    });
   }
 
   /* ---------- Timeline (nur quer) ---------- */
@@ -928,34 +1021,11 @@ self.onmessage = async ({ data: m }) => {
 
     beats.forEach((beat, k) => {
       const at = B0 + k * SLICE;
-      const sub = (sel) => Array.from(beat.querySelectorAll(sel));
-      const pos = (x) => at + SLICE * x;
-      const len = (x) => SLICE * x;
       // Film: der Clip des Kapitels läuft im ersten Teil (FILM_SHARE), danach steht sein End-Bild
       tl.fromTo(clock, { film: k }, { film: k + 1, duration: SLICE * FILM_SHARE[phone ? 'phone' : 'desktop'], ease: 'power1.inOut', immediateRender: false }, at);
       // Ob ein Kapitel zu sehen ist, entscheidet der Scroll; seine Texte laufen mit
       tl.set(beat, { autoAlpha: 1 }, at);
-      // y: 0 ausdrücklich, sonst übernimmt GSAP den CSS-Startwert (translateY 110 %) zusätzlich als Pixel
-      tl.fromTo(sub('.mask > span'), { yPercent: 110, y: 0 }, { yPercent: 0, y: 0, duration: len(0.24), stagger: len(0.04), ease: 'power3.out' }, pos(0.03))
-        .fromTo(sub('.beat-body'), { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: len(0.2), ease: 'power2.out' }, pos(0.12));
-      sub('[data-in]').forEach((el) => {
-        tl.fromTo(el, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: len(0.12), ease: 'power2.out' }, pos(parseFloat(el.dataset.in)));
-      });
-      // Kapitel 2: der Cyan-Impuls im Moment der Antwort
-      sub('.pulse').forEach((el) => {
-        tl.fromTo(el, { scale: 0.2, autoAlpha: 0.95 }, { scale: 2.8, autoAlpha: 0, duration: len(0.3), ease: 'power2.out' }, pos(parseFloat(el.dataset.at || '0.4')));
-      });
-      // Kapitel 3: die Kanal-Linien wachsen an die Ebenen heran
-      sub('.chan-line').forEach((el, i) => {
-        tl.fromTo(el, { scaleX: 0 }, { scaleX: 1, duration: len(0.12), ease: 'power2.out' }, pos(0.58 + i * 0.04));
-      });
-      // Kapitel 5: Begrüßungen in vielen Sprachen lösen einander ab, die letzte bleibt
-      const words = sub('.greet > span');
-      words.forEach((w, i) => {
-        const t0 = 0.18 + i * 0.13;
-        tl.fromTo(w, { yPercent: 100, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: len(0.06), ease: 'power2.out' }, pos(t0));
-        if (i < words.length - 1) tl.to(w, { yPercent: -100, autoAlpha: 0, duration: len(0.06), ease: 'power2.in' }, pos(t0 + 0.1));
-      });
+      beatTexts(tl, beat, (x) => at + SLICE * x, (x) => SLICE * x, 'autoAlpha');
       if (k < LAST - 1) tl.to(beat, { autoAlpha: 0, duration: SLICE * 0.07 }, at + SLICE * 0.93);
     });
 
@@ -1009,10 +1079,10 @@ self.onmessage = async ({ data: m }) => {
   }
 
   if (!variant) return;
-  if (mode === 'flow') {
-    const flow = startFlow();
-    if (!flow) return;
-    window.HyboteFilm = { flow, mode };
+  if (mode === 'reel') {
+    const reel = startReel();
+    if (!reel) return;
+    window.HyboteFilm = { reel, mode };
     document.dispatchEvent(new Event('hybote:film'));
     return;
   }

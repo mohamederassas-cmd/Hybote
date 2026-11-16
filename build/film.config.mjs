@@ -21,8 +21,8 @@ export default {
   shots: ["light", "turn", "open", "book", "bell"],
   /**
    * Bildfolgen fürs Scrubbing, nur noch quer (Desktop, iPad quer): ganzes 16:9-Bild, bildfüllend (film.js: cover).
-   * `raw` = Ordner der Rohclips (sonst raw/), `sharpen` = optionale unsharp-Werte. Hochkant laufen seit 11/2026
-   * Kapitel-Videos (`clips`), die Handy-Bildfolgen ruckelten am iPhone (1440×1920 je Bild, zu viel zum Dekodieren).
+   * `raw` = Ordner der Rohclips (sonst raw/), `sharpen` = optionale unsharp-Werte. Hochkant läuft ein Video (`reel`),
+   * die Handy-Bildfolgen ruckelten am iPhone (1440×1920 je Bild, zu viel zum Dekodieren).
    */
   variants: {
     desktop: { width: 1920, quality: 66 },
@@ -35,11 +35,16 @@ export default {
   sourceFps: 24,
   step: 2,
   /**
-   * Hochkant (Handy, iPad hochkant): je Kapitel ein H.264-Video, das der Videochip abspielt, plus erstes und letztes
-   * Bild als WebP (film.js zeigt sie, bis das Video läuft, und im Stromsparmodus). `width` 1440 wie die Hero-Schleife;
-   * wirkt der Start am iPhone träge, auf 1080 senken (Level dann 4.1). `cx` landet im Manifest für die Anker.
+   * Hochkant (Handy, iPad hochkant, seit 16.11.2026): EIN Film aus allen fünf Kapiteln (film/clips/reel.mp4), den der
+   * Videochip abspielt; film.js lässt ihn auf einem Bildschirm von selbst laufen. Die Clips sind als durchgehende
+   * Einstellung gedreht (Endbild = Startbild des nächsten): ab dem 2. Clip fällt das erste Bild weg, sonst stünde das
+   * Nahtbild doppelt. Nach jedem Kapitel steht das letzte Bild `hold` Sekunden (Zeit zum Lesen), nach dem letzten
+   * `endHold` (Slogan und Knopf). Keyframe an jedem Kapitelanfang: Sprung per Antippen ohne Wartezeit.
+   * Dazu erstes und letztes Bild als WebP (Poster, Stromsparmodus). Früher je Kapitel ein Video: fünf Videos nacheinander
+   * wirkten unprofessionell (Abnahme 16.11.2026). `width` 1440 wie die Hero-Schleife; wirkt der Start am iPhone träge,
+   * auf 1080 senken (Level dann 4.1).
    */
-  clips: { width: PHONE_WIDTH, crf: 23, level: "5.0", raw: PHONE_RAW, crop: PHONE_CROP, cx: CX },
+  reel: { width: PHONE_WIDTH, crf: 23, level: "5.0", hold: 3, endHold: 4, raw: PHONE_RAW, crop: PHONE_CROP, cx: CX },
   /**
    * Tiefstes Schwarz der Clips → Seitengrund #070b16, damit die Bühne unten nahtlos in die Seite übergeht.
    * Alles bis `source` wird exakt zum Seitengrund, darüber wird linear angehoben.

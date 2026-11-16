@@ -8,7 +8,7 @@
  *
  * Braucht ffmpeg und cwebp (brew install ffmpeg webp). Schreibt:
  *   film/<shot>/<variant>/NNN.webp   Bildfolgen fürs Scrubbing (quer)
- *   film/clips/<shot>.mp4            Kapitel-Videos hochkant, dazu <shot>-a.webp / <shot>-z.webp (erstes, letztes Bild)
+ *   film/clips/reel.mp4              hochkant ein Film aus allen Kapiteln, dazu reel-a.webp / reel-z.webp (erstes, letztes Bild)
  *   film/loops/<name>.mp4 + .webp    nahtlose Loops (vor + zurück) mit Poster
  *   film/stills/<name>.webp          Standbilder
  *   film-manifest.js                 Größen, Bildanzahl und Versions-Hash für film.js
@@ -75,11 +75,13 @@ const hashFile = (file) => createHash("sha1").update(readFileSync(file)).digest(
 
 // Bisheriges Manifest übernehmen, damit Teil-Builds nichts verlieren
 const fps = config.sourceFps / config.step;
-let manifest = { order: config.shots, fps, shots: {}, clips: {}, loops: {}, stills: {} };
+let manifest = { order: config.shots, fps, shots: {}, loops: {}, stills: {} };
 if (existsSync(manifestPath)) {
   const m = readFileSync(manifestPath, "utf8").match(/window\.HYBOTE_FILM = (\{[\s\S]*\});/);
-  if (m) manifest = { clips: {}, ...JSON.parse(m[1]), order: config.shots, fps };
+  if (m) manifest = { ...JSON.parse(m[1]), order: config.shots, fps };
 }
+// Kapitel-Videos je Kapitel gibt es nicht mehr (seit 16.11.2026 ein Film, `reel`)
+delete manifest.clips;
 // Fassungen, die es nicht mehr gibt (die Handy-Bildfolgen), aus dem Manifest nehmen
 for (const sizes of Object.values(manifest.shots)) {
   for (const v of Object.keys(sizes)) if (!config.variants[v]) delete sizes[v];
@@ -134,35 +136,59 @@ const lastFrame = (video, png) => {
   // -update überschreibt die Datei mit jedem Bild: übrig bleibt das letzte
   run("ffmpeg", ["-loglevel", "error", "-y", "-sseof", "-1", "-i", video, "-vf", `${BT709},format=rgb24`, "-update", "1", png]);
 };
-if (config.clips) {
-  const c = config.clips;
-  const dir = join(out, "clips");
-  for (const shot of config.shots) {
-    if (!want(shot)) continue;
-    const file = rawFile(c.raw, `${shot}.mp4`);
-    if (!file) continue;
+// ---------- Hochkant: ein Film aus allen Kapiteln ----------
+if (config.reel && (want("reel") || config.shots.some(want))) {
+  const c = config.reel;
+  const fpsIn = config.sourceFps;
+  const files = config.shots.map((shot) => rawFile(c.raw, `${shot}.mp4`));
+  if (files.every(Boolean)) {
+    const dir = join(out, "clips");
     mkdirSync(dir, { recursive: true });
-    const mp4 = join(dir, `${shot}.mp4`);
-    const vf = `${BT709},${crop(c.crop)}scale=${c.width}:-2:flags=lanczos,${grade},format=yuv420p`;
+    // Bilder je Clip (ohne das weggelassene Nahtbild) → Kapitelanfänge und Bewegungsdauer in Sekunden
+    const counts = files.map((f, k) => {
+      const n = Number(run("ffprobe", ["-v", "error", "-select_streams", "v:0", "-count_packets", "-show_entries", "stream=nb_read_packets", "-of", "csv=p=0", f]).trim());
+      return k === 0 ? n : n - 1;
+    });
+    const holds = config.shots.map((_, k) => (k === config.shots.length - 1 ? c.endHold : c.hold));
+    // Kapitelanfänge als Bildnummer: Zeit = Bild / fps (gerundet läge sie ein Bild zu spät, dort säße der Keyframe)
+    const starts = [];
+    const moves = [];
+    let frame = 0;
+    counts.forEach((n, k) => {
+      starts.push(frame);
+      moves.push(Math.round((n / fpsIn) * 1000) / 1000);
+      frame += n + holds[k] * fpsIn;
+    });
+    const marks = starts.map((f) => Math.floor((f / fpsIn) * 1000) / 1000);
+    const chains = files.map((_, k) => {
+      const trim = k === 0 ? "" : "trim=start_frame=1,setpts=PTS-STARTPTS,";
+      return `[${k}:v]${BT709},${trim}${crop(c.crop)}scale=${c.width}:-2:flags=lanczos,${grade},format=yuv420p,tpad=stop_mode=clone:stop_duration=${holds[k]}[v${k}]`;
+    });
+    const graph = `${chains.join(";")};${files.map((_, k) => `[v${k}]`).join("")}concat=n=${files.length}:v=1:a=0,fps=${fpsIn},${BT709}[out]`;
+    const mp4 = join(dir, "reel.mp4");
     run("ffmpeg", [
-      "-loglevel", "error", "-y", "-i", file, "-an", "-vf", vf,
+      "-loglevel", "error", "-y", ...files.flatMap((f) => ["-i", f]), "-an", "-filter_complex", graph, "-map", "[out]",
       "-c:v", "libx264", "-preset", "slow", "-crf", String(c.crf), "-profile:v", "high", "-level:v", c.level, "-pix_fmt", "yuv420p",
+      // Keyframes nur an den Kapitelanfängen (plus spätestens alle 10 s): jeder kostet bei 1440×1920 über 100 KB
+      "-g", String(fpsIn * 10), "-force_key_frames", `expr:${starts.map((f) => `eq(n,${f})`).join("+")}`,
       "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv",
       "-movflags", "+faststart", mp4,
     ]);
-    const a = join(dir, `${shot}-a.webp`);
-    const z = join(dir, `${shot}-z.webp`);
-    const pa = join(tmpdir(), `clip-${shot}-a.png`);
-    const pz = join(tmpdir(), `clip-${shot}-z.png`);
+    const a = join(dir, "reel-a.webp");
+    const z = join(dir, "reel-z.webp");
+    const pa = join(tmpdir(), "reel-a.png");
+    const pz = join(tmpdir(), "reel-z.png");
     still(mp4, [], pa, a);
     lastFrame(mp4, pz);
     run("cwebp", ["-quiet", "-q", "80", "-m", "6", "-sharp_yuv", pz, "-o", z]);
     rmSync(pa);
     rmSync(pz);
+    // Kapitel-Videos der früheren Fassung entfernen
+    for (const shot of config.shots) for (const s of [".mp4", "-a.webp", "-z.webp"]) rmSync(join(dir, `${shot}${s}`), { force: true });
     const { w, h } = size(mp4);
     const dur = Number(run("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", mp4]).trim());
-    manifest.clips[shot] = { w, h, dur: Math.round(dur * 1000) / 1000, v: hashFile(mp4), a: hashFile(a), z: hashFile(z), cx: c.cx };
-    console.log("✓ clip", shot, `${w}×${h}`, `${dur.toFixed(2)} s`);
+    manifest.reel = { w, h, dur: Math.round(dur * 1000) / 1000, marks, moves, v: hashFile(mp4), a: hashFile(a), z: hashFile(z), cx: c.cx };
+    console.log("✓ reel", `${w}×${h}`, `${dur.toFixed(2)} s`, "Kapitel ab", marks.join(" / "), "s");
   }
 }
 

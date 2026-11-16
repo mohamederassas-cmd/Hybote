@@ -1,52 +1,5 @@
 /* Größen, Bildanzahl und Versions-Hash des Scroll-Films. Diese Datei schreibt build/film-frames.mjs neu. */
 window.HYBOTE_FILM = {
-  "clips": {
-    "light": {
-      "w": 1440,
-      "h": 1920,
-      "dur": 5.042,
-      "v": "23a2b8aa",
-      "a": "6ae12dc2",
-      "z": "70d6a002",
-      "cx": 0.78
-    },
-    "turn": {
-      "w": 1440,
-      "h": 1920,
-      "dur": 5.042,
-      "v": "a31c2697",
-      "a": "d7c14284",
-      "z": "5b4b9980",
-      "cx": 0.78
-    },
-    "open": {
-      "w": 1440,
-      "h": 1920,
-      "dur": 5.042,
-      "v": "756251ff",
-      "a": "850b5f93",
-      "z": "767105f8",
-      "cx": 0.78
-    },
-    "book": {
-      "w": 1440,
-      "h": 1920,
-      "dur": 5.042,
-      "v": "c18bb30f",
-      "a": "c6f30c70",
-      "z": "96c0102c",
-      "cx": 0.78
-    },
-    "bell": {
-      "w": 1440,
-      "h": 1920,
-      "dur": 5.042,
-      "v": "f0431bf4",
-      "a": "57575750",
-      "z": "6c90df5e",
-      "cx": 0.78
-    }
-  },
   "order": [
     "light",
     "turn",
@@ -140,5 +93,28 @@ window.HYBOTE_FILM = {
       "h": 894,
       "v": "7245ab36"
     }
+  },
+  "reel": {
+    "w": 1440,
+    "h": 1920,
+    "dur": 41.042,
+    "marks": [
+      0,
+      8.041,
+      16.041,
+      24.041,
+      32.041
+    ],
+    "moves": [
+      5.042,
+      5,
+      5,
+      5,
+      5
+    ],
+    "v": "675cd780",
+    "a": "6ae12dc2",
+    "z": "cb033d03",
+    "cx": 0.78
   }
 };

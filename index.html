@@ -425,7 +425,7 @@
        Der Concierge füllt die ganze Bühne (film.js: cover). Ohne Skript oder ohne Film ein
        normaler Abschnitt: Hero mit Standbild, darunter die Kapitel mit je einem Standbild.
        Quer setzt film.js .is-live, dann steht die Bühne (sticky) und der Scroll treibt Film und Texte.
-       Hochkant setzt es .is-flow: der Abschnitt bleibt normal, die Kapitel bekommen Videos (siehe .beat-media). */
+       Hochkant setzt es .is-reel: unter dem Hero ein Bildschirm mit einem durchlaufenden Film (siehe .reel). */
     .film-scene { position: relative; background: var(--bg); --glass-blur: blur(8px) saturate(130%); --film-blur: blur(8px); }
     .film-stage { position: relative; }
     /* isolation: Ebenen im Bild (Clips, Loop, Verlauf) bleiben unter Text und Karten der Kapitel */
@@ -695,7 +695,7 @@
     .film-scene.is-live .greet { position: relative; height: 1.3em; overflow: hidden; }
     .film-scene.is-live .greet > span { position: absolute; top: 0; left: 0; white-space: nowrap; visibility: hidden; }
     html[dir="rtl"] .film-scene.is-live .greet > span { left: auto; right: 0; }
-    .film-scene:not(.is-live) .greet > span + span::before { content: ' · '; color: var(--a3); }
+    .film-scene:not(.is-live):not(.is-reel) .greet > span + span::before { content: ' · '; color: var(--a3); }
 
     /* Fortschritt: fünf Segmente, das laufende Kapitel leuchtet (film.js setzt data-beat). Daneben „Film
        überspringen“: wer den Film nicht sehen will, springt direkt zum Benchmark (Apple: Agency, jeder geführte
@@ -784,7 +784,7 @@
     .film-scene.is-live .chan-line { transform: scaleX(0); }
 
     /* Ohne Film: die Kapitel untereinander, je mit Standbild */
-    .film-scene:not(.is-live) .beats {
+    .film-scene:not(.is-live):not(.is-reel) .beats {
       display: flex;
       flex-direction: column;
       gap: clamp(72px, 9vw, 128px);
@@ -793,7 +793,7 @@
       margin-inline: auto;
       padding: var(--section) var(--gutter);
     }
-    .film-scene:not(.is-live) .beat {
+    .film-scene:not(.is-live):not(.is-reel) .beat {
       display: grid;
       grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
       grid-template-areas: "still head" "still side";
@@ -801,42 +801,88 @@
       row-gap: 22px;
       align-items: end;
     }
-    .film-scene:not(.is-live) .beat .ch-left,
-    .film-scene:not(.is-live) .beat .ch-right { position: static; width: auto; transform: none; }
-    .film-scene:not(.is-live) .beat-still { grid-area: still; align-self: center; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
-    .film-scene:not(.is-live) .beat-head { grid-area: head; }
-    .film-scene:not(.is-live) .beat-side { grid-area: side; align-self: start; }
-    .film-scene:not(.is-live) .beat--3 { grid-template-areas: "still head" "still side" "still chans"; }
-    .film-scene:not(.is-live) .chans { grid-area: chans; position: static; display: flex; flex-wrap: wrap; gap: 8px; }
-    .film-scene:not(.is-live) .chan { position: static; margin: 0; }
-    .film-scene:not(.is-live) .chan::before,
-    .film-scene:not(.is-live) .chan-line,
-    .film-scene:not(.is-live) .pulse { display: none; }
+    .film-scene:not(.is-live):not(.is-reel) .beat .ch-left,
+    .film-scene:not(.is-live):not(.is-reel) .beat .ch-right { position: static; width: auto; transform: none; }
+    .film-scene:not(.is-live):not(.is-reel) .beat-still { grid-area: still; align-self: center; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); }
+    .film-scene:not(.is-live):not(.is-reel) .beat-head { grid-area: head; }
+    .film-scene:not(.is-live):not(.is-reel) .beat-side { grid-area: side; align-self: start; }
+    .film-scene:not(.is-live):not(.is-reel) .beat--3 { grid-template-areas: "still head" "still side" "still chans"; }
+    .film-scene:not(.is-live):not(.is-reel) .chans { grid-area: chans; position: static; display: flex; flex-wrap: wrap; gap: 8px; }
+    .film-scene:not(.is-live):not(.is-reel) .chan { position: static; margin: 0; }
+    .film-scene:not(.is-live):not(.is-reel) .chan::before,
+    .film-scene:not(.is-live):not(.is-reel) .chan-line,
+    .film-scene:not(.is-live):not(.is-reel) .pulse { display: none; }
     @media (max-width: 859px) {
-      .film-scene:not(.is-live) .beat { grid-template-columns: minmax(0, 1fr); grid-template-areas: "still" "head" "side"; }
-      .film-scene:not(.is-live) .beat--3 { grid-template-areas: "still" "head" "side" "chans"; }
+      .film-scene:not(.is-live):not(.is-reel) .beat { grid-template-columns: minmax(0, 1fr); grid-template-areas: "still" "head" "side"; }
+      .film-scene:not(.is-live):not(.is-reel) .beat--3 { grid-template-areas: "still" "head" "side" "chans"; }
     }
-    /* Hochkant mit Film (film.js: startFlow setzt .is-flow): derselbe Aufbau, statt des Standbilds eine Karte 3:4 mit
-       dem Kapitel-Video über dem ersten Bild des Clips. Die Seite scrollt nativ, nichts hängt am Scroll (die stehende
-       Bühne mit Rastpunkten sprang und hing am iPhone). Keine Unschärfe im Inhalt, wie im Rest der Seite. */
-    .film-scene.is-flow { --film-blur: none; --glass-blur: none; --glass: rgba(16, 23, 41, 0.72); }
-    /* Dichter als die Fassung ohne Film: der Hero läuft unten schon in den Seitengrund aus */
-    .film-scene.is-flow .beats { gap: clamp(56px, 8vw, 128px); padding-top: clamp(36px, 7vw, 96px); }
-    /* iPad hochkant: schon ab 700px Video links, Text rechts (einspaltig stünde die Karte neben einer leeren Hälfte) */
-    @media (min-width: 700px) and (max-width: 859px) {
-      .film-scene.is-flow .beat { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-areas: "still head" "still side"; }
-      .film-scene.is-flow .beat--3 { grid-template-areas: "still head" "still side" "still chans"; }
+    /* ── Hochkant: ein Film auf einem Bildschirm (film.js: startReel setzt .is-reel) ──────────
+       Unter dem Hero ein bildfüllender Bildschirm mit einem Video aus allen fünf Kapiteln; es läuft von selbst, die
+       Texte laufen wie Untertitel mit. Nichts hängt am Scroll, die Seite scrollt nativ. Oben fünf Segmente und
+       Pause, im Bild links/rechts tippen springt ein Kapitel. Die Kapitel liegen übereinander, sichtbar macht sie
+       die Zeitleiste über opacity (Startzustände hier, weil GSAP Inline-Werte beim Sprung neu setzt). */
+    .reel { position: relative; height: 100svh; min-height: 560px; overflow: hidden; isolation: isolate; background: var(--bg); }
+    .reel-move { position: absolute; inset: 0; transform-origin: 62% 42%; will-change: transform; }
+    .reel-poster, .reel-video { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 45%; }
+    .reel-video { opacity: 0; transition: opacity 240ms ease; }
+    .reel-video.is-on { opacity: 1; }
+    .reel-video::-webkit-media-controls-start-playback-button { display: none; }
+    /* Lesbarkeit: oben für Leiste und Segmente, unten für den Kapiteltext */
+    .reel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(180deg, var(--bg) 0%, rgba(7, 11, 22, 0.55) 9%, rgba(7, 11, 22, 0) 24%, rgba(7, 11, 22, 0) 40%, rgba(7, 11, 22, 0.7) 60%, rgba(7, 11, 22, 0.94) 82%, var(--bg) 100%); /* taste-skill-ignore: Lesbarkeit über dem Film */
     }
-    .beat-media { position: relative; grid-area: still; align-self: center; width: 100%; max-width: calc(76svh * 0.75); aspect-ratio: 3 / 4; overflow: hidden; border-radius: var(--radius); background: var(--s1); }
-    .film-scene.is-flow .beat-media > .beat-still,
-    .beat-clip { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; border-radius: 0; object-fit: cover; }
-    .beat-clip { opacity: 0; transition: opacity 200ms ease; pointer-events: none; }
-    .beat-clip.is-on { opacity: 1; }
-    .beat-clip::-webkit-media-controls-start-playback-button { display: none; }
-    /* Anhalten, fortsetzen, noch einmal: kein Autoplay ohne Bedienung */
-    .beat-ctl { position: absolute; inset-inline-end: 12px; bottom: 12px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 50%; background: var(--glass-strong); color: var(--fg); cursor: pointer; transition: background-color 180ms ease; }
-    .beat-ctl:hover { background: rgba(12, 18, 34, 0.92); }
-    .beat-ctl svg { width: 20px; height: 20px; }
+    .film-scene.is-reel .beats { position: absolute; inset: 0; z-index: 2; margin: 0; padding: 0; pointer-events: none; }
+    .film-scene.is-reel .beat {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 14px;
+      padding: 0 var(--gutter) calc(max(28px, 4svh) + var(--cookie-h, 0px));
+      opacity: 0;
+    }
+    .film-scene.is-reel .beat > * { width: 100%; max-width: 560px; }
+    .film-scene.is-reel .beat-still,
+    .film-scene.is-reel .pulse,
+    .film-scene.is-reel .chan::before,
+    .film-scene.is-reel .chan-line { display: none; }
+    .film-scene.is-reel .ch-left, .film-scene.is-reel .ch-right { position: static; width: auto; }
+    .film-scene.is-reel .chans { position: static; display: flex; flex-wrap: wrap; gap: 6px; order: 1; }
+    .film-scene.is-reel .chans .chan { position: static; margin: 0; }
+    .film-scene.is-reel .beat-side { order: 2; }
+    .film-scene.is-reel .beat-body,
+    .film-scene.is-reel [data-in],
+    .film-scene.is-reel .film-end > * { opacity: 0; }
+    .film-scene.is-reel .beat .mask > span { transform: translateY(110%); }
+    .film-scene.is-reel .greet { position: relative; height: 1.3em; overflow: hidden; }
+    .film-scene.is-reel .greet > span { position: absolute; top: 0; left: 0; white-space: nowrap; opacity: 0; }
+    html[dir="rtl"] .film-scene.is-reel .greet > span { left: auto; right: 0; }
+    .film-scene.is-reel .film-end { position: absolute; z-index: 3; inset-inline: 0; bottom: calc(max(36px, 6svh) + var(--cookie-h, 0px)); padding: 0 var(--gutter); pointer-events: none; }
+    .film-scene.is-reel .film-end a { pointer-events: auto; }
+    /* Segmente und Pause oben, unter der Navigation */
+    .reel-bar { position: absolute; z-index: 4; top: 76px; inset-inline: var(--gutter); display: flex; align-items: center; gap: 10px; }
+    .reel-rail { flex: 1; display: flex; gap: 6px; }
+    .reel-seg { flex: 1; display: flex; align-items: center; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; }
+    .reel-seg i { position: relative; display: block; width: 100%; height: 3px; border-radius: 3px; overflow: hidden; background: rgba(255, 255, 255, 0.24); }
+    .reel-seg b { position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: left; }
+    html[dir="rtl"] .reel-seg b { transform-origin: right; }
+    .reel-ctl { flex-shrink: 0; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 50%; background: rgba(12, 18, 34, 0.55); color: var(--fg); cursor: pointer; transition: background-color 180ms ease; }
+    .reel-ctl:hover { background: rgba(12, 18, 34, 0.9); }
+    .reel-ctl svg { width: 20px; height: 20px; }
+    /* Tippflächen: links ein Kapitel zurück, rechts vor (logisch: auf Arabisch umgekehrt) */
+    .reel-tap { position: absolute; z-index: 3; top: 128px; bottom: 42%; width: 34%; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .reel-tap--prev { inset-inline-start: 0; }
+    .reel-tap--next { inset-inline-end: 0; }
+    /* Stromsparmodus (iOS lehnt Autoplay ab): Startknopf unter dem Kopf des Concierge, über dem Kapiteltext */
+    .reel-start { position: absolute; z-index: 4; top: 50%; left: 50%; display: none; gap: 10px; transform: translate(-50%, -50%); white-space: nowrap; }
+    .reel-start svg { width: 18px; height: 18px; }
+    .reel.is-blocked:not([data-state="playing"]) .reel-start { display: inline-flex; }
 
     @media (max-width: 1100px) and (min-width: 768px) {
       .hero-main { width: min(62vw, 720px); }
@@ -2730,6 +2776,8 @@ const T = {
     "film.play": "Play video",
     "film.pause": "Pause video",
     "film.replay": "Play video again",
+    "film.chapter": "Chapter {n} of 5",
+    "film.watch": "Watch the film · {s} sec",
     "a11y.skip": "Skip to content",
     "film.b1.l": "Enquiry received",
     "film.b1.h": "Your office is closed. A customer writes.",
@@ -2951,6 +2999,8 @@ const T = {
     "film.play": "Video abspielen",
     "film.pause": "Video anhalten",
     "film.replay": "Video noch einmal abspielen",
+    "film.chapter": "Kapitel {n} von 5",
+    "film.watch": "Film ansehen · {s} Sek.",
     "a11y.skip": "Zum Inhalt springen",
     "film.b1.l": "Anfrage geht ein",
     "film.b1.h": "Ihr Büro ist geschlossen. Ein Kunde schreibt.",
@@ -3172,6 +3222,8 @@ const T = {
     "film.play": "تشغيل الفيديو",
     "film.pause": "إيقاف الفيديو مؤقتًا",
     "film.replay": "تشغيل الفيديو مرة أخرى",
+    "film.chapter": "الفصل {n} من 5",
+    "film.watch": "شاهد الفيلم · {s} ثانية",
     "a11y.skip": "تخطَّ إلى المحتوى",
     "film.b1.l": "وصول الاستفسار",
     "film.b1.h": "مكتبك مغلق. وعميل يكتب.",
@@ -3346,8 +3398,8 @@ function setLang(lang) {
   const footer = document.querySelector('.footer');
   if (!film || !footer || !('IntersectionObserver' in window)) return;
   const seen = { film: false, footer: false };
-  // .is-live: Film auf stehender Bühne (quer), .is-flow: Kapitel-Videos im Seitenfluss (hochkant, Knopf unten rechts)
-  const apply = () => html.classList.toggle('fabs-off', (seen.film && (film.classList.contains('is-live') || film.classList.contains('is-flow'))) || seen.footer);
+  // .is-live: Film auf stehender Bühne (quer), .is-reel: ein Film unter dem Hero (hochkant)
+  const apply = () => html.classList.toggle('fabs-off', (seen.film && (film.classList.contains('is-live') || film.classList.contains('is-reel'))) || seen.footer);
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => { seen[e.target === footer ? 'footer' : 'film'] = e.isIntersecting; });
     apply();

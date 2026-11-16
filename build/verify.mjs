@@ -237,11 +237,11 @@ console.log('\nScroll-Film');
     const spec = M.shots[shot] && M.shots[shot][v];
     return spec && Array.from({ length: spec.count }, (_, i) => String(i + 1).padStart(3, '0')).every((n) => existsSync(join(frameDir(shot, v), `${n}.webp`)));
   }));
-  // Hochkant: je Kapitel ein Video plus erstes und letztes Bild (seit 11/2026; die Handy-Bildfolgen ruckelten am iPhone)
-  const clipsOk = M && M.clips && M.order.every((shot) => {
-    const c = M.clips[shot];
-    return c && c.v && c.a && c.z && ['.mp4', '-a.webp', '-z.webp'].every((s) => existsSync(join(ROOT, 'film', 'clips', `${shot}${s}`)));
-  });
+  // Hochkant: ein Film aus allen Kapiteln plus erstes und letztes Bild, je Kapitel eine Startmarke (seit 16.11.2026)
+  const R = M && M.reel;
+  const reelOk = !!R && R.v && R.a && R.z && Array.isArray(R.marks) && R.marks.length === M.order.length && R.dur > R.marks[R.marks.length - 1] &&
+    ['reel.mp4', 'reel-a.webp', 'reel-z.webp'].every((f) => existsSync(join(ROOT, 'film', 'clips', f))) &&
+    !M.clips && M.order.every((shot) => !existsSync(join(ROOT, 'film', 'clips', `${shot}.mp4`)));
   // iCloud legt beim Neubau Konfliktkopien an („001 2.webp“, „bell 2/“); sie gehören nicht ins Repo
   const copies = [];
   const walk = (dir) => {
@@ -262,15 +262,17 @@ console.log('\nScroll-Film');
   report('index.html + film.js', {
     'Film-Manifest lesbar, fünf Kapitel': !!M && M.order.length === 5,
     'alle Bildfolgen (quer) vollständig': !!framesOk,
-    'Kapitel-Videos (hochkant) mit Start- und Endbild': !!clipsOk,
-    // Seit 16.11.2026: hochkant hängt nichts am Scroll. Stehende Bühne mit Rastpunkten und zwei Clip-Spielern sprang
-    // und hing am iPhone; die Kapitel-Videos laufen jetzt in Karten im normalen Seitenfluss (film.js: startFlow).
-    'hochkant im Seitenfluss: Kapitel-Videos stumm, inline, ohne Vorladen, mit Knopf':
-      engine.includes('function startFlow()') && engine.includes("root.classList.add('is-flow')") &&
+    'Film hochkant: reel.mp4 mit Poster, Endbild und fünf Kapitelmarken, keine Kapitel-Videos mehr': !!reelOk,
+    // Seit 16.11.2026: hochkant ein Film auf einem Bildschirm, der von selbst läuft (film.js: startReel). Verworfen am
+    // iPhone: Bildfolgen (ruckelten), stehende Bühne mit Rastpunkten (Kapitel sprangen), fünf Videokarten im Seitenfluss
+    // (wirkten unprofessionell). Kein Loop, Bedienung über Segmente und Pausenknopf (kein Autoplay ohne Bedienung).
+    'hochkant ein Film: stumm, inline, ohne Vorladen, ohne Loop, mit Pause und Kapitelsprung':
+      engine.includes('function startReel()') && engine.includes("root.classList.add('is-reel')") &&
       engine.includes('video.muted = true') && engine.includes("video.setAttribute('playsinline', '')") &&
-      engine.includes("video.preload = 'none'") && engine.includes("btn.className = 'beat-ctl'") &&
-      h.includes('.beat-media {') && h.includes('.beat-ctl {') &&
-      ['film.play', 'film.pause', 'film.replay'].every((k) => h.split(`"${k}": "`).length === 4),
+      engine.includes("video.preload = 'none'") && !/video\.loop\s*=\s*true/.test(engine) &&
+      engine.includes("make('button', 'reel-ctl')") && engine.includes("make('button', 'reel-seg')") &&
+      h.includes('.reel {') && h.includes('.reel-ctl {') &&
+      ['film.play', 'film.pause', 'film.replay', 'film.chapter', 'film.watch'].every((k) => h.split(`"${k}": "`).length === 4),
     'hochkant ohne Rastpunkte und ohne Clip-Spieler auf der Bühne':
       !/scroll-snap/.test(h) && !/film-snap|film-window|startClips/.test(engine + h) && !h.includes('class="film-clip"'),
     'keine Handy-Bildfolgen mehr': !!M && M.order.every((shot) => !existsSync(frameDir(shot, 'phone'))),
@@ -282,7 +284,7 @@ console.log('\nScroll-Film');
       !/cdn\.jsdelivr|unpkg\.com|cdnjs|gsap\.com\/|lenis\.darkroom/.test(h),
     'Rückfall ohne Film (reduzierte Bewegung, ?film=off)':
       engine.includes('prefers-reduced-motion: reduce') && engine.includes("params.get('film') === 'off'") &&
-      h.includes('.film-scene:not(.is-live) .beats') && (h.match(/class="beat-still"/g) || []).length === 5,
+      h.includes('.film-scene:not(.is-live):not(.is-reel) .beats') && (h.match(/class="beat-still"/g) || []).length === 5,
     'Erklärvideo bleibt ohne autoplay, Loop ohne Ton und ohne Vorladen':
       /<video class="film-loop" muted playsinline loop preload="none">/.test(h),
     'film/ ist ein Jahr im Cache': !!cache && cache.headers.some((x) => /max-age=31536000, immutable/.test(x.value)),
