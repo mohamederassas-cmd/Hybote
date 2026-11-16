@@ -5,7 +5,8 @@
 // Pfade, Meta-Angaben, i18n-Vollständigkeit und die FAQ-Nummerierung.
 // Läuft in Sekunden und lohnt sich vor jedem Deploy.
 
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -223,26 +224,26 @@ for (const [name, path] of BOOKING_PAGES) {
   });
 }
 
-/* ── Scroll-Film der Startseite ─────────────────────────────────────────── */
-console.log('\nScroll-Film');
+/* ── Startseite „Nacht bis Morgen“: Standbilder statt Scroll-Film (seit 16.11.2026) ─────────── */
+// Der Scroll-Film (Bildfolgen, Handy-Film, GSAP/ScrollTrigger/Lenis) ist entfernt: am iPhone ruckelte er oder wirkte
+// wie mehrere Videos hintereinander, am Desktop zerrte das Scrollen. Seitdem nur natives Scrollen und Standbilder aus
+// build/site-images.mjs; nichts hängt am Scroll, kein Video läuft von selbst.
+console.log('\nStartseite: Aufbau und Bilder');
 {
   const h = readFileSync(join(ROOT, 'index.html'), 'utf8');
-  const engine = readFileSync(join(ROOT, 'film.js'), 'utf8');
   const vercel = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
-  const win = {};
-  try { new Function('window', readFileSync(join(ROOT, 'film-manifest.js'), 'utf8'))(win); } catch { /* unten als Fehler gemeldet */ }
-  const M = win.HYBOTE_FILM;
-  const frameDir = (shot, v) => join(ROOT, 'film', shot, v);
-  const framesOk = M && M.order.every((shot) => ['desktop'].every((v) => {
-    const spec = M.shots[shot] && M.shots[shot][v];
-    return spec && Array.from({ length: spec.count }, (_, i) => String(i + 1).padStart(3, '0')).every((n) => existsSync(join(frameDir(shot, v), `${n}.webp`)));
-  }));
-  // Hochkant: ein Film aus allen Kapiteln plus erstes und letztes Bild, je Kapitel eine Startmarke (seit 16.11.2026)
-  const R = M && M.reel;
-  const reelOk = !!R && R.v && R.a && R.z && Array.isArray(R.marks) && R.marks.length === M.order.length && R.dur > R.marks[R.marks.length - 1] &&
-    ['reel.mp4', 'reel-a.webp', 'reel-z.webp'].every((f) => existsSync(join(ROOT, 'film', 'clips', f))) &&
-    !M.clips && M.order.every((shot) => !existsSync(join(ROOT, 'film', 'clips', `${shot}.mp4`)));
-  // iCloud legt beim Neubau Konfliktkopien an („001 2.webp“, „bell 2/“); sie gehören nicht ins Repo
+  const css = (h.match(/<style>([\s\S]*?)<\/style>/) || ['', ''])[1];
+  const siteDir = join(ROOT, 'media', 'site');
+  const siteFiles = existsSync(siteDir) ? readdirSync(siteDir).filter((f) => !f.startsWith('.')) : [];
+  // Jede Bildangabe mit aktuellem Hash (sonst liefert der Jahres-Cache alte Fassungen), keine verwaiste Datei
+  const refs = [...h.matchAll(/\/media\/site\/([\w-]+\.webp)\?v=([0-9a-f]*)/g)];
+  const sha = (f) => createHash('sha1').update(readFileSync(join(siteDir, f))).digest('hex').slice(0, 8);
+  const staleRefs = refs.filter(([, f, v]) => !existsSync(join(siteDir, f)) || sha(f) !== v).map(([, f]) => f);
+  if (staleRefs.length) console.log('     Bild fehlt oder Hash veraltet:', [...new Set(staleRefs)].join(', '), '(node build/site-images.mjs)');
+  const referenced = new Set(refs.map(([, f]) => f));
+  const orphans = siteFiles.filter((f) => !referenced.has(f));
+  if (orphans.length) console.log('     nicht verwendet:', orphans.join(', '));
+  // iCloud legt Konfliktkopien an („hero-1920 2.webp“); sie gehören nicht ins Repo
   const copies = [];
   const walk = (dir) => {
     for (const e of readdirSync(dir, { withFileTypes: true })) {
@@ -250,44 +251,43 @@ console.log('\nScroll-Film');
       if (e.isDirectory()) walk(join(dir, e.name));
     }
   };
-  if (existsSync(join(ROOT, 'film'))) walk(join(ROOT, 'film'));
+  walk(join(ROOT, 'media'));
   if (copies.length) console.log('     Konfliktkopien:', copies.slice(0, 5).join(', '));
-  // Poster und Standbilder: Datei vorhanden, Hash wie im Manifest (sonst liefert der Jahres-Cache alte Bilder)
-  const refs = [...h.matchAll(/\/film\/(loops|stills)\/([\w-]+)\.webp\?v=([0-9a-f]+)/g)];
-  const refsOk = M && refs.length > 0 && refs.every(([, kind, name, v]) => {
-    const entry = (kind === 'loops' ? M.loops : M.stills)[name];
-    return entry && entry.v === v && existsSync(join(ROOT, 'film', kind, `${name}.webp`));
-  });
-  const cache = (vercel.headers || []).find((x) => x.source === '/film/(.*)');
-  report('index.html + film.js', {
-    'Film-Manifest lesbar, fünf Kapitel': !!M && M.order.length === 5,
-    'alle Bildfolgen (quer) vollständig': !!framesOk,
-    'Film hochkant: reel.mp4 mit Poster, Endbild und fünf Kapitelmarken, keine Kapitel-Videos mehr': !!reelOk,
-    // Seit 16.11.2026: hochkant ein Film auf einem Bildschirm, der von selbst läuft (film.js: startReel). Verworfen am
-    // iPhone: Bildfolgen (ruckelten), stehende Bühne mit Rastpunkten (Kapitel sprangen), fünf Videokarten im Seitenfluss
-    // (wirkten unprofessionell). Kein Loop, Bedienung über Segmente und Pausenknopf (kein Autoplay ohne Bedienung).
-    'hochkant ein Film: stumm, inline, ohne Vorladen, ohne Loop, mit Pause und Kapitelsprung':
-      engine.includes('function startReel()') && engine.includes("root.classList.add('is-reel')") &&
-      engine.includes('video.muted = true') && engine.includes("video.setAttribute('playsinline', '')") &&
-      engine.includes("video.preload = 'none'") && !/video\.loop\s*=\s*true/.test(engine) &&
-      engine.includes("make('button', 'reel-ctl')") && engine.includes("make('button', 'reel-seg')") &&
-      h.includes('.reel {') && h.includes('.reel-ctl {') &&
-      ['film.play', 'film.pause', 'film.replay', 'film.chapter', 'film.watch'].every((k) => h.split(`"${k}": "`).length === 4),
-    'hochkant ohne Rastpunkte und ohne Clip-Spieler auf der Bühne':
-      !/scroll-snap/.test(h) && !/film-snap|film-window|startClips/.test(engine + h) && !h.includes('class="film-clip"'),
-    'keine Handy-Bildfolgen mehr': !!M && M.order.every((shot) => !existsSync(frameDir(shot, 'phone'))),
-    'keine iCloud-Konfliktkopien unter film/': copies.length === 0,
-    'Hero-Loops vorhanden': !!M && ['hero', 'hero-phone'].every((n) => M.loops[n] && existsSync(join(ROOT, 'film', 'loops', `${n}.mp4`))),
-    'Poster und Standbilder mit aktuellem Hash': !!refsOk,
-    'GSAP, ScrollTrigger und Lenis selbst gehostet, kein CDN':
-      ['gsap.min.js', 'ScrollTrigger.min.js', 'lenis.min.js'].every((f) => existsSync(join(ROOT, 'vendor', f)) && h.includes(`src="/vendor/${f}"`)) &&
-      !/cdn\.jsdelivr|unpkg\.com|cdnjs|gsap\.com\/|lenis\.darkroom/.test(h),
-    'Rückfall ohne Film (reduzierte Bewegung, ?film=off)':
-      engine.includes('prefers-reduced-motion: reduce') && engine.includes("params.get('film') === 'off'") &&
-      h.includes('.film-scene:not(.is-live):not(.is-reel) .beats') && (h.match(/class="beat-still"/g) || []).length === 5,
-    'Erklärvideo bleibt ohne autoplay, Loop ohne Ton und ohne Vorladen':
-      /<video class="film-loop" muted playsinline loop preload="none">/.test(h),
-    'film/ ist ein Jahr im Cache': !!cache && cache.headers.some((x) => /max-age=31536000, immutable/.test(x.value)),
+  const kb = (f) => (existsSync(join(siteDir, f)) ? statSync(join(siteDir, f)).size / 1024 : Infinity);
+  const heroImg = (h.match(/<img class="hero-img"[^>]*>/) || [''])[0];
+  const pos = (id) => h.indexOf(`<section id="${id}"`);
+  const daySections = ['beispiele', 'leistungen', 'ueber-uns', 'kunden', 'faq', 'kontakt'].filter((id) => pos(id) !== -1);
+  const logCss = (css.match(/\.log[\s\S]*?(?=\/\* ══ Morgengrauen)/) || [''])[0];
+  const waLinks = [...h.matchAll(/href="(https:\/\/wa\.me\/[^"]*|tel:[^"]*)"/g)].map((m) => m[1]);
+  const cache = (vercel.headers || []).find((x) => x.source === '/media/site/(.*)');
+
+  report('index.html + media/site', {
+    'Bilder vorhanden, Hash aktuell': refs.length > 0 && staleRefs.length === 0,
+    'keine verwaisten Bilder in media/site': orphans.length === 0,
+    'keine iCloud-Konfliktkopien unter media/': copies.length === 0,
+    'Größengrenzen (Hero 1920 höchstens 250 KB, Handy 1080 höchstens 150 KB)': kb('hero-1920.webp') <= 250 && kb('hero-phone-1080.webp') <= 150,
+    'Hero-Bild: Quelle für hochkant, sofort geladen, mit Maßen':
+      /<source media="\(max-aspect-ratio: 1\/1\)" srcset="\/media\/site\/hero-phone-/.test(h) &&
+      heroImg.includes('fetchpriority="high"') && !heroImg.includes('loading="lazy"') && /width="\d+" height="\d+"/.test(heroImg),
+    'kein Scroll-Film mehr: keine Bibliotheken, kein Canvas, kein Video mit autoplay':
+      !/<canvas|\/vendor\/|gsap|lenis|ScrollTrigger|film-manifest|\/film\//i.test(h) && !/<video[^>]*autoplay/.test(h) &&
+      ['film.js', 'film-manifest.js', 'film', 'vendor'].every((p) => !existsSync(join(ROOT, p))),
+    'keine Fremdskripte über CDN': !/cdn\.jsdelivr|unpkg\.com|cdnjs|gsap\.com\/|lenis\.darkroom/.test(h),
+    'Reihenfolge: Hero, Benchmark, Nachtprotokoll, Morgengrauen vor dem Live-Beispiel':
+      pos('top') !== -1 && pos('top') < pos('benchmark') && pos('benchmark') < pos('nacht') && pos('nacht') < pos('morgen') && pos('morgen') < pos('beispiele'),
+    'Nachtprotokoll mit fünf Einträgen, Tag-Abschnitte hell':
+      (h.match(/<li class="log-row/g) || []).length === 5 &&
+      daySections.every((id) => new RegExp(`<section id="${id}" data-theme="day"`).test(h)),
+    'kein sticky und keine Rastpunkte im Nachtprotokoll, nirgends scroll-snap': !/sticky/.test(logCss) && !/scroll-snap/.test(h),
+    'reduzierte Bewegung und ?dev=1 (Standbild für Screenshots)':
+      h.includes('@media (prefers-reduced-motion: reduce)') && h.includes("classList.add('still')") && h.includes('.js:not(.still) .reveal'),
+    'Hadi: alle WhatsApp- und Telefon-Links auf +1 650 514 6359':
+      waLinks.length >= 4 && waLinks.every((u) => /^https:\/\/wa\.me\/16505146359(\?|$)/.test(u) || u === 'tel:+16505146359'),
+    'QR-Code führt auf /hadi/': (h.match(/data-qr="https:\/\/hybote\.ai\/hadi\/"/g) || []).length >= 1,
+    'Kundenstimmen je mit Trustpilot-Link (neuer Tab, noopener)':
+      !h.includes('id="kunden"') ||
+      (h.match(/<a class="voice-site" href="https:\/\/www\.trustpilot\.com\/review\/hybote\.ai" target="_blank" rel="noopener"/g) || []).length === (h.match(/<figure class="voice[ "]/g) || []).length,
+    '/media/site/ ist ein Jahr im Cache': !!cache && cache.headers.some((x) => /max-age=31536000, immutable/.test(x.value)),
     'Platz am Seitenende für Floating Buttons und Cookie-Hinweis':
       h.includes('calc(120px + var(--cookie-h, 0px))') && h.includes('html.fabs-off .wa-btn'),
     'Footer-Logo in normaler Größe': h.includes('class="footer-logo"') && !h.includes('footer-mark'),

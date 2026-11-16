@@ -27,6 +27,8 @@
   document.addEventListener('click', function (e) {
     var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
     if (!a) return;
+    // data-track-skip: der Knopf öffnet nur ein Fenster (Startseite, „Hadi schreiben“ am Desktop), kein WhatsApp
+    if (a.hasAttribute('data-track-skip')) return;
     var href = a.getAttribute('href') || '';
     if (/calendly\.com\//i.test(href)) send('cta_calendly', { page: page });
     else if (/\.pdf(\?|#|$)/i.test(href)) send('pdf_download', { page: page, file: href.split('/').pop().split('?')[0].slice(0, 80) });
