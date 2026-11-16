@@ -424,7 +424,8 @@
     /* ── Film: Hero und fünf Kapitel ─────────────────────────────
        Der Concierge füllt die ganze Bühne (film.js: cover). Ohne Skript oder ohne Film ein
        normaler Abschnitt: Hero mit Standbild, darunter die Kapitel mit je einem Standbild.
-       film.js setzt .is-live, dann steht die Bühne (sticky) und der Scroll treibt Film und Texte. */
+       Quer setzt film.js .is-live, dann steht die Bühne (sticky) und der Scroll treibt Film und Texte.
+       Hochkant setzt es .is-flow: der Abschnitt bleibt normal, die Kapitel bekommen Videos (siehe .beat-media). */
     .film-scene { position: relative; background: var(--bg); --glass-blur: blur(8px) saturate(130%); --film-blur: blur(8px); }
     .film-stage { position: relative; }
     /* isolation: Ebenen im Bild (Clips, Loop, Verlauf) bleiben unter Text und Karten der Kapitel */
@@ -446,21 +447,6 @@
     .film-loop.is-on { opacity: 1; }
     .film-canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 500ms ease; }
     html.film-ready .film-canvas { opacity: 1; }
-    /* Hochkant: Kapitel-Videos über zwei Standbildern (film.js: startClips setzt Lage und Überblendzeiten) */
-    .film-clips { position: absolute; z-index: 0; }
-    .film-clips > * { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: fill; opacity: 0; transition: opacity 220ms ease; pointer-events: none; }
-    .film-clips .film-clip { z-index: 3; }
-    .film-clips .is-warm { opacity: 0.01; }
-    .film-clips .is-on { opacity: 1; }
-    .film-clip::-webkit-media-controls-start-playback-button { display: none; }
-    .film-scene.is-clips .film-canvas { display: none; }
-    /* Hochkant: Rastpunkte je Kapitel (film.js setzt sie); ein Wisch hält am nächsten Kapitel statt drei weiter.
-       proximity: außerhalb des Films gibt es keine Punkte, dort scrollt die Seite frei */
-    html.film-snap-on { scroll-snap-type: y proximity; }
-    .film-snap { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; scroll-snap-align: start; scroll-snap-stop: always; }
-    /* Schlussfenster (nur Clips): fester Zuschnitt, film.js blendet es ein und die Bühne aus */
-    .film-window { position: absolute; inset: 0 0 auto; height: 100lvh; overflow: hidden; visibility: hidden; opacity: 0; pointer-events: none; }
-    .film-window img { position: absolute; max-width: none; }
     /* Lesbarkeit: links und unten dunkler, rechts die Glaskarten; unten läuft das Bild in den Seitengrund */
     .film-frame::after {
       content: '';
@@ -830,6 +816,27 @@
       .film-scene:not(.is-live) .beat { grid-template-columns: minmax(0, 1fr); grid-template-areas: "still" "head" "side"; }
       .film-scene:not(.is-live) .beat--3 { grid-template-areas: "still" "head" "side" "chans"; }
     }
+    /* Hochkant mit Film (film.js: startFlow setzt .is-flow): derselbe Aufbau, statt des Standbilds eine Karte 3:4 mit
+       dem Kapitel-Video über dem ersten Bild des Clips. Die Seite scrollt nativ, nichts hängt am Scroll (die stehende
+       Bühne mit Rastpunkten sprang und hing am iPhone). Keine Unschärfe im Inhalt, wie im Rest der Seite. */
+    .film-scene.is-flow { --film-blur: none; --glass-blur: none; --glass: rgba(16, 23, 41, 0.72); }
+    /* Dichter als die Fassung ohne Film: der Hero läuft unten schon in den Seitengrund aus */
+    .film-scene.is-flow .beats { gap: clamp(56px, 8vw, 128px); padding-top: clamp(36px, 7vw, 96px); }
+    /* iPad hochkant: schon ab 700px Video links, Text rechts (einspaltig stünde die Karte neben einer leeren Hälfte) */
+    @media (min-width: 700px) and (max-width: 859px) {
+      .film-scene.is-flow .beat { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-areas: "still head" "still side"; }
+      .film-scene.is-flow .beat--3 { grid-template-areas: "still head" "still side" "still chans"; }
+    }
+    .beat-media { position: relative; grid-area: still; align-self: center; width: 100%; max-width: calc(76svh * 0.75); aspect-ratio: 3 / 4; overflow: hidden; border-radius: var(--radius); background: var(--s1); }
+    .film-scene.is-flow .beat-media > .beat-still,
+    .beat-clip { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; border-radius: 0; object-fit: cover; }
+    .beat-clip { opacity: 0; transition: opacity 200ms ease; pointer-events: none; }
+    .beat-clip.is-on { opacity: 1; }
+    .beat-clip::-webkit-media-controls-start-playback-button { display: none; }
+    /* Anhalten, fortsetzen, noch einmal: kein Autoplay ohne Bedienung */
+    .beat-ctl { position: absolute; inset-inline-end: 12px; bottom: 12px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 50%; background: var(--glass-strong); color: var(--fg); cursor: pointer; transition: background-color 180ms ease; }
+    .beat-ctl:hover { background: rgba(12, 18, 34, 0.92); }
+    .beat-ctl svg { width: 20px; height: 20px; }
 
     @media (max-width: 1100px) and (min-width: 768px) {
       .hero-main { width: min(62vw, 720px); }
@@ -1692,7 +1699,6 @@
         <source media="(max-aspect-ratio: 1/1)" srcset="/film/loops/hero-phone.webp?v=2a4f287b" width="1440" height="1920" />
         <img class="film-poster" src="/film/loops/hero.webp?v=b17f944f" width="1920" height="1080" alt="" fetchpriority="high" decoding="async" />
       </picture>
-      <div class="film-clips"><video class="film-clip" muted playsinline preload="none" disableremoteplayback></video><video class="film-clip" muted playsinline preload="none" disableremoteplayback></video></div>
       <div class="film-loop-wrap"><video class="film-loop" muted playsinline loop preload="none"></video></div>
       <canvas class="film-canvas"></canvas>
     </div>
@@ -2721,6 +2727,9 @@ const T = {
     "cookie.dismiss": "Got it",
     "film.cue": "What happens at 23:47",
     "film.skip": "Skip the film",
+    "film.play": "Play video",
+    "film.pause": "Pause video",
+    "film.replay": "Play video again",
     "a11y.skip": "Skip to content",
     "film.b1.l": "Enquiry received",
     "film.b1.h": "Your office is closed. A customer writes.",
@@ -2939,6 +2948,9 @@ const T = {
     "cookie.dismiss": "Verstanden",
     "film.cue": "Was um 23:47 passiert",
     "film.skip": "Film überspringen",
+    "film.play": "Video abspielen",
+    "film.pause": "Video anhalten",
+    "film.replay": "Video noch einmal abspielen",
     "a11y.skip": "Zum Inhalt springen",
     "film.b1.l": "Anfrage geht ein",
     "film.b1.h": "Ihr Büro ist geschlossen. Ein Kunde schreibt.",
@@ -3157,6 +3169,9 @@ const T = {
     "cookie.dismiss": "فهمت",
     "film.cue": "ماذا يحدث في الساعة 23:47",
     "film.skip": "تخطي الفيلم",
+    "film.play": "تشغيل الفيديو",
+    "film.pause": "إيقاف الفيديو مؤقتًا",
+    "film.replay": "تشغيل الفيديو مرة أخرى",
     "a11y.skip": "تخطَّ إلى المحتوى",
     "film.b1.l": "وصول الاستفسار",
     "film.b1.h": "مكتبك مغلق. وعميل يكتب.",
@@ -3229,6 +3244,8 @@ const T = {
 
 let currentLang = 'en';
 const LANGS = ['en', 'de', 'ar'];
+// Für film.js: Beschriftung der Videoknöpfe in der laufenden Sprache
+window.hyboteText = key => (T[currentLang] || T.en)[key];
 
 function setLang(lang) {
   if (!LANGS.includes(lang)) lang = 'en';
@@ -3329,7 +3346,8 @@ function setLang(lang) {
   const footer = document.querySelector('.footer');
   if (!film || !footer || !('IntersectionObserver' in window)) return;
   const seen = { film: false, footer: false };
-  const apply = () => html.classList.toggle('fabs-off', (seen.film && film.classList.contains('is-live')) || seen.footer);
+  // .is-live: Film auf stehender Bühne (quer), .is-flow: Kapitel-Videos im Seitenfluss (hochkant, Knopf unten rechts)
+  const apply = () => html.classList.toggle('fabs-off', (seen.film && (film.classList.contains('is-live') || film.classList.contains('is-flow'))) || seen.footer);
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => { seen[e.target === footer ? 'footer' : 'film'] = e.isIntersecting; });
     apply();

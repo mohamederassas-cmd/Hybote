@@ -263,8 +263,16 @@ console.log('\nScroll-Film');
     'Film-Manifest lesbar, fünf Kapitel': !!M && M.order.length === 5,
     'alle Bildfolgen (quer) vollständig': !!framesOk,
     'Kapitel-Videos (hochkant) mit Start- und Endbild': !!clipsOk,
-    'zwei Clip-Spieler, stumm, inline, ohne Vorladen':
-      (h.match(/<video class="film-clip" muted playsinline preload="none" disableremoteplayback><\/video>/g) || []).length === 2,
+    // Seit 16.11.2026: hochkant hängt nichts am Scroll. Stehende Bühne mit Rastpunkten und zwei Clip-Spielern sprang
+    // und hing am iPhone; die Kapitel-Videos laufen jetzt in Karten im normalen Seitenfluss (film.js: startFlow).
+    'hochkant im Seitenfluss: Kapitel-Videos stumm, inline, ohne Vorladen, mit Knopf':
+      engine.includes('function startFlow()') && engine.includes("root.classList.add('is-flow')") &&
+      engine.includes('video.muted = true') && engine.includes("video.setAttribute('playsinline', '')") &&
+      engine.includes("video.preload = 'none'") && engine.includes("btn.className = 'beat-ctl'") &&
+      h.includes('.beat-media {') && h.includes('.beat-ctl {') &&
+      ['film.play', 'film.pause', 'film.replay'].every((k) => h.split(`"${k}": "`).length === 4),
+    'hochkant ohne Rastpunkte und ohne Clip-Spieler auf der Bühne':
+      !/scroll-snap/.test(h) && !/film-snap|film-window|startClips/.test(engine + h) && !h.includes('class="film-clip"'),
     'keine Handy-Bildfolgen mehr': !!M && M.order.every((shot) => !existsSync(frameDir(shot, 'phone'))),
     'keine iCloud-Konfliktkopien unter film/': copies.length === 0,
     'Hero-Loops vorhanden': !!M && ['hero', 'hero-phone'].every((n) => M.loops[n] && existsSync(join(ROOT, 'film', 'loops', `${n}.mp4`))),
