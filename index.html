@@ -28,8 +28,8 @@
   <link rel="alternate" hreflang="x-default" href="https://hybote.ai/" />
   <link rel="canonical" href="https://hybote.ai/" />
   <link rel="icon" href="/logo.png" />
-  <link rel="preload" as="image" href="/media/site/hero-1920.webp?v=565b71ca" imagesrcset="/media/site/hero-1280.webp?v=be9eeb30 1280w, /media/site/hero-1920.webp?v=565b71ca 1920w, /media/site/hero-2560.webp?v=6da11a02 2560w" imagesizes="100vw" media="(min-aspect-ratio: 1/1)" fetchpriority="high" />
-  <link rel="preload" as="image" href="/media/site/hero-phone-1080.webp?v=60dcf6a7" imagesrcset="/media/site/hero-phone-720.webp?v=99bc28e5 720w, /media/site/hero-phone-1080.webp?v=60dcf6a7 1080w, /media/site/hero-phone-1440.webp?v=1f11746e 1440w" imagesizes="100vw" media="(max-aspect-ratio: 1/1)" fetchpriority="high" />
+  <link rel="preload" as="image" href="/media/site/hero-1920.webp?v=e5f93846" imagesrcset="/media/site/hero-1280.webp?v=3e8db984 1280w, /media/site/hero-1920.webp?v=e5f93846 1920w" imagesizes="100vw" media="(min-aspect-ratio: 1/1)" fetchpriority="high" />
+  <link rel="preload" as="image" href="/media/site/hero-phone-1080.webp?v=bfcebc12" imagesrcset="/media/site/hero-phone-720.webp?v=d9aff28d 720w, /media/site/hero-phone-1080.webp?v=bfcebc12 1080w" imagesizes="100vw" media="(max-aspect-ratio: 1/1)" fetchpriority="high" />
   <link rel="preload" href="/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link href="/fonts/fonts.css" rel="stylesheet" />
@@ -438,9 +438,22 @@
       .nav-panel .btn { margin-top: 18px; align-self: flex-start; }
     }
 
-    /* ══ Hero: Hadi nachts am Empfang ══════════════════════════════
-       Ein Standbild, kein Video, nichts hängt am Scroll. Die Bühne bildet object-fit: cover per Container-Einheiten
-       nach, damit das Blinzeln in Prozent der Bildfläche auf den Augen sitzt (--ar, --fx, --fy wie das Bild). */
+    /* ══ Feste Bühne: die Lobby steht, der Inhalt gleitet als Glas darüber (Owner 16.11.2026) ══
+       .stage-bg ist position: fixed; clip-path: inset(0) an der Bühne schneidet die feste Ebene auf die Bühne zu
+       (geht auch auf iOS, wo background-attachment: fixed ignoriert wird). Kein Skript, kein Scroll-Bezug.
+       100lvh: die Ebene springt nicht, wenn die Safari-Leiste ein- und ausfährt. Ohne Hadi im Bild. */
+    .stage { position: relative; isolation: isolate; clip-path: inset(0); background: var(--bg); }
+    .stage-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100lvh; z-index: -1; pointer-events: none; }
+    .stage-bg picture, .stage-bg img { display: block; width: 100%; height: 100%; }
+    .stage-bg img { object-fit: cover; object-position: 50% 46%; }
+    .stage-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(120% 90% at 70% 45%, rgba(7, 11, 22, 0.2) 0%, rgba(7, 11, 22, 0.62) 100%); } /* taste-skill-ignore: Scrim über dem Foto */
+    .stage > [data-theme="night"] { background: transparent; }
+    @media (max-aspect-ratio: 1/1) { .stage-bg img { object-position: 72% 50%; } }
+    /* Glas über dem Foto etwas dichter (Lesbarkeit), am Handy weniger Unschärfe (Leistung) */
+    .stage .glass { --glass: rgba(10, 16, 32, 0.6); }
+    @media (max-width: 699px) { .stage .glass { --glass-blur: blur(10px) saturate(130%); } }
+
+    /* ══ Hero: die Lobby bei Nacht, Text links, rechts die Live-Karte ══ */
     .hero {
       position: relative;
       isolation: isolate;
@@ -450,20 +463,7 @@
       padding-block: 128px clamp(48px, 8vh, 96px);
       overflow: clip;
     }
-    .hero-art { position: absolute; inset: 0; z-index: -2; overflow: hidden; container-type: size; background: var(--bg); }
-    .hero-stage {
-      --ar: 1.7781;
-      --fx: 0.7;
-      --fy: 0.32;
-      --w: max(100cqw, 100cqh * var(--ar));
-      position: absolute;
-      width: var(--w);
-      height: calc(var(--w) / var(--ar));
-      left: calc((100cqw - var(--w)) * var(--fx));
-      top: calc((100cqh - var(--w) / var(--ar)) * var(--fy));
-    }
-    .hero-stage picture, .hero-stage img { display: block; width: 100%; height: 100%; }
-    /* Lesbarkeit: links und unten dunkel, rechts frei für Hadi */
+    /* Lesbarkeit: links dunkel für den Text, oben für die Navigation */
     .hero::before {
       content: '';
       position: absolute;
@@ -471,37 +471,13 @@
       z-index: -1;
       pointer-events: none;
       background:
-        linear-gradient(90deg, rgba(7, 11, 22, 0.86) 0%, rgba(7, 11, 22, 0.62) 32%, rgba(7, 11, 22, 0) 56%),
-        linear-gradient(180deg, rgba(7, 11, 22, 0.55) 0%, rgba(7, 11, 22, 0) 22%, rgba(7, 11, 22, 0) 62%, var(--bg) 100%); /* taste-skill-ignore: Scrim über dem Foto */
+        linear-gradient(90deg, rgba(7, 11, 22, 0.78) 0%, rgba(7, 11, 22, 0.5) 38%, rgba(7, 11, 22, 0) 64%),
+        linear-gradient(180deg, rgba(7, 11, 22, 0.5) 0%, rgba(7, 11, 22, 0) 22%); /* taste-skill-ignore: Scrim über dem Foto */
     }
-    /* Blinzeln: die LED-Augen schließen sich alle paar Sekunden kurz (Visierfarbe, weiche Kante) */
-    .blink {
-      position: absolute;
-      left: calc(var(--x) * 100%);
-      top: calc(var(--y) * 100%);
-      width: calc(var(--bw) * 100%);
-      height: calc(var(--bh) * 100%);
-      border-radius: 50%;
-      background: #161d2c;
-      box-shadow: 0 0 6px 3px #161d2c;
-      transform: translate(-50%, -50%) scaleY(0);
-      opacity: 0;
-    }
-    .blink--l { --x: 0.6492; --y: 0.4069; --bw: 0.033; --bh: 0.094; }
-    .blink--r { --x: 0.7211; --y: 0.3889; --bw: 0.036; --bh: 0.096; }
-    @media (prefers-reduced-motion: no-preference) {
-      .js:not(.still) .blink { animation: blink 7s 2.4s infinite; }
-    }
-    @supports not (width: 1cqw) { .blink { display: none; } }
-    @keyframes blink {
-      0%, 95.5%, 100% { opacity: 0; transform: translate(-50%, -50%) scaleY(0); }
-      96.8% { opacity: 1; transform: translate(-50%, -50%) scaleY(1); }
-      98.2% { opacity: 1; transform: translate(-50%, -50%) scaleY(1); }
-    }
-
-    .hero-inner { width: 100%; }
-    /* Textspalte physisch links, auch auf Arabisch (Hadi steht rechts im Bild, das nicht gespiegelt wird) */
-    .hero-copy { max-width: 640px; margin-left: 0; margin-right: auto; }
+    .hero-inner { width: 100%; display: flex; align-items: flex-end; gap: clamp(32px, 4vw, 72px); }
+    /* Textspalte physisch links, auch auf Arabisch (das Bild wird nicht gespiegelt) */
+    .hero-copy { flex: 0 1 720px; min-width: 0; max-width: 720px; }
+    html[dir="rtl"] .hero-inner { flex-direction: row-reverse; }
     .hero-title {
       font-family: var(--serif);
       font-weight: 300;
@@ -510,7 +486,11 @@
       letter-spacing: -0.02em;
       text-wrap: balance;
     }
-    html[lang="ar"] .hero-title { line-height: 1.25; letter-spacing: 0; font-size: clamp(2.6rem, 5vw, 4.8rem); font-weight: 400; }
+    /* Arabisch: der erste Satz (rund 10,7 em in Cairo) bleibt in einer Zeile, Umbruch nur nach dem Satz */
+    html[lang="ar"] .hero-title { line-height: 1.25; letter-spacing: 0; font-size: clamp(2.2rem, 4vw, 3.6rem); font-weight: 400; }
+    /* Deutsch: „Fünf-Sterne-Niveau.“ (7,5 em) muss in eine Zeile passen, sonst bricht es am Bindestrich */
+    html[lang="de"] .hero-title { font-size: clamp(2.3rem, 5.6vw, 5.2rem); }
+    @media (max-width: 699px) { html[lang="de"] .hero-title { font-size: min(3.1rem, 11.8vw); } }
     .hero-sub { max-width: 46ch; margin-top: 28px; font-size: clamp(1.0625rem, 1.3vw, 1.25rem); line-height: 1.6; color: var(--a1); }
     .hero-status {
       display: flex;
@@ -529,10 +509,65 @@
     .hero-trust { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 28px; font-size: 0.875rem; color: var(--a1); }
     .hero-trust li { display: inline-flex; align-items: center; gap: 9px; }
     .hero-trust li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--a3); }
-    .hero-clients { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; margin-top: clamp(40px, 6vh, 64px); }
-    .hero-clients p { font-size: 0.8125rem; color: var(--a3); }
-    .hero-clients ul { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 32px; }
-    .hero-clients img { width: auto; height: 30px; opacity: 0.78; }
+    /* Beleg: Link auf das Trustpilot-Profil, ohne Sterne und ohne Score (kostenloser Tarif, § 5 UWG) */
+    .hero-proof { margin-top: clamp(32px, 5vh, 52px); }
+    .hero-proof a {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+      font-size: 0.9375rem;
+      color: var(--fg);
+      text-decoration: underline;
+      text-decoration-color: rgba(125, 211, 252, 0.45);
+      text-underline-offset: 5px;
+      text-decoration-thickness: 1px;
+      transition: text-decoration-color 200ms ease;
+    }
+    .hero-proof a:hover { text-decoration-color: var(--accent); }
+    .hero-proof svg { flex-shrink: 0; color: var(--accent); }
+    html[dir="rtl"] .hero-proof svg { transform: scaleX(-1); }
+    /* Drei kleine Beispiele rechts neben dem Text, leicht versetzt wie eingehende Nachrichten; je Karte eine Zeile Kopf
+       (Kanal, Uhrzeit, Ergebnis), dann Anfrage und Antwort. Einmal beim Laden nacheinander, der Anruf klingelt kurz. */
+    .hero-feed { flex: 0 0 auto; align-self: center; width: min(400px, 100%); display: flex; flex-direction: column; gap: 12px; margin-top: 40px; }
+    .feed-label { padding-inline-start: 4px; font-size: 0.8125rem; color: var(--a2); }
+    .feed-card { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px 16px; border-radius: 16px; }
+    .feed-card:nth-of-type(2) { margin-inline-start: 36px; }
+    .feed-card:nth-of-type(3) { margin-inline-start: 12px; }
+    html[dir="rtl"] .feed-card { margin-inline-start: 0; }
+    html[dir="rtl"] .feed-card:nth-of-type(2) { margin-inline-end: 36px; }
+    html[dir="rtl"] .feed-card:nth-of-type(3) { margin-inline-end: 12px; }
+    .feed-head { display: flex; align-items: center; gap: 8px; font-size: 0.8125rem; font-weight: 500; color: var(--fg); }
+    .feed-head time { font-weight: 400; font-variant-numeric: tabular-nums; color: var(--a3); }
+    .feed-ico { width: 16px; height: 16px; flex-shrink: 0; }
+    .feed-ico--wa { color: #25D366; }
+    .feed-st { display: inline-flex; align-items: center; gap: 5px; margin-inline-start: auto; font-weight: 400; color: var(--accent-lt); white-space: nowrap; }
+    .feed-st svg { width: 13px; height: 13px; }
+    .feed-q { font-size: 0.875rem; line-height: 1.45; color: var(--a1); }
+    .feed-q b { font-weight: 500; color: var(--fg); margin-inline-end: 2px; }
+    .feed-a { align-self: flex-end; max-width: 92%; padding: 9px 13px; border-radius: 14px; border-start-end-radius: 4px; background: #0e3a56; border: 1px solid rgba(125, 211, 252, 0.28); font-size: 0.875rem; line-height: 1.45; color: var(--fg); }
+    .feed-ring { position: relative; display: grid; place-items: center; width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: var(--accent); color: var(--bg); }
+    .feed-ring svg { width: 12px; height: 12px; }
+    .feed-ring::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--accent); opacity: 0; }
+    .feed-say { font-family: var(--serif); font-size: 1.125rem; line-height: 1.35; color: var(--fg); }
+    html[lang="ar"] .feed-say { font-size: 0.95rem; line-height: 1.7; }
+    @media (prefers-reduced-motion: no-preference) {
+      .js:not(.still) .hero-feed [data-live] { animation: hero-in 800ms var(--ease) both; }
+      .js:not(.still) .hero-feed [data-live="1"] { animation-delay: 700ms; }
+      .js:not(.still) .hero-feed [data-live="2"] { animation-delay: 1500ms; }
+      .js:not(.still) .hero-feed [data-live="3"] { animation-delay: 3300ms; }
+      .js:not(.still) .feed-st { animation: feed-st 500ms ease both; }
+      .js:not(.still) [data-live="1"] .feed-st { animation-delay: 1500ms; }
+      .js:not(.still) [data-live="2"] .feed-st, .js:not(.still) .feed-say { animation: feed-st 500ms ease both 3100ms; }
+      .js:not(.still) [data-live="3"] .feed-st { animation-delay: 4100ms; }
+      .js:not(.still) .feed-ring::after { animation: live 700ms ease-out 1700ms 2; }
+    }
+    @keyframes feed-st { from { opacity: 0; } to { opacity: 1; } }
+    @media (max-width: 1179px) and (min-aspect-ratio: 1/1) {
+      .hero-inner { flex-direction: column; align-items: flex-start; }
+      html[dir="rtl"] .hero-inner { flex-direction: column; }
+      .hero-copy { flex-basis: auto; }
+    }
     /* Einstieg einmal beim Laden: Überschrift, dann der Rest; das Bild selbst blendet nicht ein (LCP) */
     @media (prefers-reduced-motion: no-preference) {
       .js:not(.still) .hero-copy > * { animation: hero-in 1100ms var(--ease) both; }
@@ -583,30 +618,24 @@
     .hadi-pop-close:hover { color: var(--fg); background: rgba(255, 255, 255, 0.06); }
     html[dir="rtl"] .hadi-pop-close { right: auto; left: 6px; }
 
-    /* Handy und hochkant: Bild oben, Text darunter auf dem Grund (kein Text über Hadis Gesicht) */
+    /* Handy und hochkant: erst der Text vor der Lobby, darunter die Live-Karte */
     @media (max-aspect-ratio: 1/1) {
-      .hero { display: block; min-height: 0; padding: 0 0 clamp(56px, 10vw, 88px); }
-      .hero-art { position: relative; inset: auto; z-index: 0; height: min(78svh, 125vw); }
-      .hero-stage { --ar: 0.8; --fx: 0.5; --fy: 0; }
-      .blink--l { --x: 0.400; --y: 0.313; --bw: 0.05; --bh: 0.072; }
-      .blink--r { --x: 0.5236; --y: 0.2989; --bw: 0.06; --bh: 0.075; }
-      .hero::before { display: none; }
-      .hero-art::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(7, 11, 22, 0.5) 0%, rgba(7, 11, 22, 0) 16%, rgba(7, 11, 22, 0) 52%, var(--bg) 99%); /* taste-skill-ignore: Scrim über dem Foto */
-      }
-      .hero-inner { position: relative; z-index: 1; margin-top: calc(-1 * clamp(96px, 24vw, 220px)); }
-      .hero-copy { max-width: 620px; }
+      .hero { display: block; min-height: 0; padding: clamp(150px, 34vh, 300px) 0 clamp(56px, 10vw, 88px); }
+      .hero::before { background: linear-gradient(180deg, rgba(7, 11, 22, 0.5) 0%, rgba(7, 11, 22, 0.1) 14%, rgba(7, 11, 22, 0.55) 40%, rgba(7, 11, 22, 0.7) 100%); } /* taste-skill-ignore: Scrim über dem Foto */
+      .hero-inner { flex-direction: column; align-items: stretch; gap: clamp(40px, 10vw, 72px); }
+      html[dir="rtl"] .hero-inner { flex-direction: column; }
+      .hero-feed { width: min(420px, 100%); margin: 0; align-self: stretch; }
+      .hero-copy { flex-basis: auto; max-width: 620px; }
       .hero-sub { margin-top: 20px; }
       .hero-ctas .btn { flex: 1 1 220px; }
       .hadi-pop { display: none; }
     }
 
     /* ══ Benchmark: die Zahl als Aussage, ohne Karte ══════════════ */
-    .band { padding-block: clamp(72px, 9vw, 136px); }
+    .band { padding-block: clamp(32px, 5vw, 72px); }
     .band-grid {
+      padding: clamp(28px, 4.4vw, 64px);
+      border-radius: 20px;
       display: grid;
       grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
       gap: clamp(28px, 6vw, 104px);
@@ -636,7 +665,7 @@
        Keine stehende Bühne, kein Scroll-Bezug: jede Zeile spielt ihre kleine Oberfläche einmal, wenn sie ins Bild kommt. */
     .night-head { max-width: 720px; margin-bottom: clamp(56px, 7vw, 104px); }
     .night-head .h2 { margin-bottom: 22px; }
-    .log { position: relative; display: flex; flex-direction: column; gap: clamp(56px, 7vw, 104px); }
+    .log { position: relative; display: flex; flex-direction: column; gap: clamp(28px, 4vw, 56px); }
     /* Zeitleiste: eine feine Linie verbindet die Uhrzeiten */
     .log::before {
       content: '';
@@ -652,13 +681,15 @@
       grid-template-columns: minmax(0, 3fr) minmax(0, 4.4fr) minmax(0, 4.6fr);
       gap: clamp(24px, 3.6vw, 64px);
       align-items: start;
-      padding-inline-start: 40px;
+      margin-inline-start: 40px;
+      padding: clamp(24px, 3vw, 44px);
+      border-radius: 20px;
     }
     .log-row::before {
       content: '';
       position: absolute;
-      inset-inline-start: 0;
-      top: clamp(18px, 2.2vw, 30px);
+      inset-inline-start: -41px;
+      top: clamp(42px, 5.2vw, 74px);
       width: 11px;
       height: 11px;
       border-radius: 50%;
@@ -689,7 +720,8 @@
       .log-time { grid-column: 1 / -1; }
     }
     @media (max-width: 699px) {
-      .log-row { grid-template-columns: minmax(0, 1fr); gap: 16px; padding-inline-start: 32px; }
+      .log-row { grid-template-columns: minmax(0, 1fr); gap: 16px; margin-inline-start: 24px; padding: 22px 18px; }
+      .log-row::before { inset-inline-start: -25px; top: 34px; }
       .log::before { inset-inline-start: 5px; }
       .log-ui { margin-top: 10px; }
     }
@@ -708,6 +740,39 @@
     .bubble--in { align-self: flex-start; border-start-start-radius: 5px; }
     .bubble--out { align-self: flex-end; background: #0e3a56; border-color: rgba(125, 211, 252, 0.28); border-start-end-radius: 5px; }
     .bubble--out time { color: var(--accent-lt); }
+    .bubble-who { display: block; margin-bottom: 3px; font-size: 0.8125rem; font-weight: 500; color: var(--accent-text); }
+    /* Fünf-Sterne-Antwort: markierte Stellen tragen eine Ziffer, die Notizen darunter dieselbe (CSS-Zähler) */
+    .bubble--out { counter-reset: hl; }
+    .bubble mark {
+      color: inherit;
+      background: none;
+      text-decoration-line: underline;
+      text-decoration-color: var(--accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+      counter-increment: hl;
+    }
+    .bubble mark::after, .notes li::before {
+      display: inline-grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: var(--sans);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      line-height: 1;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    .bubble mark::after { content: counter(hl); margin-inline-start: 4px; vertical-align: 1px; }
+    .notes { align-self: flex-end; width: 100%; max-width: 340px; margin-top: 6px; counter-reset: note; }
+    .notes-h { margin-bottom: 6px; font-size: 0.8125rem; font-weight: 500; color: var(--ink-3); }
+    .notes li { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 0.875rem; color: var(--ink-2); counter-increment: note; }
+    .notes li::before { content: counter(note); flex-shrink: 0; }
+    .call-say { max-width: 360px; margin-block: 6px 8px; padding-inline-start: 16px; border-inline-start: 1px solid var(--accent); font-family: var(--serif); font-size: 1.3rem; line-height: 1.35; color: var(--ink); }
+    html[lang="ar"] .call-say { font-size: 1.05rem; line-height: 1.7; }
     .ui-tag { align-self: flex-start; display: inline-flex; align-items: center; gap: 9px; padding: 7px 14px; border-radius: var(--pill); background: var(--inset); border: 1px solid var(--line); font-size: 0.8125rem; color: var(--ink-2); }
     .ui-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--a4); }
     .ui-tag svg { width: 15px; height: 15px; }
@@ -736,18 +801,24 @@
     }
 
     /* ══ Morgengrauen: 07:00, Übergabe an das Team; ab hier wird die Seite hell ══ */
-    .dawn { position: relative; isolation: isolate; overflow: clip; background: var(--bg); }
-    .dawn-art { position: relative; aspect-ratio: 21 / 9; min-height: 520px; max-height: 88svh; width: 100%; }
-    .dawn-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 78% 40%; }
-    .dawn-art::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(90deg, rgba(7, 11, 22, 0.82) 0%, rgba(7, 11, 22, 0.5) 34%, rgba(7, 11, 22, 0) 58%),
-        linear-gradient(180deg, var(--bg) 0%, rgba(7, 11, 22, 0) 18%, rgba(7, 11, 22, 0) 70%, rgba(237, 241, 245, 0.0) 100%); /* taste-skill-ignore: Scrim über dem Foto */
+    /* Derselbe Raum wie nachts (gleicher Ausschnitt, feste Ebene): an der Grenze wird es hell, ohne Animation */
+    .dawn { display: flex; align-items: center; min-height: max(92svh, 600px); padding-block: 128px clamp(140px, 14vw, 200px); }
+    .dawn .stage-bg::after { background: linear-gradient(90deg, rgba(7, 11, 22, 0.72) 0%, rgba(7, 11, 22, 0.42) 38%, rgba(7, 11, 22, 0.08) 66%); } /* taste-skill-ignore: Scrim über dem Foto */
+    .dawn-copy { width: 100%; }
+    .dawn-copy .wrap { display: flex; align-items: center; justify-content: space-between; gap: clamp(32px, 5vw, 80px); }
+    .dawn-copy .wrap > div { flex: 0 1 560px; }
+    .hadi-clip.hadi-clip--dawn { flex: 0 0 auto; width: clamp(200px, 21vw, 300px); margin-inline-end: clamp(0px, 15vw, 260px); padding: 6px; border-radius: 20px; }
+
+    /* Kleine Hadi-Clips (alte Film-Clips, Schild je Bild entfernt): spielen einmal, wenn sie ins Bild kommen, kein Loop.
+       Die Zeile darunter erscheint am Ende; ohne Skript, mit ?dev=1 und bei reduzierter Bewegung steht sie gleich. */
+    .hadi-clip { position: relative; margin: 0; }
+    .hadi-clip video { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; background: #0b1020; }
+    .hadi-clip-cap { position: absolute; inset-inline-start: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 9px; padding: 7px 14px; border-radius: var(--pill); background: rgba(7, 11, 22, 0.72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font-size: 0.875rem; color: var(--fg); transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
+    .hadi-clip--dawn .hadi-clip-cap { font-family: var(--serif); font-size: 1.25rem; padding: 6px 16px; }
+    html[lang="ar"] .hadi-clip--dawn .hadi-clip-cap { font-size: 1rem; }
+    @media (prefers-reduced-motion: no-preference) {
+      .js:not(.still) .hadi-clip--dawn:not(.is-done) .hadi-clip-cap { opacity: 0; transform: translateY(8px); }
     }
-    .dawn-copy { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; }
     .dawn-copy .wrap > div { max-width: 560px; margin-left: 0; margin-right: auto; color: var(--fg); }
     .dawn-time { display: block; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: clamp(5rem, 11vw, 10rem); line-height: 0.85; letter-spacing: -0.03em; font-variant-numeric: lining-nums; direction: ltr; unicode-bidi: isolate; }
     html[dir="rtl"] .dawn-time { text-align: right; }
@@ -767,11 +838,11 @@
       .handover-rows { grid-template-columns: minmax(0, 1fr); }
     }
     @media (max-aspect-ratio: 1/1) {
-      .dawn-art { aspect-ratio: 4 / 5; min-height: 0; max-height: none; }
-      .dawn-art img { object-position: 60% 30%; }
-      .dawn-art::after { background: linear-gradient(180deg, var(--bg) 0%, rgba(7, 11, 22, 0) 20%, rgba(7, 11, 22, 0) 62%, var(--bg) 99%); } /* taste-skill-ignore: Scrim über dem Foto */
-      /* Handy: Text unter dem Bild, nicht über Hadis Gesicht */
-      .dawn-copy { position: relative; inset: auto; margin-top: calc(-1 * clamp(56px, 16vw, 120px)); padding-bottom: clamp(104px, 26vw, 160px); }
+      .dawn-copy .wrap { flex-direction: column-reverse; align-items: flex-start; gap: 28px; }
+      .dawn-copy .wrap > div { flex-basis: auto; }
+      .hadi-clip.hadi-clip--dawn { width: min(56vw, 260px); margin: 0; }
+      .dawn { align-items: flex-end; min-height: 100svh; }
+      .dawn .stage-bg::after { background: linear-gradient(180deg, rgba(7, 11, 22, 0.1) 0%, rgba(7, 11, 22, 0.1) 30%, rgba(7, 11, 22, 0.7) 70%); } /* taste-skill-ignore: Scrim über dem Foto */
     }
 
     /* ══ Live-Beispiel (Tag): Demo im Handy, Hadi selbst schreiben, Erklärvideo ══ */
@@ -933,28 +1004,61 @@
     .chips-end .text-link { font-size: 0.9375rem; color: var(--fg); text-decoration-color: var(--a3); }
 
     /* Hadi selbst schreiben: Porträt im Tageslicht, WhatsApp, Telefon, QR */
+    /* „Try it yourself“: je Gerät ein Hauptweg. Desktop: QR-Code auf einer dunklen Insel, darunter klein WhatsApp am
+       Computer und das Telefon-Icon. Handy: WhatsApp-Knopf plus Telefon-Icon. Die Nummer steht nirgends sichtbar. */
     .hadi-card {
       display: grid;
-      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-      gap: clamp(28px, 5vw, 80px);
+      grid-template-columns: minmax(0, 3.4fr) minmax(0, 5fr) minmax(0, 3.6fr);
+      gap: clamp(24px, 3.4vw, 56px);
       align-items: center;
       margin-top: clamp(88px, 10vw, 152px);
       padding: clamp(12px, 1.2vw, 16px);
-      padding-inline-end: clamp(24px, 5vw, 80px);
-      overflow: hidden;
     }
-    .hadi-photo { position: relative; overflow: hidden; border-radius: 8px; aspect-ratio: 4 / 5; background: #e6e9ee; }
-    .hadi-photo img { width: 100%; height: 100%; object-fit: cover; }
-    .hadi-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding-block: 16px; }
+    .hadi-clip--card { border-radius: 10px; overflow: hidden; }
+    .hadi-clip--card video { border-radius: 10px; }
+    .hadi-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
     .hadi-copy .h2 { font-size: clamp(2.2rem, 4vw, 3.6rem); }
-    .hadi-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 8px; }
-    .hadi-qr { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
-    .hadi-qr-code { width: 104px; height: 104px; padding: 8px; flex-shrink: 0; border-radius: 10px; background: #fff; border: 1px solid var(--line); }
-    .hadi-qr-code svg { display: block; width: 100%; height: 100%; }
-    .hadi-qr p { font-size: 0.875rem; color: var(--ink-3); max-width: 24ch; }
+    .hadi-actions { display: none; flex-wrap: nowrap; align-items: center; gap: 12px; margin-top: 8px; max-width: 100%; }
+    .hadi-actions .btn { flex: 0 1 auto; min-width: 0; }
     .hadi-note { font-size: 0.875rem; color: var(--ink-3); }
-    @media (hover: none), (pointer: coarse) { .hadi-qr { display: none; } }
-    @media (max-width: 859px) { .hadi-card { grid-template-columns: minmax(0, 1fr); padding-inline-end: clamp(12px, 1.2vw, 16px); } .hadi-copy { padding: 8px 12px 20px; } .hadi-photo { aspect-ratio: 4 / 3; } .hadi-photo img { object-position: 50% 22%; } }
+    .hadi-scan { align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: clamp(24px, 3vw, 36px) 24px 18px; border-radius: 10px; text-align: center; }
+    .hadi-qr-code { width: 164px; height: 164px; padding: 12px; flex-shrink: 0; border-radius: 12px; background: #fff; }
+    .hadi-qr-code svg { display: block; width: 100%; height: 100%; }
+    .hadi-scan-text { max-width: 26ch; font-size: 0.9375rem; line-height: 1.5; color: var(--ink); }
+    .hadi-scan-links { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 12px; font-size: 0.875rem; }
+    .hadi-scan-links a:not(.icon-btn) { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent-lt); text-underline-offset: 4px; }
+    @media (max-width: 1099px) {
+      .hadi-card { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
+      .hadi-scan { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; text-align: start; }
+    }
+    @media (hover: none), (pointer: coarse) {
+      .hadi-card { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); padding-inline-end: clamp(20px, 4vw, 56px); }
+      .hadi-actions { display: flex; }
+      .hadi-scan { display: none; }
+    }
+    @media (max-width: 859px) {
+      .hadi-card { grid-template-columns: minmax(0, 1fr); padding: 12px 12px 24px; }
+      .hadi-clip--card video { aspect-ratio: 4 / 3; object-position: 50% 30%; }
+      .hadi-copy { padding: 8px 10px 0; }
+    }
+
+    /* Runder Knopf nur mit Icon (Telefon: die Nummer bleibt hinter dem tel:-Link, Owner 16.11.2026) */
+    .icon-btn {
+      display: inline-grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      border: 1px solid var(--line-2);
+      color: var(--ink);
+      background: transparent;
+      transition: border-color 180ms ease, background-color 180ms ease;
+    }
+    .icon-btn:hover { border-color: var(--ink-3); background: var(--inset); }
+    .icon-btn svg { width: 18px; height: 18px; }
+    .icon-btn--sm { width: 44px; height: 44px; }
+    .hadi-pop .icon-btn { color: var(--accent-lt); border-color: rgba(125, 211, 252, 0.3); }
 
     /* Erklärvideo */
     .video-row {
@@ -1094,6 +1198,9 @@
     }
     .inbox-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); color: var(--ink); }
     .inbox-ico svg { width: 18px; height: 18px; }
+    /* Markenglyphen nur als Kanal-Kennzeichen (WhatsApp-Grün, Instagram-Verlauf) */
+    .inbox-ico--brand svg { width: 20px; height: 20px; }
+    .ico-wa { color: #25D366; }
     .inbox-txt { min-width: 0; }
     .inbox-txt b { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--ink-3); }
     .inbox-txt > span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9375rem; color: var(--ink); }
@@ -1175,9 +1282,12 @@
       bottom: clamp(24px, 4vw, 48px);
       display: grid;
       gap: 2px;
+      max-width: min(340px, calc(100% - 32px));
       padding: 18px 24px;
     }
     .founder-name { font-family: var(--serif); font-size: 1.75rem; line-height: 1.15; }
+    /* Qualifikation (Owner-Freigabe 16.11.2026): staatlich geprüfter Hotelbetriebswirt, Hotelfachschule Heidelberg */
+    .founder-cred { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 0.8125rem; line-height: 1.5; color: var(--ink-2); }
     .founder-copy { display: flex; flex-direction: column; gap: 22px; }
     .founder-copy .eyebrow { margin-bottom: -2px; }
     .founder-copy .h2 { margin-bottom: 6px; }
@@ -1318,7 +1428,8 @@
     .steps p { font-size: 0.9375rem; color: var(--ink-2); }
     .direct { display: flex; flex-direction: column; gap: 10px; }
     .direct-label { font-size: 0.9375rem; color: var(--ink-2); }
-    .direct-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .direct-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .direct-links .icon-btn { width: 44px; height: 44px; }
     /* Calendly zeigt Kalender und Uhrzeiten erst ab ~900px nebeneinander; breiter wird nur der weiße Rand */
     .contact-side { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 1000px; margin-inline: auto; }
 
@@ -1461,27 +1572,42 @@
     .form-err a { color: inherit; }
 
     /* ── Footer (Nacht): kompakt; unten Platz für die Floating Buttons und den Cookie-Hinweis ── */
-    .footer { position: relative; padding-block: clamp(64px, 7vw, 96px) calc(120px + var(--cookie-h, 0px)); background: var(--bg); color: var(--fg); }
-    .footer-grid { display: grid; grid-template-columns: minmax(0, 5fr) repeat(2, minmax(0, 2fr)); gap: clamp(32px, 5vw, 72px); }
-    .footer-logo { height: 20px; width: auto; margin-bottom: 26px; }
-    .footer-slogan { font-family: var(--serif); font-weight: 300; font-size: 2rem; line-height: 1.15; margin-bottom: 14px; }
+    /* Kompakt (Owner 16.11.2026: „viel zu hoch“). Unten nur Platz für den Cookie-Hinweis; die Floating Buttons sind
+       über dem Footer ohnehin aus (html.fabs-off). */
+    .footer { position: relative; padding-block: clamp(48px, 5vw, 72px) calc(28px + var(--cookie-h, 0px)); background: var(--bg); color: var(--fg); }
+    .footer-grid { display: grid; grid-template-columns: minmax(0, 5fr) repeat(2, minmax(0, 2fr)); gap: clamp(28px, 5vw, 72px); }
+    .footer-logo { height: 20px; width: auto; margin-bottom: 20px; }
+    .footer-slogan { font-family: var(--serif); font-weight: 300; font-size: 1.75rem; line-height: 1.15; margin-bottom: 10px; }
     .footer-tagline { color: var(--a1); font-size: 0.9375rem; max-width: 42ch; }
-    .footer h2 { font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--a3); margin-bottom: 16px; }
-    .footer-links { display: flex; flex-direction: column; gap: 4px; }
+    .footer-social { display: flex; gap: 8px; margin-top: 20px; }
+    .footer-social a { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.12); color: var(--a1); transition: color 180ms ease, border-color 180ms ease; }
+    .footer-social a:hover { color: var(--fg); border-color: rgba(255, 255, 255, 0.32); }
+    .footer-social svg { width: 18px; height: 18px; }
+    .footer h2 { font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--a3); margin-bottom: 10px; }
+    .footer-links { display: flex; flex-direction: column; }
     .footer-links a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; font-size: 0.9375rem; transition: color 180ms ease; }
+    @media (pointer: fine) { .footer-links a { min-height: 34px; } }
     .footer-links a:hover { color: var(--accent-lt); }
     .footer-base {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       gap: 12px 32px;
-      margin-top: clamp(40px, 5vw, 64px);
-      padding-top: 24px;
+      margin-top: clamp(32px, 4vw, 48px);
+      padding-top: 20px;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       font-size: 0.8125rem;
       color: var(--a2);
     }
-    @media (max-width: 767px) { .footer-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .footer-about { grid-column: 1 / -1; } }
+    @media (max-width: 767px) {
+      .footer { padding-top: 40px; }
+      .footer-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+      .footer-logo { margin-bottom: 14px; }
+      .footer-social { margin-top: 16px; }
+      .footer h2 { margin-bottom: 2px; }
+      .footer-links { flex-direction: row; flex-wrap: wrap; column-gap: 20px; }
+      .footer-base { margin-top: 20px; }
+    }
 
     /* ── Cookie-Hinweis ────────────────────────────────────────── */
     .cookie {
@@ -1507,7 +1633,7 @@
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .js .reveal { opacity: 1; transform: none; transition: none; }
-      .msg, .typing span, .wave i, .flow::after, .blink, .live-dot::after { animation: none; }
+      .msg, .typing span, .wave i, .flow::after, .live-dot::after { animation: none; }
       .btn, .chip, .faq-a, .faq-arrow, .scene img { transition: none; }
     }
 
@@ -1525,9 +1651,19 @@
 
 <a class="skip-link" href="#inhalt" data-i18n="a11y.skip">Skip to content</a>
 
-<!-- Symbole (Lucide-Stil, 24er Raster), Kanäle ohne Markenlogos -->
+<!-- Symbole (Lucide-Stil, 24er Raster). Markenglyphen (WhatsApp, Instagram, LinkedIn, Facebook, YouTube) nur als
+     Kanal-Kennzeichen oder Profil-Link, nie als Partner- oder Zertifikats-Badge (Owner 16.11.2026) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
+    <linearGradient id="ig-grad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#FEDA75"/><stop offset="0.3" stop-color="#FA7E1E"/><stop offset="0.6" stop-color="#D62976"/><stop offset="0.85" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/>
+    </linearGradient>
+    <symbol id="i-wa" viewBox="0 0 32 32"><path fill="currentColor" stroke="none" d="M16 2C8.268 2 2 8.268 2 16c0 2.462.665 4.766 1.825 6.748L2 30l7.44-1.795A13.93 13.93 0 0016 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm0 25.5a11.45 11.45 0 01-5.836-1.597l-.418-.248-4.418 1.066 1.1-4.295-.273-.44A11.468 11.468 0 014.5 16C4.5 9.649 9.649 4.5 16 4.5S27.5 9.649 27.5 16 22.351 27.5 16 27.5zm6.29-8.61c-.344-.172-2.035-1.004-2.35-1.118-.316-.115-.546-.172-.777.172-.23.344-.89 1.118-1.09 1.348-.2.23-.402.258-.746.086-.344-.172-1.452-.535-2.766-1.707-1.022-.913-1.712-2.040-1.912-2.384-.2-.344-.021-.53.15-.701.155-.154.344-.402.516-.603.172-.2.23-.344.344-.573.115-.23.058-.43-.028-.603-.086-.172-.777-1.876-1.065-2.567-.28-.673-.565-.582-.777-.593l-.662-.011c-.23 0-.603.086-.918.43-.316.344-1.205 1.177-1.205 2.87s1.234 3.329 1.406 3.559c.172.23 2.43 3.71 5.886 5.203.822.355 1.464.567 1.963.726.825.263 1.576.226 2.17.137.662-.1 2.035-.831 2.322-1.634.287-.803.287-1.49.2-1.634-.086-.143-.316-.23-.66-.401z"/></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.4" cy="6.6" r="1.25" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-ig-color" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="url(#ig-grad)" stroke-width="2"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="url(#ig-grad)" stroke-width="2"/><circle cx="17.4" cy="6.6" r="1.25" fill="#D62976" stroke="none"/></symbol>
+    <symbol id="i-li" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></symbol>
+    <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07z"/></symbol>
+    <symbol id="i-yt" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.81zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></symbol>
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
@@ -1586,26 +1722,26 @@
 <main id="inhalt" tabindex="-1">
 
 <!-- ══════════════════════════════════════════════════════════
-     HERO: Hadi nachts am Empfang. Ein Standbild (build/site-images.mjs), kein Video, nichts hängt am Scroll.
-     Live-Zeile mit der Uhrzeit des Besuchers; „Hadi schreiben“ öffnet am Handy WhatsApp, am Desktop ein Fenster mit QR-Code.
+     FESTE BÜHNE (Nacht): Die Lobby steht still (.stage-bg, position: fixed, per clip-path auf die Bühne begrenzt),
+     Hero, Benchmark und Nachtprotokoll gleiten als Glas darüber. Kein Skript, nichts hängt am Scroll.
+     Seit 16.11.2026 ohne Hadi im Bild (Owner: der starre Frontalblick wirkte unästhetisch); Hadi ist die Stimme.
 ══════════════════════════════════════════════════════════ -->
-<section id="top" class="hero" data-theme="night" aria-labelledby="hero-title">
-  <div class="hero-art">
-    <div class="hero-stage">
-      <picture>
-        <source media="(max-aspect-ratio: 1/1)" srcset="/media/site/hero-phone-720.webp?v=99bc28e5 720w, /media/site/hero-phone-1080.webp?v=60dcf6a7 1080w, /media/site/hero-phone-1440.webp?v=1f11746e 1440w" sizes="100vw" width="1440" height="1800" />
-        <img class="hero-img" src="/media/site/hero-1920.webp?v=565b71ca" srcset="/media/site/hero-1280.webp?v=be9eeb30 1280w, /media/site/hero-1920.webp?v=565b71ca 1920w, /media/site/hero-2560.webp?v=6da11a02 2560w" sizes="100vw" width="2560" height="1440" fetchpriority="high" alt="Hadi, the HYBOTE digital concierge, at a hotel front desk at night" data-i18n-alt="hero.alt" />
-      </picture>
-      <i class="blink blink--l" aria-hidden="true"></i>
-      <i class="blink blink--r" aria-hidden="true"></i>
-    </div>
+<div class="stage stage--night">
+  <div class="stage-bg" aria-hidden="true">
+    <picture>
+      <source media="(max-aspect-ratio: 1/1)" srcset="/media/site/hero-phone-720.webp?v=d9aff28d 720w, /media/site/hero-phone-1080.webp?v=bfcebc12 1080w" sizes="100vw" width="1080" height="1659" />
+      <img class="hero-img" src="/media/site/hero-1920.webp?v=e5f93846" srcset="/media/site/hero-1280.webp?v=3e8db984 1280w, /media/site/hero-1920.webp?v=e5f93846 1920w" sizes="100vw" width="1920" height="1569" fetchpriority="high" alt="" />
+    </picture>
   </div>
 
+<!-- HERO: Live-Zeile mit der Uhrzeit des Besuchers; „Hadi schreiben“ öffnet am Handy WhatsApp, am Desktop ein Fenster
+     mit QR-Code. Die Live-Karte spielt ihr Beispiel einmal beim Laden ab (kein Loop). -->
+<section id="top" class="hero" data-theme="night" aria-labelledby="hero-title">
   <div class="wrap hero-inner">
     <div class="hero-copy">
       <p class="eyebrow" data-i18n="hero.eyebrow">AI agents for customer enquiries</p>
-      <h1 id="hero-title" class="hero-title" data-i18n="hero.h1">Every enquiry answered.<br/>Day and night.</h1>
-      <p class="hero-sub" data-i18n="hero.sub">AI agents that answer every customer enquiry on WhatsApp, phone, email and Instagram. Around the clock, to a five-star service standard.</p>
+      <h1 id="hero-title" class="hero-title" data-i18n="hero.h1">Five-star answers.<br/>Day and night.</h1>
+      <p class="hero-sub" data-i18n="hero.sub">AI agents that answer every enquiry on WhatsApp, phone, email and Instagram within seconds: by name, in the customer's language, with real appointment times.</p>
       <p class="hero-status"><span class="live-dot" aria-hidden="true"></span><span id="hero-status" data-i18n="hero.status0">Hadi is at the front desk. Day and night.</span></p>
       <div class="hero-ctas">
         <a href="#kontakt" class="btn btn--primary" data-i18n="hero.cta1">Free intro call</a>
@@ -1620,25 +1756,39 @@
             <p data-i18n="hadi.pop.p">Scan the code with your phone, or open WhatsApp on this computer.</p>
             <div class="hadi-pop-links">
               <a href="https://wa.me/16505146359?text=Hi%20Hadi%20(Website)" target="_blank" rel="noopener" data-i18n="hadi.pop.wa">Open WhatsApp</a>
-              <a href="tel:+16505146359" dir="ltr">+1 650 514 6359</a>
+              <a class="icon-btn icon-btn--sm" href="tel:+16505146359" aria-label="Call Hadi" data-i18n-aria="hadi.call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-phone"/></svg></a>
             </div>
           </div>
           <button type="button" class="hadi-pop-close" id="hadi-pop-close" aria-label="Close" data-i18n-aria="hadi.pop.close">&times;</button>
         </div>
       </div>
       <ul class="hero-trust">
-        <li data-i18n="hero.trust1">Verified Meta Tech Provider</li>
+        <li data-i18n="hero.hotelier">Founded by a hotelier</li>
         <li data-i18n="hero.trust2">GDPR Compliant</li>
         <li data-i18n="hero.trust3">Over 50 languages</li>
       </ul>
-      <div class="hero-clients">
-        <p data-i18n="hero.clients">In use at</p>
-        <ul>
-          <li><img src="/media/kunden/tim.webp" width="153" height="120" alt="Tim Sprachendienste" decoding="async" /></li>
-          <li><img src="/media/kunden/finanztime.webp" width="188" height="120" alt="Finanztime" decoding="async" /></li>
-          <li><img src="/media/kunden/bucan.webp" width="183" height="120" alt="Bucan Automobile" decoding="async" /></li>
-        </ul>
-      </div>
+      <p class="hero-proof"><a href="https://www.trustpilot.com/review/hybote.ai" target="_blank" rel="noopener"><span data-i18n="hero.tp">Read our client reviews on Trustpilot</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+    </div>
+
+    <!-- Drei kleine Beispiele aus einer Nacht (Owner 16.11.2026): WhatsApp, ein Anruf, der angenommen wird, Instagram.
+         Sie erscheinen einmal beim Laden nacheinander (kein Loop); ohne Skript, mit ?dev=1 und bei reduzierter Bewegung
+         steht der Endzustand. Bewusst andere Branchen als im Nachtprotokoll (Immobilien). -->
+    <div class="hero-feed">
+      <p class="feed-label" data-i18n="hero.feed">Examples from tonight</p>
+      <article class="feed-card glass" data-live="1">
+        <p class="feed-head"><svg class="feed-ico feed-ico--wa" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-wa"/></svg><span data-i18n="svc.ch.wa">WhatsApp</span><time dir="ltr">23:47</time><span class="feed-st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="hero.st6">Answered in 6 s</span></span></p>
+        <p class="feed-q"><b data-i18n="hero.wa.who">Karim</b> <span data-i18n="hero.wa.q">Is the white SUV still available?</span></p>
+        <p class="feed-a" data-i18n="hero.wa.a">Good evening, Mr Rahman. Yes, it is. Would Saturday at 10:00 or 14:30 suit you for a test drive?</p>
+      </article>
+      <article class="feed-card feed-card--call glass" data-live="2">
+        <p class="feed-head"><span class="feed-ring" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-phone"/></svg></span><span data-i18n="hero.call.h">Incoming call</span><time dir="ltr">23:58</time><span class="feed-st feed-st--call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="hero.call.st">First ring</span></span></p>
+        <p class="feed-say" data-i18n="hero.call.say">“Good evening, Marina Dental. How may I help you?”</p>
+      </article>
+      <article class="feed-card glass" data-live="3">
+        <p class="feed-head"><svg class="feed-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ig-color"/></svg><span data-i18n="svc.ch.ig">Instagram</span><time dir="ltr">02:14</time><span class="feed-st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="hero.st9">Answered in 9 s</span></span></p>
+        <p class="feed-q"><b dir="ltr">lina.k</b> <span data-i18n="hero.ig.q">Do you have an appointment on Thursday?</span></p>
+        <p class="feed-a" data-i18n="hero.ig.a">Good evening, Lina. Thursday at 9:30 or 16:00 are free. Shall I book one for you?</p>
+      </article>
     </div>
   </div>
 </section>
@@ -1648,7 +1798,8 @@
      BENCHMARK: die eigene Studie als Beleg direkt nach dem Hero, Link auf /benchmark/
 ══════════════════════════════════════════════════════════ -->
 <section id="benchmark" data-theme="night" class="band" tabindex="-1" aria-labelledby="band-title">
-  <div class="wrap band-grid">
+  <div class="wrap">
+   <div class="band-grid glass">
     <p class="band-num reveal" dir="ltr"><span data-count="63">63</span><small>%</small></p>
     <div class="band-copy">
       <p class="eyebrow reveal" data-i18n="band.eyebrow">Benchmark</p>
@@ -1660,6 +1811,7 @@
       </ul>
       <a class="text-link reveal" href="/benchmark/" data-i18n="band.link">Read the benchmark</a>
     </div>
+   </div>
   </div>
 </section>
 
@@ -1673,11 +1825,11 @@
     <div class="night-head">
       <p class="eyebrow reveal" data-i18n="night.eyebrow">An example night</p>
       <h2 id="night-title" class="h2 reveal" data-i18n="night.h2">A night at the front desk</h2>
-      <p class="lead reveal" data-i18n="night.sub">From closing time to the next morning at a real estate agency. Every entry is something the agent handles on its own.</p>
+      <p class="lead reveal" data-i18n="night.sub">From closing time to the next morning at a real estate agency. Every entry is something the agent handles on its own, to the standard of a five-star front desk.</p>
     </div>
 
     <ol class="log">
-      <li class="log-row reveal">
+      <li class="log-row glass reveal">
         <time class="log-time">23:47<small>:12</small></time>
         <div class="log-copy">
           <p class="log-label" data-i18n="night.1.l">Enquiry received</p>
@@ -1686,24 +1838,34 @@
         </div>
         <div class="log-ui" aria-hidden="true">
           <p class="ui-tag" data-step style="--step:0" data-i18n="night.1.ui">Office closed since 18:00</p>
-          <p class="bubble bubble--in" data-step style="--step:1"><span data-i18n="night.2.q">Hello, is the apartment on Harbour Terrace still available?</span><time>23:47</time></p>
+          <p class="bubble bubble--in" data-step style="--step:1"><span class="bubble-who" data-i18n="night.who">Sara Haddad · WhatsApp</span><span data-i18n="night.2.q">Good evening, is the apartment on Harbour Terrace still available? We would need a parking space.</span><time>23:47</time></p>
         </div>
       </li>
 
-      <li class="log-row reveal">
+      <li class="log-row glass reveal">
         <time class="log-time">23:47<small>:18</small></time>
         <div class="log-copy">
           <p class="log-label" data-i18n="night.2.l">Answered</p>
           <h3 class="log-title" data-i18n="night.2.h">Answered in six seconds.</h3>
-          <p class="log-body" data-i18n="night.2.p">In the customer's language and in the tone of your business. Nobody on your team has to get up.</p>
+          <p class="log-body" data-i18n="night.2.p">As at a five-star front desk: personal, complete and with a concrete next step. Nobody on your team has to get up.</p>
         </div>
-        <div class="log-ui" aria-hidden="true">
-          <p class="bubble bubble--in" data-step style="--step:0"><span data-i18n="night.2.q">Hello, is the apartment on Harbour Terrace still available?</span><time>23:47</time></p>
-          <p class="bubble bubble--out" data-step style="--step:1"><span data-i18n="night.2.a">Good evening. Yes, it is still available. Would you like to see it this weekend?</span><time>23:47</time></p>
+        <!-- Die Antwort ist hier der Inhalt: markierte Stellen (<mark>, per CSS-Zähler nummeriert) und die Notizen darunter
+             zeigen, woran man Fünf-Sterne-Service erkennt. Deshalb nicht aria-hidden wie die übrigen Oberflächen. -->
+        <div class="log-ui">
+          <p class="bubble bubble--in" data-step style="--step:0"><span class="bubble-who" data-i18n="night.who">Sara Haddad · WhatsApp</span><span data-i18n="night.2.q">Good evening, is the apartment on Harbour Terrace still available? We would need a parking space.</span><time>23:47</time></p>
+          <p class="bubble bubble--out" data-step style="--step:1"><span data-i18n="night.2.a">Good evening, <mark>Ms Haddad</mark>, and thank you for your message. Yes, the apartment on Harbour Terrace is still available, <mark>with its own underground parking space</mark>. I can offer you a private viewing on <mark>Saturday at 11:00 or 15:30</mark>. Which time suits you better?</span><time>23:47</time></p>
+          <div class="notes">
+            <p class="notes-h" data-step style="--step:2" data-i18n="night.2.nh">Why this reply is five-star</p>
+            <ol>
+              <li data-step style="--step:2.4" data-i18n="night.2.n1">Addressed by name</li>
+              <li data-step style="--step:2.8" data-i18n="night.2.n2">The parking question is answered too</li>
+              <li data-step style="--step:3.2" data-i18n="night.2.n3">Two concrete times, one clear question</li>
+            </ol>
+          </div>
         </div>
       </li>
 
-      <li class="log-row reveal">
+      <li class="log-row glass reveal">
         <time class="log-time">23:49<small>:02</small></time>
         <div class="log-copy">
           <p class="log-label" data-i18n="night.3.l">Booked</p>
@@ -1711,7 +1873,9 @@
           <p class="log-body" data-i18n="night.3.p">Budget, need and timing are clarified. The appointment goes into your calendar, and your team receives a short summary.</p>
         </div>
         <div class="log-ui" aria-hidden="true">
-          <div class="booking" data-step style="--step:0">
+          <p class="bubble bubble--in" data-step style="--step:0"><span data-i18n="night.3.q">11:00, please.</span><time>23:48</time></p>
+          <p class="bubble bubble--out" data-step style="--step:1"><span data-i18n="night.3.a">Very good. Saturday at 11:00 is reserved for you. Omar from our team will welcome you at the entrance, and your parking space will be ready. I wish you a pleasant night.</span><time>23:49</time></p>
+          <div class="booking" data-step style="--step:2">
             <p class="booking-title" data-i18n="night.3.card">Viewing booked</p>
             <p class="booking-slot" data-i18n="demo.s1">Saturday, 11:00</p>
             <p class="booking-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg><span data-i18n="night.3.note">Summary sent to your team</span></p>
@@ -1719,7 +1883,7 @@
         </div>
       </li>
 
-      <li class="log-row reveal">
+      <li class="log-row glass reveal">
         <time class="log-time">23:58<small>:40</small></time>
         <div class="log-copy">
           <p class="log-label" data-i18n="night.4.l">Every channel</p>
@@ -1731,7 +1895,8 @@
             <span class="call-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-phone"/></svg></span>
             <span><b data-i18n="night.4.call">Incoming call</b><span data-i18n="night.4.ring">Answered on the first ring</span></span>
           </div>
-          <ul class="chan-row" data-step style="--step:1">
+          <p class="call-say" data-step style="--step:1" data-i18n="night.4.say">“Good evening, Harbour Estates, digital concierge speaking. How may I help you?”</p>
+          <ul class="chan-row" data-step style="--step:2">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-phone"/></svg><span data-i18n="svc.ch.phone">Phone</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg><span data-i18n="svc.ch.wa">WhatsApp</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-mail"/></svg><span data-i18n="svc.ch.mail">Email</span></li>
@@ -1740,7 +1905,7 @@
         </div>
       </li>
 
-      <li class="log-row reveal">
+      <li class="log-row glass reveal">
         <time class="log-time">02:14<small>:33</small></time>
         <div class="log-copy">
           <p class="log-label" data-i18n="night.5.l">Languages</p>
@@ -1754,16 +1919,18 @@
     </ol>
   </div>
 </section>
+</div><!-- /.stage--night -->
 
 
 <!-- ══════════════════════════════════════════════════════════
      MORGENGRAUEN: 07:00, Übergabe an das Team. Ab hier wird die Seite hell.
 ══════════════════════════════════════════════════════════ -->
-<section id="morgen" class="dawn" aria-labelledby="dawn-title">
-  <div class="dawn-art">
+<section id="morgen" class="dawn stage" aria-labelledby="dawn-title">
+  <!-- Derselbe Raum wie nachts, gleicher Ausschnitt: an der Abschnittsgrenze wird es hell, ohne Animation -->
+  <div class="stage-bg" aria-hidden="true">
     <picture>
-      <source media="(max-aspect-ratio: 1/1)" srcset="/media/site/dawn-phone-720.webp?v=0f5c8ecd 720w, /media/site/dawn-phone-1080.webp?v=88b979bd 1080w" sizes="100vw" width="1080" height="1350" />
-      <img src="/media/site/dawn-1920.webp?v=0c31a033" srcset="/media/site/dawn-1280.webp?v=f4c82f9e 1280w, /media/site/dawn-1920.webp?v=0c31a033 1920w, /media/site/dawn-2560.webp?v=dbdc9881 2560w" sizes="100vw" width="2560" height="1097" loading="lazy" decoding="async" alt="" />
+      <source media="(max-aspect-ratio: 1/1)" srcset="/media/site/dawn-phone-720.webp?v=261f0ec0 720w, /media/site/dawn-phone-1080.webp?v=5a7682ab 1080w" sizes="100vw" width="1080" height="1659" />
+      <img src="/media/site/dawn-1920.webp?v=9cc6d6d9" srcset="/media/site/dawn-1280.webp?v=d0666a53 1280w, /media/site/dawn-1920.webp?v=9cc6d6d9 1920w" sizes="100vw" width="1920" height="1569" decoding="async" alt="" />
     </picture>
   </div>
   <div class="dawn-copy">
@@ -1773,6 +1940,14 @@
         <h2 id="dawn-title" class="dawn-title reveal" data-i18n="dawn.h2">Your team starts with every enquiry handled.</h2>
         <p class="dawn-text reveal" data-i18n="dawn.p">Every conversation is in your CRM, every appointment in your calendar, and where a person is needed, one takes over.</p>
       </div>
+      <!-- Hadi grüßt das Team (alter Film-Clip bell, Schild je Bild entfernt, Ausschnitt folgt Hadi). Spielt einmal, wenn
+           es ins Bild kommt; ohne Skript, mit ?dev=1 und bei reduzierter Bewegung steht das letzte Bild. -->
+      <figure class="hadi-clip hadi-clip--dawn glass">
+        <video class="hadi-vid" muted playsinline preload="metadata" width="600" height="750" poster="/media/site/hadi-morning-start.webp?v=cf757108" data-end="/media/site/hadi-morning-end.webp?v=9f3bdb92" aria-hidden="true">
+          <source src="/media/site/hadi-morning.mp4?v=32eeb8c8" type="video/mp4" />
+        </video>
+        <figcaption class="hadi-clip-cap"><span data-i18n="dawn.hello">Good morning</span></figcaption>
+      </figure>
     </div>
   </div>
 </section>
@@ -1853,10 +2028,16 @@
 
     </div>
 
-    <!-- Hadi ist HYBOTEs eigener Agent (WhatsApp und Telefon +1 650 514 6359, siehe /hadi/) -->
+    <!-- Hadi ist HYBOTEs eigener Agent (WhatsApp und Telefon, siehe /hadi/). Die Nummer steht nirgends sichtbar
+         (Owner 16.11.2026), nur als tel:-Link hinter einem Icon. Je Gerät ein Hauptweg: am Desktop der QR-Code,
+         am Handy der WhatsApp-Knopf. -->
     <div class="hadi-card card reveal" id="hadi">
-      <figure class="hadi-photo">
-        <img src="/media/site/hadi-800.webp?v=e60ed742" srcset="/media/site/hadi-480.webp?v=a796f779 480w, /media/site/hadi-800.webp?v=e60ed742 800w, /media/site/hadi-1200.webp?v=94bcf830 1200w" sizes="(max-width: 859px) 100vw, 34vw" width="1200" height="1500" loading="lazy" decoding="async" alt="Portrait of Hadi, the HYBOTE digital concierge" data-i18n-alt="hadi.alt" />
+      <!-- Hadi greift ans Headset (alter Film-Clip turn, Schild je Bild entfernt); spielt einmal, wenn es ins Bild kommt -->
+      <figure class="hadi-clip hadi-clip--card" data-theme="night">
+        <video class="hadi-vid" muted playsinline preload="metadata" width="600" height="750" poster="/media/site/hadi-call-start.webp?v=1793a267" data-end="/media/site/hadi-call-end.webp?v=26c5a8ee" aria-hidden="true">
+          <source src="/media/site/hadi-call.mp4?v=ef5c1861" type="video/mp4" />
+        </video>
+        <figcaption class="hadi-clip-cap"><span class="live-dot" aria-hidden="true"></span><span data-i18n="hadi.online">Online now</span></figcaption>
       </figure>
       <div class="hadi-copy">
         <p class="eyebrow" data-i18n="hadi.eyebrow">Try it yourself</p>
@@ -1864,19 +2045,20 @@
         <p class="lead" data-i18n="hadi.p">He answers on WhatsApp and by phone, tells you that he is digital and hands over to a person when you need one.</p>
         <div class="hadi-actions">
           <a class="btn btn--primary" href="https://wa.me/16505146359?text=Hi%20Hadi%20(Website)" target="_blank" rel="noopener">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chat"/></svg>
+            <svg width="19" height="19" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-wa"/></svg>
             <span data-i18n="hadi.wa">Message on WhatsApp</span>
           </a>
-          <a class="btn btn--line" href="tel:+16505146359">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-phone"/></svg>
-            <span dir="ltr">+1 650 514 6359</span>
-          </a>
-        </div>
-        <div class="hadi-qr">
-          <div class="hadi-qr-code" data-qr="https://hybote.ai/hadi/" aria-hidden="true"><svg viewBox="0 0 25 25" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><path fill="#070b16" d="M0 0h7v1h-7zM8 0h5v1h-5zM14 0h1v1h-1zM16 0h1v1h-1zM18 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM11 1h2v1h-2zM16 1h1v1h-1zM18 1h1v1h-1zM24 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h1v1h-1zM10 2h7v1h-7zM18 2h1v1h-1zM20 2h3v1h-3zM24 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM9 3h5v1h-5zM15 3h2v1h-2zM18 3h1v1h-1zM20 3h3v1h-3zM24 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM8 4h3v1h-3zM12 4h3v1h-3zM16 4h1v1h-1zM18 4h1v1h-1zM20 4h3v1h-3zM24 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM18 5h1v1h-1zM24 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h7v1h-7zM9 7h1v1h-1zM13 7h2v1h-2zM0 8h1v1h-1zM3 8h6v1h-6zM11 8h2v1h-2zM14 8h4v1h-4zM20 8h1v1h-1zM22 8h3v1h-3zM0 9h1v1h-1zM2 9h1v1h-1zM7 9h1v1h-1zM9 9h3v1h-3zM14 9h2v1h-2zM17 9h1v1h-1zM19 9h5v1h-5zM0 10h7v1h-7zM8 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h1v1h-1zM20 10h2v1h-2zM24 10h1v1h-1zM0 11h1v1h-1zM4 11h2v1h-2zM7 11h2v1h-2zM10 11h1v1h-1zM14 11h2v1h-2zM18 11h1v1h-1zM20 11h5v1h-5zM3 12h2v1h-2zM6 12h3v1h-3zM11 12h2v1h-2zM16 12h1v1h-1zM18 12h2v1h-2zM24 12h1v1h-1zM0 13h2v1h-2zM4 13h2v1h-2zM7 13h1v1h-1zM9 13h1v1h-1zM13 13h3v1h-3zM20 13h1v1h-1zM23 13h1v1h-1zM0 14h7v1h-7zM11 14h5v1h-5zM18 14h1v1h-1zM20 14h5v1h-5zM0 15h1v1h-1zM3 15h3v1h-3zM8 15h2v1h-2zM11 15h1v1h-1zM14 15h1v1h-1zM19 15h1v1h-1zM21 15h2v1h-2zM24 15h1v1h-1zM0 16h1v1h-1zM5 16h2v1h-2zM13 16h1v1h-1zM15 16h6v1h-6zM22 16h2v1h-2zM8 17h1v1h-1zM11 17h3v1h-3zM16 17h1v1h-1zM20 17h1v1h-1zM22 17h2v1h-2zM0 18h7v1h-7zM8 18h4v1h-4zM13 18h2v1h-2zM16 18h1v1h-1zM18 18h1v1h-1zM20 18h1v1h-1zM24 18h1v1h-1zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h1v1h-1zM10 19h1v1h-1zM12 19h2v1h-2zM15 19h2v1h-2zM20 19h1v1h-1zM23 19h1v1h-1zM0 20h1v1h-1zM2 20h3v1h-3zM6 20h1v1h-1zM8 20h3v1h-3zM12 20h1v1h-1zM15 20h6v1h-6zM23 20h2v1h-2zM0 21h1v1h-1zM2 21h3v1h-3zM6 21h1v1h-1zM8 21h3v1h-3zM13 21h2v1h-2zM16 21h3v1h-3zM23 21h2v1h-2zM0 22h1v1h-1zM2 22h3v1h-3zM6 22h1v1h-1zM10 22h1v1h-1zM12 22h2v1h-2zM17 22h1v1h-1zM20 22h5v1h-5zM0 23h1v1h-1zM6 23h1v1h-1zM9 23h1v1h-1zM14 23h2v1h-2zM19 23h2v1h-2zM22 23h3v1h-3zM0 24h7v1h-7zM8 24h3v1h-3zM12 24h3v1h-3zM16 24h1v1h-1zM21 24h1v1h-1zM24 24h1v1h-1z"/></svg></div>
-          <p data-i18n="hadi.qr">Scan the code with your phone to open the chat there.</p>
+          <a class="icon-btn" href="tel:+16505146359" aria-label="Call Hadi" data-i18n-aria="hadi.call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-phone"/></svg></a>
         </div>
         <p class="hadi-note" data-i18n="hadi.ai">Hadi is an AI agent and says so in every conversation.</p>
+      </div>
+      <div class="hadi-scan" data-theme="night">
+        <div class="hadi-qr-code" data-qr="https://hybote.ai/hadi/" aria-hidden="true"><svg viewBox="0 0 25 25" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><path fill="#070b16" d="M0 0h7v1h-7zM8 0h5v1h-5zM14 0h1v1h-1zM16 0h1v1h-1zM18 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM11 1h2v1h-2zM16 1h1v1h-1zM18 1h1v1h-1zM24 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h1v1h-1zM10 2h7v1h-7zM18 2h1v1h-1zM20 2h3v1h-3zM24 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM9 3h5v1h-5zM15 3h2v1h-2zM18 3h1v1h-1zM20 3h3v1h-3zM24 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM8 4h3v1h-3zM12 4h3v1h-3zM16 4h1v1h-1zM18 4h1v1h-1zM20 4h3v1h-3zM24 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM18 5h1v1h-1zM24 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h7v1h-7zM9 7h1v1h-1zM13 7h2v1h-2zM0 8h1v1h-1zM3 8h6v1h-6zM11 8h2v1h-2zM14 8h4v1h-4zM20 8h1v1h-1zM22 8h3v1h-3zM0 9h1v1h-1zM2 9h1v1h-1zM7 9h1v1h-1zM9 9h3v1h-3zM14 9h2v1h-2zM17 9h1v1h-1zM19 9h5v1h-5zM0 10h7v1h-7zM8 10h1v1h-1zM11 10h1v1h-1zM14 10h2v1h-2zM17 10h1v1h-1zM20 10h2v1h-2zM24 10h1v1h-1zM0 11h1v1h-1zM4 11h2v1h-2zM7 11h2v1h-2zM10 11h1v1h-1zM14 11h2v1h-2zM18 11h1v1h-1zM20 11h5v1h-5zM3 12h2v1h-2zM6 12h3v1h-3zM11 12h2v1h-2zM16 12h1v1h-1zM18 12h2v1h-2zM24 12h1v1h-1zM0 13h2v1h-2zM4 13h2v1h-2zM7 13h1v1h-1zM9 13h1v1h-1zM13 13h3v1h-3zM20 13h1v1h-1zM23 13h1v1h-1zM0 14h7v1h-7zM11 14h5v1h-5zM18 14h1v1h-1zM20 14h5v1h-5zM0 15h1v1h-1zM3 15h3v1h-3zM8 15h2v1h-2zM11 15h1v1h-1zM14 15h1v1h-1zM19 15h1v1h-1zM21 15h2v1h-2zM24 15h1v1h-1zM0 16h1v1h-1zM5 16h2v1h-2zM13 16h1v1h-1zM15 16h6v1h-6zM22 16h2v1h-2zM8 17h1v1h-1zM11 17h3v1h-3zM16 17h1v1h-1zM20 17h1v1h-1zM22 17h2v1h-2zM0 18h7v1h-7zM8 18h4v1h-4zM13 18h2v1h-2zM16 18h1v1h-1zM18 18h1v1h-1zM20 18h1v1h-1zM24 18h1v1h-1zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h1v1h-1zM10 19h1v1h-1zM12 19h2v1h-2zM15 19h2v1h-2zM20 19h1v1h-1zM23 19h1v1h-1zM0 20h1v1h-1zM2 20h3v1h-3zM6 20h1v1h-1zM8 20h3v1h-3zM12 20h1v1h-1zM15 20h6v1h-6zM23 20h2v1h-2zM0 21h1v1h-1zM2 21h3v1h-3zM6 21h1v1h-1zM8 21h3v1h-3zM13 21h2v1h-2zM16 21h3v1h-3zM23 21h2v1h-2zM0 22h1v1h-1zM2 22h3v1h-3zM6 22h1v1h-1zM10 22h1v1h-1zM12 22h2v1h-2zM17 22h1v1h-1zM20 22h5v1h-5zM0 23h1v1h-1zM6 23h1v1h-1zM9 23h1v1h-1zM14 23h2v1h-2zM19 23h2v1h-2zM22 23h3v1h-3zM0 24h7v1h-7zM8 24h3v1h-3zM12 24h3v1h-3zM16 24h1v1h-1zM21 24h1v1h-1zM24 24h1v1h-1z"/></svg></div>
+        <p class="hadi-scan-text" data-i18n="hadi.qr">Scan the code with your phone to open the chat there.</p>
+        <div class="hadi-scan-links">
+          <a href="https://wa.me/16505146359?text=Hi%20Hadi%20(Website)" target="_blank" rel="noopener" data-i18n="hadi.webwa">Or open WhatsApp on this computer</a>
+          <a class="icon-btn icon-btn--sm" href="tel:+16505146359" aria-label="Call Hadi" data-i18n-aria="hadi.call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-phone"/></svg></a>
+        </div>
       </div>
     </div>
 
@@ -1949,8 +2131,13 @@
       <div aria-hidden="true">
         <ul class="inbox">
           <li>
-            <span class="inbox-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg></span>
+            <span class="inbox-ico inbox-ico--brand"><svg class="ico-wa" viewBox="0 0 32 32"><use href="#i-wa"/></svg></span>
             <span class="inbox-txt"><b data-i18n="svc.ch.wa">WhatsApp</b><span data-i18n="ticker.q1">Is the apartment still available?</span></span>
+            <span class="inbox-st" data-i18n="inbox.done">Answered</span>
+          </li>
+          <li>
+            <span class="inbox-ico inbox-ico--brand"><svg viewBox="0 0 24 24"><use href="#i-ig-color"/></svg></span>
+            <span class="inbox-txt"><b data-i18n="svc.ch.ig">Instagram</b><span data-i18n="ticker.q4">Do you also translate documents into Arabic?</span></span>
             <span class="inbox-st" data-i18n="inbox.done">Answered</span>
           </li>
           <li>
@@ -1963,21 +2150,16 @@
             <span class="inbox-txt"><b data-i18n="svc.ch.mail">Email</b><span data-i18n="ticker.q3">Do you have an appointment this week?</span></span>
             <span class="inbox-st" data-i18n="inbox.done">Answered</span>
           </li>
-          <li>
-            <span class="inbox-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-send"/></svg></span>
-            <span class="inbox-txt"><b data-i18n="svc.ch.ig">Instagram</b><span data-i18n="ticker.q4">Do you also translate documents into Arabic?</span></span>
-            <span class="inbox-st" data-i18n="inbox.done">Answered</span>
-          </li>
-        </ul>
+</ul>
       </div>
     </article>
 
     <!-- Einsatzbilder: dieselbe Figur in vier Branchen (Illustrationen, keine Kundenfotos) -->
     <div class="scenes">
-      <figure class="scene reveal"><img src="/media/site/scene-dealer-720.webp?v=e4beb957" srcset="/media/site/scene-dealer-480.webp?v=7c5528f6 480w, /media/site/scene-dealer-720.webp?v=e4beb957 720w, /media/site/scene-dealer-1080.webp?v=54ce714c 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.1">Car dealership</figcaption></figure>
-      <figure class="scene reveal"><img src="/media/site/scene-clinic-720.webp?v=522381fc" srcset="/media/site/scene-clinic-480.webp?v=2e451b5c 480w, /media/site/scene-clinic-720.webp?v=522381fc 720w, /media/site/scene-clinic-1080.webp?v=3b710e83 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.2">Medical practice</figcaption></figure>
-      <figure class="scene reveal"><img src="/media/site/scene-apartment-720.webp?v=6a781c36" srcset="/media/site/scene-apartment-480.webp?v=5cb2df69 480w, /media/site/scene-apartment-720.webp?v=6a781c36 720w, /media/site/scene-apartment-1080.webp?v=581d51ee 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.3">Real estate</figcaption></figure>
-      <figure class="scene reveal"><img src="/media/site/scene-office-720.webp?v=23315f4e" srcset="/media/site/scene-office-480.webp?v=51c46df4 480w, /media/site/scene-office-720.webp?v=23315f4e 720w, /media/site/scene-office-1080.webp?v=523f8ed3 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.4">Service business</figcaption></figure>
+      <figure class="scene reveal"><img src="/media/site/scene-dealer-720.webp?v=02ac3d20" srcset="/media/site/scene-dealer-480.webp?v=f57724f2 480w, /media/site/scene-dealer-720.webp?v=02ac3d20 720w, /media/site/scene-dealer-1080.webp?v=4b18bc84 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.1">Car dealership</figcaption></figure>
+      <figure class="scene reveal"><img src="/media/site/scene-clinic-720.webp?v=5c523d4d" srcset="/media/site/scene-clinic-480.webp?v=f886716d 480w, /media/site/scene-clinic-720.webp?v=5c523d4d 720w, /media/site/scene-clinic-1080.webp?v=75697343 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.2">Medical practice</figcaption></figure>
+      <figure class="scene reveal"><img src="/media/site/scene-apartment-720.webp?v=6a0f255d" srcset="/media/site/scene-apartment-480.webp?v=2d20802a 480w, /media/site/scene-apartment-720.webp?v=6a0f255d 720w, /media/site/scene-apartment-1080.webp?v=d7825c60 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.3">Real estate</figcaption></figure>
+      <figure class="scene reveal"><img src="/media/site/scene-office-720.webp?v=71797c11" srcset="/media/site/scene-office-480.webp?v=c2cef013 480w, /media/site/scene-office-720.webp?v=71797c11 720w, /media/site/scene-office-1080.webp?v=bc2ca008 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.4">Service business</figcaption></figure>
     </div>
     <p class="scenes-note" data-i18n="svc.scene.note">One agent, set up for each business. Illustrations.</p>
 
@@ -2060,6 +2242,7 @@
         <div class="founder-card card reveal">
           <span class="founder-name">Mohamed Erassas</span>
           <span class="small" data-i18n="founder.role">Founder, HYBOTE</span>
+          <span class="founder-cred" data-i18n="founder.cred">State-certified in hotel management, Heidelberg Hotel Management School, Germany</span>
         </div>
       </div>
 
@@ -2268,7 +2451,7 @@
         <p class="direct-label" data-i18n="contact.direct">Or directly:</p>
         <div class="direct-links">
           <a class="btn btn--line btn--small" href="https://wa.me/16505146359?text=Hi%20Hadi%20(Website)" target="_blank" rel="noopener">WhatsApp</a>
-          <a class="btn btn--line btn--small" href="tel:+16505146359" dir="ltr">+1 650 514 6359</a>
+          <a class="icon-btn" href="tel:+16505146359" aria-label="Call us" data-i18n-aria="call.tooltip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-phone"/></svg></a>
           <a class="btn btn--line btn--small" href="mailto:contact@hybote.ai">contact@hybote.ai</a>
         </div>
       </div>
@@ -2535,6 +2718,12 @@
         <img class="footer-logo" src="/logo-mobile-white.png" width="2328" height="374" alt="HYBOTE" loading="lazy" decoding="async" />
         <p class="footer-slogan" data-i18n="footer.slogan">The future runs on its own.</p>
         <p class="footer-tagline" data-i18n="footer.tagline">We make sure every customer enquiry gets an answer. Instantly, on every channel, at any hour.</p>
+        <ul class="footer-social">
+          <li><a href="https://www.linkedin.com/in/mohamed-erassas-a83568169/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-li"/></svg></a></li>
+          <li><a href="https://www.facebook.com/people/Hybote/61589408136844/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-fb"/></svg></a></li>
+          <li><a href="https://www.instagram.com/hyboteai/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ig"/></svg></a></li>
+          <li><a href="https://www.youtube.com/@HYBOTE" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-yt"/></svg></a></li>
+        </ul>
       </div>
       <nav aria-label="Website" data-i18n-aria="footer.col.site">
         <h2 data-i18n="footer.col.site">Website</h2>
@@ -2578,10 +2767,10 @@ const T = {
     "nav.menu": "Menu",
     "wa.tooltip": "Chat on WhatsApp",
     "call.tooltip": "Call us",
-    "hero.h1": "Every enquiry answered.<br/>Day and night.",
-    "hero.sub": "AI agents that answer every customer enquiry on WhatsApp, phone, email and Instagram. Around the clock, to a five-star service standard.",
+    "hero.h1": "Five-star answers.<br/>Day and night.",
+    "hero.sub": "AI agents that answer every enquiry on WhatsApp, phone, email and Instagram within seconds: by name, in the customer's language, with real appointment times.",
     "hero.cta1": "Free intro call",
-    "hero.trust1": "Verified Meta Tech Provider",
+    "hero.hotelier": "Founded by a hotelier",
     "hero.trust2": "GDPR Compliant",
     "hero.trust3": "Over 50 languages",
     "demo.h2": "Now reply yourself.",
@@ -2646,6 +2835,7 @@ const T = {
     "founder.p2": "That standard is not a technical skill. It is trained every day, with discretion as a given. My enthusiasm for AI came later, and with it one question: why should this level of service exist only at a hotel front desk?",
     "founder.p3": "HYBOTE is my answer. We bring the discipline of five-star hospitality into AI agents that answer every call and every message, 24/7, in over 50 languages. For everyone.",
     "founder.role": "Founder, HYBOTE",
+    "founder.cred": "State-certified in hotel management, Heidelberg Hotel Management School, Germany",
     "founder.alt": "Mohamed Erassas, founder of HYBOTE",
     "founder.band.lead": "What hospitality taught me:",
     "founder.band.1.title": "Nobody waits",
@@ -2723,9 +2913,14 @@ const T = {
     "night.1.p": "The enquiry arrives on WhatsApp, by phone, by email or on Instagram. Usually it waits until the morning.",
     "night.2.l": "Answered",
     "night.2.h": "Answered in six seconds.",
-    "night.2.p": "In the customer's language and in the tone of your business. Nobody on your team has to get up.",
-    "night.2.q": "Hello, is the apartment on Harbour Terrace still available?",
-    "night.2.a": "Good evening. Yes, it is still available. Would you like to see it this weekend?",
+    "night.2.p": "As at a five-star front desk: personal, complete and with a concrete next step. Nobody on your team has to get up.",
+    "night.2.q": "Good evening, is the apartment on Harbour Terrace still available? We would need a parking space.",
+    "night.2.a": "Good evening, <mark>Ms Haddad</mark>, and thank you for your message. Yes, the apartment on Harbour Terrace is still available, <mark>with its own underground parking space</mark>. I can offer you a private viewing on <mark>Saturday at 11:00 or 15:30</mark>. Which time suits you better?",
+    "night.who": "Sara Haddad · WhatsApp",
+    "night.2.nh": "Why this reply is five-star",
+    "night.2.n1": "Addressed by name",
+    "night.2.n2": "The parking question is answered too",
+    "night.2.n3": "Two concrete times, one clear question",
     "night.4.l": "Every channel",
     "night.4.h": "One front desk for every channel.",
     "night.4.p": "Phone, WhatsApp, email and Instagram are answered by the same front desk, to the same standard.",
@@ -2733,6 +2928,8 @@ const T = {
     "night.3.h": "Qualified and booked.",
     "night.3.p": "Budget, need and timing are clarified. The appointment goes into your calendar, and your team receives a short summary.",
     "night.3.card": "Viewing booked",
+    "night.3.q": "11:00, please.",
+    "night.3.a": "Very good. Saturday at 11:00 is reserved for you. Omar from our team will welcome you at the entrance, and your parking space will be ready. I wish you a pleasant night.",
     "night.3.note": "Summary sent to your team",
     "night.5.l": "Languages",
     "night.5.h": "In over 50 languages.",
@@ -2785,8 +2982,19 @@ const T = {
     "kunden.3.meta": "AI solution and website · September 2026",
     "hero.status0": "Hadi is at the front desk. Day and night.",
     "hero.status": "It is {time} where you are. Hadi is at the front desk.",
-    "hero.clients": "In use at",
-    "hero.alt": "Hadi, the HYBOTE digital concierge, at a hotel front desk at night",
+    "hero.statusPlace": "It is {time} {place}. Hadi is at the front desk.",
+    "hero.tp": "Read our client reviews on Trustpilot",
+    "hero.feed": "Examples from tonight",
+    "hero.st6": "Answered in 6 s",
+    "hero.st9": "Answered in 9 s",
+    "hero.wa.who": "Karim",
+    "hero.wa.q": "Is the white SUV still available?",
+    "hero.wa.a": "Good evening, Mr Rahman. Yes, it is. Would Saturday at 10:00 or 14:30 suit you for a test drive?",
+    "hero.call.h": "Incoming call",
+    "hero.call.st": "First ring",
+    "hero.call.say": "“Good evening, Marina Dental. How may I help you?”",
+    "hero.ig.q": "Do you have an appointment on Thursday?",
+    "hero.ig.a": "Good evening, Lina. Thursday at 9:30 or 16:00 are free. Shall I book one for you?",
     "hadi.pop.h": "Message Hadi on WhatsApp",
     "hadi.pop.p": "Scan the code with your phone, or open WhatsApp on this computer.",
     "hadi.pop.wa": "Open WhatsApp",
@@ -2797,13 +3005,17 @@ const T = {
     "hadi.wa": "Message on WhatsApp",
     "hadi.qr": "Scan the code with your phone to open the chat there.",
     "hadi.ai": "Hadi is an AI agent and says so in every conversation.",
-    "hadi.alt": "Portrait of Hadi, the HYBOTE digital concierge",
+    "hadi.online": "Online now",
+    "hadi.webwa": "Or open WhatsApp on this computer",
+    "hadi.call": "Call Hadi",
     "night.eyebrow": "An example night",
-    "night.sub": "From closing time to the next morning at a real estate agency. Every entry is something the agent handles on its own.",
+    "night.sub": "From closing time to the next morning at a real estate agency. Every entry is something the agent handles on its own, to the standard of a five-star front desk.",
     "night.1.ui": "Office closed since 18:00",
     "night.4.call": "Incoming call",
+    "night.4.say": "“Good evening, Harbour Estates, digital concierge speaking. How may I help you?”",
     "dawn.h2": "Your team starts with every enquiry handled.",
     "dawn.p": "Every conversation is in your CRM, every appointment in your calendar, and where a person is needed, one takes over.",
+    "dawn.hello": "Good morning",
     "dawn.note": "Example",
     "dawn.card": "Overnight summary",
     "dawn.r1": "3 enquiries answered",
@@ -2828,10 +3040,10 @@ const T = {
     "nav.menu": "Menü",
     "wa.tooltip": "Auf WhatsApp schreiben",
     "call.tooltip": "Direkt anrufen",
-    "hero.h1": "Jede Anfrage beantwortet.<br/>Tag und Nacht.",
-    "hero.sub": "KI-Agenten, die jede Kundenanfrage beantworten: auf WhatsApp, am Telefon, per E-Mail und auf Instagram. Rund um die Uhr, mit Fünf-Sterne-Service.",
+    "hero.h1": "Antworten auf<br/>Fünf-Sterne-Niveau.<br/>Tag und Nacht.",
+    "hero.sub": "KI-Agenten, die jede Anfrage auf WhatsApp, am Telefon, per E-Mail und auf Instagram in Sekunden beantworten: mit Namen, in der Sprache des Kunden und mit echten Terminen.",
     "hero.cta1": "Kostenloses Kennenlerngespräch",
-    "hero.trust1": "Verifizierter Meta Tech Provider",
+    "hero.hotelier": "Gegründet von einem Hotelier",
     "hero.trust2": "DSGVO-konform",
     "hero.trust3": "Über 50 Sprachen",
     "demo.h2": "Jetzt antworten Sie selbst.",
@@ -2896,6 +3108,7 @@ const T = {
     "founder.p2": "Dieser Standard ist keine technische Fähigkeit. Er wird jeden Tag trainiert, und Diskretion ist selbstverständlich. Meine Begeisterung für KI kam später und mit ihr eine Frage: Warum sollte dieser Service nur an der Hotelrezeption möglich sein?",
     "founder.p3": "HYBOTE ist meine Antwort. Wir übertragen die Disziplin der Fünf-Sterne-Hotellerie auf KI-Agenten, die jeden Anruf und jede Nachricht annehmen, rund um die Uhr und in über 50 Sprachen. Für alle.",
     "founder.role": "Gründer, HYBOTE",
+    "founder.cred": "Staatlich geprüfter Hotelbetriebswirt, Hotelfachschule Heidelberg",
     "founder.alt": "Mohamed Erassas, Gründer von HYBOTE",
     "founder.band.lead": "Was mich die Hotellerie gelehrt hat:",
     "founder.band.1.title": "Niemand wartet",
@@ -2973,9 +3186,14 @@ const T = {
     "night.1.p": "Die Anfrage kommt per WhatsApp, Telefon, E-Mail oder Instagram. Meist wartet sie bis zum nächsten Morgen.",
     "night.2.l": "Beantwortet",
     "night.2.h": "In sechs Sekunden beantwortet.",
-    "night.2.p": "In der Sprache des Kunden und im Ton Ihres Unternehmens. Niemand aus Ihrem Team muss dafür aufstehen.",
-    "night.2.q": "Hallo, ist die Wohnung an der Harbour Terrace noch frei?",
-    "night.2.a": "Guten Abend. Ja, die Wohnung ist noch verfügbar. Möchten Sie sie am Wochenende besichtigen?",
+    "night.2.p": "Wie an der Rezeption eines Fünf-Sterne-Hotels: persönlich, vollständig und mit einem konkreten nächsten Schritt. Niemand aus Ihrem Team muss dafür aufstehen.",
+    "night.2.q": "Guten Abend, ist die Wohnung an der Harbour Terrace noch frei? Wir bräuchten einen Parkplatz.",
+    "night.2.a": "Guten Abend, <mark>Frau Haddad</mark>, und vielen Dank für Ihre Nachricht. Ja, die Wohnung an der Harbour Terrace ist noch frei, <mark>mit eigenem Tiefgaragenstellplatz</mark>. Ich kann Ihnen eine private Besichtigung am <mark>Samstag um 11:00 oder 15:30 Uhr</mark> anbieten. Welche Uhrzeit passt Ihnen besser?",
+    "night.who": "Sara Haddad · WhatsApp",
+    "night.2.nh": "Warum diese Antwort fünf Sterne verdient",
+    "night.2.n1": "Persönlich mit Namen angesprochen",
+    "night.2.n2": "Auch die Frage nach dem Parkplatz beantwortet",
+    "night.2.n3": "Zwei konkrete Termine, eine klare Frage",
     "night.4.l": "Jeder Kanal",
     "night.4.h": "Ein Empfang für jeden Kanal.",
     "night.4.p": "Telefon, WhatsApp, E-Mail und Instagram beantwortet derselbe Empfang, mit demselben Anspruch.",
@@ -2983,6 +3201,8 @@ const T = {
     "night.3.h": "Qualifiziert und gebucht.",
     "night.3.p": "Budget, Bedarf und Zeitpunkt sind geklärt. Der Termin steht in Ihrem Kalender, Ihr Team erhält eine kurze Zusammenfassung.",
     "night.3.card": "Besichtigung gebucht",
+    "night.3.q": "Gern um 11:00 Uhr.",
+    "night.3.a": "Sehr gern. Samstag um 11:00 Uhr ist für Sie reserviert. Omar aus unserem Team empfängt Sie am Eingang, und Ihr Parkplatz steht bereit. Ich wünsche Ihnen eine angenehme Nacht.",
     "night.3.note": "Zusammenfassung an Ihr Team gesendet",
     "night.5.l": "Sprachen",
     "night.5.h": "In über 50 Sprachen.",
@@ -3035,8 +3255,19 @@ const T = {
     "kunden.3.meta": "KI-Lösung und Webseite · September 2026",
     "hero.status0": "Hadi ist am Empfang. Tag und Nacht.",
     "hero.status": "Bei Ihnen ist es {time}. Hadi ist am Empfang.",
-    "hero.clients": "Im Einsatz bei",
-    "hero.alt": "Hadi, der digitale Concierge von HYBOTE, nachts am Empfang eines Hotels",
+    "hero.statusPlace": "Bei Ihnen {place} ist es {time}. Hadi ist am Empfang.",
+    "hero.tp": "Unsere Kundenbewertungen auf Trustpilot lesen",
+    "hero.feed": "Beispiele aus dieser Nacht",
+    "hero.st6": "Beantwortet in 6 s",
+    "hero.st9": "Beantwortet in 9 s",
+    "hero.wa.who": "Karim",
+    "hero.wa.q": "Ist der weiße SUV noch da?",
+    "hero.wa.a": "Guten Abend, Herr Rahman. Ja, er ist noch verfügbar. Passt Ihnen Samstag um 10:00 oder 14:30 Uhr für eine Probefahrt?",
+    "hero.call.h": "Eingehender Anruf",
+    "hero.call.st": "Erstes Klingeln",
+    "hero.call.say": "„Guten Abend, Marina Dental. Wie kann ich Ihnen helfen?“",
+    "hero.ig.q": "Haben Sie am Donnerstag einen Termin frei?",
+    "hero.ig.a": "Guten Abend, Lina. Donnerstag um 9:30 oder 16:00 Uhr ist frei. Soll ich Ihnen einen Termin eintragen?",
     "hadi.pop.h": "Hadi auf WhatsApp schreiben",
     "hadi.pop.p": "Scannen Sie den Code mit dem Handy oder öffnen Sie WhatsApp auf diesem Computer.",
     "hadi.pop.wa": "WhatsApp öffnen",
@@ -3047,13 +3278,17 @@ const T = {
     "hadi.wa": "Auf WhatsApp schreiben",
     "hadi.qr": "Scannen Sie den Code mit dem Handy, um den Chat dort zu öffnen.",
     "hadi.ai": "Hadi ist ein KI-Agent und sagt das in jedem Gespräch.",
-    "hadi.alt": "Porträt von Hadi, dem digitalen Concierge von HYBOTE",
+    "hadi.online": "Jetzt erreichbar",
+    "hadi.webwa": "Oder WhatsApp auf diesem Computer öffnen",
+    "hadi.call": "Hadi anrufen",
     "night.eyebrow": "Eine Beispielnacht",
-    "night.sub": "Vom Feierabend bis zum nächsten Morgen in einem Maklerbüro. Jeder Eintrag ist etwas, das der Agent allein erledigt.",
+    "night.sub": "Vom Feierabend bis zum nächsten Morgen in einem Maklerbüro. Jeder Eintrag ist etwas, das der Agent allein erledigt, mit dem Anspruch eines Fünf-Sterne-Empfangs.",
     "night.1.ui": "Büro geschlossen seit 18:00",
     "night.4.call": "Eingehender Anruf",
+    "night.4.say": "„Guten Abend, Harbour Estates, hier spricht der digitale Concierge. Wie kann ich Ihnen helfen?“",
     "dawn.h2": "Ihr Team beginnt mit erledigten Anfragen.",
     "dawn.p": "Jedes Gespräch steht im CRM, jeder Termin im Kalender, und wo ein Mensch gebraucht wird, übernimmt er.",
+    "dawn.hello": "Guten Morgen",
     "dawn.note": "Beispiel",
     "dawn.card": "Zusammenfassung der Nacht",
     "dawn.r1": "3 Anfragen beantwortet",
@@ -3078,10 +3313,10 @@ const T = {
     "nav.menu": "القائمة",
     "wa.tooltip": "تواصل عبر واتساب",
     "call.tooltip": "اتصل بنا",
-    "hero.h1": "كل استفسار يجد ردًا.<br/>ليلًا ونهارًا.",
-    "hero.sub": "وكلاء ذكاء اصطناعي يجيبون عن كل استفسار من عملائك عبر واتساب والهاتف والبريد الإلكتروني وإنستغرام. على مدار الساعة، وبمعيار خدمة الخمس نجوم.",
+    "hero.h1": "ردود بمستوى خمس نجوم.<br/>ليلًا ونهارًا.",
+    "hero.sub": "وكلاء ذكاء اصطناعي يردّون على كل استفسار عبر واتساب والهاتف والبريد الإلكتروني وإنستغرام خلال ثوانٍ: بالاسم، وبلغة العميل، ومع مواعيد حقيقية.",
     "hero.cta1": "مكالمة تعارف مجانية",
-    "hero.trust1": "مزود تقني معتمد لدى Meta",
+    "hero.hotelier": "أسّسها خبير في الضيافة الفندقية",
     "hero.trust2": "متوافق مع GDPR",
     "hero.trust3": "أكثر من 50 لغة",
     "demo.h2": "والآن جرّب الرد بنفسك.",
@@ -3146,6 +3381,7 @@ const T = {
     "founder.p2": "هذا المعيار ليس مهارة تقنية، بل مهارة تُصقَل كل يوم، والتكتّم فيها أمر بديهي. جاء شغفي بالذكاء الاصطناعي لاحقًا، ومعه سؤال واحد: لماذا يقتصر هذا المستوى من الخدمة على مكتب الاستقبال في الفندق؟",
     "founder.p3": "جوابي على ذلك هو HYBOTE. ننقل انضباط الضيافة من فئة الخمس نجوم إلى وكلاء ذكاء اصطناعي يجيبون عن كل مكالمة وكل رسالة على مدار الساعة طوال أيام الأسبوع، بأكثر من 50 لغة. للجميع.",
     "founder.role": "المؤسّس، HYBOTE",
+    "founder.cred": "شهادة حكومية ألمانية في إدارة الفنادق، مدرسة هايدلبرغ لإدارة الفنادق",
     "founder.alt": "محمد الرصاص، مؤسس HYBOTE",
     "founder.band.lead": "ما تعلّمته في قطاع الضيافة:",
     "founder.band.1.title": "لا أحد ينتظر",
@@ -3223,9 +3459,14 @@ const T = {
     "night.1.p": "يصل الاستفسار عبر واتساب أو الهاتف أو البريد الإلكتروني أو إنستغرام. وغالبًا ما ينتظر حتى الصباح.",
     "night.2.l": "تم الرد",
     "night.2.h": "الرد خلال ست ثوانٍ.",
-    "night.2.p": "بلغة العميل وبأسلوب شركتك. ولا يحتاج أحد من فريقك إلى الاستيقاظ.",
-    "night.2.q": "مرحبًا، هل الشقة في هاربور تيراس ما زالت متاحة؟",
-    "night.2.a": "مساء الخير. نعم، ما زالت متاحة. هل تودّ معاينتها في عطلة نهاية الأسبوع؟",
+    "night.2.p": "كما في استقبال فندق خمس نجوم: ردّ شخصي وكامل مع خطوة تالية واضحة. ولا يحتاج أحد من فريقك إلى الاستيقاظ.",
+    "night.2.q": "مساء الخير، هل الشقة في هاربور تيراس ما زالت متاحة؟ نحتاج إلى موقف للسيارة.",
+    "night.2.a": "مساء النور <mark>أستاذة سارة</mark>، وشكرًا لرسالتك. نعم، الشقة في هاربور تيراس ما زالت متاحة، <mark>ولها موقف خاص في المرآب</mark>. يسعدني أن أرتّب لكِ معاينة خاصة <mark>يوم السبت الساعة 11:00 أو 15:30</mark>. أيّ الموعدين يناسبكِ أكثر؟",
+    "night.who": "سارة حداد · واتساب",
+    "night.2.nh": "لماذا يستحق هذا الرد خمس نجوم",
+    "night.2.n1": "مخاطبة العميلة باسمها",
+    "night.2.n2": "الإجابة عن سؤال الموقف أيضًا",
+    "night.2.n3": "موعدان محددان وسؤال واضح واحد",
     "night.4.l": "كل القنوات",
     "night.4.h": "استقبال واحد لكل القنوات.",
     "night.4.p": "الهاتف وواتساب والبريد الإلكتروني وإنستغرام، يجيب عنها الاستقبال نفسه وبالمعيار نفسه.",
@@ -3233,6 +3474,8 @@ const T = {
     "night.3.h": "تأهيل ثم حجز.",
     "night.3.p": "تتضح الميزانية والحاجة والتوقيت. يُسجَّل الموعد في تقويمك، ويتلقى فريقك ملخصًا قصيرًا.",
     "night.3.card": "تم حجز المعاينة",
+    "night.3.q": "الساعة 11:00 من فضلك.",
+    "night.3.a": "بكل سرور. موعدكِ يوم السبت الساعة 11:00 محجوز. سيستقبلكِ عمر من فريقنا عند المدخل، وموقف سيارتكِ جاهز. أتمنى لكِ ليلة هانئة.",
     "night.3.note": "أُرسل الملخص إلى فريقك",
     "night.5.l": "لغات",
     "night.5.h": "بأكثر من 50 لغة.",
@@ -3285,8 +3528,19 @@ const T = {
     "kunden.3.meta": "حل ذكاء اصطناعي وموقع إلكتروني · سبتمبر 2026",
     "hero.status0": "هادي في مكتب الاستقبال، ليلًا ونهارًا.",
     "hero.status": "الساعة عندك الآن {time}. هادي في مكتب الاستقبال.",
-    "hero.clients": "يعمل لدى",
-    "hero.alt": "هادي، الكونسيرج الرقمي من HYBOTE، ليلًا في مكتب استقبال فندق",
+    "hero.statusPlace": "الساعة الآن {time} {place}. هادي في مكتب الاستقبال.",
+    "hero.tp": "اقرأ تقييمات عملائنا على Trustpilot",
+    "hero.feed": "أمثلة من هذه الليلة",
+    "hero.st6": "تم الرد خلال 6 ثوانٍ",
+    "hero.st9": "تم الرد خلال 9 ثوانٍ",
+    "hero.wa.who": "كريم",
+    "hero.wa.q": "هل سيارة الدفع الرباعي البيضاء ما زالت متوفرة؟",
+    "hero.wa.a": "مساء الخير يا سيد رحمن. نعم، ما زالت متوفرة. هل يناسبك السبت الساعة 10:00 أو 14:30 لتجربة القيادة؟",
+    "hero.call.h": "مكالمة واردة",
+    "hero.call.st": "من الرنة الأولى",
+    "hero.call.say": "«مساء الخير، Marina Dental. كيف يمكنني مساعدتك؟»",
+    "hero.ig.q": "هل لديكم موعد متاح يوم الخميس؟",
+    "hero.ig.a": "مساء الخير يا لينا. يوم الخميس متاح الساعة 9:30 أو 16:00. هل أحجز لك موعدًا؟",
     "hadi.pop.h": "راسل هادي على واتساب",
     "hadi.pop.p": "امسح الرمز بهاتفك أو افتح واتساب على هذا الجهاز.",
     "hadi.pop.wa": "افتح واتساب",
@@ -3297,13 +3551,17 @@ const T = {
     "hadi.wa": "راسله على واتساب",
     "hadi.qr": "امسح الرمز بهاتفك لفتح المحادثة عليه.",
     "hadi.ai": "هادي وكيل ذكاء اصطناعي ويذكر ذلك في كل محادثة.",
-    "hadi.alt": "صورة هادي، الكونسيرج الرقمي من HYBOTE",
+    "hadi.online": "متاح الآن",
+    "hadi.webwa": "أو افتح واتساب على هذا الكمبيوتر",
+    "hadi.call": "اتصل بهادي",
     "night.eyebrow": "ليلة نموذجية",
-    "night.sub": "من نهاية الدوام حتى صباح اليوم التالي في مكتب عقاري. كل سطر هنا مهمة ينجزها الوكيل بمفرده.",
+    "night.sub": "من نهاية الدوام حتى صباح اليوم التالي في مكتب عقاري. كل سطر هنا مهمة ينجزها الوكيل بمفرده، وبمعيار استقبال فندق خمس نجوم.",
     "night.1.ui": "المكتب مغلق منذ 18:00",
     "night.4.call": "مكالمة واردة",
+    "night.4.say": "«مساء الخير، هاربر العقارية، معك الكونسيرج الرقمي. كيف أستطيع مساعدتك؟»",
     "dawn.h2": "يبدأ فريقك يومه وكل الاستفسارات منجزة.",
     "dawn.p": "كل محادثة محفوظة في نظام إدارة العملاء، وكل موعد في التقويم، ويتولى أحد أفراد فريقك الأمر حيث يلزم.",
+    "dawn.hello": "صباح الخير",
     "dawn.note": "مثال",
     "dawn.card": "ملخص الليلة",
     "dawn.r1": "تم الرد على 3 استفسارات",
@@ -3416,6 +3674,26 @@ function setLang(lang) {
   document.querySelectorAll('[data-shutter]').forEach(s => shutters.observe(s.parentElement));
 })();
 
+/* ── Hadi-Clips: einmal abspielen, wenn sie zu 60 % im Bild sind; danach bleibt das letzte Bild stehen.
+      Ohne IntersectionObserver, mit ?dev=1 oder bei reduzierter Bewegung: gleich das letzte Bild als Standbild. ── */
+(function () {
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('still');
+  document.querySelectorAll('video.hadi-vid').forEach(v => {
+    const fig = v.closest('.hadi-clip');
+    const done = () => fig.classList.add('is-done');
+    const toEnd = () => { v.poster = v.dataset.end; done(); };
+    if (still || !('IntersectionObserver' in window)) { v.preload = 'none'; toEnd(); return; }
+    v.addEventListener('ended', done);
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      const p = v.play();
+      if (p && p.catch) p.catch(toEnd);
+    }), { threshold: 0.6 });
+    io.observe(v);
+  });
+})();
+
 /* ── Floating Buttons: aus über dem Hero (er hat eigene Aktionen) und über dem Footer ── */
 (function () {
   const html = document.documentElement;
@@ -3432,25 +3710,73 @@ function setLang(lang) {
   html.classList.add('fabs-off');
 })();
 
-/* ── Hero: Live-Zeile mit der Uhrzeit des Besuchers. Ohne Skript steht der feste Satz (hero.status0).
+/* ── Hero: Live-Zeile mit Uhrzeit und Land des Besuchers. Ohne Skript steht der feste Satz (hero.status0).
+      Uhrzeit = Geräteuhr; das Land kommt aus der Zeitzone des Geräts (keine Abfrage, keine Daten an Dritte).
+      Unbekannte oder umstrittene Zonen (bewusst nicht in der Liste, z. B. Asia/Jerusalem, Asia/Taipei,
+      Europe/Simferopol) zeigen den Satz ohne Ort (hero.status).
       Der Live-Text trägt kein data-i18n, sonst schriebe setLang die Vorlage mit {time} hinein. ── */
 (function () {
   const el = document.getElementById('hero-status');
   if (!el || typeof Intl === 'undefined') return;
   el.removeAttribute('data-i18n');
+  const ZONES = {
+    AE: 'Asia/Dubai', SA: 'Asia/Riyadh', QA: 'Asia/Qatar', KW: 'Asia/Kuwait', BH: 'Asia/Bahrain', OM: 'Asia/Muscat',
+    EG: 'Africa/Cairo', JO: 'Asia/Amman', LB: 'Asia/Beirut', IQ: 'Asia/Baghdad', MA: 'Africa/Casablanca',
+    TN: 'Africa/Tunis', DZ: 'Africa/Algiers', TR: 'Europe/Istanbul Asia/Istanbul',
+    IN: 'Asia/Kolkata Asia/Calcutta', PK: 'Asia/Karachi', BD: 'Asia/Dhaka', LK: 'Asia/Colombo', NP: 'Asia/Kathmandu Asia/Katmandu',
+    PH: 'Asia/Manila', SG: 'Asia/Singapore', MY: 'Asia/Kuala_Lumpur', ID: 'Asia/Jakarta', TH: 'Asia/Bangkok', JP: 'Asia/Tokyo', KR: 'Asia/Seoul',
+    DE: 'Europe/Berlin Europe/Busingen', AT: 'Europe/Vienna', CH: 'Europe/Zurich', GB: 'Europe/London', IE: 'Europe/Dublin',
+    FR: 'Europe/Paris', NL: 'Europe/Amsterdam', BE: 'Europe/Brussels', LU: 'Europe/Luxembourg', ES: 'Europe/Madrid', IT: 'Europe/Rome',
+    PT: 'Europe/Lisbon', SE: 'Europe/Stockholm', NO: 'Europe/Oslo', DK: 'Europe/Copenhagen', FI: 'Europe/Helsinki', PL: 'Europe/Warsaw',
+    CZ: 'Europe/Prague', GR: 'Europe/Athens', RO: 'Europe/Bucharest', HU: 'Europe/Budapest',
+    US: 'America/New_York America/Chicago America/Denver America/Los_Angeles America/Phoenix America/Anchorage America/Detroit America/Boise America/Indiana/Indianapolis Pacific/Honolulu',
+    CA: 'America/Toronto America/Vancouver America/Edmonton America/Winnipeg America/Halifax America/Regina',
+    AU: 'Australia/Sydney Australia/Melbourne Australia/Brisbane Australia/Perth Australia/Adelaide',
+    ZA: 'Africa/Johannesburg', NG: 'Africa/Lagos', KE: 'Africa/Nairobi', BR: 'America/Sao_Paulo', MX: 'America/Mexico_City'
+  };
+  // Ortsangabe samt Präposition; wo Artikel oder Kurzform nötig sind, steht sie hier, sonst „in“ + Intl-Name
+  const PLACE = {
+    en: { AE: 'in the UAE', US: 'in the US', GB: 'in the UK', NL: 'in the Netherlands', PH: 'in the Philippines', CZ: 'in Czechia' },
+    de: { AE: 'in den VAE', US: 'in den USA', GB: 'in Großbritannien', NL: 'in den Niederlanden', CH: 'in der Schweiz',
+          TR: 'in der Türkei', IQ: 'im Irak', LB: 'im Libanon', PH: 'auf den Philippinen', CZ: 'in Tschechien' },
+    ar: { AE: 'في الإمارات', SA: 'في السعودية', US: 'في الولايات المتحدة', GB: 'في المملكة المتحدة' }
+  };
+  const PREP = { en: 'in ', de: 'in ', ar: 'في ' };
+  let country = '';
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    for (const c in ZONES) if (ZONES[c].split(' ').indexOf(tz) !== -1) { country = c; break; }
+  } catch (e) { /* ohne Zeitzone kein Ort */ }
+  const placeFor = (lang) => {
+    if (!country) return '';
+    const own = (PLACE[lang] || {})[country];
+    if (own) return own;
+    try {
+      const name = new Intl.DisplayNames([lang], { type: 'region' }).of(country);
+      return name && name !== country ? (PREP[lang] || 'in ') + name : '';
+    } catch (e) { return ''; }
+  };
   const render = () => {
     const L = T[currentLang] || T.en;
     let time;
     try {
       time = new Intl.DateTimeFormat(currentLang + '-u-nu-latn', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date());
     } catch (e) { time = new Date().toTimeString().slice(0, 5); }
-    const [before, after] = L['hero.status'].split('{time}');
+    const place = placeFor(currentLang);
+    const tpl = place ? L['hero.statusPlace'] : L['hero.status'];
     el.textContent = '';
-    el.append(before);
-    const b = document.createElement('bdi');
-    b.dir = 'ltr';
-    b.textContent = time;
-    el.append(b, after || '');
+    tpl.split(/(\{time\}|\{place\})/).forEach((part) => {
+      if (part === '{time}') {
+        const b = document.createElement('bdi');
+        b.dir = 'ltr';
+        b.textContent = time;
+        el.append(b);
+      } else if (part === '{place}') {
+        el.append(place);
+      } else if (part) {
+        el.append(part);
+      }
+    });
   };
   // zur vollen Minute neu zeichnen, beim Sprachwechsel und beim Zurückkehren in den Tab
   let timer = 0;
@@ -3851,7 +4177,13 @@ function setLang(lang) {
     "@type": "Person",
     "name": "Mohamed Erassas",
     "jobTitle": "Founder",
-    "image": "https://hybote.ai/media/founder-mohamed-erassas.jpg"
+    "image": "https://hybote.ai/media/founder-mohamed-erassas.jpg",
+    "alumniOf": {
+      "@type": "EducationalOrganization",
+      "name": "Hotelfachschule Heidelberg",
+      "alternateName": "Heidelberg Hotel Management School",
+      "url": "https://hotelfachschule-heidelberg.de"
+    }
   },
   "description": "HYBOTE builds AI agents that answer every customer enquiry on WhatsApp, phone, email and Instagram, around the clock and to a five-star service standard. Around them HYBOTE builds automations, custom AI solutions and software.",
   "contactPoint": {
@@ -3860,7 +4192,13 @@ function setLang(lang) {
     "contactType": "customer service",
     "availableLanguage": ["English", "German", "Arabic"]
   },
-  "areaServed": "Worldwide"
+  "areaServed": "Worldwide",
+  "sameAs": [
+    "https://www.linkedin.com/in/mohamed-erassas-a83568169/",
+    "https://www.facebook.com/people/Hybote/61589408136844/",
+    "https://www.instagram.com/hyboteai/",
+    "https://www.youtube.com/@HYBOTE"
+  ]
 }
 </script>
 <script type="application/ld+json">
@@ -4075,7 +4413,7 @@ function setLang(lang) {
   }
 </style>
 
-<a class="call-btn" href="tel:+16505146359" aria-label="Call HYBOTE at +1 650 514 6359">
+<a class="call-btn" href="tel:+16505146359" aria-label="Call us">
   <span class="call-tooltip" id="call-tip" aria-hidden="true">Call us</span>
   <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#070b16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.8a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.33 1.84.56 2.8.69A2 2 0 0 1 22 16.92z"/>
@@ -4100,7 +4438,7 @@ function setLang(lang) {
       }
       if (callTip && callButton && T[lang] && T[lang]['call.tooltip']) {
         callTip.textContent = T[lang]['call.tooltip'];
-        callButton.setAttribute('aria-label', T[lang]['call.tooltip'] + ': +1 650 514 6359');
+        callButton.setAttribute('aria-label', T[lang]['call.tooltip']);
       }
     }
     document.addEventListener('hybote:lang', e => updateContactLang(e.detail));

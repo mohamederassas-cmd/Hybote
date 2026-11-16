@@ -26,6 +26,9 @@ const LEGACY_CALENDAR_MARKERS = [
 
 let failures = 0;
 
+// Sichtbarer Text einer Seite: ohne Skripte, Styles, Kommentare und Attribute (tel:-Links und aria-label zählen nicht)
+const visibleText = (html) => html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, ' ').replace(/<[^>]*>/g, ' ');
+
 function report(name, checks) {
   const bad = Object.entries(checks).filter(([, ok]) => !ok).map(([k]) => k);
   failures += bad.length;
@@ -100,6 +103,10 @@ for (const [name, path] of BOOKING_PAGES) {
     'Gründer-Fakt: über ein Jahrzehnt, gehobene Hotellerie':
       /over a decade/.test(T.en['founder.p1']) && /ein Jahrzehnt/.test(T.de['founder.p1']) && /عقد/.test(T.ar['founder.p1']) &&
       !founderCopy.some((v) => /\bten years|zehn jahre|five-star hotels|fünf-sterne-hotels|fünf-sterne-hotellerie tätig/i.test(v)),
+    // Owner-Freigabe 16.11.2026: Qualifikation als eigene Zeile auf der Gründerkarte, Text bleibt unverändert
+    'Gründerkarte nennt die Hotelfachschule Heidelberg (EN, DE, AR)':
+      h.includes('data-i18n="founder.cred"') && /Heidelberg/.test(T.en['founder.cred'] || '') &&
+      /Hotelfachschule Heidelberg/.test(T.de['founder.cred'] || '') && /هايدلبرغ/.test(T.ar['founder.cred'] || ''),
   });
 }
 
@@ -236,7 +243,7 @@ console.log('\nStartseite: Aufbau und Bilder');
   const siteDir = join(ROOT, 'media', 'site');
   const siteFiles = existsSync(siteDir) ? readdirSync(siteDir).filter((f) => !f.startsWith('.')) : [];
   // Jede Bildangabe mit aktuellem Hash (sonst liefert der Jahres-Cache alte Fassungen), keine verwaiste Datei
-  const refs = [...h.matchAll(/\/media\/site\/([\w-]+\.webp)\?v=([0-9a-f]*)/g)];
+  const refs = [...h.matchAll(/\/media\/site\/([\w-]+\.(?:webp|mp4))\?v=([0-9a-f]*)/g)];
   const sha = (f) => createHash('sha1').update(readFileSync(join(siteDir, f))).digest('hex').slice(0, 8);
   const staleRefs = refs.filter(([, f, v]) => !existsSync(join(siteDir, f)) || sha(f) !== v).map(([, f]) => f);
   if (staleRefs.length) console.log('     Bild fehlt oder Hash veraltet:', [...new Set(staleRefs)].join(', '), '(node build/site-images.mjs)');
@@ -260,6 +267,12 @@ console.log('\nStartseite: Aufbau und Bilder');
   const logCss = (css.match(/\.log[\s\S]*?(?=\/\* ══ Morgengrauen)/) || [''])[0];
   const waLinks = [...h.matchAll(/href="(https:\/\/wa\.me\/[^"]*|tel:[^"]*)"/g)].map((m) => m[1]);
   const cache = (vercel.headers || []).find((x) => x.source === '/media/site/(.*)');
+  const hero = pos('top') === -1 ? '' : h.slice(pos('top'), h.indexOf('</section>', pos('top')));
+  const ta = h.indexOf('const T = {');
+  const T = eval('(' + h.slice(ta + 'const T = '.length, h.indexOf('\n};', ta) + 2) + ')');
+  const LANGS = ['en', 'de', 'ar'];
+  const footer = h.slice(h.indexOf('<footer class="footer">'), h.indexOf('</footer>'));
+  const scripts = [...h.matchAll(/<script(?![^>]*ld\+json)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]).join('\n');
 
   report('index.html + media/site', {
     'Bilder vorhanden, Hash aktuell': refs.length > 0 && staleRefs.length === 0,
@@ -279,6 +292,19 @@ console.log('\nStartseite: Aufbau und Bilder');
       (h.match(/<li class="log-row/g) || []).length === 5 &&
       daySections.every((id) => new RegExp(`<section id="${id}" data-theme="day"`).test(h)),
     'kein sticky und keine Rastpunkte im Nachtprotokoll, nirgends scroll-snap': !/sticky/.test(logCss) && !/scroll-snap/.test(h),
+    // Owner 16.11.2026: das CSS-Blinzeln wirkte roboterhaft, die Meta-Aussage versteht oben niemand, Kundenlogos sagen
+    // GCC-Besuchern nichts. Stattdessen „Founded by a hotelier“ und ein Trustpilot-Link ohne Sterne und Score.
+    'Hero ruhig: kein Blinzeln, keine Meta-Aussage, keine Kundenlogos, Trustpilot-Link':
+      !/class="blink|\.blink\b|@keyframes blink/.test(h) && !/tech provider|hero-clients|\/media\/kunden\//i.test(hero) &&
+      hero.includes('href="https://www.trustpilot.com/review/hybote.ai"') && hero.includes('data-i18n="hero.hotelier"'),
+    'Live-Zeile: Uhrzeit und Land (aus der Zeitzone) in EN, DE, AR':
+      LANGS.every((l) => /\{time\}/.test(T[l]['hero.status'] || '') &&
+        /\{time\}/.test(T[l]['hero.statusPlace'] || '') && /\{place\}/.test(T[l]['hero.statusPlace'] || '')) &&
+      h.includes('resolvedOptions().timeZone') && h.includes('Intl.DisplayNames'),
+    // Die Fünf-Sterne-Antwort ist sichtbar begründet: drei markierte Stellen, drei Notizen mit derselben Nummer
+    'Nachtprotokoll: Antwort mit drei Markierungen und drei Notizen':
+      LANGS.every((l) => ((T[l]['night.2.a'] || '').match(/<mark>/g) || []).length === 3 && T[l]['night.2.n3']) &&
+      (h.match(/data-i18n="night\.2\.n\d"/g) || []).length === 3,
     'reduzierte Bewegung und ?dev=1 (Standbild für Screenshots)':
       h.includes('@media (prefers-reduced-motion: reduce)') && h.includes("classList.add('still')") && h.includes('.js:not(.still) .reveal'),
     'Hadi: alle WhatsApp- und Telefon-Links auf +1 650 514 6359':
@@ -288,8 +314,29 @@ console.log('\nStartseite: Aufbau und Bilder');
       !h.includes('id="kunden"') ||
       (h.match(/<a class="voice-site" href="https:\/\/www\.trustpilot\.com\/review\/hybote\.ai" target="_blank" rel="noopener"/g) || []).length === (h.match(/<figure class="voice[ "]/g) || []).length,
     '/media/site/ ist ein Jahr im Cache': !!cache && cache.headers.some((x) => /max-age=31536000, immutable/.test(x.value)),
-    'Platz am Seitenende für Floating Buttons und Cookie-Hinweis':
-      h.includes('calc(120px + var(--cookie-h, 0px))') && h.includes('html.fabs-off .wa-btn'),
+    // Owner 16.11.2026: Footer „viel zu hoch“. Unten nur noch Platz für den Cookie-Hinweis; die Floating Buttons
+    // sind über dem Footer aus (html.fabs-off), deshalb kein zusätzlicher Puffer mehr.
+    'Footer kompakt: Platz für den Cookie-Hinweis, Floating Buttons über dem Footer aus':
+      /\.footer \{[^}]*padding-block:[^;]*calc\(\d{1,2}px \+ var\(--cookie-h, 0px\)\)/.test(css) && !h.includes('calc(120px + var(--cookie-h') &&
+      h.includes('html.fabs-off .wa-btn'),
+    'Footer mit LinkedIn, Facebook, Instagram, YouTube (neuer Tab, noopener)':
+      ['https://www.linkedin.com/in/mohamed-erassas-a83568169/', 'https://www.facebook.com/people/Hybote/61589408136844/',
+        'https://www.instagram.com/hyboteai/', 'https://www.youtube.com/@HYBOTE'].every((u) =>
+        new RegExp(`<a href="${u.replace(/[.?/]/g, '\\$&')}" target="_blank" rel="noopener" aria-label="`).test(footer)),
+    // Owner 16.11.2026: die US-Nummer nicht sichtbar zeigen, nur ein Telefon-Icon (tel:-Link bleibt)
+    'US-Nummer nirgends sichtbar (nur tel:-Link hinter einem Icon)': !/650[\s-]?514/.test(visibleText(h)),
+    // Owner 16.11.2026: Hadis starrer Frontalblick raus; die Lobby ohne Hadi steht fest, der Inhalt gleitet als Glas darüber
+    'feste Bühne: zwei feste Ebenen, per clip-path begrenzt, ohne Scroll-Skript, kein Porträt mehr':
+      (h.match(/<div class="stage-bg" aria-hidden="true">/g) || []).length === 2 &&
+      /\.stage \{[^}]*clip-path: inset\(0\)/.test(css) && /\.stage-bg \{[^}]*position: fixed/.test(css) &&
+      !/stage/.test(scripts) && !/\/media\/site\/hadi-\d+\.webp/.test(h),
+    // Owner 16.11.2026: Hadi als kleiner Clip im Morgengrauen und in „Try it yourself“ (alte Film-Clips, Schild entfernt).
+    // Kein autoplay und kein Loop: das Skript spielt sie einmal, wenn sie im Bild sind; Endbild für ?dev=1 und reduzierte Bewegung.
+    'Hadi-Clips: stumm, playsinline, ohne autoplay/loop, mit Start- und Endbild':
+      (h.match(/<video class="hadi-vid"[^>]*>/g) || []).length === 2 &&
+      (h.match(/<video class="hadi-vid"[^>]*>/g) || []).every((v) => /\bmuted\b/.test(v) && /\bplaysinline\b/.test(v) &&
+        !/autoplay|\bloop\b/.test(v) && /poster="\/media\/site\/hadi-[\w-]+-start\.webp\?v=[0-9a-f]{8}"/.test(v) &&
+        /data-end="\/media\/site\/hadi-[\w-]+-end\.webp\?v=[0-9a-f]{8}"/.test(v)),
     'Footer-Logo in normaler Größe': h.includes('class="footer-logo"') && !h.includes('footer-mark'),
   });
 }
@@ -364,6 +411,7 @@ console.log('\nWeiterleitung /hadi/');
     'Knopf zeigt auf Hadis WhatsApp-Nummer, Quelle im Text':
       h.includes('href="https://wa.me/16505146359?text=Hi%20Hadi%20(Website)"') && h.includes("'Hi Hadi (' + label + ')'"),
     'nie die Demo-Nummer': !h.includes('12134234114') && !/wa\.me\/1?213/.test(h),
+    'US-Nummer nicht sichtbar (Owner 16.11.2026)': !/650[\s-]?514/.test(visibleText(h)),
     'Vorschaubild mit absoluter Adresse und Datei vorhanden':
       h.includes('<meta property="og:image" content="https://hybote.ai/hadi/og.jpg" />') && existsSync(join(ROOT, 'hadi/og.jpg')),
     'noindex': h.includes('<meta name="robots" content="noindex, follow" />'),
