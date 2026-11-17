@@ -53,6 +53,7 @@
       --accent:      #38BDF8;
       --accent-lt:   #7DD3FC;
       --accent-deep: #0EA5E9;
+      --online:      #34D399;   /* Statuspunkt „erreichbar“ (Owner 17.11.2026), Cyan bleibt die Antwort */
 
       --fg:       #f5f1eb;
       --a1:       #d4cfc8;
@@ -500,8 +501,8 @@
       font-size: 0.9375rem;
       color: var(--fg);
     }
-    .live-dot { position: relative; width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: var(--accent); }
-    .live-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--accent); opacity: 0; }
+    .live-dot { position: relative; width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: var(--online); }
+    .live-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--online); opacity: 0; }
     @media (prefers-reduced-motion: no-preference) { .js:not(.still) .live-dot::after { animation: live 2.6s ease-out infinite; } }
     @keyframes live { 0% { opacity: 0.8; transform: scale(0.6); } 100% { opacity: 0; transform: scale(1.8); } }
     .hero-status bdi { font-variant-numeric: tabular-nums; }
@@ -509,22 +510,29 @@
     .hero-trust { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 28px; font-size: 0.875rem; color: var(--a1); }
     .hero-trust li { display: inline-flex; align-items: center; gap: 9px; }
     .hero-trust li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--a3); }
-    /* Beleg: Link auf das Trustpilot-Profil, ohne Sterne und ohne Score (kostenloser Tarif, § 5 UWG) */
+    /* Beleg: Glas-Pille mit dem offiziellen Trustpilot-Logo (unverändert, cdn.trustpilot.net/brand-assets, weiße Fassung)
+       und Link aufs Profil; ohne Sterne, Score und Anzahl (kostenloser Tarif, § 5 UWG). Owner 17.11.2026. */
     .hero-proof { margin-top: clamp(32px, 5vh, 52px); }
     .hero-proof a {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      min-height: 44px;
+      gap: 14px;
+      min-height: 48px;
+      padding: 8px 20px 8px 18px;
+      border-radius: var(--pill);
       font-size: 0.9375rem;
       color: var(--fg);
-      text-decoration: underline;
-      text-decoration-color: rgba(125, 211, 252, 0.45);
-      text-underline-offset: 5px;
-      text-decoration-thickness: 1px;
-      transition: text-decoration-color 200ms ease;
+      text-decoration: none;
+      transition: border-color 200ms ease;
     }
-    .hero-proof a:hover { text-decoration-color: var(--accent); }
+    .hero-proof a:hover [data-i18n] { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 5px; text-decoration-thickness: 1px; }
+    .tp-logo { display: block; flex-shrink: 0; width: auto; height: 22px; }
+    .tp-sep { flex-shrink: 0; width: 1px; height: 20px; background: rgba(255, 255, 255, 0.22); }
+    .hero-proof [data-i18n] { line-height: 1.35; }
+    @media (max-width: 480px) {
+      .hero-proof a { gap: 10px; padding: 8px 16px 8px 14px; border-radius: 22px; font-size: 0.875rem; }
+      .tp-logo { height: 20px; }
+    }
     .hero-proof svg { flex-shrink: 0; color: var(--accent); }
     html[dir="rtl"] .hero-proof svg { transform: scaleX(-1); }
     /* Drei kleine Beispiele rechts neben dem Text, leicht versetzt wie eingehende Nachrichten; je Karte eine Zeile Kopf
@@ -1149,20 +1157,23 @@
     .svc-name { font-family: var(--serif); font-weight: 400; font-size: clamp(1.9rem, 2.6vw, 2.5rem); line-height: 1.04; letter-spacing: -0.01em; }
     html[lang="ar"] .svc-name { line-height: 1.35; }
     .svc-text { color: var(--ink-2); max-width: 52ch; }
+    /* Drei Spalten: Oberfläche, Titel, Text und Beleg je auf einer Linie (Owner 17.11.2026) */
+    @supports (grid-template-rows: subgrid) {
+      @media (min-width: 1024px) {
+        .svc-grid > .svc { display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; }
+        .svc-grid .svc-ui { flex: none; }
+        .svc-grid .svc-body { grid-row: span 3; grid-template-rows: subgrid; row-gap: 12px; align-content: start; }
+      }
+    }
     .proof { font-size: 0.9375rem; color: var(--ink-2); }
     .proof strong { color: var(--ink); font-weight: 500; }
-    .proof-chip {
-      display: block;
-      justify-self: start;
-      padding: 10px 16px;
-      border-radius: 14px;
-      background: var(--tint);
-      border: 1px solid var(--tint-line);
-      font-size: 0.875rem;
-      line-height: 1.5;
-      color: var(--ink-2);
-    }
-    .proof-chip strong { color: var(--ink); font-weight: 500; }
+    /* Leitkarte: was die Agenten tun, nicht nur sagen (Owner 17.11.2026, ersetzt den Einzelbeleg) */
+    .acts { margin-top: 8px; padding: 18px 20px; border-radius: 14px; background: var(--tint); border: 1px solid var(--tint-line); }
+    .acts-head { font-weight: 500; color: var(--ink); }
+    .acts-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px 24px; margin-top: 12px; font-size: 0.9375rem; color: var(--ink-2); }
+    .acts-list li { display: flex; align-items: flex-start; gap: 10px; }
+    .acts-list svg { flex-shrink: 0; width: 16px; height: 16px; margin-top: 4px; color: var(--accent-text); }
+    @media (min-width: 700px) and (max-width: 1023px) { .acts-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     .train {
       margin-top: 16px;
       display: grid;
@@ -1767,7 +1778,7 @@
         <li data-i18n="hero.trust2">GDPR Compliant</li>
         <li data-i18n="hero.trust3">Over 50 languages</li>
       </ul>
-      <p class="hero-proof"><a href="https://www.trustpilot.com/review/hybote.ai" target="_blank" rel="noopener"><span data-i18n="hero.tp">Read our client reviews on Trustpilot</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+      <p class="hero-proof"><a class="glass" href="https://www.trustpilot.com/review/hybote.ai" target="_blank" rel="noopener"><img class="tp-logo" src="/media/trustpilot.svg" width="90" height="22" alt="Trustpilot" decoding="async" /><span class="tp-sep" aria-hidden="true"></span><span data-i18n="hero.tp">Read our client reviews</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
     </div>
 
     <!-- Drei kleine Beispiele aus einer Nacht (Owner 16.11.2026): WhatsApp, ein Anruf, der angenommen wird, Instagram.
@@ -1943,8 +1954,8 @@
       <!-- Hadi grüßt das Team (alter Film-Clip bell, Schild je Bild entfernt, Ausschnitt folgt Hadi). Spielt einmal, wenn
            es ins Bild kommt; ohne Skript, mit ?dev=1 und bei reduzierter Bewegung steht das letzte Bild. -->
       <figure class="hadi-clip hadi-clip--dawn glass">
-        <video class="hadi-vid" muted playsinline preload="metadata" width="600" height="750" poster="/media/site/hadi-morning-start.webp?v=cf757108" data-end="/media/site/hadi-morning-end.webp?v=9f3bdb92" aria-hidden="true">
-          <source src="/media/site/hadi-morning.mp4?v=32eeb8c8" type="video/mp4" />
+        <video class="hadi-vid" muted playsinline preload="metadata" width="600" height="750" poster="/media/site/hadi-morning-start.webp?v=cb9f7f62" data-end="/media/site/hadi-morning-end.webp?v=b8984a58" aria-hidden="true">
+          <source src="/media/site/hadi-morning.mp4?v=55aa8247" type="video/mp4" />
         </video>
         <figcaption class="hadi-clip-cap"><span data-i18n="dawn.hello">Good morning</span></figcaption>
       </figure>
@@ -2034,8 +2045,8 @@
     <div class="hadi-card card reveal" id="hadi">
       <!-- Hadi greift ans Headset (alter Film-Clip turn, Schild je Bild entfernt); spielt einmal, wenn es ins Bild kommt -->
       <figure class="hadi-clip hadi-clip--card" data-theme="night">
-        <video class="hadi-vid" muted playsinline preload="metadata" width="600" height="750" poster="/media/site/hadi-call-start.webp?v=1793a267" data-end="/media/site/hadi-call-end.webp?v=26c5a8ee" aria-hidden="true">
-          <source src="/media/site/hadi-call.mp4?v=ef5c1861" type="video/mp4" />
+        <video class="hadi-vid" muted playsinline preload="metadata" width="600" height="750" poster="/media/site/hadi-call-start.webp?v=1b681046" data-end="/media/site/hadi-call-end.webp?v=1e8eb758" aria-hidden="true">
+          <source src="/media/site/hadi-call.mp4?v=9102fca5" type="video/mp4" />
         </video>
         <figcaption class="hadi-clip-cap"><span class="live-dot" aria-hidden="true"></span><span data-i18n="hadi.online">Online now</span></figcaption>
       </figure>
@@ -2126,7 +2137,16 @@
       <div class="svc-body">
         <h3 class="svc-name" data-i18n="svc.agents.title">AI agents</h3>
         <p class="svc-text" data-i18n="svc.agents.body">Your first answer on every channel. They reply in seconds, qualify enquiries, book appointments and hand over to your team when a person is needed.</p>
-        <p class="proof-chip" data-i18n="svc.agents.proof">In use at <strong>Tim Sprachendienste</strong>: phone agent Nora has been taking interpreting and translation enquiries in German, English, French and Arabic since September 2026.</p>
+        <div class="acts">
+          <p class="acts-head" data-i18n="svc.agents.act">More than a chatbot: our agents act.</p>
+          <ul class="acts-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc.agents.a1">Book the appointment in your calendar</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc.agents.a2">Send the written confirmation</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc.agents.a3">Log every conversation in your CRM</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc.agents.a4">Note the follow-up</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc.agents.a5">Hand over to your team with a summary</span></li>
+          </ul>
+        </div>
       </div>
       <div aria-hidden="true">
         <ul class="inbox">
@@ -2156,7 +2176,7 @@
 
     <!-- Einsatzbilder: dieselbe Figur in vier Branchen (Illustrationen, keine Kundenfotos) -->
     <div class="scenes">
-      <figure class="scene reveal"><img src="/media/site/scene-dealer-720.webp?v=02ac3d20" srcset="/media/site/scene-dealer-480.webp?v=f57724f2 480w, /media/site/scene-dealer-720.webp?v=02ac3d20 720w, /media/site/scene-dealer-1080.webp?v=4b18bc84 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.1">Car dealership</figcaption></figure>
+      <figure class="scene reveal"><img src="/media/site/scene-dealer-720.webp?v=9497a70b" srcset="/media/site/scene-dealer-480.webp?v=74d88a9d 480w, /media/site/scene-dealer-720.webp?v=9497a70b 720w, /media/site/scene-dealer-1080.webp?v=4c5f2ea7 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.1">Car dealership</figcaption></figure>
       <figure class="scene reveal"><img src="/media/site/scene-clinic-720.webp?v=5c523d4d" srcset="/media/site/scene-clinic-480.webp?v=f886716d 480w, /media/site/scene-clinic-720.webp?v=5c523d4d 720w, /media/site/scene-clinic-1080.webp?v=75697343 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.2">Medical practice</figcaption></figure>
       <figure class="scene reveal"><img src="/media/site/scene-apartment-720.webp?v=6a0f255d" srcset="/media/site/scene-apartment-480.webp?v=2d20802a 480w, /media/site/scene-apartment-720.webp?v=6a0f255d 720w, /media/site/scene-apartment-1080.webp?v=d7825c60 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.3">Real estate</figcaption></figure>
       <figure class="scene reveal"><img src="/media/site/scene-office-720.webp?v=71797c11" srcset="/media/site/scene-office-480.webp?v=c2cef013 480w, /media/site/scene-office-720.webp?v=71797c11 720w, /media/site/scene-office-1080.webp?v=bc2ca008 1080w" sizes="(max-width: 899px) 50vw, 25vw" width="1080" height="1440" loading="lazy" decoding="async" alt="" /><figcaption data-i18n="svc.scene.4">Service business</figcaption></figure>
@@ -2816,7 +2836,12 @@ const T = {
     "svc.sub": "AI agents are our core. Around them we build the automations, AI solutions and software that make them work in your business.",
     "svc.agents.title": "AI agents",
     "svc.agents.body": "Your first answer on every channel. They reply in seconds, qualify enquiries, book appointments and hand over to your team when a person is needed.",
-    "svc.agents.proof": "In use at <strong>Tim Sprachendienste</strong>: phone agent Nora has been taking interpreting and translation enquiries in German, English, French and Arabic since September 2026.",
+    "svc.agents.act": "More than a chatbot: our agents act.",
+    "svc.agents.a1": "Book the appointment in your calendar",
+    "svc.agents.a2": "Send the written confirmation",
+    "svc.agents.a3": "Log every conversation in your CRM",
+    "svc.agents.a4": "Note the follow-up",
+    "svc.agents.a5": "Hand over to your team with a summary",
     "svc.ch.wa": "WhatsApp",
     "svc.ch.phone": "Phone",
     "svc.ch.mail": "Email",
@@ -2983,7 +3008,7 @@ const T = {
     "hero.status0": "Hadi is at the front desk. Day and night.",
     "hero.status": "It is {time} where you are. Hadi is at the front desk.",
     "hero.statusPlace": "It is {time} {place}. Hadi is at the front desk.",
-    "hero.tp": "Read our client reviews on Trustpilot",
+    "hero.tp": "Read our client reviews",
     "hero.feed": "Examples from tonight",
     "hero.st6": "Answered in 6 s",
     "hero.st9": "Answered in 9 s",
@@ -3089,7 +3114,12 @@ const T = {
     "svc.sub": "KI-Agenten sind unser Kern. Drumherum bauen wir die Automationen, KI-Lösungen und Software, mit denen sie in Ihrem Betrieb wirklich arbeiten.",
     "svc.agents.title": "KI-Agenten",
     "svc.agents.body": "Ihre erste Antwort auf jedem Kanal. Sie antworten in Sekunden, qualifizieren Anfragen, buchen Termine und übergeben an Ihr Team, sobald ein Mensch gebraucht wird.",
-    "svc.agents.proof": "Im Einsatz bei <strong>Tim Sprachendienste</strong>: Telefon-Agentin Nora nimmt seit September 2026 Dolmetsch- und Übersetzungsanfragen auf Deutsch, Englisch, Französisch und Arabisch an.",
+    "svc.agents.act": "Mehr als ein Chatbot: Unsere Agenten handeln.",
+    "svc.agents.a1": "Termin in Ihren Kalender eintragen",
+    "svc.agents.a2": "Bestätigung schriftlich senden",
+    "svc.agents.a3": "Jedes Gespräch im CRM festhalten",
+    "svc.agents.a4": "Nachfassen vormerken",
+    "svc.agents.a5": "Mit Zusammenfassung an Ihr Team übergeben",
     "svc.ch.wa": "WhatsApp",
     "svc.ch.phone": "Telefon",
     "svc.ch.mail": "E-Mail",
@@ -3256,7 +3286,7 @@ const T = {
     "hero.status0": "Hadi ist am Empfang. Tag und Nacht.",
     "hero.status": "Bei Ihnen ist es {time}. Hadi ist am Empfang.",
     "hero.statusPlace": "Bei Ihnen {place} ist es {time}. Hadi ist am Empfang.",
-    "hero.tp": "Unsere Kundenbewertungen auf Trustpilot lesen",
+    "hero.tp": "Kundenbewertungen lesen",
     "hero.feed": "Beispiele aus dieser Nacht",
     "hero.st6": "Beantwortet in 6 s",
     "hero.st9": "Beantwortet in 9 s",
@@ -3362,7 +3392,12 @@ const T = {
     "svc.sub": "وكلاء الذكاء الاصطناعي هم جوهر عملنا. ومن حولهم نبني الأتمتة وحلول الذكاء الاصطناعي والبرمجيات التي تجعلهم يعملون فعليًا في شركتك.",
     "svc.agents.title": "وكلاء الذكاء الاصطناعي",
     "svc.agents.body": "ردّك الأول على كل قناة. يجيبون خلال ثوانٍ، ويؤهّلون الاستفسارات، ويحجزون المواعيد، ويحيلون إلى فريقك متى احتاج الأمر إلى إنسان.",
-    "svc.agents.proof": "قيد الاستخدام لدى <strong>Tim Sprachendienste</strong>: الوكيلة الهاتفية نورا تستقبل منذ سبتمبر 2026 طلبات الترجمة الفورية والتحريرية بالألمانية والإنجليزية والفرنسية والعربية.",
+    "svc.agents.act": "أكثر من مجرد روبوت محادثة: وكلاؤنا ينفّذون.",
+    "svc.agents.a1": "يسجّلون الموعد في تقويمك",
+    "svc.agents.a2": "يرسلون التأكيد كتابيًا",
+    "svc.agents.a3": "يوثّقون كل محادثة في نظام CRM",
+    "svc.agents.a4": "يدوّنون موعد المتابعة",
+    "svc.agents.a5": "يحيلون إلى فريقك مع ملخّص",
     "svc.ch.wa": "واتساب",
     "svc.ch.phone": "الهاتف",
     "svc.ch.mail": "البريد الإلكتروني",
@@ -3529,7 +3564,7 @@ const T = {
     "hero.status0": "هادي في مكتب الاستقبال، ليلًا ونهارًا.",
     "hero.status": "الساعة عندك الآن {time}. هادي في مكتب الاستقبال.",
     "hero.statusPlace": "الساعة الآن {time} {place}. هادي في مكتب الاستقبال.",
-    "hero.tp": "اقرأ تقييمات عملائنا على Trustpilot",
+    "hero.tp": "اقرأ تقييمات عملائنا",
     "hero.feed": "أمثلة من هذه الليلة",
     "hero.st6": "تم الرد خلال 6 ثوانٍ",
     "hero.st9": "تم الرد خلال 9 ثوانٍ",

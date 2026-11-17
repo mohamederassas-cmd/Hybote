@@ -297,6 +297,20 @@ console.log('\nStartseite: Aufbau und Bilder');
     'Hero ruhig: kein Blinzeln, keine Meta-Aussage, keine Kundenlogos, Trustpilot-Link':
       !/class="blink|\.blink\b|@keyframes blink/.test(h) && !/tech provider|hero-clients|\/media\/kunden\//i.test(hero) &&
       hero.includes('href="https://www.trustpilot.com/review/hybote.ai"') && hero.includes('data-i18n="hero.hotelier"'),
+    // Owner 17.11.2026: Trustpilot als Glas-Pille mit dem offiziellen Logo (unverändert, cdn.trustpilot.net/brand-assets,
+    // weiße Fassung) und Link aufs Profil. Weiter ohne Sterne, Score und Anzahl (kostenloser Tarif).
+    'Hero: Trustpilot-Pille mit offiziellem Logo, verlinkt aufs Profil':
+      existsSync(join(ROOT, 'media', 'trustpilot.svg')) &&
+      /<p class="hero-proof"><a class="glass" href="https:\/\/www\.trustpilot\.com\/review\/hybote\.ai" target="_blank" rel="noopener"><img class="tp-logo" src="\/media\/trustpilot\.svg"[^>]*alt="Trustpilot"/.test(hero) &&
+      !/<script/i.test(readFileSync(join(ROOT, 'media', 'trustpilot.svg'), 'utf8')),
+    // Owner 17.11.2026: Statuspunkt grün („erreichbar“), Cyan bleibt die Farbe der Antwort
+    'Statuspunkt grün (--online)':
+      /--online:\s*#34D399/i.test(css) && /\.live-dot \{[^}]*background: var\(--online\)/.test(css),
+    // Owner 17.11.2026: kein Einzelkunde als Beleg in der Leitkarte, stattdessen was die Agenten tun
+    'Leitkarte: Handlungen statt Einzelbeleg (fünf Punkte, alle Sprachen)':
+      !/svc\.agents\.proof/.test(h) && LANGS.every((l) => ['act', 'a1', 'a2', 'a3', 'a4', 'a5'].every((k) => T[l]['svc.agents.' + k])),
+    // Owner 17.11.2026: Automationen, KI-Lösungen, Software mit Titel und Text auf einer Linie
+    'Leistungskarten auf einer Linie (Subgrid)': /\.svc-grid > \.svc \{[^}]*grid-template-rows: subgrid/.test(css),
     'Live-Zeile: Uhrzeit und Land (aus der Zeitzone) in EN, DE, AR':
       LANGS.every((l) => /\{time\}/.test(T[l]['hero.status'] || '') &&
         /\{time\}/.test(T[l]['hero.statusPlace'] || '') && /\{place\}/.test(T[l]['hero.statusPlace'] || '')) &&

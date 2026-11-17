@@ -46,10 +46,13 @@ export const IMAGES = [
   { name: 'scene-apartment', src: 'day-apartment-v2.png', crop: [0, 300, 1536, 2048], widths: [480, 720, 1080], q: 78, max: 170 },
   { name: 'scene-office', src: 'day-office-v2.png', crop: [0, 420, 1536, 2048], widths: [480, 720, 1080], q: 78, max: 170 },
   // Die kleinen Hadi-Clips (media/site/hadi-morning.mp4, hadi-call.mp4 samt -start/-end.webp) baut dieses Skript nicht:
-  // assets-src/film/site-clip-morning.py (Clip bell, Bilder 56–121) und site-clip-call.py (Clip turn, Bilder 30–121)
-  // entfernen das Schild je Bild (Track in assets-src/film/tracks/) und schneiden 720×900 aus; danach
-  // ffmpeg -framerate 24 … -vf scale=600:750 -c:v libx264 -crf 23 -movflags +faststart -an, Poster mit cwebp -q 80.
-  // Die ?v=-Hashes der .mp4 zieht rehash() mit nach.
+  // assets-src/film/site-clip-morning.py (Clip bell, Bilder 56–121) und site-clip-call.py (Clip turn, Bilder 30–121),
+  // beide auf Basis von assets-src/film/site_clip.py (seit 17.11.2026): Bilder aus raw-4k/*.mp4 entpacken
+  // (ffmpeg -i … %03d.png, Zählung ab 1), Skript braucht opencv-python-headless und numpy (venv außerhalb des Repos).
+  // Es richtet die Brustpartie je Bild am Schild aus, füllt eine feste Maske (Revers wird fortgesetzt, nicht übermalt),
+  // mittelt die Füllung über ±4 Bilder und schneidet 600×750 entlang einer geglätteten Bahn aus; danach
+  // ffmpeg -framerate 24 -start_number <erstes Bild> -i %03d.png -c:v libx264 -crf 20 -preset slow -pix_fmt yuv420p
+  // -movflags +faststart -an, Start- und Endbild mit cwebp -q 80. Die ?v=-Hashes der .mp4 zieht rehash() mit nach.
 ];
 
 export const hashOf = (file) => createHash('sha1').update(readFileSync(file)).digest('hex').slice(0, 8);
