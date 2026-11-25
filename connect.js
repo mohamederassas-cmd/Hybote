@@ -29,7 +29,8 @@
       connectImap: 'Check and connect', connecting: 'Connecting …', backToProviders: 'Back to provider selection',
       detectFound: 'Server settings for {label} filled in. Please check them briefly.', detectAppPassword: 'This provider requires an app password from your account settings, not your normal password.', detectMicrosoft: 'This mailbox runs on Microsoft. Please go back and choose “Microsoft 365 / Outlook” – no app password needed there.',
       igPendingTitle: 'Instagram connection is being enabled', igPendingBody: 'Meta is currently approving the Instagram permissions for HYBOTE. Your personal link stays valid: as soon as the approval is in place, this page will guide you through the connection. We will let you know.',
-      igTitle: 'Connect Instagram', igIntro: 'Authorize HYBOTE for the Instagram professional account of your business.', igConnectButton: 'Connect with Instagram', igAccountLabel: 'Instagram account', igSuccessTitle: 'Instagram connected', igSuccessBody: 'Your Instagram account is securely connected to HYBOTE. We will now complete the technical activation.',
+      igTitle: 'Connect Instagram', igIntro: 'Authorize HYBOTE for the Instagram professional account of your business.', igConnectButton: 'Connect with Instagram', igOpenInbox: 'View live conversations', igAccountLabel: 'Instagram account', igSuccessTitle: 'Instagram connected', igSuccessBody: 'Your Instagram account is securely connected to HYBOTE. We will now complete the technical activation.',
+      igInboxTitle: 'Live Conversations · Instagram Direct', igInboxSub: 'Inbound Direct messages and replies linked by conversation thread', igWebhookLive: 'Webhook active · Live sync', igRefresh: 'Refresh', igEmptyTitle: 'Waiting for incoming Instagram Direct messages', igEmptyBody: 'This account is subscribed to the messages webhook. Send a Direct message to the connected Instagram account to watch the conversation thread update here in real time.', igThreadsLabel: 'Conversations', igThreadTitle: 'Conversation Thread', igThreadIdLabel: 'Thread ID:', igMsgCountOne: '1 message', igMsgCountMany: '{n} messages', igRoleInbound: 'Customer · Inbound DM (Webhook)', igRoleAssistant: 'HYBOTE Assistant · Instagram Send API', igRoleOwner: 'Business Owner · Instagram App (Echo)', igNewReplyBadge: 'New inbound reply', igInboxError: 'Could not load live conversations right now. Retrying …',
       igStep1Title: 'Start the connection', igStep1Body: 'Click “Connect with Instagram” on this page.', igStep2Title: 'Sign in with Instagram', igStep2Body: 'You sign in directly at Instagram with the professional account of your business and allow access. No Facebook account needed.', igPrereq1: 'An Instagram professional account (business or creator)', igPrereq2: 'The login details of this Instagram account', igPrereq3: 'No Facebook account or Facebook page required',
       successTitle: 'Mailbox connected', successBody: 'The access permission was securely delivered to HYBOTE. We will now complete the technical activation.', alreadyConnected: 'This mailbox is already connected to HYBOTE. Nothing else to do.',
       provider: 'Provider', address: 'Mailbox', connectedAt: 'Connected', backHome: 'Back to HYBOTE', support: 'Need help?', terms: 'Terms', deletion: 'Data deletion',
@@ -60,7 +61,8 @@
       connectImap: 'Prüfen und verbinden', connecting: 'Verbinde …', backToProviders: 'Zurück zur Anbieterwahl',
       detectFound: 'Servereinstellungen für {label} eingetragen. Bitte kurz prüfen.', detectAppPassword: 'Dieser Anbieter verlangt ein App-Passwort aus Ihren Kontoeinstellungen, nicht Ihr normales Passwort.', detectMicrosoft: 'Dieses Postfach läuft über Microsoft. Bitte zurück und „Microsoft 365 / Outlook“ wählen – dort ohne App-Passwort.',
       igPendingTitle: 'Instagram-Anbindung wird freigeschaltet', igPendingBody: 'Meta prüft derzeit die Instagram-Berechtigungen für HYBOTE. Ihr persönlicher Link bleibt gültig: Sobald die Freigabe vorliegt, führt Sie diese Seite durch die Verbindung. Wir melden uns.',
-      igTitle: 'Instagram verbinden', igIntro: 'Autorisieren Sie HYBOTE für das Instagram-Professional-Konto Ihres Unternehmens.', igConnectButton: 'Mit Instagram verbinden', igAccountLabel: 'Instagram-Konto', igSuccessTitle: 'Instagram verbunden', igSuccessBody: 'Ihr Instagram-Konto ist sicher mit HYBOTE verbunden. Wir übernehmen jetzt die technische Einrichtung.',
+      igTitle: 'Instagram verbinden', igIntro: 'Autorisieren Sie HYBOTE für das Instagram-Professional-Konto Ihres Unternehmens.', igConnectButton: 'Mit Instagram verbinden', igOpenInbox: 'Live-Konversationen ansehen', igAccountLabel: 'Instagram-Konto', igSuccessTitle: 'Instagram verbunden', igSuccessBody: 'Ihr Instagram-Konto ist sicher mit HYBOTE verbunden. Wir übernehmen jetzt die technische Einrichtung.',
+      igInboxTitle: 'Live-Konversationen · Instagram Direct', igInboxSub: 'Eingehende Direktnachrichten und Antworten nach Gesprächs-Thread', igWebhookLive: 'Webhook aktiv · Live-Sync', igRefresh: 'Aktualisieren', igEmptyTitle: 'Warte auf eingehende Instagram-Direktnachrichten', igEmptyBody: 'Dieses Konto ist für den Nachrichten-Webhook angemeldet. Senden Sie eine Direktnachricht an das verbundene Instagram-Konto, um den Gesprächsverlauf hier live zu sehen.', igThreadsLabel: 'Konversationen', igThreadTitle: 'Gesprächs-Thread', igThreadIdLabel: 'Thread-ID:', igMsgCountOne: '1 Nachricht', igMsgCountMany: '{n} Nachrichten', igRoleInbound: 'Kunde · Eingehende DM (Webhook)', igRoleAssistant: 'HYBOTE-Assistent · Instagram Send API', igRoleOwner: 'Inhaber · Instagram-App (Echo)', igNewReplyBadge: 'Neue Antwort', igInboxError: 'Live-Konversationen konnten gerade nicht geladen werden. Neuer Versuch …',
       igStep1Title: 'Verbindung starten', igStep1Body: 'Auf dieser Seite auf „Mit Instagram verbinden“ klicken.', igStep2Title: 'Bei Instagram anmelden', igStep2Body: 'Sie melden sich direkt bei Instagram mit dem Profi-Konto Ihres Unternehmens an und erlauben den Zugriff. Ein Facebook-Konto ist nicht nötig.', igPrereq1: 'Ein Instagram-Professional-Konto (Unternehmen oder Creator)', igPrereq2: 'Die Anmeldedaten dieses Instagram-Kontos', igPrereq3: 'Kein Facebook-Konto und keine Facebook-Seite nötig',
       successTitle: 'Postfach verbunden', successBody: 'Die Zugriffsberechtigung wurde sicher an HYBOTE übermittelt. Wir übernehmen jetzt die technische Einrichtung.', alreadyConnected: 'Dieses Postfach ist bereits mit HYBOTE verbunden. Es ist nichts weiter zu tun.',
       provider: 'Anbieter', address: 'Postfach', connectedAt: 'Verbunden', backHome: 'Zurück zu HYBOTE', support: 'Brauchen Sie Hilfe?', terms: 'AGB', deletion: 'Datenlöschung',
@@ -91,7 +93,8 @@
       connectImap: 'التحقق والربط', connecting: 'جارٍ الربط …', backToProviders: 'العودة إلى اختيار المزود',
       detectFound: 'تم إدخال إعدادات الخادم الخاصة بـ {label}. يرجى مراجعتها سريعًا.', detectAppPassword: 'يتطلب هذا المزود كلمة مرور تطبيق من إعدادات حسابك، وليس كلمة مرورك العادية.', detectMicrosoft: 'يعمل هذا البريد عبر Microsoft. يرجى الرجوع واختيار «Microsoft 365 / Outlook» – دون الحاجة إلى كلمة مرور تطبيق.',
       igPendingTitle: 'يتم تفعيل ربط إنستغرام', igPendingBody: 'تقوم Meta حالياً بمراجعة صلاحيات إنستغرام لـ HYBOTE. يبقى رابطكم الشخصي صالحاً: بمجرد توفر الموافقة سترشدكم هذه الصفحة خلال الربط. سنتواصل معكم.',
-      igTitle: 'ربط إنستغرام', igIntro: 'فوّضوا HYBOTE لحساب إنستغرام الاحترافي الخاص بشركتكم.', igConnectButton: 'الربط مع إنستغرام', igAccountLabel: 'حساب إنستغرام', igSuccessTitle: 'تم ربط إنستغرام', igSuccessBody: 'تم ربط حسابك على إنستغرام بأمان مع HYBOTE. سنتولى الآن التفعيل التقني.',
+      igTitle: 'ربط إنستغرام', igIntro: 'فوّضوا HYBOTE لحساب إنستغرام الاحترافي الخاص بشركتكم.', igConnectButton: 'الربط مع إنستغرام', igOpenInbox: 'عرض المحادثات المباشرة', igAccountLabel: 'حساب إنستغرام', igSuccessTitle: 'تم ربط إنستغرام', igSuccessBody: 'تم ربط حسابك على إنستغرام بأمان مع HYBOTE. سنتولى الآن التفعيل التقني.',
+      igInboxTitle: 'المحادثات المباشرة · رسائل إنستغرام', igInboxSub: 'الرسائل الواردة والردود مرتبطة حسب سلسلة المحادثة', igWebhookLive: 'Webhook نشط · مزامنة مباشرة', igRefresh: 'تحديث', igEmptyTitle: 'بانتظار رسائل إنستغرام الواردة', igEmptyBody: 'الحساب مشترك في Webhook الرسائل. أرسل رسالة مباشرة إلى حساب إنستغرام المتصل لمشاهدة المحادثة تتحدث هنا فورياً.', igThreadsLabel: 'المحادثات', igThreadTitle: 'سلسلة المحادثة', igThreadIdLabel: 'معرّف المحادثة:', igMsgCountOne: 'رسالة واحدة', igMsgCountMany: '{n} رسائل', igRoleInbound: 'العميل · رسالة واردة (Webhook)', igRoleAssistant: 'مساعد HYBOTE · Send API', igRoleOwner: 'صاحب العمل · تطبيق إنستغرام (Echo)', igNewReplyBadge: 'رد وارد جديد', igInboxError: 'تعذر تحميل المحادثات المباشرة حالياً. جارٍ إعادة المحاولة …',
       igStep1Title: 'بدء الربط', igStep1Body: 'اضغطوا على «الربط مع إنستغرام» في هذه الصفحة.', igStep2Title: 'تسجيل الدخول في إنستغرام', igStep2Body: 'تسجلون الدخول مباشرة في إنستغرام بالحساب الاحترافي لشركتكم وتمنحون الصلاحية. لا حاجة إلى حساب فيسبوك.', igPrereq1: 'حساب إنستغرام احترافي (أعمال أو صانع محتوى)', igPrereq2: 'بيانات تسجيل الدخول لهذا الحساب على إنستغرام', igPrereq3: 'لا حاجة إلى حساب أو صفحة على فيسبوك',
       successTitle: 'تم ربط صندوق البريد', successBody: 'تم إرسال صلاحية الوصول بأمان إلى HYBOTE. سنتولى الآن التفعيل التقني.', alreadyConnected: 'هذا الصندوق مرتبط بالفعل مع HYBOTE. لا حاجة لأي إجراء إضافي.',
       provider: 'المزود', address: 'صندوق البريد', connectedAt: 'تم الربط', backHome: 'العودة إلى HYBOTE', support: 'هل تحتاجون مساعدة؟', terms: 'الشروط', deletion: 'حذف البيانات',
@@ -122,7 +125,8 @@
       connectImap: 'Проверить и подключить', connecting: 'Подключение …', backToProviders: 'Назад к выбору провайдера',
       detectFound: 'Настройки сервера для {label} заполнены. Пожалуйста, коротко проверьте их.', detectAppPassword: 'Этот провайдер требует пароль приложения из настроек аккаунта, а не ваш обычный пароль.', detectMicrosoft: 'Этот почтовый ящик работает на Microsoft. Вернитесь назад и выберите «Microsoft 365 / Outlook» – там пароль приложения не нужен.',
       igPendingTitle: 'Подключение Instagram активируется', igPendingBody: 'Meta в настоящее время проверяет разрешения Instagram для HYBOTE. Ваша персональная ссылка остаётся действительной: как только одобрение будет получено, эта страница проведёт вас через подключение. Мы сообщим вам.',
-      igTitle: 'Подключить Instagram', igIntro: 'Авторизуйте HYBOTE для профессионального аккаунта Instagram вашей компании.', igConnectButton: 'Подключить через Instagram', igAccountLabel: 'Аккаунт Instagram', igSuccessTitle: 'Instagram подключён', igSuccessBody: 'Ваш аккаунт Instagram надёжно подключён к HYBOTE. Теперь мы выполним техническую активацию.',
+      igTitle: 'Подключить Instagram', igIntro: 'Авторизуйте HYBOTE для профессионального аккаунта Instagram вашей компании.', igConnectButton: 'Подключить через Instagram', igOpenInbox: 'Открыть живые диалоги', igAccountLabel: 'Аккаунт Instagram', igSuccessTitle: 'Instagram подключён', igSuccessBody: 'Ваш аккаунт Instagram надёжно подключён к HYBOTE. Теперь мы выполним техническую активацию.',
+      igInboxTitle: 'Живые диалоги · Instagram Direct', igInboxSub: 'Входящие сообщения и ответы, связанные по ветке диалога', igWebhookLive: 'Webhook активен · Автосинхронизация', igRefresh: 'Обновить', igEmptyTitle: 'Ожидание входящих сообщений Instagram Direct', igEmptyBody: 'Этот аккаунт подписан на webhook сообщений. Отправьте личное сообщение на подключённый аккаунт Instagram, чтобы увидеть диалог здесь в реальном времени.', igThreadsLabel: 'Диалоги', igThreadTitle: 'Ветка диалога', igThreadIdLabel: 'ID ветки:', igMsgCountOne: '1 сообщение', igMsgCountMany: '{n} сообщ.', igRoleInbound: 'Клиент · Входящее DM (Webhook)', igRoleAssistant: 'Ассистент HYBOTE · Send API', igRoleOwner: 'Владелец · Приложение Instagram (Echo)', igNewReplyBadge: 'Новый ответ', igInboxError: 'Не удалось загрузить диалоги. Повторная попытка …',
       igStep1Title: 'Начните подключение', igStep1Body: 'Нажмите на этой странице «Подключить через Instagram».', igStep2Title: 'Войдите в Instagram', igStep2Body: 'Вы входите напрямую в Instagram с профессиональным аккаунтом вашей компании и разрешаете доступ. Аккаунт Facebook не нужен.', igPrereq1: 'Профессиональный аккаунт Instagram (бизнес или автор)', igPrereq2: 'Данные для входа в этот аккаунт Instagram', igPrereq3: 'Аккаунт и страница Facebook не нужны',
       successTitle: 'Почтовый ящик подключён', successBody: 'Разрешение на доступ безопасно передано HYBOTE. Теперь мы выполним техническую активацию.', alreadyConnected: 'Этот почтовый ящик уже подключён к HYBOTE. Больше ничего делать не нужно.',
       provider: 'Провайдер', address: 'Почтовый ящик', connectedAt: 'Подключено', backHome: 'Назад к HYBOTE', support: 'Нужна помощь?', terms: 'Условия', deletion: 'Удаление данных',
@@ -153,7 +157,8 @@
       connectImap: 'Vérifier et connecter', connecting: 'Connexion …', backToProviders: 'Retour au choix du fournisseur',
       detectFound: 'Paramètres du serveur pour {label} renseignés. Veuillez les vérifier rapidement.', detectAppPassword: 'Ce fournisseur exige un mot de passe d’application issu des paramètres de votre compte, pas votre mot de passe habituel.', detectMicrosoft: 'Cette boîte fonctionne avec Microsoft. Revenez en arrière et choisissez « Microsoft 365 / Outlook » – sans mot de passe d’application.',
       igPendingTitle: 'La connexion Instagram est en cours d’activation', igPendingBody: 'Meta examine actuellement les autorisations Instagram pour HYBOTE. Votre lien personnel reste valable : dès que l’autorisation sera accordée, cette page vous guidera dans la connexion. Nous vous tiendrons informé.',
-      igTitle: 'Connecter Instagram', igIntro: 'Autorisez HYBOTE pour le compte Instagram professionnel de votre entreprise.', igConnectButton: 'Se connecter avec Instagram', igAccountLabel: 'Compte Instagram', igSuccessTitle: 'Instagram connecté', igSuccessBody: 'Votre compte Instagram est connecté en toute sécurité à HYBOTE. Nous finalisons maintenant l’activation technique.',
+      igTitle: 'Connecter Instagram', igIntro: 'Autorisez HYBOTE pour le compte Instagram professionnel de votre entreprise.', igConnectButton: 'Se connecter avec Instagram', igOpenInbox: 'Voir les conversations en direct', igAccountLabel: 'Compte Instagram', igSuccessTitle: 'Instagram connecté', igSuccessBody: 'Votre compte Instagram est connecté en toute sécurité à HYBOTE. Nous finalisons maintenant l’activation technique.',
+      igInboxTitle: 'Conversations en direct · Instagram Direct', igInboxSub: 'Messages entrants et réponses liés par fil de conversation', igWebhookLive: 'Webhook actif · Synchro en direct', igRefresh: 'Actualiser', igEmptyTitle: 'En attente de messages Instagram Direct', igEmptyBody: 'Ce compte est abonné au webhook de messages. Envoyez un message direct au compte Instagram connecté pour voir le fil se mettre à jour ici en temps réel.', igThreadsLabel: 'Conversations', igThreadTitle: 'Fil de conversation', igThreadIdLabel: 'ID du fil :', igMsgCountOne: '1 message', igMsgCountMany: '{n} messages', igRoleInbound: 'Client · Message entrant (Webhook)', igRoleAssistant: 'Assistant HYBOTE · Send API', igRoleOwner: 'Propriétaire · App Instagram (Écho)', igNewReplyBadge: 'Nouvelle réponse', igInboxError: 'Impossible de charger les conversations pour le moment. Nouvelle tentative …',
       igStep1Title: 'Lancer la connexion', igStep1Body: 'Cliquez sur « Se connecter avec Instagram » sur cette page.', igStep2Title: 'Se connecter à Instagram', igStep2Body: 'Vous vous connectez directement sur Instagram avec le compte professionnel de votre entreprise et autorisez l’accès. Aucun compte Facebook n’est nécessaire.', igPrereq1: 'Un compte Instagram professionnel (entreprise ou créateur)', igPrereq2: 'Les identifiants de ce compte Instagram', igPrereq3: 'Aucun compte ni page Facebook nécessaire',
       successTitle: 'Boîte mail connectée', successBody: 'L’autorisation d’accès a été transmise en toute sécurité à HYBOTE. Nous finalisons maintenant l’activation technique.', alreadyConnected: 'Cette boîte mail est déjà connectée à HYBOTE. Rien d’autre à faire.',
       provider: 'Fournisseur', address: 'Boîte mail', connectedAt: 'Connecté', backHome: 'Retour à HYBOTE', support: 'Besoin d’aide ?', terms: 'CGV', deletion: 'Suppression des données',
@@ -231,7 +236,9 @@
     return ok && payload.ok ? payload : null;
   }
 
-  function showSuccess(status, already) {
+  const igState = { threads: [], selectedThreadId: '', seenKeys: null, newKeys: new Set(), pollTimer: null, account: null };
+
+  function renderSummary(status) {
     const summary = $('connection-summary');
     const rows = [];
     if (status && status.igAccount) rows.push([t('igAccountLabel'), `@${status.igAccount}${status.igType ? ` (${IG_TYPE_LABELS[status.igType] || status.igType})` : ''}`, 'ltr']);
@@ -243,10 +250,159 @@
       dt.textContent = label; dd.textContent = value; if (direction === 'ltr') dd.dir = 'ltr'; row.append(dt, dd); return row;
     }));
     summary.hidden = rows.length === 0;
+  }
+
+  function showSuccess(status, already) {
+    renderSummary(status);
     // Instagram hat eigene Erfolgstexte (31.10.2026), sonst stand dort „Postfach verbunden“.
     const instagram = state.invite && state.invite.channel === 'instagram';
     $('success-body').textContent = instagram ? t('igSuccessBody') : already ? t('alreadyConnected') : t('successBody');
+    $('ig-inbox').hidden = !instagram;
+    document.querySelector('.connect-grid').classList.toggle('connect-grid--inbox', Boolean(instagram));
+    $('success-view').classList.toggle('result-view--inbox', Boolean(instagram));
     showView('success-view');
+    if (instagram) startIgInboxPolling();
+  }
+
+  function formatIgTime(iso) {
+    if (!iso) return '';
+    const ms = Date.parse(iso);
+    if (!Number.isFinite(ms)) return '';
+    return new Intl.DateTimeFormat(state.language, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(ms));
+  }
+
+  function formatMsgCount(count) {
+    return count === 1 ? t('igMsgCountOne') : t('igMsgCountMany').replace('{n}', String(count));
+  }
+
+  function roleBadgeText(role) {
+    if (role === 'assistant') return t('igRoleAssistant');
+    if (role === 'owner') return t('igRoleOwner');
+    return t('igRoleInbound');
+  }
+
+  function renderIgInbox() {
+    const threads = igState.threads;
+    const emptyBox = $('ig-inbox-empty');
+    const grid = $('ig-inbox-grid');
+    if (!threads.length) {
+      emptyBox.hidden = false;
+      grid.hidden = true;
+      return;
+    }
+    emptyBox.hidden = true;
+    grid.hidden = false;
+
+    if (!threads.some((th) => th.threadId === igState.selectedThreadId)) {
+      igState.selectedThreadId = threads[0].threadId;
+    }
+    const activeThread = threads.find((th) => th.threadId === igState.selectedThreadId) || threads[0];
+
+    const listEl = $('ig-thread-list');
+    listEl.replaceChildren(...threads.map((thread) => {
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ig-thread-btn' + (thread.threadId === activeThread.threadId ? ' is-active' : '');
+      const top = document.createElement('div');
+      top.className = 'ig-thread-btn-top';
+      const title = document.createElement('strong');
+      title.textContent = thread.label;
+      const count = document.createElement('span');
+      count.textContent = formatMsgCount(thread.messageCount);
+      top.append(title, count);
+      const preview = document.createElement('div');
+      preview.className = 'ig-thread-preview';
+      preview.textContent = thread.preview || '';
+      btn.append(top, preview);
+      btn.addEventListener('click', () => {
+        igState.selectedThreadId = thread.threadId;
+        renderIgInbox();
+      });
+      li.append(btn);
+      return li;
+    }));
+
+    $('ig-active-title').textContent = `${t('igThreadTitle')} · ${activeThread.label}`;
+    $('ig-active-id').textContent = `${t('igThreadIdLabel')} ${activeThread.threadId}`;
+    $('ig-active-count').textContent = formatMsgCount(activeThread.messageCount);
+
+    const messagesEl = $('ig-thread-messages');
+    const shouldStickBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 90 || igState.newKeys.size > 0;
+    messagesEl.replaceChildren(...activeThread.messages.map((msg) => {
+      const key = `${activeThread.threadId}:${msg.id}`;
+      const isNew = igState.newKeys.has(key);
+      const card = document.createElement('article');
+      card.className = `ig-msg ig-msg--${msg.role}${isNew ? ' ig-msg--new' : ''}`;
+      const meta = document.createElement('div');
+      meta.className = 'ig-msg-meta';
+      const badge = document.createElement('span');
+      badge.className = 'ig-msg-badge';
+      badge.textContent = roleBadgeText(msg.role);
+      const rightMeta = document.createElement('span');
+      rightMeta.className = 'ig-msg-time';
+      if (isNew) {
+        const newTag = document.createElement('span');
+        newTag.className = 'ig-msg-new-tag';
+        newTag.textContent = t('igNewReplyBadge');
+        meta.append(badge, newTag, rightMeta);
+      } else {
+        meta.append(badge, rightMeta);
+      }
+      rightMeta.textContent = formatIgTime(msg.createdAt);
+      const body = document.createElement('p');
+      body.className = 'ig-msg-text';
+      body.textContent = msg.text;
+      card.append(meta, body);
+      return card;
+    }));
+    if (shouldStickBottom) messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  async function loadIgMessages() {
+    if (!inviteToken) return null;
+    const errBox = $('ig-inbox-error');
+    const { ok, payload } = await fetchJson(`/api/connect/ig/messages?token=${encodeURIComponent(inviteToken)}`).catch(() => ({ ok: false, payload: {} }));
+    if (!ok || !payload.ok) {
+      if (errBox) { errBox.textContent = t('igInboxError'); errBox.hidden = false; }
+      return null;
+    }
+    if (errBox) errBox.hidden = true;
+    igState.account = payload.account || null;
+    if (payload.account && payload.account.username && $('success-view') && !$('success-view').hidden) {
+      renderSummary({
+        igAccount: payload.account.username,
+        igType: payload.account.accountType,
+        connectedAt: payload.account.connectedAt || new Date().toISOString()
+      });
+    }
+    const nextThreads = Array.isArray(payload.threads) ? payload.threads : [];
+    const currentKeys = new Set();
+    let newestThreadWithInbound = '';
+    for (const thread of nextThreads) {
+      for (const msg of thread.messages || []) {
+        const key = `${thread.threadId}:${msg.id}`;
+        currentKeys.add(key);
+        if (igState.seenKeys !== null && !igState.seenKeys.has(key) && msg.role === 'inbound') {
+          igState.newKeys.add(key);
+          if (!newestThreadWithInbound) newestThreadWithInbound = thread.threadId;
+        }
+      }
+    }
+    if (igState.seenKeys === null) igState.seenKeys = currentKeys;
+    else for (const k of currentKeys) igState.seenKeys.add(k);
+    if (newestThreadWithInbound) igState.selectedThreadId = newestThreadWithInbound;
+    igState.threads = nextThreads;
+    if ($('ig-inbox') && !$('ig-inbox').hidden) renderIgInbox();
+    return payload;
+  }
+
+  function startIgInboxPolling() {
+    if (igState.pollTimer) clearInterval(igState.pollTimer);
+    loadIgMessages();
+    igState.pollTimer = setInterval(() => {
+      if (!document.hidden && $('ig-inbox') && !$('ig-inbox').hidden) loadIgMessages();
+    }, 2500);
   }
 
   function renderProviders() {
@@ -346,6 +502,16 @@
     window.location.assign(`/api/connect/ig/start?invite=${encodeURIComponent(inviteToken)}`);
   });
 
+  if ($('ig-refresh-btn')) {
+    $('ig-refresh-btn').addEventListener('click', () => { loadIgMessages(); });
+  }
+  if ($('ig-open-inbox')) {
+    $('ig-open-inbox').addEventListener('click', () => {
+      const acc = igState.account || {};
+      showSuccess({ igAccount: acc.username || '', igType: acc.accountType || '', connectedAt: acc.connectedAt || '' }, true);
+    });
+  }
+
   document.querySelectorAll('[data-set-lang]').forEach((buttonElement) => {
     buttonElement.addEventListener('click', () => {
       const next = new URLSearchParams(window.location.search); next.set('lang', buttonElement.dataset.setLang); window.location.search = next.toString();
@@ -375,6 +541,16 @@
       if (params.get('result') === 'ok') { showSuccess({ igAccount: params.get('account') || '', igType: params.get('type') || '', connectedAt: new Date().toISOString() }, false); return; }
       showView(state.flags.instagramEnabled ? 'instagram-view' : 'instagram-pending-view');
       if (params.get('error')) showError($('ig-error'), params.get('error'));
+      if (state.flags.instagramEnabled) {
+        const info = await loadIgMessages();
+        if (info && info.account && info.account.connected) {
+          if (params.get('view') === 'inbox') {
+            showSuccess({ igAccount: info.account.username, igType: info.account.accountType, connectedAt: info.account.connectedAt }, true);
+            return;
+          }
+          if ($('ig-open-inbox')) $('ig-open-inbox').hidden = false;
+        }
+      }
       return;
     }
     // E-Mail: erst Verbindungsstand (Redirect-Ergebnis oder Wiederbesuch), dann Anbieterwahl.

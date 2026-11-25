@@ -104,14 +104,17 @@ ersten Zusage an der eigenen Nummer prüfen.
 
 ## Eingeschränkter n8n-API-Schlüssel
 
-Der API-Schlüssel ist ausschließlich für das Embedded Signup bestimmt und erhält nur:
+Der API-Schlüssel ist für das Kunden-Onboarding und die Live-Konversationsansicht bestimmt und erhält nur:
 
 - `credential:create`
 - `credential:update`
 - `credential:list`
+- `dataTable:read`
+- `dataTable:list`
+- `dataTableRow:read`
 - `dataTableRow:upsert`
 
-Der Produktionsschlüssel `HYBOTE Embedded Signup` wurde am 30. August 2026 mit einer Laufzeit von 90 Tagen erstellt und muss vorsorglich spätestens am 27. November 2026 gemeinsam in n8n und Vercel erneuert werden.
+Der Produktionsschlüssel `HYBOTE Embedded Signup` (30. August 2026, Ablauf 27. November 2026) wurde am 25. November 2026 durch `HYBOTE Embedded Signup 2026-11` (ohne Ablaufdatum) in n8n und Vercel ersetzt.
 
 Vercel legt den Kundentoken direkt als verschlüsseltes n8n-Credential vom Typ `whatsAppApi` ab. Der Token wird nicht in einer Workflow-Ausführung und nicht in der Datentabelle gespeichert. Das Register `wa_tenants` enthält ausschließlich Kundenzuordnung, Meta-IDs, Credential-ID, Workflow-ID, Status und Ablaufdatum.
 

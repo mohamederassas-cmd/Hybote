@@ -48,4 +48,37 @@ async function failInstagram({ invite, detail, fingerprint }) {
   });
 }
 
-module.exports = { igTableId, connectInstagram, failInstagram };
+function rowsOf(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (payload && Array.isArray(payload.data)) return payload.data;
+  return [];
+}
+
+/** Liest die Mandantenzeile aus ig_tenants anhand tenant_key (ohne Token-Daten). */
+async function getInstagramTenant(tenantKey) {
+  if (!tenantKey) return null;
+  const tableId = await igTableId();
+  const filter = encodeURIComponent(JSON.stringify({ type: 'and', filters: [{ columnName: 'tenant_key', condition: 'eq', value: tenantKey }] }));
+  const payload = await n8nJson(`data-tables/${encodeURIComponent(tableId)}/rows?filter=${filter}&limit=1`);
+  return rowsOf(payload)[0] || null;
+}
+
+/** Liest bis zu `maxRows` Chat-Verlaufszeilen aus ig_chat_history_<tenant_key>.
+ *  n8n begrenzt limit je Seite auf 250; bei nextCursor wird hoechstens zweimal nachgeladen. */
+async function listInstagramHistory(historyTableId, maxRows = 250) {
+  if (!historyTableId) return [];
+  const rows = [];
+  let cursor = '';
+  for (let page = 0; page < 2 && rows.length < maxRows; page += 1) {
+    const pageLimit = Math.min(250, maxRows - rows.length);
+    const qs = new URLSearchParams({ limit: String(pageLimit) });
+    if (cursor) qs.set('cursor', cursor);
+    const payload = await n8nJson(`data-tables/${encodeURIComponent(historyTableId)}/rows?${qs.toString()}`);
+    rows.push(...rowsOf(payload));
+    cursor = payload && typeof payload.nextCursor === 'string' ? payload.nextCursor : '';
+    if (!cursor) break;
+  }
+  return rows;
+}
+
+module.exports = { igTableId, connectInstagram, failInstagram, getInstagramTenant, listInstagramHistory };
