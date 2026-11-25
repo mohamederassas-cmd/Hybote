@@ -105,7 +105,7 @@ test('groups inbound message, AI reply, recipient return reply, and owner echo i
               { id: 1, wa_id: 'ig-user-1001', role: 'user', text: 'Hi, looking for a 2BR in Dubai Marina.', created_at: '2026-11-25T09:01:00.000Z' },
               { id: 2, wa_id: 'ig-user-1001', role: 'assistant', text: 'Happy to help! What budget range do you have in mind?', created_at: '2026-11-25T09:01:15.000Z' },
               { id: 4, wa_id: 'ig-user-1001', role: 'owner', text: 'Hi, this is the team - calling you now.', created_at: '2026-11-25T09:03:00.000Z' },
-              { id: 5, wa_id: 'ig-user-9999', role: 'user', text: 'Older inquiry', created_at: '2026-11-24T12:00:00.000Z' }
+              { id: 5, wa_id: 'ig-user-9999', role: 'user', text: 'Older inquiry', created_at: '1793477400671' }
             ]
           };
         }

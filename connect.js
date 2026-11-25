@@ -266,7 +266,14 @@
 
   function formatIgTime(iso) {
     if (!iso) return '';
-    const ms = Date.parse(iso);
+    const raw = String(iso).trim();
+    let ms = NaN;
+    if (/^\d{10,13}$/.test(raw)) {
+      const num = Number(raw);
+      ms = raw.length <= 10 ? num * 1000 : num;
+    } else {
+      ms = Date.parse(raw);
+    }
     if (!Number.isFinite(ms)) return '';
     return new Intl.DateTimeFormat(state.language, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(ms));
   }

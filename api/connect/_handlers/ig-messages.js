@@ -17,8 +17,13 @@ function normalizeRole(value) {
 }
 
 function parseTimestamp(value) {
-  if (!value) return 0;
-  const ms = Date.parse(String(value));
+  if (value === undefined || value === null || value === '') return 0;
+  const raw = String(value).trim();
+  if (/^\d{10,13}$/.test(raw)) {
+    const num = Number(raw);
+    return raw.length <= 10 ? num * 1000 : num;
+  }
+  const ms = Date.parse(raw);
   return Number.isFinite(ms) ? ms : 0;
 }
 
