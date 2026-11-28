@@ -9,7 +9,7 @@ const crypto = require('node:crypto');
 const { configured, loadDemoRow, codeFromRequest, queryFlag } = require('../_demoPages.js');
 
 const SITE = 'https://hybote.ai';
-const DEFAULT_TRY_WA = '16505146359'; // Hadi, beantwortet Anruf und WhatsApp unter +1 650 514 6359
+const DEFAULT_TRY_WA = '496920085959'; // Hadi WhatsApp (+49 69 20085959; Telefon +49 69 20085980)
 const DEFAULT_BOOKING = 'https://calendly.com/hybote-demo/free-intro-call';
 const LOOM_ID = /^[0-9a-f]{32}$/;
 const DEMO_CODE = /^[a-z2-9]{10}$/;

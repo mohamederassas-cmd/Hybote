@@ -23,7 +23,7 @@ const ROW = {
   loom_id: '0281766fa2d04bb788eaf19e65135184',
   loom_thumbnail_url: 'https://cdn.loom.com/sessions/thumbnails/0281766fa2d04bb788eaf19e65135184-00001.gif',
   test_url: '', booking_url: 'https://calendly.com/hybote-demo/free-intro-call?utm_source=hybote_demo&utm_medium=whatsapp&utm_campaign=abcdefghjk',
-  try_wa: '16505146359', try_text: '', contact_wa: '', version: 3, updated_at: '2026-11-03T10:00:00.000Z'
+  try_wa: '496920085959', try_text: '', contact_wa: '', version: 3, updated_at: '2026-11-03T10:00:00.000Z'
 };
 const NONCE = 'n0nce+/AbC12==';
 
@@ -152,22 +152,22 @@ test('zurückgezogen, unbekannt oder ohne Loom-ID ergibt eine neutrale 404-Seite
   }
 });
 
-test('Standard-Ausprobier-Link ist wa.me/16505146359 mit kodiertem Text', () => {
+test('Standard-Ausprobier-Link ist wa.me/496920085959 mit kodiertem Text', () => {
   const de = attrsOf(render({ try_wa: '', try_text: '' }).html, 'demo-try');
-  assert.equal(de.href, 'https://wa.me/16505146359?text=' + encodeURIComponent('Hallo Hadi, ich habe gerade die Demo für Keller Immobilien AG gesehen und habe eine Frage.'));
+  assert.equal(de.href, 'https://wa.me/496920085959?text=' + encodeURIComponent('Hallo Hadi, ich habe gerade die Demo für Keller Immobilien AG gesehen und habe eine Frage.'));
   assert.equal(de.target, '_blank');
   assert.equal(de.rel, 'noopener');
   const en = attrsOf(render({ lang: 'en', try_wa: '', try_text: '' }).html, 'demo-try');
-  assert.equal(en.href, 'https://wa.me/16505146359?text=' + encodeURIComponent('Hi Hadi, I just watched the demo for Keller Immobilien AG and have a question.'));
+  assert.equal(en.href, 'https://wa.me/496920085959?text=' + encodeURIComponent('Hi Hadi, I just watched the demo for Keller Immobilien AG and have a question.'));
   // Text aus der Tabelle (Tower-Einstellung) hat Vorrang und wird kodiert, auch mit & und #
-  const custom = attrsOf(render({ try_text: 'Hallo Hadi, Frage zu A & B #1', try_wa: '+1 (650) 514-6359' }).html, 'demo-try');
-  assert.equal(custom.href, 'https://wa.me/16505146359?text=' + encodeURIComponent('Hallo Hadi, Frage zu A & B #1'));
+  const custom = attrsOf(render({ try_text: 'Hallo Hadi, Frage zu A & B #1', try_wa: '+49 (69) 2008-5959' }).html, 'demo-try');
+  assert.equal(custom.href, 'https://wa.me/496920085959?text=' + encodeURIComponent('Hallo Hadi, Frage zu A & B #1'));
 });
 
 test('test_url nur mit https, sonst gilt der WhatsApp-Link', () => {
   for (const bad of ['http://demo.example.com/keller', 'javascript:alert(1)', 'https://user:pw@demo.example.com/', 'kein link']) {
     const a = attrsOf(render({ test_url: bad }).html, 'demo-try');
-    assert.ok(a.href.startsWith('https://wa.me/16505146359?text='), bad);
+    assert.ok(a.href.startsWith('https://wa.me/496920085959?text='), bad);
   }
   const good = render({ test_url: 'https://demo.hybote.ai/keller?x=1&y=2' });
   const a = attrsOf(good.html, 'demo-try');

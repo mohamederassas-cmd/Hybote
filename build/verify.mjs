@@ -321,8 +321,8 @@ console.log('\nStartseite: Aufbau und Bilder');
       (h.match(/data-i18n="night\.2\.n\d"/g) || []).length === 3,
     'reduzierte Bewegung und ?dev=1 (Standbild für Screenshots)':
       h.includes('@media (prefers-reduced-motion: reduce)') && h.includes("classList.add('still')") && h.includes('.js:not(.still) .reveal'),
-    'Hadi: alle WhatsApp- und Telefon-Links auf +1 650 514 6359':
-      waLinks.length >= 4 && waLinks.every((u) => /^https:\/\/wa\.me\/16505146359(\?|$)/.test(u) || u === 'tel:+16505146359'),
+    'Hadi: alle WhatsApp-Links auf +49 69 20085959 und Telefon-Links auf +49 69 20085980':
+      waLinks.length >= 4 && waLinks.every((u) => /^https:\/\/wa\.me\/496920085959(\?|$)/.test(u) || u === 'tel:+496920085980'),
     'QR-Code führt auf /hadi/': (h.match(/data-qr="https:\/\/hybote\.ai\/hadi\/"/g) || []).length >= 1,
     'Kundenstimmen je mit Trustpilot-Link (neuer Tab, noopener)':
       !h.includes('id="kunden"') ||
@@ -402,15 +402,14 @@ console.log('\nRechtstextseiten');
 /* ── WhatsApp-Selbsttest (Paket 3f, 26.10.2026) ────────────────────────── */
 console.log('\nWhatsApp-Selbsttest');
 {
-  // Seit 01.11.2026 beantwortet Hadi Anrufe und WhatsApp auf +1 650 514 6359. Die 213er ist Demo-Nummer
-  // (ohne Demo antwortet dort auch Hadi) und gehört nicht in die Werbung.
+  // Seit 28.11.2026: Hadi WhatsApp +49 69 20085959, Hadi Telefon +49 69 20085980 (alle US-Nummern abgelöst).
   // wa.me kennt keine UTM, deshalb nennt der vorausgefüllte Text die Quelle.
   for (const [name, source] of [['links/index.html', 'Instagram'], ['benchmark/index.html', 'Benchmark']]) {
     const h = readFileSync(join(ROOT, name), 'utf8');
     report(name, {
       'Knopf zeigt auf die WhatsApp-Nummer, Quelle im Text':
-        h.includes(`href="https://wa.me/16505146359?text=Hi%20HYBOTE%20(${source})"`),
-      'nie die Demo-Nummer': !h.includes('12134234114') && !/wa\.me\/1?213/.test(h),
+        h.includes(`href="https://wa.me/496920085959?text=Hi%20HYBOTE%20(${source})"`),
+      'nie alte US-Nummern': !h.includes('12134234114') && !h.includes('16505146359') && !/wa\.me\/1?213/.test(h),
     });
   }
 }
@@ -423,8 +422,8 @@ console.log('\nWeiterleitung /hadi/');
   const text = h.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '');
   report('hadi/index.html', {
     'Knopf zeigt auf Hadis WhatsApp-Nummer, Quelle im Text':
-      h.includes('href="https://wa.me/16505146359?text=Hi%20Hadi%20(Website)"') && h.includes("'Hi Hadi (' + label + ')'"),
-    'nie die Demo-Nummer': !h.includes('12134234114') && !/wa\.me\/1?213/.test(h),
+      h.includes('href="https://wa.me/496920085959?text=Hi%20Hadi%20(Website)"') && h.includes("'Hi Hadi (' + label + ')'"),
+    'nie alte US-Nummern': !h.includes('12134234114') && !h.includes('16505146359') && !/wa\.me\/1?213/.test(h),
     'US-Nummer nicht sichtbar (Owner 16.11.2026)': !/650[\s-]?514/.test(visibleText(h)),
     'Vorschaubild mit absoluter Adresse und Datei vorhanden':
       h.includes('<meta property="og:image" content="https://hybote.ai/hadi/og.jpg" />') && existsSync(join(ROOT, 'hadi/og.jpg')),
@@ -482,8 +481,8 @@ console.log('\nDemo-Seite');
       ['demo_open', 'demo_play', 'demo_try', 'demo_book'].every((e) => videoView.includes(`'${e}'`)),
     'Loom erst nach Klick, Seite rendert serverseitig mit Nonce':
       pageSource.includes('data-embed=') && !/<iframe/.test(pageSource) && pageSource.includes("'nonce-${nonce}'"),
-    'Ausprobieren standardmäßig bei Hadi, nie die Demo-Nummer':
-      pageSource.includes("DEFAULT_TRY_WA = '16505146359'") && !pageSource.includes('12134234114'),
+    'Ausprobieren standardmäßig bei Hadi DE, nie alte US-Nummern':
+      pageSource.includes("DEFAULT_TRY_WA = '496920085959'") && !pageSource.includes('12134234114') && !pageSource.includes('16505146359'),
     'Demo-Abschnitte im Datenschutz in allen drei Sprachen':
       ['de', 'en', 'ar'].every((l) => (ds.match(new RegExp(`id="demo-${l}"`, 'g')) || []).length === 1) &&
       demoParagraphs.every((p) => p.includes('Loom') && p.includes('atlassian.com/legal/privacy-policy')),
